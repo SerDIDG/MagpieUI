@@ -20,6 +20,8 @@ cm.define('Com.Autocomplete', {
         'onReset',
         'onSelect',
         'onChange',
+        'onEnable',
+        'onDisable',
         'onClickSelect',
         'onAbort',
         'onError',
@@ -35,6 +37,7 @@ cm.define('Com.Autocomplete', {
         'minLength' : 3,
         'direction' : 'auto',                                       // auto | start
         'className' : '',
+        'disabled' : false,
         'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
         'showListOnEmpty' : false,                                  // Show options list, when input is empty
@@ -80,6 +83,7 @@ function(params){
 
     that.components = {};
 
+    that.disabled = false;
     that.isDestructed = false;
     that.ajaxHandler = null;
     that.isOpen = false;
@@ -127,6 +131,8 @@ function(params){
         that.params['data'] = that.callbacks.convert(that, that.params['data']);
         // Value
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        // Input
+        that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
         // Tooltip
         that.params['Com.Tooltip']['className'] = [
             'com__ac-tooltip',
@@ -156,6 +162,8 @@ function(params){
         that.setInput(that.params['node']);
         // Set
         !cm.isEmpty(that.params['value']) && that.set(that.params['value'], false);
+        // Disabled state
+        that.params['disabled'] && that.disable();
     };
 
     var setListItem = function(index){
@@ -383,8 +391,8 @@ function(params){
 
     that.callbacks.filter = function(that, params){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], params['response']);
-        if(dataItem && !cm.isEmpty(dataItem)){
+            dataItem = cm.reducePath(that.params['responseKey'], params['response']);
+        if(!cm.isEmpty(dataItem)){
             data = dataItem;
         }
         return data;
@@ -586,6 +594,44 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode, update){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params.ajax = cm.merge(that._raw.params.ajax, o);
+                break;
+            case 'current':
+                that.params.ajax = cm.merge(that.params.ajax, o);
+                break;
+            case 'update':
+                that.params.ajax = cm.merge(that._update.params.ajax, o);
+                break;
+        }
+        if(update){
+            that._update.params.ajax = cm.clone(that.params.ajax);
+        }
+        return that;
+    };
+
+    that.setVariables = function(o, mode, update){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params.ajax.variables = cm.merge(that._raw.params.ajax.variables, o);
+                break;
+            case 'current':
+                that.params.ajax.variables = cm.merge(that.params.ajax.variables, o);
+                break;
+            case 'update':
+                that.params.ajax.variables = cm.merge(that._update.params.ajax.variables, o);
+                break;
+        }
+        if(update){
+            that._update.params.ajax.variables = cm.clone(that.params.ajax.variables);
+        }
+        return that;
+    };
+
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
@@ -595,6 +641,26 @@ function(params){
 
     that.focus = function(){
         that.params['node'].focus();
+        return that;
+    };
+
+    that.enable = function(){
+        var that = this;
+        if(that.disabled){
+            that.disabled = false;
+            that.params['node'].disabled = false;
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        var that = this;
+        if(!that.disabled){
+            that.disabled = true;
+            that.params['node'].disabled = true;
+            that.triggerEvent('onDisable');
+        }
         return that;
     };
 

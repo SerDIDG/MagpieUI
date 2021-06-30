@@ -1,14 +1,12 @@
 /* ******* PARTS: BUTTONS ******* */
 
 .pt__buttons {
-    @buttonIndent: max(round((@CmForm-ButtonsIndent / 2)), 0px);
-
     .cm__box;
     .cm__box-reverse;
 
     > .inner {
         .display-flex;
-        margin: -@buttonIndent;
+        margin: calc(var(--pt-buttons--indent) / 2 * -1);
 
         > .left,
         > .right {
@@ -35,11 +33,11 @@
     }
 
     .button-alike {
-        margin: @buttonIndent;
+        margin: calc(var(--pt-buttons--indent) / 2 );
     }
 
     .hint {
-        margin: @buttonIndent;
+        margin: calc(var(--pt-buttons--indent) / 2 );
         flex: auto;
         align-self: center;
     }
@@ -102,6 +100,7 @@
 
         > .left,
         > .right {
+            display: block;
             width: 100%;
             margin: @CmForm-FieldIndent 0 0 0;
 

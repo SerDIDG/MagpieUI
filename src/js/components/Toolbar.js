@@ -26,6 +26,9 @@ function(params){
 
     that.nodes = {};
     that.groups = {};
+    that.items = [];
+
+    that.isHidden = true;
 
     var init = function(){
         that.setParams(params);
@@ -41,7 +44,7 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar'},
+        that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar is-hidden'},
             that.nodes['toolbar'] = cm.node('div', {'class' : 'pt__toolbar'},
                 that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
                     that.nodes['left'] = cm.node('div', {'class' : 'left'}),
@@ -66,12 +69,13 @@ function(params){
 
     that.addGroup = function(item){
         item = cm.merge({
+            'name' : '',
+            'position' : 'left',            // left | center | right | justify
+            'hidden' : false,
             'container' : cm.node('ul', {'class' : 'group'}),
             'node' : null,
             'adaptive' : true,
             'flex' : false,
-            'name' : '',
-            'position' : 'left',            // left | center | right | justify
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -80,6 +84,7 @@ function(params){
             }
             item['adaptive'] && cm.addClass(item['container'], 'is-adaptive');
             item['flex'] && cm.addClass(item['container'], 'is-flex');
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Position
             if(/left|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
@@ -92,16 +97,12 @@ function(params){
         return that;
     };
 
-    that.getGroup = function(name){
-        return that.groups[name];
-    };
-
     that.removeGroup = function(name){
         var item;
         if(cm.isObject(arguments[0])){
             item = name;
         }else{
-            item = that.groups[name];
+            item = that.getGroup(name);
         }
         if(item){
             cm.remove(item['container']);
@@ -111,20 +112,60 @@ function(params){
         return that;
     };
 
+    that.getGroup = function(name){
+        return that.groups[name];
+    };
+
+    that.showGroup = function(name){
+        var item = that.getGroup(name);
+        if(item){
+            item['hidden'] = false;
+            cm.removeClass(item['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.hideGroup = function(name){
+        var item = that.getGroup(name);
+        if(item){
+            item['hidden'] = true;
+            cm.addClass(item['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.isGroupEmpty = function(name){
+        var item = that.getGroup(name);
+        if(item){
+            return cm.getLength(item.items) === 0;
+        }
+        return true;
+    };
+
+    that.toggleGroupVisibility = function(name){
+        if(that.isGroupEmpty(name)){
+            that.hideGroup(name);
+        }else{
+            that.showGroup(name);
+        }
+        return that;
+    };
+
     that.addField = function(item){
         var group;
         item = cm.merge({
+            'name' : '',
+            'hidden' : false,
             'container' : cm.node('li'),
             'node' : null,
-            'name' : '',
             'size' : null,
-            'hidden' : false,
             'group' : null,
             'constructor' : false,
             'constructorParams' : {}
         }, item);
+        group = that.groups[item['group']];
         // Render
-        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+        if(group && !group.items[item['name']]){
             // Styles
             item['size'] && cm.addClass(item['container'], item['size']);
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
@@ -144,6 +185,8 @@ function(params){
             }
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;
+            that.items = cm.arrayAdd(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
         return that;
@@ -155,6 +198,7 @@ function(params){
             item['hidden'] = false;
             cm.removeClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.hideField = function(name, groupName){
@@ -163,6 +207,7 @@ function(params){
             item['hidden'] = true;
             cm.addClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.addButton = function(item){
@@ -170,11 +215,12 @@ function(params){
         item = cm.merge({
             'container' : cm.node('li'),
             'node' : null,
-            'type' : 'primary',                                 // primary, secondary, success, danger, warning
+            'type' : 'primary',             // primary, secondary, success, danger, warning
             'name' : '',
             'label' : '',
             'title' : '',
             'group' : '',
+            'access' : true,
             'disabled' : false,
             'hidden' : false,
             'className' : '',
@@ -184,12 +230,13 @@ function(params){
             'constructorParams' : {},
             'callback' : function(){}
         }, item);
+        group = that.groups[item['group']];
         // Validate
         if(cm.isEmpty(item['name'])){
             item['name'] = item['label'];
         }
         // Render
-        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+        if(item['access'] && group && !group.items[item['name']]){
             // Structure
             item['node'] = cm.node('a', item['attr']);
             // Styles
@@ -219,6 +266,8 @@ function(params){
             cm.appendChild(item['node'], item['container']);
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;
+            that.items = cm.arrayAdd(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
         return that;
@@ -230,6 +279,7 @@ function(params){
             item['disabled'] = false;
             cm.removeClass(item['node'], 'button-disabled');
         }
+        return that;
     };
 
     that.disableButton = function(name, groupName){
@@ -238,6 +288,7 @@ function(params){
             item['disabled'] = true;
             cm.addClass(item['node'], 'button-disabled');
         }
+        return that;
     };
 
     that.showButton = function(name, groupName){
@@ -246,6 +297,7 @@ function(params){
             item['hidden'] = false;
             cm.removeClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.hideButton = function(name, groupName){
@@ -254,6 +306,7 @@ function(params){
             item['hidden'] = true;
             cm.addClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.addLabel = function(item){
@@ -267,8 +320,9 @@ function(params){
             'hidden' : false,
             'group' : null
         }, item);
+        group = that.groups[item['group']];
         // Render
-        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+        if(group && !group.items[item['name']]){
             // Structure
             item['node'] = cm.node('div', {'innerHTML' : item['label']});
             // Styles
@@ -280,32 +334,69 @@ function(params){
             }
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;
+            that.items = cm.arrayAdd(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
         return that;
     };
 
     that.getField = that.getButton = that.getLabel = function(name, groupName){
-        var item, group;
-        if((group = that.groups[groupName]) && (item = group.items[name])){
-            return item;
+        var group = that.groups[groupName],
+            item;
+        if(group){
+            item = group.items[name];
         }
-        return null;
+        return item;
     };
 
     that.removeField = that.removeButton = that.removeLabel = function(name, groupName){
         var item, group;
         if(cm.isObject(arguments[0])){
-            item = name;
+            item = arguments[0];
             group = that.groups[item['group']];
-        }else if(group = that.groups[groupName]){
-            item = group.items[name];
+        }else{
+            group = that.groups[groupName];
+            if(group){
+                item = group.items[name];
+            }
         }
         if(item){
             cm.remove(item['container']);
             delete group.items[item['name']];
+            that.items = cm.arrayRemove(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.isEmpty = function(){
+        return that.items.length === 0;
+    };
+
+    that.hide = function(){
+        if(!that.isHidden){
+            that.isHidden = true;
+            cm.addClass(that.nodes['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.show = function(){
+        if(that.isHidden){
+            that.isHidden = false;
+            cm.removeClass(that.nodes['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.toggleVisibility = function(){
+        if(that.isEmpty()){
+            that.hide();
+        }else{
+            that.show();
+        }
         return that;
     };
 

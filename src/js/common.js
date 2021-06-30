@@ -23,7 +23,9 @@
 
     -------
 
-    Custom Events:
+    Custom Events / Hooks:
+        ajax.beforePrepare
+        ajax.afterPrepare
         scrollSizeChange
         pageSizeChange
 
@@ -53,6 +55,7 @@ var cm = {
             'animDurationShort' : 150,
             'animDurationLong' : 500,
             'loadDelay' : 500,
+            'lazyDelay' : 1000,
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
@@ -428,11 +431,8 @@ cm.getLength = function(o){
         return o.length;
     }
     // Object
-    var i = 0;
-    cm.forEach(o, function(){
-        i++;
-    });
-    return i;
+    var keys = Object.keys(o);
+    return keys.length;
 };
 
 cm.getCount = function(o){
@@ -472,6 +472,12 @@ cm.arrayAdd = function(a, item){
         a.push(item);
     }
     return a;
+};
+
+cm.arrayFilter = function(a, items){
+    return a.filter(function(item){
+        return !items.includes(item);
+    });
 };
 
 cm.arraySort = function(a, key, dir, clone){
@@ -546,7 +552,7 @@ cm.objectReplace = function(o, map, replaceKeys){
             newKey = key;
         }
         if(cm.isObject(value)){
-            newO[newKey] = cm.objectReplace(value, map);
+            newO[newKey] = cm.objectReplace(value, map, replaceKeys);
         }else if(cm.isString(value)){
             newO[newKey] = cm.strReplace(value, map);
         }else{
@@ -565,9 +571,6 @@ cm.getDiffCompare = function(item1, item2){
 cm.isEmpty = function(value){
     if(cm.isUndefined(value)){
         return true;
-    }
-    if(cm.isBoolean(value)){
-        return value === false;
     }
     if(cm.isString(value) || cm.isArray(value)){
         return value.length === 0;
@@ -643,13 +646,25 @@ cm.fillDataMap = function(map, data){
     return items;
 };
 
-cm.fillVariables = function(value, data){
-    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
-        return cm.reducePath(p1, data)
-            || cm.reducePath('%' + p1 + '%', data)
-            || cm.reducePath('{' + p1 + '}', data)
-            || '';
+cm.objectFillVariables = function(o, map, replaceKeys){
+    var newO = cm.isArray(o) ? [] : {},
+        newKey;
+    replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
+    cm.forEach(o, function(value, key){
+        if(cm.isString(key)){
+            newKey = replaceKeys ? cm.fillVariables(key, map) : key;
+        }else{
+            newKey = key;
+        }
+        if(cm.isObject(value)){
+            newO[newKey] = cm.objectFillVariables(value, map, replaceKeys);
+        }else if(cm.isString(value)){
+            newO[newKey] = cm.fillVariables(value, map);
+        }else{
+            newO[newKey] = value;
+        }
     });
+    return newO;
 };
 
 cm.sort = function(o, dir){
@@ -890,6 +905,52 @@ cm.customEvent = (function(){
             return node;
         }
     };
+})();
+
+cm.hook = (function(){
+    var _stack = {};
+
+    return {
+        'add' : function(type, handler){
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            if(cm.isFunction(handler)){
+                _stack[type].push(handler);
+            }else{
+                cm.errorLog({
+                    'name' : 'cm.hook',
+                    'message' : ['Handler of event', cm.strWrap(type, '"'), 'must be a function.'].join(' ')
+                });
+            }
+        },
+        'remove' : function(type, handler){
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            if(cm.isFunction(handler)){
+                _stack[type] = _stack[type].filter(function(item){
+                    return item !== handler;
+                });
+            }else{
+                cm.errorLog({
+                    'name' : 'cm.hook',
+                    'message' : ['Handler of event', cm.strWrap(type, '"'), 'must be a function.'].join(' ')
+                });
+            }
+        },
+        'trigger' : function(type, params){
+            var that = this,
+                data = cm.clone(arguments);
+            // Remove event name parameter from data
+            data.shift();
+            if(_stack[type]){
+                cm.forEach(_stack[type], function(handler){
+                    handler.apply(that, data);
+                });
+            }
+        }
+    }
 })();
 
 cm.onLoad = function(handler, isMessage){
@@ -1815,7 +1876,14 @@ cm.setSelect = function(o, value){
     }
     var options = o.getElementsByTagName('option');
     cm.forEach(options, function(node){
-        node.selected = cm.isArray(value) ? cm.inArray(node.value, value) : node.value == value;
+        if(cm.isArray(value)){
+            node.selected = cm.inArray(value, node.value);
+        }else{
+            if(cm.isBoolean(value)){
+                value = value.toString();
+            }
+            node.selected = node.value == value;
+        }
     });
     return o;
 };
@@ -2014,6 +2082,21 @@ cm.strReplace = function(str, map){
         });
     }
     return str;
+};
+
+cm.fillVariables = function(value, data){
+    var tests;
+    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+        tests = [
+            cm.reducePath(p1, data),
+            cm.reducePath('%' + p1 + '%', data),
+            cm.reducePath('{' + p1 + '}', data),
+            ''
+        ];
+        return tests.find(function(item){
+            return !cm.isUndefined(item);
+        });
+    });
 };
 
 cm.reduceText = function(str, length, points){
@@ -3238,6 +3321,14 @@ cm.URLToCSSURL = function(url){
     return !cm.isEmpty(url) ? 'url("' + url + '")' : 'none';
 };
 
+cm.setCSSVariable = function(key, value, node){
+    node = !cm.isUndefined(node) ? node : document.documentElement;
+    if(cm.isNode(node)){
+        node.style.setProperty(key, value);
+    }
+    return node;
+};
+
 /* ******* VALIDATORS ******* */
 
 cm.keyCodeTable = {
@@ -3610,6 +3701,7 @@ cm.sessionStorageSet = function(key, value){
         try{
             window.sessionStorage.setItem(key, value);
         }catch(e){
+            cm.storageSet.apply(this, arguments);
         }
     }
 };
@@ -3617,13 +3709,16 @@ cm.sessionStorageSet = function(key, value){
 cm.sessionStorageGet = function(key){
     if(cm.isSessionStorage){
         return window.sessionStorage.getItem(key);
+    }else{
+        return cm.storageGet.apply(this, arguments);
     }
-    return null;
 };
 
 cm.sessionStorageRemove = function(key){
     if(cm.isSessionStorage){
         window.sessionStorage.removeItem(key);
+    }else{
+        cm.storageRemove.apply(this, arguments);
     }
 };
 
@@ -3671,10 +3766,13 @@ cm.ajax = function(o){
             'type' : 'json',                                         // text | document | json | jsonp | blob
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
             'paramsType' : 'uri',                                    // uri | json | form-data
-            'params' : '',
+            'uriConfig' : {},                                        // parameters for cm.obj2URI
+            'uriParams' : {},
+            'data' : {},
+            'params' : '',                                           // TODO: Deprecated, use uriParams and data
             'url' : '',
-            'modifier' : '',
-            'modifierParams' : {},
+            'variables' : {},
+            'variablesMap' : {},
             'formData'  : false,                                     // TODO: Deprecated, use paramsType: 'form-data'
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
@@ -3688,6 +3786,8 @@ cm.ajax = function(o){
             'onSuccess' : function(){},
             'onError' : function(){},
             'onAbort' : function(){},
+            'onResolve' : function(){},
+            'onReject': function(){},
             'handler' : false
         }, o),
         successStatuses = [200, 201, 202, 204],
@@ -3713,40 +3813,57 @@ cm.ajax = function(o){
     };
 
     var validate = function(){
+        cm.hook.trigger('ajax.beforePrepare', config);
         config['httpRequestObject'] = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         config['method'] = config['method'].toUpperCase();
-        // Convert params object to URI string
-        if(config['params'] instanceof FormData) {
+        if(config['formData'] === true){
+            config['paramsType'] = 'form-data';
+        }
+        // Process variables
+        if(!cm.isEmpty(config['variablesMap'])){
+            config['_originVariables'] = config['variables'];
+            config['variables'] = cm.fillDataMap(config['variablesMap'], config['variables']);
+        }
+        // Process params object
+        if(config['data'] instanceof FormData || config['params'] instanceof FormData) {
             delete config['headers']['Content-Type'];
-        }else if(config['formData']){
-            config['params'] = cm.obj2FormData(config['params']);
-            delete config['headers']['Content-Type'];
-        }else if(cm.isObject(config['params'])){
-            config['params'] = cm.objectReplace(config['params'], vars);
+        }else{
+            if(!cm.isEmpty(config['data'])){
+                config['data'] = processParams(config['data']);
+            }else{
+                config['params'] = processParams(config['params']);
+            }
+        }
+        if(cm.isObject(config['uriParams'])){
+            config['uriParams'] = cm.obj2URI(config['uriParams'], config['uriConfig']);
+        }
+        // Process request route
+        config['url'] = cm.fillVariables(config['url'], config['variables']);
+        config['url'] = cm.strReplace(config['url'], vars);
+        if(!cm.isEmpty(config['uriParams'])){
+            config['url'] = [config['url'], config['uriParams']].join('?');
+        }else if(!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
+            config['url'] = [config['url'], config['params']].join('?');
+        }
+        cm.hook.trigger('ajax.afterPrepare', config);
+    };
+
+    var processParams = function(data){
+        if(cm.isObject(data)){
+            data = cm.objectFillVariables(data, config['variables']);
+            data = cm.objectReplace(data, vars);
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
-                config['params'] = cm.stringifyJSON(config['params']);
+                data = cm.stringifyJSON(data);
             }else if(config['paramsType'] === 'form-data'){
-                config['params'] = cm.obj2FormData(config['params']);
+                data = cm.obj2FormData(data);
                 delete config['headers']['Content-Type'];
             }else{
-                config['params'] = cm.obj2URI(config['params']);
+                data = cm.obj2URI(data, config['uriConfig']);
             }
         }
-        // Build request link
-        if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
-            config['modifier'] = cm.fillVariables(config['modifier'], config['modifierParams']);
-            config['url'] += config['modifier'];
-        }else{
-            delete config['modifier'];
-        }
-        config['url'] = cm.strReplace(config['url'], vars);
-        if(!/POST|PUT|PATCH/.test(config['method'])){
-            if(!cm.isEmpty(config['params'])){
-                config['url'] = [config['url'], config['params']].join('?');
-            }
-        }
+        return data;
     };
 
     var send = function(){
@@ -3766,11 +3883,21 @@ cm.ajax = function(o){
         // Send
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
-            navigator.sendBeacon(config['url'], config['params']);
-        }else if(/POST|PUT|PATCH/.test(config['method'])){
-            config['httpRequestObject'].send(config['params']);
+            if(!cm.isEmpty(config['data'])){
+                navigator.sendBeacon(config['url'], config['data']);
+            }else if(!cm.isEmpty(config['params'])){
+                navigator.sendBeacon(config['url'], config['params']);
+            }else{
+                navigator.sendBeacon(config['url']);
+            }
         }else{
-            config['httpRequestObject'].send(null);
+            if(!cm.isEmpty(config['data'])){
+                config['httpRequestObject'].send(config['data']);
+            }else if(!cm.isEmpty(config['params']) && cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
+                config['httpRequestObject'].send(config['params']);
+            }else{
+                config['httpRequestObject'].send(null);
+            }
         }
     };
 
@@ -3779,8 +3906,10 @@ cm.ajax = function(o){
             response = config['httpRequestObject'].response;
             if(cm.inArray(successStatuses, config['httpRequestObject'].status)){
                 config['onSuccess'](response, e);
+                config['onResolve'](response, e);
             }else{
                 config['onError'](response, e);
+                config['onReject'](response, e);
             }
             deprecatedHandler(response);
             config['onEnd'](response, e);
@@ -3789,12 +3918,14 @@ cm.ajax = function(o){
 
     var successHandler = function(){
         config['onSuccess'].apply(config['onSuccess'], arguments);
+        config['onResolve'].apply(config['onResolve'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
     };
 
     var errorHandler = function(){
         config['onError'].apply(config['onError'], arguments);
+        config['onReject'].apply(config['onReject'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
     };
@@ -3840,7 +3971,7 @@ cm.ajax = function(o){
         // Embed
         config['onStart']();
         scriptNode.setAttribute('src', config['url']);
-        document.getElementsByTagName('head')[0].appendChild(scriptNode);
+        cm.getDocumentHead().appendChild(scriptNode);
     };
 
     var removeJSONP = function(){
@@ -3860,6 +3991,17 @@ cm.ajax = function(o){
 
     init();
     return returnObject;
+};
+
+cm.ajaxPromise = function(o){
+    return new Promise(function(resolve, reject){
+        cm.ajax(
+            cm.merge(o, {
+                'onResolve' : resolve,
+                'onReject' : reject
+            })
+        );
+    });
 };
 
 cm.parseJSON = function(str){
@@ -3886,37 +4028,96 @@ cm.stringifyJSON = function(o){
     }
 };
 
-cm.obj2URI = function(obj, prefix){
-    var str = [],
-        keyPrefix;
-    cm.forEach(obj, function(item, key){
-        if(!cm.isUndefined(item)){
-            keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
-            if(typeof item === 'object'){
-                str.push(cm.obj2URI(item, keyPrefix));
-            }else{
-                str.push([keyPrefix, encodeURIComponent(item)].join('='));
-            }
-        }
-    });
-    return !cm.isEmpty(str) ? str.join('&') : null;
-};
-
 cm.obj2Filter = function(obj, prefix, separator, skipEmpty){
     var data = {},
         keyPrefix;
     separator = !cm.isUndefined(separator) ? separator : '=';
+    skipEmpty = !cm.isUndefined(skipEmpty) ? skipEmpty : false;
     cm.forEach(obj, function(item, key){
         if(!skipEmpty || !cm.isEmpty(item)){
             keyPrefix = !cm.isEmpty(prefix) ? prefix + separator + key : key;
             if(cm.isObject(item)){
                 data = cm.merge(data, cm.obj2Filter(item, keyPrefix, separator, skipEmpty))
+            }else if(cm.isArray(item)){
+                data[keyPrefix] = item.join(',');
             }else{
                 data[keyPrefix] = item;
             }
         }
     });
     return data;
+};
+
+cm.obj2URI = function(data, params){
+    var str = [],
+        keyPrefix,
+        keyValue,
+        keyParams;
+    // TODO: Legacy: arguments[1] = prefix
+    if(cm.isString(arguments[1])){
+        params = {
+            'multipleValues' : 'brackets',
+            'prefix' : arguments[1]
+        };
+    }
+    // Validate
+    params = cm.merge({
+        'multipleValues' : 'brackets',          // brackets | keys | join
+        'multipleValuesConjunction' : ',',
+        'prefix' : null,
+        'itemConjunction' : '&',
+        'valueConjunction' : '=',
+        'skipEmpty' : false
+    }, params);
+
+    if(cm.isArray(data) && params.multipleValues === 'join'){
+        cm.forEach(data, function(item){
+            if(!cm.isUndefined(item) && (!params.skipEmpty || !cm.isEmpty(item))){
+                str.push(encodeURIComponent(item));
+            }
+        });
+        if(!cm.isEmpty(str)){
+            str = str.join(params.itemConjunction);
+            if(!cm.isEmpty(params.prefix)){
+                str = [params.prefix, str].join(params.valueConjunction);
+            }
+        }
+        return !cm.isEmpty(str) ? str : null;
+    }
+
+    cm.forEach(data, function(item, key){
+        if(!cm.isUndefined(item) && (!params.skipEmpty || !cm.isEmpty(item))){
+            keyValue = item;
+            // Handle prefix
+            if(!cm.isEmpty(params.prefix)){
+                switch(params.multipleValues){
+                    case 'brackets':
+                        keyPrefix = params.prefix + '[' + key + ']';
+                        break;
+                    case 'keys':
+                    case 'join':
+                        keyPrefix = [params.prefix, key].join(params.valueConjunction);
+                        break;
+                    case 'same':
+                        keyPrefix = params.prefix;
+                        break;
+                }
+            }else{
+                keyPrefix = key;
+            }
+            // Handle items
+            if(cm.isArray(item) && params.multipleValues === 'keys'){
+                keyValue = cm.obj2URI(keyValue, cm.merge(params, {'multipleValues' : 'same', 'prefix' : keyPrefix}));
+            }else if(typeof item === 'object'){
+                keyValue = cm.obj2URI(keyValue, cm.merge(params, {'prefix' : keyPrefix}));
+            }else{
+                keyValue = [keyPrefix, encodeURIComponent(keyValue)].join(params.valueConjunction);
+            }
+            str.push(keyValue);
+        }
+    });
+
+    return !cm.isEmpty(str) ? str.join(params.itemConjunction) : null;
 };
 
 cm.obj2FormData = function(o){
@@ -4136,7 +4337,16 @@ cm.define = (function(){
 cm.getConstructor = function(className, callback){
     var classConstructor;
     callback = cm.isFunction(callback) ? callback : function(){};
-    if(!className || className === '*'){
+    if(cm.isUndefined(className)){
+        if(cm._debug){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : 'cm.getConstructor',
+                'message' : ['Parameter "className" does not specified.'].join(' ')
+            });
+        }
+        return false;
+    }else if(className === '*'){
         cm.forEach(cm._defineStack, function(classConstructor){
             callback(classConstructor, className, classConstructor.prototype, classConstructor.prototype._inherit);
         });
@@ -4157,6 +4367,17 @@ cm.getConstructor = function(className, callback){
             return classConstructor;
         }
     }
+};
+
+cm.isInstance = function(childClass, parentClass){
+    var isInstance = false;
+    if(cm.isString(parentClass)){
+        parentClass = cm.getConstructor(parentClass);
+    }
+    if(!cm.isEmpty(childClass) && !cm.isEmpty(parentClass)){
+        isInstance = childClass instanceof parentClass;
+    }
+    return isInstance;
 };
 
 cm.find = function(className, name, parentNode, callback, params){
@@ -4259,14 +4480,14 @@ cm.setParams = function(className, params){
 
 cm.setMessages = cm.setStrings = function(className, strings){
     cm.getConstructor(className, function(classConstructor, className, classProto){
-        classProto.setLangs(strings);
+        classProto.setMessages(strings);
     });
 };
 
 cm.getMessage = cm.getString = function(className, str){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
-        data = classProto.lang(str);
+        data = classProto.message(str);
     });
     return data;
 };
@@ -4274,7 +4495,7 @@ cm.getMessage = cm.getString = function(className, str){
 cm.getMessages = cm.getStrings = function(className, o){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
-        data = classProto.langObject(o);
+        data = classProto.messageObject(o);
     });
     return data;
 };

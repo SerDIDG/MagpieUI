@@ -7,6 +7,7 @@ cm.define('Com.Pagination', {
         'onError',
         'onPageRender',
         'onPageRenderEnd',
+        'onPageRenderError',
         'onPageSwitched',
         'onEnd',
         'onSetCount'
@@ -41,6 +42,7 @@ cm.define('Com.Pagination', {
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseErrorsKey': 'errors',
+        'responseMessageKey' : 'message',
         'responseHTML' : false,                                     // If true, html will append automatically
         'cache' : true,                                             // Cache response data
         'ajax' : {
@@ -265,26 +267,28 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return data;
     };
 
-    classProto.callbacks.response = function(that, config, response, errors){
+    classProto.callbacks.response = function(that, config, response, errors, message){
         // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        that.callbacks.render(that, response, errors);
+        that.callbacks.render(that, response, errors, message);
     };
 
     classProto.callbacks.error = function(that, config, response){
-        var errors;
+        var errors, message;
         if(!cm.isEmpty(response)){
             errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            message = cm.reducePath(that.params.responseMessageKey, response);
         }
         that.triggerEvent('onError', {
             'response' : response,
-            'errors' : errors
+            'errors' : errors,
+            'message' : message
         });
-        that.callbacks.response(that, config, null, errors);
+        that.callbacks.response(that, config, null, errors, message);
     };
 
     classProto.callbacks.abort = function(that, config){
@@ -329,7 +333,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    classProto.callbacks.render = function(that, data, errors){
+    classProto.callbacks.render = function(that, data, errors, message){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -338,11 +342,15 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
             'errors' : errors,
+            'message' : message,
             'total' : that.getCount(),
             'isVisible' : true,
             'isRendered' : true,
             'isError' : !data
         };
+        if(cm.isEmpty(page['message'])){
+            page['message'] = page['errors'];
+        }
         // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
@@ -376,6 +384,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
                 cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
             );
         }
+        that.triggerEvent('onPageRenderError', page);
     };
 
     classProto.callbacks.switchPage = function(that, page){

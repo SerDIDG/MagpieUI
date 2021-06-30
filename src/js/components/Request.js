@@ -28,6 +28,7 @@ cm.define('Com.Request', {
         'renderContentOnSuccess' : true,
         'className' : '',
         'autoSend' : false,
+        'promise' : false,
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
@@ -39,11 +40,12 @@ cm.define('Com.Request', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
+            'variables' : {},
+            'variablesMap' : {},
             'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
-            'params' : ''                              // Params object. Variables: %baseUrl%, %callback%.
+            'params' : ''                               // Params object. Variables: %baseUrl%, %callback%.
         },
-        'variables' : {},
-        'showOverlay' : true,
+        'showLoader' : true,
         'animateDuration' : 'cm._config.animDuration',
         'overlayContainer' : 'document.body',
         'overlayConstructor' : 'Com.Overlay',
@@ -67,10 +69,8 @@ function(params){
     that.animations = {};
     that.components = {};
     that.requestData = {};
-    that.responceData = null;
-    that.responceDataFiltered = null;
-    that.responceDataHTML = null;
-    that.responceDataStatus = null;
+    that.responseData = {};
+    that.previousResponseData = {};
     that.isProcess = false;
     that.isError = false;
     that.isRendering = false;
@@ -82,23 +82,32 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.destructHandler = that.destruct.bind(that);
         that.requestHandler = that.request.bind(that);
+        that.sendHandler = that.send.bind(that);
         that.setParams(params);
-        that.convertEvents(that.params['events']);
-        //that.validateParams();
-        that.addToStack(that.params['node']);
+        that.convertEvents(that.params.events);
+        that.validateParams();
+        that.addToStack(that.params.node);
         that.triggerEvent('onRenderStart');
         that.render();
-        that.addToStack(that.nodes['container']);
+        that.addToStack(that.nodes.container);
         that.triggerEvent('onRender');
-        that.params['autoSend'] && that.send();
+        that.params.autoSend && that.send();
         return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Legacy parameter name
+        if(!cm.isUndefined(that.params.showOverlay)){
+            that.params.showLoader = that.params.showOverlay;
+        }
     };
 
     classProto.destruct = function(){
         var that = this;
         if(!that.isDestructed){
             that.isDestructed = true;
-            that.components['overlay'] && that.components['overlay'].destruct();
+            that.components.overlay && that.components.overlay.destruct();
             that.removeFromStack();
         }
         return that;
@@ -110,47 +119,59 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             that.abort();
         }
         if(!that.isProcess && !that.isRendering){
+            if(that.params.promise){
+                return new Promise(that.requestHandler);
+            }
             that.request();
         }
         return that;
     };
 
+    classProto.get = function(){
+        var that = this;
+        return that.responseData;
+    };
+
     classProto.render = function(){
         var that = this;
+        // Keys
+        if(cm.isEmpty(that.params.responseHTMLKey)){
+            that.params.responseHTMLKey = that.params.responseKey;
+        }
         // Structure
         that.renderView();
-        if(that.params['wrapContent'] && cm.isNode(that.params['container'])){
-            cm.appendNodes(that.params['container'].childNodes, that.nodes['inner']);
+        if(that.params.wrapContent && cm.isNode(that.params.container)){
+            cm.appendNodes(that.params.container.childNodes, that.nodes.inner);
         }
         // Attributes
         that.setAttributes();
         // Overlay
-        if(that.params['responseHTML']){
-            that.params['overlayParams']['container'] =
-                that.params['overlayParams']['container']
-                || that.params['overlayContainer']
-                || that.nodes['container']
+        if(that.params.responseHTML){
+            that.params.overlayParams.container =
+                that.params.overlayParams.container
+                || that.params.overlayContainer
+                || that.nodes.container
                 || document.body;
         }else{
-            that.params['overlayParams']['container'] =
-                that.params['overlayParams']['container']
-                || that.params['overlayContainer']
+            that.params.overlayParams.container =
+                that.params.overlayParams.container
+                || that.params.overlayContainer
                 || document.body;
         }
-        if(that.params['showOverlay']){
-            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
-                that.components['overlay'] = new classConstructor(that.params['overlayParams']);
+        if(that.params.showOverlay){
+            cm.getConstructor(that.params.overlayConstructor, function(classConstructor){
+                that.components.overlay = new classConstructor(that.params.overlayParams);
             });
         }
         // Append
-        that.embedStructure(that.nodes['container']);
+        that.embedStructure(that.nodes.container);
         return that;
     };
 
     classProto.renderView = function(){
         var that = this;
-        that.nodes['container'] = cm.node('div', {'class' : 'com__request'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'})
+        that.nodes.container = cm.node('div', {'class' : 'com__request'},
+            that.nodes.inner = cm.node('div', {'class' : 'inner'})
         );
         return that;
     };
@@ -158,9 +179,9 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.setAttributes = function(){
         var that = this;
         // CSS Class
-        cm.addClass(that.nodes['container'], that.params['className']);
+        cm.addClass(that.nodes.container, that.params.className);
         // Animations
-        that.animations['container'] = new cm.Animation(that.nodes['container']);
+        that.animations.container = new cm.Animation(that.nodes.container);
         return that;
     };
 
@@ -169,17 +190,17 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
-                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                that.params.ajax = cm.merge(that._raw.params.ajax, o);
                 break;
             case 'current':
-                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                that.params.ajax = cm.merge(that.params.ajax, o);
                 break;
             case 'update':
-                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                that.params.ajax = cm.merge(that._update.params.ajax, o);
                 break;
         }
         if(update){
-            that._update.params['ajax'] = cm.clone(that.params['ajax']);
+            that._update.params.ajax = cm.clone(that.params.ajax);
         }
         return that;
     };
@@ -189,38 +210,38 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
-                that.params['variables'] = cm.merge(that._raw.params['variables'], o);
+                that.params.ajax.variables = cm.merge(that._raw.params.ajax.variables, o);
                 break;
             case 'current':
-                that.params['variables'] = cm.merge(that.params['variables'], o);
+                that.params.ajax.variables = cm.merge(that.params.ajax.variables, o);
                 break;
             case 'update':
-                that.params['variables'] = cm.merge(that._update.params['variables'], o);
+                that.params.ajax.variables = cm.merge(that._update.params.ajax.variables, o);
                 break;
         }
         if(update){
-            that._update.params['variables'] = cm.clone(that.params['variables']);
+            that._update.params.ajax.variables = cm.clone(that.params.ajax.variables);
         }
         return that;
     };
 
     /* *** REQUEST *** */
 
-    classProto.request = function(){
+    classProto.request = function(resolve, reject){
         var that = this;
         that.prepare();
-        that.components['ajax'] = cm.ajax(
+        that.components.ajax = cm.ajax(
             cm.merge(that.requestData, {
                 'onStart' : function(){
                     that.start();
                 },
-                'onSuccess' : function(data){
-                    that.responceData = data;
-                    that.response();
+                'onSuccess' : function(data, event){
+                    event = data instanceof ProgressEvent ? data : event;
+                    that.response('success', data, event, resolve);
                 },
-                'onError' : function(data){
-                    that.responceData = data;
-                    that.error();
+                'onError' : function(data, event){
+                    event = data instanceof ProgressEvent ? data : event;
+                    that.response('error', data, event, reject);
                 },
                 'onAbort' : function(){
                     that.aborted();
@@ -236,20 +257,22 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.prepare = function(){
         var that = this;
         that.isError = false;
-        that.responceData = null;
-        that.responceDataFiltered = null;
-        that.responceDataHTML = null;
-        that.responceDataStatus = null;
-        that.requestData = cm.clone(that.params['ajax']);
-        that.requestData['url'] = cm.strReplace(that.requestData['url'], that.params['variables']);
-        that.requestData['params'] = cm.objectReplace(that.requestData['params'], that.params['variables']);
+        // Request data
+        that.requestData = cm.clone(that.params.ajax);
+        that.requestData.url = cm.strReplace(that.requestData.url, that.params.variables);
+        that.requestData.params = cm.objectReplace(that.requestData.params, that.params.variables);
+        that.previousResponseData = cm.clone(that.responseData);
+        // Response data
+        that.responseData = {
+            'request' : that.requestData
+        };
         return that;
     };
 
     classProto.abort = function(){
         var that = this;
-        if(that.components['ajax'] && that.components['ajax'].abort){
-            that.components['ajax'].abort();
+        if(that.components.ajax && that.components.ajax.abort){
+            that.components.ajax.abort();
         }
         return that;
     };
@@ -258,8 +281,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isProcess = true;
         // Show Overlay
-        if(that.params['showOverlay']){
-            that.components['overlay'] && that.components['overlay'].open();
+        if(that.params.showLoader){
+            that.components.overlay && that.components.overlay.open();
         }
         that.triggerEvent('onStart');
         return that;
@@ -269,37 +292,44 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isProcess = false;
         // Hide Overlay
-        if(that.params['showOverlay']){
-            that.components['overlay'] && that.components['overlay'].close();
+        if(that.params.showLoader){
+            that.components.overlay && that.components.overlay.close();
         }
         that.triggerEvent('onEnd');
         return that;
     };
 
-    classProto.filter = function(){
-        var that = this,
-            errorsItem = cm.reducePath(that.params['responseErrorsKey'], that.responceData),
-            dataFiltered = cm.reducePath(that.params['responseKey'], that.responceData),
-            dataStatus = cm.reducePath(that.params['responseStatusKey'], that.responceData),
-            dataHTML;
-        if(cm.isEmpty(errorsItem)){
-            if(cm.isEmpty(that.params['responseHTMLKey'])){
-                dataHTML = cm.reducePath(that.params['responseKey'], that.responceData);
-            }else{
-                dataHTML = cm.reducePath(that.params['responseHTMLKey'], that.responceData);
-            }
-            that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
-            that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
-            that.responceDataStatus = !cm.isEmpty(dataStatus) ? dataStatus : false;
+    classProto.filter = function(){var that = this;
+        that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
+        that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
+        that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
+        that.responseData.status = cm.reducePath(that.params.responseStatusKey, that.responseData.response);
+        that.responseData.data = cm.reducePath(that.params.responseKey, that.responseData.response);
+        that.responseData.html = cm.reducePath(that.params.responseHTMLKey, that.responseData.response);
+        // Validate
+        if(cm.isEmpty(that.responseData.status)){
+            that.responseData.status = false;
         }
+        if(cm.isEmpty(that.responseData.data)){
+            that.responseData.data = [];
+        }
+        that.responseData.filtered = that.responseData.data;
     };
 
-    classProto.response = function(){
+    classProto.response = function(status, data, event, callback){
         var that = this;
-        if(!cm.isEmpty(that.responceData)){
+        if(event instanceof ProgressEvent){
+            that.responseData.target = event.target;
+        }
+        that.responseData.response = data;
+        that.responseData.callback = callback;
+        if(!cm.isEmpty(that.responseData.response)){
             that.filter();
         }
-        if(!cm.isEmpty(that.responceDataFiltered) || that.responceDataStatus){
+        if(
+            status === 'success'
+            && (!cm.isEmpty(that.responseData.data) || that.responseData.status)
+        ){
             that.success();
         }else{
             that.error();
@@ -308,43 +338,30 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     };
 
     classProto.error = function(){
-        var that = this,
-            errors,
-            message,
-            code;
+        var that = this;
         that.isError = true;
-        if(!cm.isEmpty(that.responceData)){
-            errors = cm.reducePath(that.params['responseErrorsKey'], that.responceData);
-            message = cm.reducePath(that.params['responseMessageKey'], that.responceData);
-            code = cm.reducePath(that.params['responseCodeKey'], that.responceData);
-        }
+        that.responseData.isError = true;
         that.renderError();
-        that.triggerEvent('onError', {
-            'response' : that.responceData,
-            'status' : that.responceDataStatus,
-            'data' : that.responceDataFiltered,
-            'filtered' : that.responceDataFiltered,
-            'html' : that.responceDataHTML,
-            'errors' : errors,
-            'message' : message,
-            'code' : code
-        });
+        that.triggerEvent('onError', that.responseData);
+        // Promise callback
+        if(cm.isFunction(that.responseData.callback)){
+            that.responseData.callback(that.responseData);
+        }
         return that;
     };
 
     classProto.success = function(){
         var that = this;
         that.isError = false;
-        if(!that.responceDataStatus || (that.responceDataStatus && that.params['renderContentOnSuccess'])){
+        that.responseData.isError = false;
+        if(!that.responseData.status || (that.responseData.status && that.params.renderContentOnSuccess)){
             that.renderResponse();
         }
-        that.triggerEvent('onSuccess', {
-            'response' : that.responceData,
-            'status' : that.responceDataStatus,
-            'data' : that.responceDataFiltered,
-            'filtered' : that.responceDataFiltered,
-            'html' : that.responceDataHTML
-        });
+        that.triggerEvent('onSuccess', that.responseData);
+        // Promise callback
+        if(cm.isFunction(that.responseData.callback)){
+            that.responseData.callback(that.responseData);
+        }
         return that;
     };
 
@@ -367,8 +384,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.renderResponse = function(){
         var that = this,
             nodes;
-        if(that.params['responseHTML']){
-            nodes = cm.strToHTML(that.responceDataHTML);
+        if(that.params.responseHTML){
+            nodes = cm.strToHTML(that.responseData.html);
             that.renderContent(nodes);
         }
         return that;
@@ -377,13 +394,13 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.renderContent = function(nodes){
         var that = this,
             temporary;
-        if(cm.isNode(that.params['responseContainer'])){
+        if(cm.isNode(that.params.responseContainer)){
             that.triggerEvent('onContentRenderStart', nodes);
-            cm.clearNode(that.params['responseContainer']);
-            cm.appendNodes(nodes, that.params['responseContainer']);
+            cm.clearNode(that.params.responseContainer);
+            cm.appendNodes(nodes, that.params.responseContainer);
             that.triggerEvent('onContentRender', nodes);
             that.triggerEvent('onContentRenderEnd', nodes);
-        }else if(cm.isNode(that.params['container'])){
+        }else if(cm.isNode(that.params.container)){
             temporary = that.renderTemporary(false);
             cm.appendNodes(nodes, temporary);
             that.appendResponse(temporary);
@@ -399,25 +416,25 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this,
             temporary,
             node;
-        if(that.params['responseHTML']){
+        if(that.params.responseHTML){
             node = cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'));
             // Append
-            if(cm.isNode(that.params['responseContainer'])){
+            if(cm.isNode(that.params.responseContainer)){
                 that.triggerEvent('onContentRenderStart', node);
-                if(that.params['swapContentOnError']){
-                    cm.clearNode(that.params['responseContainer']);
-                    cm.appendChild(node, that.params['responseContainer']);
+                if(that.params.swapContentOnError){
+                    cm.clearNode(that.params.responseContainer);
+                    cm.appendChild(node, that.params.responseContainer);
                 }else{
-                    cm.remove(that.nodes['error']);
-                    that.nodes['error'] = node;
-                    cm.insertFirst(that.nodes['error'], that.params['responseContainer']);
+                    cm.remove(that.nodes.error);
+                    that.nodes.error = node;
+                    cm.insertFirst(that.nodes.error, that.params.responseContainer);
                 }
                 that.triggerEvent('onContentRender', node);
                 that.triggerEvent('onContentRenderEnd', node);
-            }else if(cm.isNode(that.params['container'])){
+            }else if(cm.isNode(that.params.container)){
                 temporary = that.renderTemporary();
                 cm.appendChild(node, temporary);
-                if(that.params['swapContentOnError']){
+                if(that.params.swapContentOnError){
                     that.appendResponse(temporary);
                 }else{
                     that.appendError(temporary);
@@ -435,15 +452,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isRendering = true;
         that.triggerEvent('onContentRenderStart', temporary);
-        cm.remove(that.nodes['error']);
-        that.nodes['error'] = temporary;
-        cm.addClass(that.nodes['error'], 'is-show');
-        if(that.nodes['temporary']){
-            cm.insertFirst(that.nodes['error'], that.nodes['temporary']);
+        cm.remove(that.nodes.error);
+        that.nodes.error = temporary;
+        cm.addClass(that.nodes.error, 'is-show');
+        if(that.nodes.temporary){
+            cm.insertFirst(that.nodes.error, that.nodes.temporary);
         }else{
-            cm.insertFirst(that.nodes['error'], that.nodes['inner']);
+            cm.insertFirst(that.nodes.error, that.nodes.inner);
         }
-        cm.addClass(that.nodes['container'], 'is-show is-loaded', true);
+        cm.addClass(that.nodes.container, 'is-show is-loaded', true);
         that.isRendering = false;
         that.triggerEvent('onContentRender', temporary);
         that.triggerEvent('onContentRenderEnd', temporary);
@@ -456,38 +473,38 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.isRendering = true;
         that.triggerEvent('onContentRenderStart', temporary);
         // Wrap old content
-        if(!that.nodes['temporary']){
-            that.nodes['temporary'] = that.renderTemporary(false);
-            cm.appendNodes(that.nodes['inner'].childNodes, that.nodes['temporary']);
-            cm.appendChild(that.nodes['temporary'], that.nodes['inner']);
-            cm.customEvent.trigger(that.nodes['temporary'], 'destruct', {
+        if(!that.nodes.temporary){
+            that.nodes.temporary = that.renderTemporary(false);
+            cm.appendNodes(that.nodes.inner.childNodes, that.nodes.temporary);
+            cm.appendChild(that.nodes.temporary, that.nodes.inner);
+            cm.customEvent.trigger(that.nodes.temporary, 'destruct', {
                 'direction' : 'child',
                 'self' : false
             });
         }
-        cm.removeClass(that.nodes['temporary'], 'is-show', true);
+        cm.removeClass(that.nodes.temporary, 'is-show', true);
         // Append temporary
-        cm.appendChild(temporary, that.nodes['inner']);
+        cm.appendChild(temporary, that.nodes.inner);
         cm.addClass(temporary, 'is-show', true);
         // Show container
-        cm.removeClass(that.nodes['container'], 'is-loaded', true);
-        cm.addClass(that.nodes['container'], 'is-show', true);
-        that.triggerEvent('onContentRender', that.nodes['temporary']);
+        cm.removeClass(that.nodes.container, 'is-loaded', true);
+        cm.addClass(that.nodes.container, 'is-show', true);
+        that.triggerEvent('onContentRender', that.nodes.temporary);
         // Animate
         height = temporary.offsetHeight;
-        that.animations['container'].go({
+        that.animations.container.go({
             'style' : {'height' : [height, 'px'].join('')},
-            'duration' : that.params['animateDuration'],
+            'duration' : that.params.animateDuration,
             'anim' : 'smooth',
             'onStop' : function(){
                 // Remove old temporary
-                cm.remove(that.nodes['temporary']);
+                cm.remove(that.nodes.temporary);
                 // Apply new temporary
-                that.nodes['temporary'] = temporary;
-                that.nodes['container'].style.height = '';
-                cm.addClass(that.nodes['container'], 'is-loaded', true);
+                that.nodes.temporary = temporary;
+                that.nodes.container.style.height = '';
+                cm.addClass(that.nodes.container, 'is-loaded', true);
                 that.isRendering = false;
-                that.triggerEvent('onContentRenderEnd', that.nodes['temporary']);
+                that.triggerEvent('onContentRenderEnd', that.nodes.temporary);
             }
         });
         return that;

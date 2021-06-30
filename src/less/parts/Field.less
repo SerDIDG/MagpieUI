@@ -148,21 +148,6 @@
             }
         }
 
-        &.field-indent,
-        &.field-inner-indent {
-            .cm__box;
-            margin-bottom: @CmForm-FieldInnerIndent;
-        }
-
-        &.field-outer-indent {
-            .cm__box;
-            margin-bottom: @CmForm-FieldIndent;
-        }
-
-        &.is-no-indent {
-            margin: 0;
-        }
-
         &.is-first {
             > dt,
             > .field__title {
@@ -174,6 +159,21 @@
     &.is-form-box {
         .cm__box;
         margin-bottom: @CmForm-FieldIndent;
+    }
+
+    &.field-indent,
+    &.field-inner-indent {
+        .cm__box;
+        margin-bottom: @CmForm-FieldInnerIndent;
+    }
+
+    &.field-outer-indent {
+        .cm__box;
+        margin-bottom: @CmForm-FieldIndent;
+    }
+
+    &.is-no-indent {
+        margin: 0;
     }
 
     &.is-hidden {

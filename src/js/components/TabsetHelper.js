@@ -112,13 +112,11 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     classProto.onSetEvents = function(){
         var that = this;
         that.params['toggleOnHashChange'] && cm.addEvent(window, 'hashchange', that.hashChangeHandler);
-        return that;
     };
 
     classProto.onUnsetEvents = function(){
         var that = this;
         that.params['toggleOnHashChange'] && cm.removeEvent(window, 'hashchange', that.hashChangeHandler);
-        return that;
     };
 
     classProto.onConstructEnd = function(){

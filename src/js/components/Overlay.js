@@ -18,11 +18,11 @@ cm.define('Com.Overlay', {
         'name' : '',
         'container' : 'document.body',
         'appendMode' : 'appendChild',
-        'theme' : 'default',                // transparent | default | light | dark
+        'theme' : 'default',                // transparent | default | light | solid-light | dark
         'className' : '',
         'position' : 'fixed',
         'lazy' : false,
-        'delay' : 'cm._config.loadDelay',
+        'delay' : 'cm._config.lazyDelay',
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,

@@ -13,6 +13,10 @@ cm.define('Com.Select', {
         'Stack'
     ],
     'events' : [
+        'onValidateParams',
+        'onValidateParamsStart',
+        'onValidateParamsProcess',
+        'onValidateParamsEnd',
         'onRender',
         'onRenderStart',
         'onSelect',
@@ -89,7 +93,7 @@ function(params){
         // Set selected option
         if(that.params['multiple']){
             active = [];
-            if(that.params['value'] && cm.isArray(that.params['value'])){
+            if(!cm.isEmpty(that.params['value']) && cm.isArray(that.params['value'])){
                 cm.forEach(that.params['value'], function(item){
                     if(options[item]){
                         set(options[item], true);
@@ -97,7 +101,7 @@ function(params){
                 });
             }
         }else{
-            if(that.params['value'] && options[that.params['value']]){
+            if(!cm.isEmpty(that.params['value']) && options[that.params['value']]){
                 set(options[that.params['value']]);
             }else if(that.params['setInitialValue'] && optionsLength){
                 set(optionsList[0]);
@@ -115,11 +119,8 @@ function(params){
     };
 
     var validateParams = function(){
-        var value;
+        that.triggerEvent('onValidateParamsStart');
         if(cm.isNode(that.params['node'])){
-            value = cm.getSelectValue(that.params['node']);
-            that.params['value'] = !cm.isEmpty(that.params['selected']) ? that.params['selected'] : that.params['value'];
-            that.params['value'] = !cm.isEmpty(value) ? value : that.params['value'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['node'].multiple;
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
@@ -129,8 +130,27 @@ function(params){
             that.params['tabindex'] = that.params['node'].getAttribute('tabindex') || that.params['tabindex'];
             that.params['id'] = that.params['node'].id || that.params['id'];
         }
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
+        validateParamsValue();
         that.disabled = that.params['disabled'];
+        that.triggerEvent('onValidateParamsEnd');
+    };
+
+    var validateParamsValue = function(){
+        var dataValue,
+            value;
+        if(cm.isNode(that.params['node'])){
+            dataValue = that.params['node'].getAttribute('data-value');
+            // First try to take original value, than real time js value
+            value = cm.getSelectValue(that.params['node']);
+            // Parse JSON
+            if(!cm.isEmpty(dataValue)){
+                value = cm.parseJSON(dataValue);
+            }
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
     };
 
     var render = function(){
@@ -426,9 +446,11 @@ function(params){
         delete options[option['value']];
         // Set new active option, if current active is nominated for remove
         if(that.params['multiple']){
-            active = active.filter(function(item){
-                return value != item;
-            });
+            if(cm.isArray(active)){
+                active = active.filter(function(item){
+                    return value != item;
+                });
+            }
         }else{
             if(value === active){
                 if(optionsLength){

@@ -83,6 +83,9 @@ cm.init = function(){
             cm._scrollSize = cm.getScrollBarSize();
             if(size !== cm._scrollSize){
                 size = cm._scrollSize;
+                cm.hook.trigger('scrollSizeChange', {
+                    'scrollSize' : cm._scrollSize
+                });
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
                     'direction' : 'all',
                     'self' : true,
@@ -99,6 +102,9 @@ cm.init = function(){
             sizeNew = JSON.stringify(cm._pageSize);
             if(size !== sizeNew){
                 size = sizeNew;
+                cm.hook.trigger(window, 'pageSizeChange', {
+                    'pageSize' : cm._pageSize
+                });
                 cm.customEvent.trigger(window, 'pageSizeChange', {
                     'direction' : 'all',
                     'self' : true,

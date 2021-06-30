@@ -23,6 +23,9 @@ cm.define('Com.Gallery', {
         'showArrowTitles' : false,
         'autoplay' : true,
         'zoom' : true,
+        'types' : {
+            'image' : 'jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff'
+        },
         'icons' : {
             'prev' : 'icon default prev',
             'next' : 'icon default next',
@@ -131,8 +134,14 @@ function(params){
             'mime' : ''
         }, item);
         // Check type
+        try{
+            item['_url'] = new URL(item['src']);
+        }catch(e){
+        }
+        item['_regexp'] = new RegExp('\\.(' + that.params['types']['image'] + ')$', 'gi');
         if(
-            /\.(jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff)$/gi.test(item['src'])
+            item['_regexp'].test(item['src'])
+            || (item['_url'] && item['_regexp'].test(item['_url'].pathname))
             || /^data:image/gi.test(item['src'])
             || /^image/gi.test(item['mime'])
             || item['type'] === 'image'

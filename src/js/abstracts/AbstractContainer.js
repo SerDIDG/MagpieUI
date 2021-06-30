@@ -22,6 +22,7 @@ cm.define('Com.AbstractContainer', {
         'embedStructure' : 'none',
         'controllerEvents' : true,
         'constructor' : null,
+        'constructorParams' : {},
         'params' : {},
         'placeholder' : false,
         'placeholderConstructor' : null,
@@ -75,6 +76,8 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];
         that.triggerEvent('onValidateParamsEnd');
+        // TODO: replace that.params['params'] to that.params['constructorParams']
+        that.params['params'] = cm.merge(that.params['constructorParams'], that.params['params']);
     };
 
     classProto.open = function(e){

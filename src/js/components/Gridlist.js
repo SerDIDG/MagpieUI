@@ -17,7 +17,11 @@ cm.define('Com.Gridlist', {
         'onRender',
         'onRenderStart',
         'onRenderEnd',
+        'onLoadStart',
         'onLoadEnd',
+        'onLoadError',
+        'onPageRenderStart',
+        'onPageRenderEnd',
         'onRenderTitleItem',
         'onRenderFilterItem',
         'onColumnsChange',
@@ -53,13 +57,17 @@ cm.define('Com.Gridlist', {
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
 
         // Pagination and ajax data request
+        'renderEmptyMessage' : true,
+        'renderEmptyTable' : false,
         'renderFilter' : false,
         'divideTableHeader' : false,
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
         'responseErrorsKey' : 'errors',
+        'responseMessageKey' : 'message',
         'responseCountKey' : 'count',                               // Response data count response key
+        'showLoader' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -92,7 +100,9 @@ cm.define('Com.Gridlist', {
         'Com.GridlistHelper' : {
             'customEvents' : false
         },
-        'Com.Pagination' : {
+        'autoSend' : true,
+        'paginationConstructor' : 'Com.Pagination',
+        'paginationParams' : {
             'renderStructure' : true,
             'embedStructureOnRender' : true,
             'animateSwitch' : true,
@@ -142,20 +152,25 @@ function(params){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
         // Data
-        that.params['data'] = that.callbacks.filter(that, that.params['data']);
+        if(!cm.isEmpty(that.params['data']) && cm.isArray(that.params['data'])){
+            that.params['data'] = that.callbacks.filter(that, that.params['data']);
+        }
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
             that.params['pagination'] = true;
-            that.params['Com.Pagination']['ajax'] = that.params['ajax'];
-            that.params['Com.Pagination']['responseKey'] = that.params['responseKey'];
-            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
-            that.params['Com.Pagination']['responseErrorsKey'] = that.params['responseErrorsKey'];
+            that.params['paginationParams']['autoSend'] = that.params['autoSend'];
+            that.params['paginationParams']['ajax'] = that.params['ajax'];
+            that.params['paginationParams']['showLoader'] = that.params['showLoader'];
+            that.params['paginationParams']['responseKey'] = that.params['responseKey'];
+            that.params['paginationParams']['responseCountKey'] = that.params['responseCountKey'];
+            that.params['paginationParams']['responseMessageKey'] = that.params['responseMessageKey'];
+            that.params['paginationParams']['responseErrorsKey'] = that.params['responseErrorsKey'];
         }else{
-            that.params['Com.Pagination']['count'] = that.params['data'].length;
+            that.params['paginationParams']['count'] = that.params['data'].length;
         }
         // Pagination
-        that.params['Com.Pagination']['perPage'] = that.params['perPage'];
+        that.params['paginationParams']['perPage'] = that.params['perPage'];
         // Helper
         that.params['Com.GridlistHelper']['columns'] = that.params['columns'];
     };
@@ -304,9 +319,9 @@ function(params){
     /*** PAGINATION AND TABLE ****/
 
     var renderPagination = function(){
-        cm.getConstructor('Com.Pagination', function(classConstructor, className){
+        cm.getConstructor(that.params['paginationConstructor'], function(classConstructor){
             that.components['pagination'] = new classConstructor(
-                cm.merge(that.params[className], {
+                cm.merge(that.params['paginationParams'], {
                     'container' : that.nodes['container'],
                     'callbacks' : {
                         'afterPrepare' : function(pagination, config){
@@ -314,14 +329,21 @@ function(params){
                         }
                     },
                     'events' : {
-                        'onPageRender' : function(pagination, data){
-                            renderPaginationPage(data);
+                        'onStart' : function(pagination){
+                            that.triggerEvent('onLoadStart');
                         },
-                        'onPageRenderEnd' : function(pagination, data){
-                            that.redraw();
-                            that.triggerEvent('onLoadEnd', {
-                                'page' : data
+                        'onPageRenderError' : function(pagination, page){
+                            that.triggerEvent('onLoadError', {
+                                'page' : page
                             });
+                            that.triggerEvent('onLoadEnd');
+                        },
+                        'onPageRender' : function(pagination, page){
+                            that.callbacks.renderPage(that, page);
+                        },
+                        'onPageRenderEnd' : function(pagination, page){
+                            that.redraw();
+                            that.triggerEvent('onLoadEnd', {'page' : page});
                         },
                         'onSetCount' : function(pagination, count){
                             that.params['showCounter'] && renderCounter(count);
@@ -330,28 +352,6 @@ function(params){
                 })
             );
         });
-    };
-
-    var renderPaginationPage = function(data){
-        var startIndex, endIndex, dataArray;
-        if(that.isAjax){
-            if(!cm.isEmpty(data['data'])){
-                data['data'] = that.callbacks.filter(that, data['data']);
-            }
-            if(!cm.isEmpty(data['data'])){
-                renderTable(data['page'], data['data'], data['container']);
-            }else{
-                if(that.params['renderEmptyTable']){
-                    renderTable(data['page'], data['data'], data['container']);
-                }
-                renderEmptiness(data['container'], data['errors']);
-            }
-        }else{
-            startIndex = that.params['perPage'] * (data['page'] - 1);
-            endIndex = Math.min(that.params['perPage'] * data['page'], that.params['data'].length);
-            dataArray = that.params['data'].slice(startIndex, endIndex);
-            renderTable(data['page'], dataArray, data['container']);
-        }
     };
 
     var renderCounter = function(count){
@@ -366,6 +366,9 @@ function(params){
 
     var renderEmptiness = function(container, errors){
         errors = !cm.isEmpty(errors) ? errors : that.lang('empty');
+        if(that.nodes['empty'] && cm.isParent(container, that.nodes['empty'])){
+            cm.remove(that.nodes['empty']);
+        }
         that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
         cm.appendChild(that.nodes['empty'], container);
     };
@@ -406,6 +409,9 @@ function(params){
         });
         // Reset table
         resetTable();
+        if(that.nodes['table'] && cm.isParent(container, that.nodes['table'])){
+            cm.remove(that.nodes['table']);
+        }
         // Render Table
         that.nodes['table'] = cm.node('div', {'class' : 'pt__gridlist'},
             that.nodes['tableInner'] = cm.node('table',
@@ -816,7 +822,7 @@ function(params){
             item['nodes']['itemsList'] = item['nodes']['linksList'] = cm.node('ul')
         )
         // Items
-        renderCellActionItems(config, row, item, 'links');
+        item['links'] = renderCellActionItems(config, row, item, 'links');
         // Embed
         if(item['nodes']['links'].length){
             cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
@@ -838,7 +844,7 @@ function(params){
             )
         );
         // Items
-        renderCellActionItems(config, row, item, 'actions');
+        item['actions'] = renderCellActionItems(config, row, item, 'actions');
         // Embed
         if(item['nodes']['actions'].length){
             cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
@@ -854,8 +860,9 @@ function(params){
     };
 
     var renderCellActionItems = function(config, row, item, list){
-        var isInArray, isEmpty;
-        cm.forEach(config[list], function(actionItem){
+        var isInArray, isEmpty,
+            items = [];
+        cm.forEach(config[list], function(actionItem, key){
             actionItem = cm.merge({
                 'name' : '',
                 'label' : '',
@@ -874,7 +881,10 @@ function(params){
             if(isEmpty || isInArray){
                 renderCellActionItem(config, row, item, actionItem);
             }
+            // Export
+            items.push(actionItem);
         });
+        return items;
     }
 
     var renderCellActionItem = function(config, row, item, actionItem){
@@ -893,15 +903,14 @@ function(params){
         );
         if(actionItem['constructor']){
             cm.getConstructor(actionItem['constructor'], function(classConstructor){
-                actionItem['controller'] = new classConstructor(
-                    cm.merge(actionItem['constructorParams'], {
-                        'node' : actionItem['node'],
-                        'data' : row['data'],
-                        'rowItem' : row,
-                        'cellItem' : item,
-                        'actionItem' : actionItem
-                    })
-                );
+                actionItem['_constructorParams'] = cm.merge(actionItem['constructorParams'], {
+                    'node' : actionItem['node'],
+                    'data' : row['data'],
+                    'rowItem' : row,
+                    'cellItem' : item,
+                    'actionItem' : actionItem
+                });
+                actionItem['controller'] = new classConstructor(actionItem['_constructorParams']);
                 actionItem['controller'].addEvent('onRenderControllerEnd', function(){
                     item['component'] && item['component'].hide(false);
                 });
@@ -918,13 +927,14 @@ function(params){
 
     /*** HELPING FUNCTIONS ***/
 
-    var resetTable = function(){
+    var resetTable = function(container){
+        cm.customEvent.trigger(that.nodes['table'], 'destruct', {
+            'direction' : 'child',
+            'self' : false
+        });
         that.unCheckAll();
         that.rows = [];
         that.checked = [];
-        if(!that.params['pagination']){
-            cm.remove(that.nodes['table']);
-        }
     };
 
     var arraySort = function(){
@@ -1044,10 +1054,6 @@ function(params){
 
     /******* CALLBACKS *******/
 
-    that.callbacks.filter = function(that, data){
-        return data;
-    };
-
     that.callbacks.paginationAfterPrepare = function(that, pagination, config){
         config['url'] = cm.strReplace(config['url'], {
             '%sortBy%' : that.sortBy,
@@ -1060,6 +1066,37 @@ function(params){
             '%orderByLower%' : that.orderBy.toLowerCase()
         });
         return config;
+    };
+
+    that.callbacks.filter = function(that, data){
+        return data;
+    };
+
+    that.callbacks.renderPage = function(that, page){
+        that.triggerEvent('onPageRenderStart', {'page' : page});
+        if(!that.isAjax){
+            page.data = that.getStaticPageData(page.page);
+        }
+        if(!cm.isEmpty(page.data) && cm.isArray(page.data)){
+            page.data = that.callbacks.filter(that, page.data);
+        }
+        that.renderPageTable(page);
+        that.triggerEvent('onPageRenderEnd', {'page' : page});
+    };
+
+    /******* TABLE *******/
+
+    that.renderPageTable = function(page){
+        if(!cm.isEmpty(page['data'])){
+            renderTable(page['page'], page['data'], page['container']);
+        }else{
+            if(that.params['renderEmptyTable']){
+                renderTable(page['page'], page['data'], page['container']);
+            }
+            if(that.params['renderEmptyMessage']){
+                renderEmptiness(page['container'], page['message']);
+            }
+        }
     };
 
     /******* MAIN *******/
@@ -1090,6 +1127,10 @@ function(params){
     that.abort = function(){
         that.components['pagination'] && that.components['pagination'].abort();
         return that;
+    };
+
+    that.getRows = function(){
+        return that.rows;
     };
 
     that.check = function(id){
@@ -1158,6 +1199,12 @@ function(params){
             rows.push(item['data'][that.params['uniqueKey']]);
         });
         return rows;
+    };
+
+    that.getStaticPageData = function(page){
+        var startIndex = that.params.perPage * (page - 1),
+            endIndex = Math.min(that.params.perPage * page, that.params.data.length);
+        return that.params.data.slice(startIndex, endIndex);
     };
 
     that.setRowStatus = function(id, status){

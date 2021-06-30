@@ -9,6 +9,7 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'showFilename' : true,
+        'showClearButton' : true,
         'autoOpen' : false,
         'placeholder' : null,
         'readValueType' : 'base64',         // base64 | binary
@@ -176,6 +177,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 )
             )
         );
+        // Clear button
+        if(!that.params['showClearButton']){
+            cm.addClass(nodes['clear'], 'is-hidden');
+        }
         // Render Browse Buttons
         if(that.params['local']){
             nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
@@ -264,13 +269,16 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             }
             cm.clearNode(that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['label'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
-            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+            if(that.params['showClearButton']){
+                cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
+                cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+                cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+                cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+            }
         }else{
             cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
+            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
             if(that.params['showFilename']){
                 if(that.params['showLink']){
                     that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
@@ -279,11 +287,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 }
                 cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
             }
-            cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
-            cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
-            cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
+            if(that.params['showClearButton']){
+                cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
+                cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+                cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+                cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+            }
         }
         return that;
     };

@@ -49,6 +49,10 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         );
         // Attributes
         cm.setInputMaxLength(nodes['input'], that.params['maxLength'], that.params['max']);
+        // Placeholder
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);

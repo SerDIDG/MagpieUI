@@ -215,11 +215,15 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         // Handle route redirect or route
         if(matchRouteRedirect){
-            that.redirect(matchRouteRedirect, route.hash, {
-                'urlParams' : route['urlParams'],
-                'captures' : route['captures'],
-                'data' : route['data']
-            });
+            if(cm.isArray(matchRouteRedirect)){
+                that.redirect.apply(that, matchRouteRedirect);
+            }else{
+                that.redirect(matchRouteRedirect, route.hash, {
+                    'urlParams' : route['urlParams'],
+                    'captures' : route['captures'],
+                    'data' : route['data']
+                });
+            }
         }else{
             that.constructRoute(route);
         }
@@ -289,14 +293,17 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             routeRedirect;
         if(!cm.isEmpty(route.redirectTo)){
             if(cm.isObject(route.redirectTo)){
-                cm.forEach(route.redirectTo, function(item, route){
-                    if(that.checkRoleAccess(route)){
+                cm.forEach(route.redirectTo, function(item, role){
+                    if(that.checkRoleAccess(role)){
                         routeRedirect = item;
                     }
                 });
             }else{
                 routeRedirect = route.redirectTo;
             }
+        }
+        if(cm.isFunction(routeRedirect)){
+            routeRedirect = routeRedirect(route);
         }
         return routeRedirect;
     };

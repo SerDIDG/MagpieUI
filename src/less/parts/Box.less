@@ -102,13 +102,25 @@
         }
     }
 
+    &:first-child {
+        margin-top: 0;
+    }
+
     &:last-child {
-        margin: 0;
+        margin-bottom: 0;
+    }
+
+    &.is-hidden {
+        display: none;
     }
 }
 
 .pt__box-content__indent (@indent: @PtBoxContent-Indent){
     margin: 0 0 @indent;
+
+    &.is-reverse {
+        margin: @indent 0 0;
+    }
 }
 
 /* *** INFO *** */

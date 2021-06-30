@@ -90,16 +90,19 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         if(cm.isNode(that.params['node'])){
             that.collectTabs();
         }
-        return that;
     };
 
     classProto.onSetEvents = function(){
         var that = this;
+        // Call parent method
+        classInherit.prototype.onSetEvents.apply(that, arguments);
         cm.addEvent(that.params['documentNode'], 'click', that.windowClickHandler);
     };
 
     classProto.onUnsetEvents = function(){
         var that = this;
+        // Call parent method
+        classInherit.prototype.onUnsetEvents.apply(that, arguments);
         cm.removeEvent(that.params['documentNode'], 'click', that.windowClickHandler);
     };
 

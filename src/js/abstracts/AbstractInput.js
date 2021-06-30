@@ -29,6 +29,7 @@ cm.define('Com.AbstractInput', {
         'autocomplete' : null,
         'ariaLabel' : '',
         'disabled' : false,
+        'checked' : null,
         'className' : '',
         'contentClassName' : '',
         'adaptive' : true,
@@ -152,6 +153,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['checked'] = that.params['node'].checked || that.params['checked'];
             that.params['required'] = that.params['node'].required || that.params['required'];
             that.params['minLength'] = that.params['node'].getAttribute('minlength') || that.params['minLength'];
             that.params['maxLength'] = that.params['node'].getAttribute('maxlength') || that.params['maxLength'];

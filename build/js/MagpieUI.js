@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.39.5 (2021-06-07 17:18) ************ */
+/*! ************ MagpieUI v3.40.0 (2021-06-30 20:19) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1622,14 +1622,16 @@ if(!Date.now){
 
     -------
 
-    Custom Events:
+    Custom Events / Hooks:
+        ajax.beforePrepare
+        ajax.afterPrepare
         scrollSizeChange
         pageSizeChange
 
  ******* */
 
 var cm = {
-        '_version' : '3.39.5',
+        '_version' : '3.40.0',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -1652,6 +1654,7 @@ var cm = {
             'animDurationShort' : 150,
             'animDurationLong' : 500,
             'loadDelay' : 500,
+            'lazyDelay' : 1000,
             'hideDelay' : 250,
             'hideDelayShort' : 150,
             'hideDelayLong' : 500,
@@ -2027,11 +2030,8 @@ cm.getLength = function(o){
         return o.length;
     }
     // Object
-    var i = 0;
-    cm.forEach(o, function(){
-        i++;
-    });
-    return i;
+    var keys = Object.keys(o);
+    return keys.length;
 };
 
 cm.getCount = function(o){
@@ -2071,6 +2071,12 @@ cm.arrayAdd = function(a, item){
         a.push(item);
     }
     return a;
+};
+
+cm.arrayFilter = function(a, items){
+    return a.filter(function(item){
+        return !items.includes(item);
+    });
 };
 
 cm.arraySort = function(a, key, dir, clone){
@@ -2145,7 +2151,7 @@ cm.objectReplace = function(o, map, replaceKeys){
             newKey = key;
         }
         if(cm.isObject(value)){
-            newO[newKey] = cm.objectReplace(value, map);
+            newO[newKey] = cm.objectReplace(value, map, replaceKeys);
         }else if(cm.isString(value)){
             newO[newKey] = cm.strReplace(value, map);
         }else{
@@ -2164,9 +2170,6 @@ cm.getDiffCompare = function(item1, item2){
 cm.isEmpty = function(value){
     if(cm.isUndefined(value)){
         return true;
-    }
-    if(cm.isBoolean(value)){
-        return value === false;
     }
     if(cm.isString(value) || cm.isArray(value)){
         return value.length === 0;
@@ -2242,13 +2245,25 @@ cm.fillDataMap = function(map, data){
     return items;
 };
 
-cm.fillVariables = function(value, data){
-    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
-        return cm.reducePath(p1, data)
-            || cm.reducePath('%' + p1 + '%', data)
-            || cm.reducePath('{' + p1 + '}', data)
-            || '';
+cm.objectFillVariables = function(o, map, replaceKeys){
+    var newO = cm.isArray(o) ? [] : {},
+        newKey;
+    replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
+    cm.forEach(o, function(value, key){
+        if(cm.isString(key)){
+            newKey = replaceKeys ? cm.fillVariables(key, map) : key;
+        }else{
+            newKey = key;
+        }
+        if(cm.isObject(value)){
+            newO[newKey] = cm.objectFillVariables(value, map, replaceKeys);
+        }else if(cm.isString(value)){
+            newO[newKey] = cm.fillVariables(value, map);
+        }else{
+            newO[newKey] = value;
+        }
     });
+    return newO;
 };
 
 cm.sort = function(o, dir){
@@ -2489,6 +2504,52 @@ cm.customEvent = (function(){
             return node;
         }
     };
+})();
+
+cm.hook = (function(){
+    var _stack = {};
+
+    return {
+        'add' : function(type, handler){
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            if(cm.isFunction(handler)){
+                _stack[type].push(handler);
+            }else{
+                cm.errorLog({
+                    'name' : 'cm.hook',
+                    'message' : ['Handler of event', cm.strWrap(type, '"'), 'must be a function.'].join(' ')
+                });
+            }
+        },
+        'remove' : function(type, handler){
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            if(cm.isFunction(handler)){
+                _stack[type] = _stack[type].filter(function(item){
+                    return item !== handler;
+                });
+            }else{
+                cm.errorLog({
+                    'name' : 'cm.hook',
+                    'message' : ['Handler of event', cm.strWrap(type, '"'), 'must be a function.'].join(' ')
+                });
+            }
+        },
+        'trigger' : function(type, params){
+            var that = this,
+                data = cm.clone(arguments);
+            // Remove event name parameter from data
+            data.shift();
+            if(_stack[type]){
+                cm.forEach(_stack[type], function(handler){
+                    handler.apply(that, data);
+                });
+            }
+        }
+    }
 })();
 
 cm.onLoad = function(handler, isMessage){
@@ -3414,7 +3475,14 @@ cm.setSelect = function(o, value){
     }
     var options = o.getElementsByTagName('option');
     cm.forEach(options, function(node){
-        node.selected = cm.isArray(value) ? cm.inArray(node.value, value) : node.value == value;
+        if(cm.isArray(value)){
+            node.selected = cm.inArray(value, node.value);
+        }else{
+            if(cm.isBoolean(value)){
+                value = value.toString();
+            }
+            node.selected = node.value == value;
+        }
     });
     return o;
 };
@@ -3613,6 +3681,21 @@ cm.strReplace = function(str, map){
         });
     }
     return str;
+};
+
+cm.fillVariables = function(value, data){
+    var tests;
+    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+        tests = [
+            cm.reducePath(p1, data),
+            cm.reducePath('%' + p1 + '%', data),
+            cm.reducePath('{' + p1 + '}', data),
+            ''
+        ];
+        return tests.find(function(item){
+            return !cm.isUndefined(item);
+        });
+    });
 };
 
 cm.reduceText = function(str, length, points){
@@ -4837,6 +4920,14 @@ cm.URLToCSSURL = function(url){
     return !cm.isEmpty(url) ? 'url("' + url + '")' : 'none';
 };
 
+cm.setCSSVariable = function(key, value, node){
+    node = !cm.isUndefined(node) ? node : document.documentElement;
+    if(cm.isNode(node)){
+        node.style.setProperty(key, value);
+    }
+    return node;
+};
+
 /* ******* VALIDATORS ******* */
 
 cm.keyCodeTable = {
@@ -5209,6 +5300,7 @@ cm.sessionStorageSet = function(key, value){
         try{
             window.sessionStorage.setItem(key, value);
         }catch(e){
+            cm.storageSet.apply(this, arguments);
         }
     }
 };
@@ -5216,13 +5308,16 @@ cm.sessionStorageSet = function(key, value){
 cm.sessionStorageGet = function(key){
     if(cm.isSessionStorage){
         return window.sessionStorage.getItem(key);
+    }else{
+        return cm.storageGet.apply(this, arguments);
     }
-    return null;
 };
 
 cm.sessionStorageRemove = function(key){
     if(cm.isSessionStorage){
         window.sessionStorage.removeItem(key);
+    }else{
+        cm.storageRemove.apply(this, arguments);
     }
 };
 
@@ -5270,10 +5365,13 @@ cm.ajax = function(o){
             'type' : 'json',                                         // text | document | json | jsonp | blob
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
             'paramsType' : 'uri',                                    // uri | json | form-data
-            'params' : '',
+            'uriConfig' : {},                                        // parameters for cm.obj2URI
+            'uriParams' : {},
+            'data' : {},
+            'params' : '',                                           // TODO: Deprecated, use uriParams and data
             'url' : '',
-            'modifier' : '',
-            'modifierParams' : {},
+            'variables' : {},
+            'variablesMap' : {},
             'formData'  : false,                                     // TODO: Deprecated, use paramsType: 'form-data'
             'headers' : {
                 'Content-Type' : 'application/x-www-form-urlencoded',
@@ -5287,6 +5385,8 @@ cm.ajax = function(o){
             'onSuccess' : function(){},
             'onError' : function(){},
             'onAbort' : function(){},
+            'onResolve' : function(){},
+            'onReject': function(){},
             'handler' : false
         }, o),
         successStatuses = [200, 201, 202, 204],
@@ -5312,40 +5412,57 @@ cm.ajax = function(o){
     };
 
     var validate = function(){
+        cm.hook.trigger('ajax.beforePrepare', config);
         config['httpRequestObject'] = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         config['method'] = config['method'].toUpperCase();
-        // Convert params object to URI string
-        if(config['params'] instanceof FormData) {
+        if(config['formData'] === true){
+            config['paramsType'] = 'form-data';
+        }
+        // Process variables
+        if(!cm.isEmpty(config['variablesMap'])){
+            config['_originVariables'] = config['variables'];
+            config['variables'] = cm.fillDataMap(config['variablesMap'], config['variables']);
+        }
+        // Process params object
+        if(config['data'] instanceof FormData || config['params'] instanceof FormData) {
             delete config['headers']['Content-Type'];
-        }else if(config['formData']){
-            config['params'] = cm.obj2FormData(config['params']);
-            delete config['headers']['Content-Type'];
-        }else if(cm.isObject(config['params'])){
-            config['params'] = cm.objectReplace(config['params'], vars);
+        }else{
+            if(!cm.isEmpty(config['data'])){
+                config['data'] = processParams(config['data']);
+            }else{
+                config['params'] = processParams(config['params']);
+            }
+        }
+        if(cm.isObject(config['uriParams'])){
+            config['uriParams'] = cm.obj2URI(config['uriParams'], config['uriConfig']);
+        }
+        // Process request route
+        config['url'] = cm.fillVariables(config['url'], config['variables']);
+        config['url'] = cm.strReplace(config['url'], vars);
+        if(!cm.isEmpty(config['uriParams'])){
+            config['url'] = [config['url'], config['uriParams']].join('?');
+        }else if(!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
+            config['url'] = [config['url'], config['params']].join('?');
+        }
+        cm.hook.trigger('ajax.afterPrepare', config);
+    };
+
+    var processParams = function(data){
+        if(cm.isObject(data)){
+            data = cm.objectFillVariables(data, config['variables']);
+            data = cm.objectReplace(data, vars);
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
-                config['params'] = cm.stringifyJSON(config['params']);
+                data = cm.stringifyJSON(data);
             }else if(config['paramsType'] === 'form-data'){
-                config['params'] = cm.obj2FormData(config['params']);
+                data = cm.obj2FormData(data);
                 delete config['headers']['Content-Type'];
             }else{
-                config['params'] = cm.obj2URI(config['params']);
+                data = cm.obj2URI(data, config['uriConfig']);
             }
         }
-        // Build request link
-        if(!cm.isEmpty(config['modifier']) && !cm.isEmpty(config['modifierParams'])){
-            config['modifier'] = cm.fillVariables(config['modifier'], config['modifierParams']);
-            config['url'] += config['modifier'];
-        }else{
-            delete config['modifier'];
-        }
-        config['url'] = cm.strReplace(config['url'], vars);
-        if(!/POST|PUT|PATCH/.test(config['method'])){
-            if(!cm.isEmpty(config['params'])){
-                config['url'] = [config['url'], config['params']].join('?');
-            }
-        }
+        return data;
     };
 
     var send = function(){
@@ -5365,11 +5482,21 @@ cm.ajax = function(o){
         // Send
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
-            navigator.sendBeacon(config['url'], config['params']);
-        }else if(/POST|PUT|PATCH/.test(config['method'])){
-            config['httpRequestObject'].send(config['params']);
+            if(!cm.isEmpty(config['data'])){
+                navigator.sendBeacon(config['url'], config['data']);
+            }else if(!cm.isEmpty(config['params'])){
+                navigator.sendBeacon(config['url'], config['params']);
+            }else{
+                navigator.sendBeacon(config['url']);
+            }
         }else{
-            config['httpRequestObject'].send(null);
+            if(!cm.isEmpty(config['data'])){
+                config['httpRequestObject'].send(config['data']);
+            }else if(!cm.isEmpty(config['params']) && cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
+                config['httpRequestObject'].send(config['params']);
+            }else{
+                config['httpRequestObject'].send(null);
+            }
         }
     };
 
@@ -5378,8 +5505,10 @@ cm.ajax = function(o){
             response = config['httpRequestObject'].response;
             if(cm.inArray(successStatuses, config['httpRequestObject'].status)){
                 config['onSuccess'](response, e);
+                config['onResolve'](response, e);
             }else{
                 config['onError'](response, e);
+                config['onReject'](response, e);
             }
             deprecatedHandler(response);
             config['onEnd'](response, e);
@@ -5388,12 +5517,14 @@ cm.ajax = function(o){
 
     var successHandler = function(){
         config['onSuccess'].apply(config['onSuccess'], arguments);
+        config['onResolve'].apply(config['onResolve'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
     };
 
     var errorHandler = function(){
         config['onError'].apply(config['onError'], arguments);
+        config['onReject'].apply(config['onReject'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
     };
@@ -5439,7 +5570,7 @@ cm.ajax = function(o){
         // Embed
         config['onStart']();
         scriptNode.setAttribute('src', config['url']);
-        document.getElementsByTagName('head')[0].appendChild(scriptNode);
+        cm.getDocumentHead().appendChild(scriptNode);
     };
 
     var removeJSONP = function(){
@@ -5459,6 +5590,17 @@ cm.ajax = function(o){
 
     init();
     return returnObject;
+};
+
+cm.ajaxPromise = function(o){
+    return new Promise(function(resolve, reject){
+        cm.ajax(
+            cm.merge(o, {
+                'onResolve' : resolve,
+                'onReject' : reject
+            })
+        );
+    });
 };
 
 cm.parseJSON = function(str){
@@ -5485,37 +5627,96 @@ cm.stringifyJSON = function(o){
     }
 };
 
-cm.obj2URI = function(obj, prefix){
-    var str = [],
-        keyPrefix;
-    cm.forEach(obj, function(item, key){
-        if(!cm.isUndefined(item)){
-            keyPrefix = !cm.isEmpty(prefix) ? prefix + "[" + key + "]" : key;
-            if(typeof item === 'object'){
-                str.push(cm.obj2URI(item, keyPrefix));
-            }else{
-                str.push([keyPrefix, encodeURIComponent(item)].join('='));
-            }
-        }
-    });
-    return !cm.isEmpty(str) ? str.join('&') : null;
-};
-
 cm.obj2Filter = function(obj, prefix, separator, skipEmpty){
     var data = {},
         keyPrefix;
     separator = !cm.isUndefined(separator) ? separator : '=';
+    skipEmpty = !cm.isUndefined(skipEmpty) ? skipEmpty : false;
     cm.forEach(obj, function(item, key){
         if(!skipEmpty || !cm.isEmpty(item)){
             keyPrefix = !cm.isEmpty(prefix) ? prefix + separator + key : key;
             if(cm.isObject(item)){
                 data = cm.merge(data, cm.obj2Filter(item, keyPrefix, separator, skipEmpty))
+            }else if(cm.isArray(item)){
+                data[keyPrefix] = item.join(',');
             }else{
                 data[keyPrefix] = item;
             }
         }
     });
     return data;
+};
+
+cm.obj2URI = function(data, params){
+    var str = [],
+        keyPrefix,
+        keyValue,
+        keyParams;
+    // TODO: Legacy: arguments[1] = prefix
+    if(cm.isString(arguments[1])){
+        params = {
+            'multipleValues' : 'brackets',
+            'prefix' : arguments[1]
+        };
+    }
+    // Validate
+    params = cm.merge({
+        'multipleValues' : 'brackets',          // brackets | keys | join
+        'multipleValuesConjunction' : ',',
+        'prefix' : null,
+        'itemConjunction' : '&',
+        'valueConjunction' : '=',
+        'skipEmpty' : false
+    }, params);
+
+    if(cm.isArray(data) && params.multipleValues === 'join'){
+        cm.forEach(data, function(item){
+            if(!cm.isUndefined(item) && (!params.skipEmpty || !cm.isEmpty(item))){
+                str.push(encodeURIComponent(item));
+            }
+        });
+        if(!cm.isEmpty(str)){
+            str = str.join(params.itemConjunction);
+            if(!cm.isEmpty(params.prefix)){
+                str = [params.prefix, str].join(params.valueConjunction);
+            }
+        }
+        return !cm.isEmpty(str) ? str : null;
+    }
+
+    cm.forEach(data, function(item, key){
+        if(!cm.isUndefined(item) && (!params.skipEmpty || !cm.isEmpty(item))){
+            keyValue = item;
+            // Handle prefix
+            if(!cm.isEmpty(params.prefix)){
+                switch(params.multipleValues){
+                    case 'brackets':
+                        keyPrefix = params.prefix + '[' + key + ']';
+                        break;
+                    case 'keys':
+                    case 'join':
+                        keyPrefix = [params.prefix, key].join(params.valueConjunction);
+                        break;
+                    case 'same':
+                        keyPrefix = params.prefix;
+                        break;
+                }
+            }else{
+                keyPrefix = key;
+            }
+            // Handle items
+            if(cm.isArray(item) && params.multipleValues === 'keys'){
+                keyValue = cm.obj2URI(keyValue, cm.merge(params, {'multipleValues' : 'same', 'prefix' : keyPrefix}));
+            }else if(typeof item === 'object'){
+                keyValue = cm.obj2URI(keyValue, cm.merge(params, {'prefix' : keyPrefix}));
+            }else{
+                keyValue = [keyPrefix, encodeURIComponent(keyValue)].join(params.valueConjunction);
+            }
+            str.push(keyValue);
+        }
+    });
+
+    return !cm.isEmpty(str) ? str.join(params.itemConjunction) : null;
 };
 
 cm.obj2FormData = function(o){
@@ -5735,7 +5936,16 @@ cm.define = (function(){
 cm.getConstructor = function(className, callback){
     var classConstructor;
     callback = cm.isFunction(callback) ? callback : function(){};
-    if(!className || className === '*'){
+    if(cm.isUndefined(className)){
+        if(cm._debug){
+            cm.errorLog({
+                'type' : 'error',
+                'name' : 'cm.getConstructor',
+                'message' : ['Parameter "className" does not specified.'].join(' ')
+            });
+        }
+        return false;
+    }else if(className === '*'){
         cm.forEach(cm._defineStack, function(classConstructor){
             callback(classConstructor, className, classConstructor.prototype, classConstructor.prototype._inherit);
         });
@@ -5756,6 +5966,17 @@ cm.getConstructor = function(className, callback){
             return classConstructor;
         }
     }
+};
+
+cm.isInstance = function(childClass, parentClass){
+    var isInstance = false;
+    if(cm.isString(parentClass)){
+        parentClass = cm.getConstructor(parentClass);
+    }
+    if(!cm.isEmpty(childClass) && !cm.isEmpty(parentClass)){
+        isInstance = childClass instanceof parentClass;
+    }
+    return isInstance;
 };
 
 cm.find = function(className, name, parentNode, callback, params){
@@ -5858,14 +6079,14 @@ cm.setParams = function(className, params){
 
 cm.setMessages = cm.setStrings = function(className, strings){
     cm.getConstructor(className, function(classConstructor, className, classProto){
-        classProto.setLangs(strings);
+        classProto.setMessages(strings);
     });
 };
 
 cm.getMessage = cm.getString = function(className, str){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
-        data = classProto.lang(str);
+        data = classProto.message(str);
     });
     return data;
 };
@@ -5873,7 +6094,7 @@ cm.getMessage = cm.getString = function(className, str){
 cm.getMessages = cm.getStrings = function(className, o){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
-        data = classProto.langObject(o);
+        data = classProto.messageObject(o);
     });
     return data;
 };
@@ -6116,6 +6337,10 @@ Mod['Params'] = {
     'getParams' : function(key){
         var that = this;
         return key ? that.params[key] : that.params;
+    },
+    'getRawParams' : function(key){
+        var that = this;
+        return key ? that._raw.params[key] : that._raw.params;
     }
 };
 
@@ -6201,14 +6426,15 @@ Mod['Events'] = {
     },
     'triggerEvent' : function(event, params){
         var that = this,
-            args = cm.clone(arguments),
+            data = cm.clone(arguments),
             events;
-        args[0] = that;
+        // Replace event name parameter with context (legacy) in data
+        data[0] = that;
         if(that.events[event]){
-            events = that.events[event].slice();
-            for(var i = 0, l = events.length; i < l; i++){
-                events[i].apply(that, args);
-            }
+            events = cm.clone(that.events[event]);
+            cm.forEach(events, function(event){
+                event.apply(that, data);
+            });
         }else{
             cm.errorLog({
                 'type' : 'attention',
@@ -6264,17 +6490,8 @@ Mod['Langs'] = {
         if(cm.isUndefined(str) || cm.isEmpty(str)){
             return '';
         }
-        // Try to get string from current controller params array
-        langStr = cm.objectPath(str, that.params['langs']);
-        // Try to get string from current controller strings array
-        if(cm.isUndefined(langStr)){
-            langStr = cm.objectPath(str, that.strings);
-        }
-        // Try to get string from parent controller
-        if(cm.isUndefined(langStr) && that._inherit){
-            langStr = that._inherit.prototype.lang(str);
-        }
-        // We tried everything we could
+        // Get string
+        langStr = that.getLang(str);
         if(cm.isUndefined(langStr)){
             langStr = str;
         }
@@ -6290,16 +6507,50 @@ Mod['Langs'] = {
         }
         return langStr;
     },
-    'msg' : function() {
+    'message' : function(){
         var that = this;
         return that.lang.apply(that, arguments);
+    },
+    'msg' : function(){
+        var that = this;
+        return that.lang.apply(that, arguments);
+    },
+    'getLang' : function(str){
+        var that = this,
+            langStr;
+        if(cm.isUndefined(str) || cm.isEmpty(str)){
+            return;
+        }
+        // Try to get string from current controller params array
+        langStr = cm.objectPath(str, that.params.langs);
+        // Try to get string from current controller strings array
+        if(cm.isUndefined(langStr)){
+            langStr = cm.objectPath(str, that.strings);
+        }
+        // Try to get string from parent controller
+        if(cm.isUndefined(langStr) && that._inherit){
+            langStr = that._inherit.prototype.getMsg(str);
+        }
+        return langStr;
+    },
+    'getMessage' : function(){
+        var that = this;
+        return that.getLang.apply(that, arguments);
+    },
+    'getMsg' : function(){
+        var that = this;
+        return that.getLang.apply(that, arguments);
     },
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
         return cm.isObject(o) || cm.isArray(o) ? o : {};
     },
-    'msgObject' : function() {
+    'messageObject' : function(){
+        var that = this;
+        return that.langObject.apply(that, arguments);
+    },
+    'msgObject' : function(){
         var that = this;
         return that.langObject.apply(that, arguments);
     },
@@ -6313,6 +6564,14 @@ Mod['Langs'] = {
             }
         }
         return that;
+    },
+    'setMessages' : function(){
+        var that = this;
+        return that.setLangs.apply(that, arguments);
+    },
+    'setMsgs' : function(){
+        var that = this;
+        return that.setLangs.apply(that, arguments);
     }
 };
 
@@ -6669,8 +6928,10 @@ Mod['Structure'] = {
                 that.replaceStructure(node);
                 break;
             case 'append':
+            case 'last':
                 that.appendStructure(node, 'insertLast', container);
                 break;
+            case 'prepend':
             case 'first':
                 that.appendStructure(node, 'insertFirst', container);
                 break;
@@ -6933,6 +7194,9 @@ cm.init = function(){
             cm._scrollSize = cm.getScrollBarSize();
             if(size !== cm._scrollSize){
                 size = cm._scrollSize;
+                cm.hook.trigger('scrollSizeChange', {
+                    'scrollSize' : cm._scrollSize
+                });
                 cm.customEvent.trigger(window, 'scrollSizeChange', {
                     'direction' : 'all',
                     'self' : true,
@@ -6949,6 +7213,9 @@ cm.init = function(){
             sizeNew = JSON.stringify(cm._pageSize);
             if(size !== sizeNew){
                 size = sizeNew;
+                cm.hook.trigger(window, 'pageSizeChange', {
+                    'pageSize' : cm._pageSize
+                });
                 cm.customEvent.trigger(window, 'pageSizeChange', {
                     'direction' : 'all',
                     'self' : true,
@@ -6997,6 +7264,7 @@ cm.load = function(){
 
 cm.onReady(cm.init, false);
 cm.onLoad(cm.load, false);
+
 /**
  * Find the differences between two objects and push to a new object
  * (c) 2019 Chris Ferdinandi & Jascha Brinkmann, MIT License, https://gomakethings.com & https://twitter.com/jaschaio
@@ -7460,6 +7728,7 @@ cm.define('Com.AbstractContainer', {
         'embedStructure' : 'none',
         'controllerEvents' : true,
         'constructor' : null,
+        'constructorParams' : {},
         'params' : {},
         'placeholder' : false,
         'placeholderConstructor' : null,
@@ -7513,6 +7782,8 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.params['params']['node'] = that.params['node'];
         that.params['params']['container'] = that.params['container'];
         that.triggerEvent('onValidateParamsEnd');
+        // TODO: replace that.params['params'] to that.params['constructorParams']
+        that.params['params'] = cm.merge(that.params['constructorParams'], that.params['params']);
     };
 
     classProto.open = function(e){
@@ -7764,6 +8035,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.triggerEvent('onClosePlaceholder', that.components['placeholder']);
     };
 });
+
 cm.define('Com.AbstractInput', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -7795,6 +8067,7 @@ cm.define('Com.AbstractInput', {
         'autocomplete' : null,
         'ariaLabel' : '',
         'disabled' : false,
+        'checked' : null,
         'className' : '',
         'contentClassName' : '',
         'adaptive' : true,
@@ -7918,6 +8191,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['checked'] = that.params['node'].checked || that.params['checked'];
             that.params['required'] = that.params['node'].required || that.params['required'];
             that.params['minLength'] = that.params['node'].getAttribute('minlength') || that.params['minLength'];
             that.params['maxLength'] = that.params['node'].getAttribute('maxlength') || that.params['maxLength'];
@@ -8180,6 +8454,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that;
     };
 });
+
 cm.define('Com.AbstractFileManager', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -8525,6 +8800,7 @@ cm.define('Com.AbstractFormField', {
         'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
+        'placeholderAsterisk' : true,
         'autocomplete' : null,
         'showPlaceholderAbove' : false,
         'title' : '',
@@ -8532,6 +8808,7 @@ cm.define('Com.AbstractFormField', {
         'messagePosition' : 'content', // label | content
         'visible' : true,
         'disabled' : false,
+        'checked' : null,
         'renderName' : false,
         'options' : [],
         'constraints' : [
@@ -8552,7 +8829,8 @@ cm.define('Com.AbstractFormField', {
             'type' : 'json',
             'method' : 'get'
         },
-        'Com.HelpBubble' : {
+        'helpConstructor' : 'Com.HelpBubble',
+        'helpParams' : {
             'renderStructure' : true,
             'embedStructureOnRender' : true
         }
@@ -8597,7 +8875,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onConstructEnd = function(){
         var that = this;
         if(that.isAjax){
-            that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+            that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params.ajax));
         }
     };
 
@@ -8612,58 +8890,64 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
-        that.attributeName = that.params['formName'] + '[' + that.params['name'] + ']';
+        that.attributeName = that.params.formName + '[' + that.params.name + ']';
         // Validate
-        if(that.params['required'] && that.params['requiredAsterisk'] && !cm.isEmpty(that.params['placeholder'])){
-            that.params['placeholder'] = [that.params['placeholder'], that.lang('*')].join(' ');
+        if(
+            that.params.required
+            && that.params.requiredAsterisk
+            && that.params.placeholderAsterisk
+            && !cm.isEmpty(that.params.placeholder)
+        ){
+            that.params.placeholder = [that.params.placeholder, that.lang('*')].join(' ');
         }
         // Constructor params
-        that.params['constructorParams']['id'] = that.params['id'];
-        that.params['constructorParams']['name'] = that.params['name'];
-        that.params['constructorParams']['visibleName'] = that.params['visibleName'];
-        that.params['constructorParams']['renderName'] = that.params['renderName'];
-        that.params['constructorParams']['options'] = !cm.isEmpty(that.params['options']) ? that.params['options'] : that.params['constructorParams']['options'];
-        that.params['constructorParams']['value'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['value'];
-        that.params['constructorParams']['defaultValue'] = that.params['defaultValue'];
-        that.params['constructorParams']['required'] = that.params['required'];
-        that.params['constructorParams']['validate'] = that.params['validate'];
-        that.params['constructorParams']['disabled'] = that.params['disabled'];
-        that.params['constructorParams']['minLength'] = that.params['minLength'];
-        that.params['constructorParams']['maxLength'] = that.params['maxLength'];
-        that.params['constructorParams']['min'] = that.params['min'];
-        that.params['constructorParams']['max'] = that.params['max'];
-        that.params['constructorParams']['multiple'] = that.params['multiple'];
-        that.params['constructorParams']['placeholder'] = !that.params['showPlaceholderAbove'] ? that.params['placeholder'] : '';
-        that.params['constructorParams']['autocomplete'] = that.params['autocomplete'];
-        that.params['constructorParams']['title'] = that.params['title'];
-        that.params['constructorParams']['ajax'] = that.params['ajax'];
+        that.params.constructorParams.id = that.params.id;
+        that.params.constructorParams.name = that.params.name;
+        that.params.constructorParams.visibleName = that.params.visibleName;
+        that.params.constructorParams.renderName = that.params.renderName;
+        that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
+        that.params.constructorParams.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
+        that.params.constructorParams.defaultValue = that.params.defaultValue;
+        that.params.constructorParams.required = that.params.required;
+        that.params.constructorParams.validate = that.params.validate;
+        that.params.constructorParams.disabled = that.params.disabled;
+        that.params.constructorParams.checked = that.params.checked;
+        that.params.constructorParams.minLength = that.params.minLength;
+        that.params.constructorParams.maxLength = that.params.maxLength;
+        that.params.constructorParams.min = that.params.min;
+        that.params.constructorParams.max = that.params.max;
+        that.params.constructorParams.multiple = that.params.multiple;
+        that.params.constructorParams.placeholder = !that.params.showPlaceholderAbove ? that.params.placeholder : '';
+        that.params.constructorParams.autocomplete = that.params.autocomplete;
+        that.params.constructorParams.title = that.params.title;
+        that.params.constructorParams.ajax = that.params.ajax;
         // Components
-        that.params['Com.HelpBubble']['title'] = that.params['label'];
-        that.params['Com.HelpBubble']['content'] = that.params['help'];
-        that.params['Com.HelpBubble']['name'] = that.params['name'];
-        that.params['Com.HelpBubble']['type'] = that.params['helpType'];
-        that.components['form'] = that.params['form'];
-        that.nodeTagName = that.params['node'].tagName.toLowerCase();
+        that.params.helpParams.title = that.params.label;
+        that.params.helpParams.content = that.params.help;
+        that.params.helpParams.name = that.params.name;
+        that.params.helpParams.type = that.params.helpType;
+        that.components.form = that.params.form;
+        that.nodeTagName = that.params.node.tagName.toLowerCase();
         // Ajax
-        if(that.params['preload'] && !cm.isEmpty(that.params['ajax']) && !cm.isEmpty(that.params['ajax']['url'])){
+        if(that.params.preload && !cm.isEmpty(that.params.ajax) && !cm.isEmpty(that.params.ajax.url)){
             that.isAjax = true;
         }
     };
 
     classProto.validateParamsValue = function(){
         var that = this;
-        that.params['value'] = that.validateParamsValueHelper(that.params['value']);
-        that.params['defaultValue'] = that.validateParamsValueHelper(that.params['defaultValue']);
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
-        that.params['dataValue'] = !cm.isEmpty(that.params['dataValue']) ? that.params['dataValue'] : that.params['isOptionValue'] ? that.params['value'] : null;
+        that.params.value = that.validateParamsValueHelper(that.params.value);
+        that.params.defaultValue = that.validateParamsValueHelper(that.params.defaultValue);
+        that.params.value = !cm.isEmpty(that.params.value) ? that.params.value : that.params.defaultValue;
+        that.params.dataValue = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.isOptionValue ? that.params.value : null;
     };
 
     classProto.validateParamsValueHelper = function(value){
         var that = this;
-        if(that.params['isValueOption'] && !cm.isEmpty(value)){
+        if(that.params.isValueOption && !cm.isEmpty(value)){
             if(cm.isObject(value)){
-                value['value'] = !cm.isEmpty(value['value']) ? value['value'] : value['text'];
-                value['text'] = !cm.isEmpty(value['text']) ? value['text'] : value['value'];
+                value.value = !cm.isEmpty(value.value) ? value.value : value.text;
+                value.text = !cm.isEmpty(value.text) ? value.text : value.value;
             }else{
                 value = {
                     'value' : value,
@@ -8680,18 +8964,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         that.triggerEvent('onRenderViewStart');
         // Render field structure
-        if(that.params['renderStructureField']){
+        if(that.params.renderStructureField){
             that.renderFiled();
         }
         // Render custom structure
-        if(that.params['renderStructureContent']){
-            that.nodes['contentContainer'] = that.renderContent();
+        if(that.params.renderStructureContent){
+            that.nodes.contentContainer = that.renderContent();
         }
         // Embed
-        if(that.params['renderStructureField']){
-            cm.insertFirst(that.nodes['contentContainer'], that.nodes['value']);
-        }else if(that.params['renderStructureContent']){
-            that.nodes['container'] = that.nodes['contentContainer'];
+        if(that.params.renderStructureField){
+            cm.insertFirst(that.nodes.contentContainer, that.nodes.value);
+        }else if(that.params.renderStructureContent){
+            that.nodes.container = that.nodes.contentContainer;
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
@@ -8699,68 +8983,64 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderFiled = function(){
         var that = this;
-        that.nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
-            that.nodes['label'] = cm.node('dt'),
-            that.nodes['value'] = cm.node('dd')
+        that.nodes.container = cm.node('dl', {'class' : 'pt__field'},
+            that.nodes.label = cm.node('dt'),
+            that.nodes.value = cm.node('dd')
         );
-        if(!that.nodes['messages']){
-            switch(that.params['messagePosition']){
+        if(!that.nodes.messages){
+            switch(that.params.messagePosition){
                 case 'label':
-                    that.nodes['messages'] = that.nodes['label'];
+                    that.nodes.messages = that.nodes.label;
                     break;
                 case 'content':
                 case 'value':
-                    that.nodes['messages'] = that.nodes['value'];
+                    that.nodes.messages = that.nodes.value;
                     break;
             }
         }
         // Label
-        if(!cm.isEmpty(that.params['label'])){
-            that.nodes['labelText'] = cm.node('label', {'for' : that.attributeName, 'innerHTML' : that.params['label']});
-            cm.appendChild(that.nodes['labelText'], that.nodes['label']);
+        if(!cm.isEmpty(that.params.label)){
+            that.nodes.labelText = cm.node('label', {'for' : that.attributeName, 'innerHTML' : that.params.label});
+            cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
         // Required
-        that.nodes['required'] = cm.node('span', {'class' : 'required'}, that.lang('*'));
-        if(that.params['required'] && that.params['requiredAsterisk']){
-            cm.appendChild(that.nodes['required'], that.nodes['label']);
+        that.nodes.required = cm.node('span', {'class' : 'required'}, that.lang('*'));
+        if(that.params.required && that.params.requiredAsterisk){
+            cm.appendChild(that.nodes.required, that.nodes.label);
         }
         // Hints
-        if(!cm.isEmpty(that.params['hint'])){
-            that.renderHint(that.params['hint']);
+        if(!cm.isEmpty(that.params.hint)){
+            that.renderHint(that.params.hint);
         }
     };
 
     classProto.renderContent = function(){
         var that = this,
             nodes = {};
-        that.nodes['content'] = nodes;
+        that.nodes.content = nodes;
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'pt__field__content'},
-            nodes['input'] = that.params['node']
+        nodes.container = cm.node('div', {'class' : 'pt__field__content'},
+            nodes.input = that.params.node
         );
         // Icon
-        if(that.params['icon']){
-            nodes['field'] = cm.node('div', {'class' : 'pt__input'},
-                nodes['input'],
-                nodes['icon'] = cm.node('div', {'class' : that.params['icon']})
+        if(that.params.icon){
+            nodes.field = cm.node('div', {'class' : 'pt__input'},
+                nodes.input,
+                nodes.icon = cm.node('div', {'class' : that.params.icon})
             );
-            cm.addEvent(nodes['icon'], 'click', that.focusHandler);
-            cm.appendChild(nodes['field'], nodes['container']);
+            cm.addEvent(nodes.icon, 'click', that.focusHandler);
+            cm.appendChild(nodes.field, nodes.container);
         }
         // Placeholder
-        if(that.params['showPlaceholderAbove'] && !cm.isEmpty(that.params['placeholder'])){
-            nodes['placeholder'] = cm.node('label', {'class' : 'placeholder', 'for' : that.attributeName},
-                cm.node('span', {'innerHTML' : that.params['placeholder']})
+        if(that.params.showPlaceholderAbove && !cm.isEmpty(that.params.placeholder)){
+            nodes.placeholder = cm.node('label', {'class' : 'placeholder', 'for' : that.attributeName},
+                cm.node('span', {'innerHTML' : that.params.placeholder})
             );
-            cm.appendChild(nodes['placeholder'], nodes['container']);
-            cm.addClass(nodes['container'], 'is-placeholder-above');
-        }
-        // Options
-        if(!cm.isEmpty(that.params['options'])){
-            that.renderOptions(that.params['options']);
+            cm.appendChild(nodes.placeholder, nodes.container);
+            cm.addClass(nodes.container, 'is-placeholder-above');
         }
         // Export
-        return nodes['container'];
+        return nodes.container;
     };
 
     classProto.renderOptions = function(options){
@@ -8769,10 +9049,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         switch(that.nodeTagName){
             case 'select' :
                 cm.forEach(options, function(item){
-                    option = cm.node('option', {'value' : item['value'], 'disabled' : item['disabled'], 'innerHTML' : item['text']});
-                    cm.appendChild(option, that.nodes['content']['input']);
+                    item.disabled = !cm.isUndefined(item.disabled) ? item.disabled : false;
+                    option = cm.node('option', {'value' : item.value, 'disabled' : item.disabled, 'innerHTML' : item.text});
+                    cm.appendChild(option, that.nodes.content.input);
                 });
-                cm.setSelect(that.nodes['content']['input'], that.params['value']);
+                cm.setSelect(that.nodes.content.input, that.params.value);
                 break;
         }
     };
@@ -8784,56 +9065,56 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
         if(!cm.isEmpty(that.attributeName)){
-            that.nodes['content']['input'].setAttribute('id', that.attributeName);
+            that.nodes.content.input.setAttribute('id', that.attributeName);
         }
-        if(!cm.isEmpty(that.params['name'])){
-            that.nodes['content']['input'].setAttribute('name', that.params['name']);
+        if(!cm.isEmpty(that.params.name)){
+            that.nodes.content.input.setAttribute('name', that.params.name);
         }
-        if(!cm.isEmpty(that.params['value']) && that.params['inputValueType'] !== 'unset'){
-            if(that.params['isOptionValue']){
-                value = that.params['value']['value'];
-            }else if(cm.isObject(that.params['value']) || cm.isArray(that.params['value'])){
-                value = cm.stringifyJSON(that.params['value']);
+        if(!cm.isEmpty(that.params.value) && that.params.inputValueType !== 'unset'){
+            if(that.params.isOptionValue){
+                value = that.params.value.value;
+            }else if(cm.isObject(that.params.value) || cm.isArray(that.params.value)){
+                value = cm.stringifyJSON(that.params.value);
             }else{
-                value = that.params['value'];
+                value = that.params.value;
             }
             switch(that.nodeTagName){
-                case 'select' :
-                    cm.setSelect(that.nodes['content']['input'], value);
+                case 'select':
+                    cm.setSelect(that.nodes.content.input, value);
                     break;
-                default :
-                    that.nodes['content']['input'].setAttribute('value', value);
+                default:
+                    that.nodes.content.input.setAttribute('value', value);
                     break;
             }
         }
-        if(!cm.isEmpty(that.params['dataValue'])){
-            if(cm.isObject(that.params['dataValue']) || cm.isArray(that.params['dataValue'])){
-                value = cm.stringifyJSON(that.params['dataValue']);
+        if(!cm.isEmpty(that.params.dataValue)){
+            if(cm.isObject(that.params.dataValue) || cm.isArray(that.params.dataValue)){
+                value = cm.stringifyJSON(that.params.dataValue);
             }else{
-                value = that.params['dataValue'];
+                value = that.params.dataValue;
             }
-            that.nodes['content']['input'].setAttribute('data-value', value);
+            that.nodes.content.input.setAttribute('data-value', value);
         }
-        if(!cm.isEmpty(that.params['placeholder']) && !that.params['showPlaceholderAbove']){
-            that.nodes['content']['input'].setAttribute('placeholder', that.params['placeholder']);
-            if(cm.isEmpty(that.params['label']) && cm.isEmpty(that.params['title'])){
-                that.nodes['content']['input'].setAttribute('aria-label', that.params['placeholder']);
+        if(!cm.isEmpty(that.params.placeholder) && !that.params.showPlaceholderAbove){
+            that.nodes.content.input.setAttribute('placeholder', that.params.placeholder);
+            if(cm.isEmpty(that.params.label) && cm.isEmpty(that.params.title)){
+                that.nodes.content.input.setAttribute('aria-label', that.params.placeholder);
             }
         }
-        if(!cm.isEmpty(that.params['autocomplete'])){
-            that.nodes['content']['input'].setAttribute('autocomplete', that.params['autocomplete']);
+        if(!cm.isEmpty(that.params.autocomplete)){
+            that.nodes.content.input.setAttribute('autocomplete', that.params.autocomplete);
         }
-        if(!cm.isEmpty(that.params['title'])){
-            that.nodes['content']['input'].setAttribute('title', that.params['title']);
+        if(!cm.isEmpty(that.params.title)){
+            that.nodes.content.input.setAttribute('title', that.params.title);
         }
-        if(that.params['disabled']){
-            that.nodes['content']['input'].setAttribute('disabled', 'disabled');
+        if(that.params.disabled){
+            that.nodes.content.input.setAttribute('disabled', 'disabled');
         }
-        if(that.params['multiple']){
-            that.nodes['content']['input'].setAttribute('multiple', 'multiple');
+        if(that.params.multiple){
+            that.nodes.content.input.setAttribute('multiple', 'multiple');
         }
         // Classes
-        if(!that.params['visible']){
+        if(!that.params.visible){
             that.hide(false);
         }else{
             that.show(false);
@@ -8844,12 +9125,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
+        // Options
+        if(!cm.isEmpty(that.params.options)){
+            that.renderOptions(that.params.options);
+        }
         // Help Bubble
-        if(!cm.isEmpty(that.params['help'])){
-            cm.getConstructor('Com.HelpBubble', function(classConstructor){
-                that.components['help'] = new classConstructor(
-                    cm.merge(that.params['Com.HelpBubble'], {
-                        'container' : that.nodes['label']
+        if(!cm.isEmpty(that.params.help)){
+            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+                that.components.help = new classConstructor(
+                    cm.merge(that.params.helpParams, {
+                        'container' : that.nodes.label
                     })
                 );
             });
@@ -8862,12 +9147,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderController = function(){
         var that = this;
-        if(that.params['constructor']){
-            cm.getConstructor(that.params['constructor'], function(classObject){
-                that.components['controller'] = new classObject(
-                    cm.merge(that.params['constructorParams'], {
-                        'node' : that.nodes['content']['input'],
-                        'form' : that.components['form'],
+        if(that.params.constructor){
+            cm.getConstructor(that.params.constructor, function(classObject){
+                that.components.controller = new classObject(
+                    cm.merge(that.params.constructorParams, {
+                        'node' : that.nodes.content.input,
+                        'form' : that.components.form,
                         'formField' : that
                     })
                 );
@@ -8879,21 +9164,21 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderControllerEvents = function(){
         var that = this;
-        that.components['controller'].addEvent('onFocus', that.focusEventHandler);
-        that.components['controller'].addEvent('onBlur', that.blurEventHandler);
-        that.components['controller'].addEvent('onSelect', that.selectEventHandler);
-        that.components['controller'].addEvent('onInput', that.inputEventHandler);
-        that.components['controller'].addEvent('onChange', that.changeEventHandler);
-        that.components['controller'].addEvent('onReset', that.resetEventHandler);
+        that.components.controller.addEvent('onFocus', that.focusEventHandler);
+        that.components.controller.addEvent('onBlur', that.blurEventHandler);
+        that.components.controller.addEvent('onSelect', that.selectEventHandler);
+        that.components.controller.addEvent('onInput', that.inputEventHandler);
+        that.components.controller.addEvent('onChange', that.changeEventHandler);
+        that.components.controller.addEvent('onReset', that.resetEventHandler);
     };
 
     classProto.togglePlaceholder = function(){
         var that = this;
-        if(that.params['showPlaceholderAbove']){
+        if(that.params.showPlaceholderAbove){
             if(that.isFocus || !cm.isEmpty(that.getText())){
-                cm.addClass(that.nodes['content']['placeholder'], 'pull-top');
+                cm.addClass(that.nodes.content.placeholder, 'pull-top');
             }else{
-                cm.removeClass(that.nodes['content']['placeholder'], 'pull-top');
+                cm.removeClass(that.nodes.content.placeholder, 'pull-top');
             }
         }
     };
@@ -8940,36 +9225,36 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.set = function(value, triggerEvents){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].set) && that.components['controller'].set(value, triggerEvents);
+        that.components.controller && cm.isFunction(that.components.controller.set) && that.components.controller.set(value, triggerEvents);
         return that;
     };
 
     classProto.get = function(type){
         var that = this;
-        type = !cm.isUndefined(type) ? type : that.params['outputValueType'];
+        type = !cm.isUndefined(type) ? type : that.params.outputValueType;
         switch(type){
             case 'raw':
                 return that.getRaw();
             case 'text':
                 return that.getText();
             default:
-                return that.components['controller'] && cm.isFunction(that.components['controller'].get) ? that.components['controller'].get() : null;
+                return that.components.controller && cm.isFunction(that.components.controller.get) ? that.components.controller.get() : null;
         }
     };
 
     classProto.getRaw = function(){
         var that = this;
-        return that.components['controller'] && cm.isFunction(that.components['controller'].getRaw) ? that.components['controller'].getRaw() : that.get();
+        return that.components.controller && cm.isFunction(that.components.controller.getRaw) ? that.components.controller.getRaw() : that.get();
     };
 
     classProto.getText = function(){
         var that = this;
-        return that.components['controller'] && cm.isFunction(that.components['controller'].getText) ? that.components['controller'].getText() : that.get();
+        return that.components.controller && cm.isFunction(that.components.controller.getText) ? that.components.controller.getText() : that.get();
     };
 
     classProto.reset = function(){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].reset) && that.components['controller'].reset();
+        that.components.controller && cm.isFunction(that.components.controller.reset) && that.components.controller.reset();
         return that;
     };
 
@@ -8979,62 +9264,72 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             testData,
             data = {
                 'field' : that,
-                'form' : that.components['form'],
+                'form' : that.components.form,
                 'valid' : true,
                 'message' : null,
                 'value' : that.get()
             };
-        if(cm.isEmpty(data['value'])){
-            if(that.params['required']){
-                data['valid'] = false;
-                data['message'] = that.lang('required');
+        if(cm.isEmpty(data.value)){
+            if(that.params.required){
+                data.valid = false;
+                data.message = that.lang('required');
                 return data;
             }else{
-                data['valid'] = true;
+                data.valid = true;
                 return data;
             }
         }
-        if(that.params['minLength'] && data['value'].length < that.params['minLength']){
-            data['valid'] = false;
-            data['message'] = that.lang('too_short', {
-                '%count%' : that.params['minLength']
+        if(that.params.minLength && data.value.length < that.params.minLength){
+            data.valid = false;
+            data.message = that.lang('too_short', {
+                '%count%' : that.params.minLength
             });
             return data;
         }
-        if(that.params['maxLength'] && data['value'].length > that.params['maxLength']){
-            data['valid'] = false;
-            data['message'] = that.lang('too_long', {
-                '%count%' : that.params['maxLength']
+        if(that.params.maxLength && data.value.length > that.params.maxLength){
+            data.valid = false;
+            data.message = that.lang('too_long', {
+                '%count%' : that.params.maxLength
             });
             return data;
         }
-        if(!cm.isEmpty(that.params['constraints'])){
+        if(!cm.isEmpty(that.params.constraints)){
             testData = cm.clone(data);
             constraintsData = that.validateConstraints(testData);
             if(constraintsData){
                 return constraintsData;
             }
         }
-        if(that.components['controller'] && cm.isFunction(that.components['controller'].validate)){
-            return that.components['controller'].validate(data);
+        if(that.components.controller && cm.isFunction(that.components.controller.validate)){
+            return that.components.controller.validate(data);
         }
         return data;
     };
 
-    classProto.validate = function(){
+    classProto.validate = function(options){
         var that = this,
             data;
-        if(!that.params['required'] && !that.params['validate']){
+        // Validate options
+        options = cm.merge({
+            'silent' : false,
+            'triggerEvents' : true
+        }, options);
+
+        if(!that.params.required && !that.params.validate){
             return true;
         }
+
         data = that.validateValue();
-        if(data['valid']){
+        if(data.valid || options.silent){
             that.clearError();
         }else{
-            that.renderError(data['message']);
+            that.renderError(data.message);
         }
-        that.triggerEvent('onValidate', data);
-        return data['valid'];
+
+        if(options.triggerEvents && !options.silent){
+            that.triggerEvent('onValidate', data);
+        }
+        return data.valid;
     };
 
     /*** CONSTRAINTS ***/
@@ -9042,7 +9337,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.addConstraint = function(constraint){
         var that = this;
         if(cm.isFunction(constraint)){
-            that.params['constraints'] = cm.arrayAdd(that.params['constraints'], constraint);
+            that.params.constraints = cm.arrayAdd(that.params.constraints, constraint);
         }
         return that;
     };
@@ -9050,7 +9345,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.removeConstraint = function(constraint){
         var that = this;
         if(cm.isFunction(constraint)){
-            that.params['constraints'] = cm.arrayRemove(that.params['constraints'], constraint);
+            that.params.constraints = cm.arrayRemove(that.params.constraints, constraint);
         }
         return that;
     };
@@ -9059,10 +9354,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this,
             constraintsTest,
             constraintsData;
-        constraintsTest = that.params['constraints'].some(function(item){
+        constraintsTest = that.params.constraints.some(function(item){
             if(cm.isFunction(item)){
                 constraintsData = item(data);
-                return !constraintsData['valid'];
+                return !constraintsData.valid;
             }
             return false;
         });
@@ -9082,16 +9377,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         },params);
 
         that.clearHint();
-        that.nodes['hints'] = cm.node('ul', {'class' : 'pt__field__hint'},
+        that.nodes.hints = cm.node('ul', {'class' : 'pt__field__hint'},
             messageNode = cm.node('li', {'innerHTML' : message})
         );
-        if(!cm.isEmpty(params['className'])){
-            cm.addClass(messageNode, params['className']);
+        if(!cm.isEmpty(params.className)){
+            cm.addClass(messageNode, params.className);
         }
-        if(that.params['renderError'] && that.nodes['errors'] && cm.inDOM(that.nodes['errors'])){
-            cm.insertBefore(that.nodes['hints'], that.nodes['errors']);
+        if(that.params.renderError && that.nodes.errors && cm.inDOM(that.nodes.errors)){
+            cm.insertBefore(that.nodes.hints, that.nodes.errors);
         }else{
-            cm.appendChild(that.nodes['hints'], that.nodes['messages']);
+            cm.appendChild(that.nodes.hints, that.nodes.messages);
         }
 
         return that;
@@ -9099,7 +9394,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.clearHint = function(){
         var that = this;
-        cm.remove(that.nodes['hints']);
+        cm.remove(that.nodes.hints);
         return that;
     };
 
@@ -9111,19 +9406,19 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         },params);
 
         that.clearError();
-        if(!that.params['renderError']){
+        if(!that.params.renderError){
             return that;
         }
 
-        cm.addClass(that.nodes['container'], 'error');
-        if(that.params['renderErrorMessage'] && !cm.isEmpty(message)){
-            that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+        cm.addClass(that.nodes.container, 'error');
+        if(that.params.renderErrorMessage && !cm.isEmpty(message)){
+            that.nodes.errors = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
                 messageNode = cm.node('li', {'innerHTML' : message})
             );
-            if(!cm.isEmpty(params['className'])){
-                cm.addClass(messageNode, params['className']);
+            if(!cm.isEmpty(params.className)){
+                cm.addClass(messageNode, params.className);
             }
-            cm.insertLast(that.nodes['errors'], that.nodes['messages']);
+            cm.insertLast(that.nodes.errors, that.nodes.messages);
         }
 
         return that;
@@ -9131,8 +9426,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.clearError = function(){
         var that = this;
-        cm.removeClass(that.nodes['container'], 'error');
-        cm.remove(that.nodes['errors']);
+        cm.removeClass(that.nodes.container, 'error');
+        cm.remove(that.nodes.errors);
         return that;
     };
 
@@ -9143,7 +9438,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         triggerEvent = cm.isUndefined(triggerEvent) ? true : triggerEvent;
         if(!cm.isBoolean(that.isVisible) || !that.isVisible){
             that.isVisible = true;
-            cm.removeClass(that.nodes['container'], 'is-hidden');
+            cm.removeClass(that.nodes.container, 'is-hidden');
             triggerEvent && that.triggerEvent('onShow', that.get());
         }
         return that;
@@ -9154,7 +9449,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         triggerEvent = cm.isUndefined(triggerEvent) ? true : triggerEvent;
         if(!cm.isBoolean(that.isVisible) || that.isVisible){
             that.isVisible = false;
-            cm.addClass(that.nodes['container'], 'is-hidden');
+            cm.addClass(that.nodes.container, 'is-hidden');
             triggerEvent && that.triggerEvent('onHide', that.get());
         }
         return that;
@@ -9162,67 +9457,67 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.enable = function(){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].enable) && that.components['controller'].enable();
+        that.components.controller && cm.isFunction(that.components.controller.enable) && that.components.controller.enable();
         return that;
     };
 
     classProto.disable = function(){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].disable) && that.components['controller'].disable();
+        that.components.controller && cm.isFunction(that.components.controller.disable) && that.components.controller.disable();
         return that;
     };
 
     classProto.focus = function(){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].focus) && that.components['controller'].focus();
+        that.components.controller && cm.isFunction(that.components.controller.focus) && that.components.controller.focus();
         return that;
     };
 
     classProto.blur = function(){
         var that = this;
-        that.components['controller'] && cm.isFunction(that.components['controller'].blur) && that.components['controller'].blur();
+        that.components.controller && cm.isFunction(that.components.controller.blur) && that.components.controller.blur();
         return that;
     };
 
     classProto.setRequired = function(){
         var that = this;
-        that.params['required'] = true;
-        if(that.params['requiredAsterisk']){
-            cm.appendChild(that.nodes['required'], that.nodes['label']);
+        that.params.required = true;
+        if(that.params.requiredAsterisk){
+            cm.appendChild(that.nodes.required, that.nodes.label);
         }
         return that;
     };
 
     classProto.unsetRequired = function(){
         var that = this;
-        that.params['required'] = false;
-        cm.remove(that.nodes['required']);
+        that.params.required = false;
+        cm.remove(that.nodes.required);
         return that;
     };
 
     classProto.getController = function(){
         var that = this;
-        return that.components['controller'];
+        return that.components.controller;
     };
 
     classProto.getName = function(){
         var that = this;
-        return that.params['name'];
+        return that.params.name;
     };
 
     classProto.getContainer = function(){
         var that = this;
-        return that.nodes['container'];
+        return that.nodes.container;
     };
 
     /******* CALLBACKS *******/
 
     classProto.callbacks.prepare = function(that, config){
         // Prepare
-        config['url'] = cm.strReplace(config['url'], {
+        config.url = cm.strReplace(config.url, {
             '%baseUrl%' : cm._baseUrl
         });
-        config['params'] = cm.objectReplace(config['params'], {
+        config.params = cm.objectReplace(config.params, {
             '%baseUrl%' : cm._baseUrl
         });
         return config;
@@ -9279,7 +9574,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.callbacks.filter = function(that, config, response){
         var data = [],
-            dataItem = cm.objectPath(that.params['responseKey'], response);
+            dataItem = cm.objectPath(that.params.responseKey, response);
         if(dataItem && !cm.isEmpty(dataItem)){
             data = dataItem;
         }
@@ -9298,8 +9593,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }else if(!cm.isObject(item)){
             return {'text' : item, 'value' : item};
         }else{
-            if(cm.isUndefined(item['value'])){
-                item['value'] = item['text']
+            if(cm.isUndefined(item.value)){
+                item.value = item.text
             }
             return item;
         }
@@ -9910,8 +10205,6 @@ cm.define('Com.Form', {
         'renderButtonsSeparator' : true,
         'buttonsAlign' : 'right',
         'renderNames' : false,                                      // Render visual input name attribute
-        'showLoader' : true,
-        'loaderCoverage' : 'fields',                                // fields, all
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
@@ -9923,6 +10216,8 @@ cm.define('Com.Form', {
         'validate' : false,
         'validateOnChange' : false,
         'validateOnInput' : false,
+        'autoSend' : false,
+        'sendEmptyForm' : true,
         'sendEmptyFields' : false,
         'sendOnlyChangedFields' : false,
         'data' : {},
@@ -9934,6 +10229,8 @@ cm.define('Com.Form', {
             'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
         'Com.Notifications' : {},
+        'showLoader' : true,
+        'loaderCoverage' : 'fields',                                // fields, all
         'overlayConstructor' : 'Com.Overlay',
         'overlayParams' : {
             'position' : 'absolute',
@@ -9964,85 +10261,87 @@ function(params){
     var init = function(){
         that.renderComponent();
         that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
+        that.convertEvents(that.params.events);
+        that.getDataNodes(that.params.node);
+        that.getDataConfig(that.params.node);
         that.callbacksProcess();
-        that.addToStack(that.params['node']);
+        that.addToStack(that.params.node);
         that.triggerEvent('onRenderStart');
         validateParams();
         render();
-        that.addToStack(that.nodes['container']);
+        that.addToStack(that.nodes.container);
         that.triggerEvent('onRender');
     };
 
     var validateParams = function(){
-        that.params['buttonsAlign'] = cm.inArray(['left', 'center', 'right', 'justify'], that.params['buttonsAlign']) ? that.params['buttonsAlign'] : 'right';
-        that.params['loaderCoverage'] = cm.inArray(['fields', 'all'], that.params['loaderCoverage']) ? that.params['loaderCoverage'] : 'all';
+        that.params.buttonsAlign = cm.inArray(['left', 'center', 'right', 'justify'], that.params.buttonsAlign) ? that.params.buttonsAlign : 'right';
+        that.params.loaderCoverage = cm.inArray(['fields', 'all'], that.params.loaderCoverage) ? that.params.loaderCoverage : 'all';
         // Ajax
-        that.isAjax = that.params['ajax'] && !cm.isEmpty(that.params['ajax']['url']);
+        that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url);
     };
 
     var render = function(){
-        var overlayContainer;
         // Structure
-        if(that.params['renderStructure']){
-            that.nodes['container'] = cm.node('div', {'class' : 'com__form'},
-                that.nodes['fieldsContainer'] = cm.node('div', {'class' : 'com__form__fields'},
-                    that.nodes['fields'] = cm.node('div', {'class' : 'inner'})
+        if(that.params.renderStructure){
+            that.nodes.container = cm.node('div', {'class' : 'com__form'},
+                that.nodes.fieldsContainer = cm.node('div', {'class' : 'com__form__fields'},
+                    that.nodes.fields = cm.node('div', {'class' : 'inner'})
                 )
             );
             // Notifications
-            that.nodes['notifications'] = cm.node('div', {'class' : 'com__form__notifications'});
+            that.nodes.notifications = cm.node('div', {'class' : 'com__form__notifications'});
             // Buttons
-            that.nodes['buttonsSeparator'] = cm.node('hr');
-            that.nodes['buttonsContainer'] = cm.node('div', {'class' : 'com__form__buttons'},
-                that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons is-adaptive'},
-                    that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
+            that.nodes.buttonsSeparator = cm.node('hr');
+            that.nodes.buttonsContainer = cm.node('div', {'class' : 'com__form__buttons'},
+                that.nodes.buttons = cm.node('div', {'class' : 'pt__buttons is-adaptive'},
+                    that.nodes.buttonsHolder = cm.node('div', {'class' : 'inner'})
                 )
             );
-            cm.addClass(that.nodes['buttons'], ['pull', that.params['buttonsAlign']].join('-'));
+            cm.addClass(that.nodes.buttons, ['pull', that.params.buttonsAlign].join('-'));
             // Embed
-            that.params['renderButtonsSeparator'] && cm.insertFirst(that.nodes['buttonsSeparator'], that.nodes['buttonsContainer']);
-            that.params['renderButtons'] && cm.appendChild(that.nodes['buttonsContainer'], that.nodes['container']);
-            cm.insertFirst(that.nodes['notifications'], that.nodes['container']);
-            that.embedStructure(that.nodes['container']);
+            that.params.renderButtonsSeparator && cm.insertFirst(that.nodes.buttonsSeparator, that.nodes.buttonsContainer);
+            that.params.renderButtons && cm.appendChild(that.nodes.buttonsContainer, that.nodes.container);
+            cm.insertFirst(that.nodes.notifications, that.nodes.container);
+            that.embedStructure(that.nodes.container);
         }
         // Notifications
         cm.getConstructor('Com.Notifications', function(classConstructor, className){
-            that.components['notifications'] = new classConstructor(
+            that.components.notifications = new classConstructor(
                 cm.merge(that.params[className], {
-                    'container' : that.nodes['notifications']
+                    'container' : that.nodes.notifications
                 })
             );
-            that.components['notifications'].addEvent('onAdd', function(){
-                cm.addClass(that.nodes['notifications'], 'is-show', true);
+            that.components.notifications.addEvent('onAdd', function(){
+                cm.addClass(that.nodes.notifications, 'is-show', true);
             });
-            that.components['notifications'].addEvent('onRemove', function(){
-                if(that.components['notifications'].getLength() === 0){
-                    cm.removeClass(that.nodes['notifications'], 'is-show', true);
+            that.components.notifications.addEvent('onRemove', function(){
+                if(that.components.notifications.getLength() === 0){
+                    cm.removeClass(that.nodes.notifications, 'is-show', true);
                 }
             });
         });
         // Overlay Loader
-        if(that.params['showLoader']){
-            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
-                switch(that.params['loaderCoverage']){
+        var overlayContainer;
+        if(that.params.showLoader){
+            cm.getConstructor(that.params.overlayConstructor, function(classConstructor){
+                switch(that.params.loaderCoverage){
                     case 'fields':
-                        overlayContainer = that.nodes['fieldsContainer'];
+                        overlayContainer = that.nodes.fieldsContainer;
                         break;
                     case 'all':
                     default:
-                        overlayContainer = that.nodes['container'];
+                        overlayContainer = that.nodes.container;
                         break;
                 }
-                that.components['loader'] = new classConstructor(
-                    cm.merge(that.params['overlayParams'], {
+                that.components.loader = new classConstructor(
+                    cm.merge(that.params.overlayParams, {
                         'container' : overlayContainer
                     })
                 );
             });
         }
+        // Auto Send
+        that.params.autoSend && that.send();
     };
 
     var renderField = function(type, params){
@@ -10050,7 +10349,7 @@ function(params){
         // Merge params
         params = cm.merge({
             'form' : that,
-            'formName' : that.params['name'],
+            'formName' : that.params.name,
             'system' : false,
             'name' : '',
             'dataName' : null,
@@ -10060,50 +10359,64 @@ function(params){
             'validate' : false,
             'send' : true,
             'sendEmpty' : true,
+            'sendAlways' : false,
             'sendPath' : null,
+            'sendCallback' : null,
+            'preventReset' : false,
             'options' : [],
-            'container' : that.nodes['fields'],
+            'container' : that.nodes.fields,
+            'render' : true,
             'renderName' : null,
-            'renderErrorMessage' : that.params['showValidationMessages']
+            'renderErrorMessage' : that.params.showValidationMessages
         }, params);
         params = cm.merge(cm.clone(field, true), params);
         // Validate
-        params['fieldConstructor'] = cm.isEmpty(params['fieldConstructor']) ? 'Com.FormField' : params['fieldConstructor'];
-        params['value'] = that.params['data'][params['name']] || params['value'];
-        params['dataValue'] = that.params['data'][params['dataName']] || params['dataValue'];
-        params['renderName'] = cm.isBoolean(params['renderName']) ? params['renderName'] : that.params['renderNames'];
+        params.fieldConstructor = !cm.isEmpty(params.fieldConstructor) ? params.fieldConstructor : 'Com.FormField';
+        params.value = !cm.isEmpty(that.params.data[params.name]) ? that.params.data[params.name] : params.value;
+        params.dataValue = !cm.isEmpty(that.params.data[params.dataName]) ? that.params.data[params.dataName] : params.dataValue;
+        params.renderName = cm.isBoolean(params.renderName) ? params.renderName : that.params.renderNames;
         // Render controller
-        if(field && !that.fields[params['name']]){
+        if(params.render && field && !that.fields[params.name]){
             renderFieldController(params);
         }
     };
 
     var renderFieldController = function(params){
-        cm.getConstructor(params['fieldConstructor'], function(classConstructor){
-            params['fieldController'] = params['controller'] = new classConstructor(params);
-            params['inputController'] = params['constructorController'] = cm.isFunction(params['fieldController'].getController) && params['fieldController'].getController();
+        cm.getConstructor(params.fieldConstructor, function(classConstructor){
+            params.fieldController = params.controller = new classConstructor(params);
+            params.inputController = params.constructorController = cm.isFunction(params.fieldController.getController) && params.fieldController.getController();
             // Events
-            params['fieldController'].addEvent('onBlur', function(field){
-                if(that.params['validate'] && that.params['validateOnChange'] && (field.params['required'] || field.params['validate'])){
-                    params['fieldController'].validate();
+            params.fieldController.addEvent('onBlur', function(field){
+                if(
+                    that.params.validate && that.params.validateOnChange
+                    && (field.params.required || field.params.validate)
+                ){
+                    params.fieldController.validate();
                 }
             });
-            params['fieldController'].addEvent('onChange', function(field){
-                if(that.params['validate'] && that.params['validateOnChange'] && (field.params['required'] || field.params['validate'])){
-                    params['fieldController'].validate();
+            params.fieldController.addEvent('onChange', function(field){
+                if(
+                    that.params.validate && that.params.validateOnChange
+                    && (field.params.required || field.params.validate)
+                ){
+                    params.fieldController.validate();
                 }
                 that.triggerEvent('onChange');
             });
-            params['fieldController'].addEvent('onInput', function(field){
-                if(that.params['validate'] && that.params['validateOnInput'] && (field.params['required'] || field.params['validate'])){
-                    params['fieldController'].validate();
+            params.fieldController.addEvent('onInput', function(field){
+                if(
+                    that.params.validate && that.params.validateOnInput
+                    && (field.params.required || field.params.validate)
+                ){
+                    params.fieldController.validate();
                 }
                 that.triggerEvent('onInput');
             });
             // Save processed origin data to compare before send
-            params['originValue'] = params['fieldController'].get();
+            // Use clone to prevent linking
+            params.originValue = cm.clone(params.fieldController.get());
             // Save
-            that.fields[params['name']] = params;
+            that.fields[params.name] = params;
         });
     };
 
@@ -10118,22 +10431,22 @@ function(params){
             'handler' : function(){}
         }, params);
         // Render
-        if(!that.buttons[params['name']]){
-            params['node'] = cm.node('button', {'name' : params['name'], 'class' : ['button', params['class']].join(' ')},
-                params['labelNode'] = cm.node('div', {'class' : 'label is-show'}, params['label'])
+        if(!that.buttons[params.name]){
+            params.node = cm.node('button', {'name' : params.name, 'class' : ['button', params.class].join(' ')},
+                params.labelNode = cm.node('div', {'class' : 'label is-show'}, params.label)
             );
             // Spinner
-            if(params['spinner']){
-                params['spinnerNode'] = cm.node('div', {'class' : ['icon', params['spinnerClass']].join(' ')});
-                cm.appendChild(params['spinnerNode'], params['node']);
-                cm.addClass(params['node'], 'button-spinner');
+            if(params.spinner){
+                params.spinnerNode = cm.node('div', {'class' : ['icon', params.spinnerClass].join(' ')});
+                cm.appendChild(params.spinnerNode, params.node);
+                cm.addClass(params.node, 'button-spinner');
             }
             // Actions
-            switch(params['action']){
+            switch(params.action){
                 case 'submit':
-                    params['node'].type = 'submit';
-                    cm.addClass(params['node'], 'button-primary');
-                    cm.addEvent(params['node'], 'click', function(e){
+                    params.node.type = 'submit';
+                    cm.addClass(params.node, 'button-primary');
+                    cm.addEvent(params.node, 'click', function(e){
                         cm.preventDefault(e);
                         if(that.isProcess){
                             that.abort();
@@ -10144,9 +10457,9 @@ function(params){
                     break;
 
                 case 'reset':
-                    params['node'].type = 'reset';
-                    cm.addClass(params['node'], 'button-secondary');
-                    cm.addEvent(params['node'], 'click', function(e){
+                    params.node.type = 'reset';
+                    cm.addClass(params.node, 'button-transparent');
+                    cm.addEvent(params.node, 'click', function(e){
                         cm.preventDefault(e);
                         if(!that.isProcess){
                             that.reset();
@@ -10155,8 +10468,8 @@ function(params){
                     break;
 
                 case 'clear':
-                    cm.addClass(params['node'], 'button-secondary');
-                    cm.addEvent(params['node'], 'click', function(e){
+                    cm.addClass(params.node, 'button-transparent');
+                    cm.addEvent(params.node, 'click', function(e){
                         cm.preventDefault(e);
                         if(!that.isProcess){
                             that.clear();
@@ -10166,29 +10479,29 @@ function(params){
 
                 case 'custom':
                 default:
-                    cm.addEvent(params['node'], 'click', function(e){
+                    cm.addEvent(params.node, 'click', function(e){
                         cm.preventDefault(e);
-                        cm.isFunction(params['handler']) && params['handler'](that, params, e);
+                        cm.isFunction(params.handler) && params.handler(that, params, e);
                     });
                     break;
             }
-            cm.appendChild(params['node'], that.nodes['buttonsHolder']);
+            cm.appendChild(params.node, that.nodes.buttonsHolder);
             // Export
-            that.buttons[params['name']] = params;
+            that.buttons[params.name] = params;
         }
     };
 
     var toggleButtons = function(){
         cm.forEach(that.buttons, function(item){
             if(that.isProcess){
-                if(item['spinner']){
-                    cm.replaceClass(item['labelNode'], 'is-show', 'is-hide');
-                    cm.replaceClass(item['spinnerNode'], 'is-hide', 'is-show');
+                if(item.spinner){
+                    cm.replaceClass(item.labelNode, 'is-show', 'is-hide');
+                    cm.replaceClass(item.spinnerNode, 'is-hide', 'is-show');
                 }
             }else{
-                if(item['spinner']){
-                    cm.replaceClass(item['labelNode'], 'is-hide', 'is-show');
-                    cm.replaceClass(item['spinnerNode'], 'is-show', 'is-hide');
+                if(item.spinner){
+                    cm.replaceClass(item.labelNode, 'is-hide', 'is-show');
+                    cm.replaceClass(item.spinnerNode, 'is-show', 'is-hide');
                 }
             }
         });
@@ -10197,22 +10510,22 @@ function(params){
     var renderSeparator = function(params){
         params = cm.merge({
             'node' : cm.node('hr'),
-            'container' : that.nodes['fields']
+            'container' : that.nodes.fields
         }, params);
-        cm.appendChild(params['node'], params['container']);
+        cm.appendChild(params.node, params.container);
     };
 
     var removeField = function(name){
         var item = that.getField(name);
         if(item){
-            item['fieldController'] && cm.isFunction(item['fieldController'].destruct) && item['fieldController'].destruct();
+            item.fieldController && cm.isFunction(item.fieldController.destruct) && item.fieldController.destruct();
             delete that.fields[name];
         }
     };
 
     /* *** VALIDATE *** */
 
-    var validateHelper = function(){
+    var validateHelper = function(options){
         var fieldParams,
             isFieldValidatable,
             constraintsData,
@@ -10224,11 +10537,13 @@ function(params){
             };
         // Fields
         cm.forEach(that.fields, function(field, name){
-            fieldParams = field['controller'].getParams();
-            isFieldValidatable = field['field'] && !field['system'] && (fieldParams['required'] || fieldParams['validate']) && cm.isFunction(field['controller'].validate);
-            if(isFieldValidatable && !field['controller'].validate()){
-                data['message'] = that.lang('form_error');
-                data['valid'] = false;
+            fieldParams = field.controller.getParams();
+            isFieldValidatable = field.field && !field.system
+                && (fieldParams.required || fieldParams.validate)
+                && cm.isFunction(field.controller.validate);
+            if(isFieldValidatable && !field.controller.validate(options)){
+                data.message = that.lang('form_error');
+                data.valid = false;
             }
         });
         // Constraints
@@ -10248,7 +10563,7 @@ function(params){
         constraintsTest = that.constraints.some(function(item){
             if(cm.isFunction(item)){
                 constraintsData = item(data);
-                return !constraintsData['valid'];
+                return !constraintsData.valid;
             }
             return false;
         });
@@ -10258,17 +10573,69 @@ function(params){
         return false;
     };
 
+    /* ******* HELPERS ******* */
+
+    var getHelper = function(type, o, field, name){
+        var value = field.controller.get(),
+            path;
+        // Process send callback function if specified
+        if(cm.isFunction(field.sendCallback)){
+            value = field.sendCallback(field, value);
+        }
+        // To send only changed values we need to make diff between original and current values
+        if(
+            cm.inArray(['send', 'sendPath'], type)
+            && that.params.sendOnlyChangedFields && !field.sendAlways
+        ){
+            value = cm.getDiffCompare(field.originValue, value);
+        }
+        if(
+            !cm.isUndefined(value)
+            && (that.params.sendEmptyFields || !that.params.sendEmptyFields && !cm.isEmpty(value))
+            && (field.sendEmpty || !field.sendEmpty && !cm.isEmpty(value))
+        ){
+            if(type === 'sendPath' && !cm.isEmpty(field.sendPath)){
+                path = cm.objectFormPath(field.sendPath, value, '');
+                o = cm.merge(o, path);
+            }else{
+                o[name] = value;
+            }
+        }
+        return o;
+    };
+
+    var sendPlaceholderHelper = function(){
+        var data = that.get('sendPath');
+        sendCompleteHelper(data);
+        that.clearError(that);
+        that.triggerEvent('onSendStart', data);
+        that.triggerEvent('onSend', data);
+        that.triggerEvent('onSuccess', data);
+        that.triggerEvent('onSendEnd', data);
+    };
+
+    var sendCompleteHelper = function(data){
+        data = !cm.isEmpty(data) ? data : that.get('sendPath');
+        cm.forEach(that.fields, function(field, name){
+            if(typeof data[name] !== 'undefined'){
+                that.setFieldParams(name, {
+                    'originValue' : data[name]
+                });
+            }
+        });
+    };
+
     /* ******* CALLBACKS ******* */
 
     that.callbacks.prepare = function(that, config){
         config = that.callbacks.beforePrepare(that, config);
-        config['url'] = cm.strReplace(config['url'], {
+        config.url = cm.strReplace(config.url, {
             '%baseUrl%' : cm._baseUrl
         });
-        config['params'] = cm.objectReplace(config['params'], {
+        config.params = cm.objectReplace(config.params, {
             '%baseUrl%' : cm._baseUrl
         });
-        config['params'] = cm.merge(config['params'], that.get('sendPath'));
+        config.params = cm.merge(config.params, that.get('sendPath'));
         config = that.callbacks.afterPrepare(that, config);
         return config;
     };
@@ -10284,6 +10651,12 @@ function(params){
     that.callbacks.request = function(that, config){
         config = that.callbacks.prepare(that, config);
         that.callbacks.clearError(that);
+
+        if(!that.params.sendEmptyForm && cm.isEmpty(config.params)){
+            sendPlaceholderHelper();
+            return;
+        }
+
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
@@ -10308,11 +10681,11 @@ function(params){
 
     that.callbacks.start = function(that, config){
         that.isProcess = true;
-        cm.addClass(that.nodes['container'], 'is-submitting');
+        cm.addClass(that.nodes.container, 'is-submitting');
         // Toggle buttons
         toggleButtons();
         // Show Loader
-        if(that.params['showLoader']){
+        if(that.params.showLoader){
             that.showLoader();
         }
         that.triggerEvent('onSendStart');
@@ -10320,11 +10693,11 @@ function(params){
 
     that.callbacks.end = function(that, config){
         that.isProcess = false;
-        cm.removeClass(that.nodes['container'], 'is-submitting');
+        cm.removeClass(that.nodes.container, 'is-submitting');
         // Toggle buttons
         toggleButtons();
         // Hide Loader
-        if(that.params['showLoader']){
+        if(that.params.showLoader){
             that.hideLoader();
         }
         that.triggerEvent('onSendEnd');
@@ -10334,8 +10707,8 @@ function(params){
         var errors,
             data;
         if(!cm.isEmpty(response)){
-            errors = cm.reducePath(that.params['responseErrorsKey'], response);
-            data = cm.reducePath(that.params['responseKey'], response);
+            errors = cm.reducePath(that.params.responseErrorsKey, response);
+            data = cm.reducePath(that.params.responseKey, response);
             if(!cm.isEmpty(errors)){
                 that.callbacks.error(that, config, response);
             }else{
@@ -10351,9 +10724,9 @@ function(params){
             message,
             code;
         if(!cm.isEmpty(response)){
-            errors = cm.reducePath(that.params['responseErrorsKey'], response);
-            message = cm.reducePath(that.params['responseMessageKey'], response);
-            code = cm.reducePath(that.params['responseCodeKey'], response);
+            errors = cm.reducePath(that.params.responseErrorsKey, response);
+            message = cm.reducePath(that.params.responseMessageKey, response);
+            code = cm.reducePath(that.params.responseCodeKey, response);
         }
         that.callbacks.renderError(that, errors, message);
         that.triggerEvent('onError', {
@@ -10365,12 +10738,13 @@ function(params){
     };
 
     that.callbacks.success = function(that, data){
-        if(that.params['showNotifications'] && that.params['showSuccessNotification']){
+        if(that.params.showNotifications && that.params.showSuccessNotification){
             that.callbacks.renderNotification(that, {
                 'label' : that.lang('success_message'),
                 'type' : 'success'
             });
         }
+        sendCompleteHelper(data);
         that.triggerEvent('onSuccess', data);
     };
 
@@ -10385,7 +10759,7 @@ function(params){
         that.clearNotification();
         // Clear field errors
         cm.forEach(that.fields, function(field){
-            field['controller'].clearError();
+            field.controller.clearError();
         });
     };
 
@@ -10398,7 +10772,7 @@ function(params){
         // Render new errors messages
         if(cm.isArray(errors) || cm.isObject(errors)){
             messages = that.callbacks.renderErrorMessages(that, errors);
-            if(that.params['showNotifications']){
+            if(that.params.showNotifications){
                 that.callbacks.renderNotification(that, {
                     'label' : label,
                     'type' : 'danger',
@@ -10407,14 +10781,14 @@ function(params){
                 });
             }
         }else if(hasMessage){
-            if(that.params['showNotifications']){
+            if(that.params.showNotifications){
                 that.callbacks.renderNotification(that, {
                     'label' : label,
                     'type' : 'danger'
                 });
             }
         }else{
-            if(that.params['showNotifications']){
+            if(that.params.showNotifications){
                 that.callbacks.renderNotification(that, {
                     'label' : that.lang('server_error'),
                     'type' : 'danger'
@@ -10427,42 +10801,53 @@ function(params){
         var field,
             fieldName,
             fieldMessage,
+            fieldLabel,
             messages = [];
         cm.forEach(errors, function(item, key){
             // Get field
-            fieldName = item && item['field'] ? item['field'] : key;
+            fieldName = item && item.field ? item.field : key;
             field = that.getField(fieldName);
+            fieldLabel = field && !cm.isEmpty(field.label)? field.label : fieldName;
             // Render field messages
             if(cm.isObject(item)){
-                if(cm.isArray(item['message'])){
-                    cm.forEach(item['message'], function(messageItem){
-                        fieldMessage = that.lang(messageItem);
+                if(cm.isArray(item.message)){
+                    cm.forEach(item.message, function(messageItem){
+                        fieldMessage = that.callbacks.renderErrorMessage(that, field, messageItem, fieldLabel);
                         messages.push(fieldMessage);
-                        field && field['controller'].renderError(fieldMessage);
                     })
-                }else if(!cm.isEmpty(item['message'])){
-                    fieldMessage = that.lang(item['message']);
+                }else if(!cm.isEmpty(item.message)){
+                    fieldMessage = that.callbacks.renderErrorMessage(that, field, item.message, fieldLabel);
                     messages.push(fieldMessage);
-                    field && field['controller'].renderError(fieldMessage);
                 }
             }else if(cm.isArray(item)){
                 cm.forEach(item, function(messageItem){
-                    fieldMessage = that.lang(messageItem);
+                    fieldMessage = that.callbacks.renderErrorMessage(that, field, messageItem, fieldLabel);
                     messages.push(fieldMessage);
-                    field && field['controller'].renderError(fieldMessage);
                 });
             }else if(!cm.isEmpty(item)){
-                fieldMessage = that.lang(item);
+                fieldMessage = that.callbacks.renderErrorMessage(that, field, item, fieldLabel);
                 messages.push(fieldMessage);
-                field && field['controller'].renderError(fieldMessage);
             }
         });
         return messages;
     };
 
+    that.callbacks.renderErrorMessage = function(that, field, message, label){
+        var messagePath = ['errors', message].join('.'),
+            messageString = that.getMsg(messagePath);
+        message = !cm.isEmpty(messageString) ? that.msg(messagePath) : message;
+        if(field){
+            field.controller.renderError(message);
+        }
+        if(!cm.isEmpty(label)){
+            message = [label, message].join(': ');
+        }
+        return message
+    };
+
     that.callbacks.renderNotification = function(that, o){
-        cm.addClass(that.nodes['notifications'], 'is-show', true);
-        that.components['notifications'].add(o);
+        cm.addClass(that.nodes.notifications, 'is-show', true);
+        that.components.notifications.add(o);
     };
 
     /* ******* PUBLIC ******* */
@@ -10471,10 +10856,10 @@ function(params){
         if(!that._isDestructed){
             that._isDestructed = true;
             cm.forEach(that.fields, function(field){
-                field['controller'].destruct();
+                field.controller.destruct();
             });
             that.removeFromStack();
-            that.params['removeOnDestruct'] && cm.remove(that.nodes['container']);
+            that.params.removeOnDestruct && cm.remove(that.nodes.container);
         }
         return that;
     };
@@ -10518,7 +10903,7 @@ function(params){
     };
 
     that.appendChild = function(node){
-        cm.appendChild(node, that.nodes['fields']);
+        cm.appendChild(node, that.nodes.fields);
         return that;
     };
 
@@ -10542,66 +10927,42 @@ function(params){
     };
 
     that.get = function(type, merged){
-        var o = {},
-            handler,
-            pathHandler,
-            value,
-            path;
+        var data = {};
         // Validate
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
         merged = cm.isUndefined(merged) ? false : merged;
-        // Handler
-        handler = function(field, name, sendPath){
-            sendPath = !cm.isUndefined(sendPath) ? sendPath : false;
-            value = field['controller'].get();
-            if(that.params['sendOnlyChangedFields']){
-                value = cm.getDiffCompare(field['originValue'], value);
-            }
-            if(
-                !cm.isUndefined(value)
-                && (that.params['sendEmptyFields'] || !that.params['sendEmptyFields'] && !cm.isEmpty(value))
-                && (field['sendEmpty'] || !field['sendEmpty'] && !cm.isEmpty(value))
-            ){
-                if(sendPath && !cm.isEmpty(field['sendPath'])){
-                    path = cm.objectFormPath(field['sendPath'], value, '');
-                    o = cm.merge(o, path);
-                }else{
-                    o[name] = value;
-                }
-            }
-        };
         // Get
         cm.forEach(that.fields, function(field, name){
             switch(type){
                 case 'all':
-                    handler(field, name);
+                    data = getHelper('all', data, field, name);
                     break;
                 case 'fields':
-                    if(!field['system']){
-                        handler(field, name);
+                    if(!field.system){
+                        data = getHelper('fields', data, field, name);
                     }
                     break;
                 case 'send':
-                    if(field['send'] && !field['system']){
-                        handler(field, name);
+                    if(field.send && !field.system){
+                        data = getHelper('send', data, field, name);
                     }
                     break;
                 case 'sendPath':
-                    if(field['send'] && !field['system']){
-                        handler(field, name, true);
+                    if(field.send && !field.system){
+                        data = getHelper('sendPath', data, field, name);
                     }
                     break;
                 case 'system':
-                    if(field['system']){
-                        handler(field, name);
+                    if(field.system){
+                        data = getHelper('system', data, field, name);
                     }
                     break;
             }
         });
         if(merged){
-            o = cm.merge(that.params['data'], o);
+            data = cm.merge(that.params.data, data);
         }
-        return o;
+        return data;
     };
 
     that.getAll = function(){
@@ -10612,9 +10973,9 @@ function(params){
         var field, setValue;
         cm.forEach(data, function(value, name){
             field = that.fields[name];
-            if(field && !field['system']){
-                setValue = data[field['dataName']] || value;
-                that.fields[name]['controller'].set(setValue, triggerEvents);
+            if(field && !field.system){
+                setValue = data[field.dataName] || value;
+                that.fields[name].controller.set(setValue, triggerEvents);
             }
         });
         that.triggerEvent('onSet');
@@ -10623,15 +10984,15 @@ function(params){
 
     that.clear = function(){
         cm.forEach(that.fields, function(field){
-            field['controller'].destruct();
+            field.controller.destruct();
         });
         that.fields = {};
-        cm.clearNode(that.nodes['fields']);
+        cm.clearNode(that.nodes.fields);
         cm.forEach(that.buttons, function(button){
             cm.remove(button.node);
         });
         that.buttons = {};
-        cm.clearNode(that.nodes['buttonsHolder']);
+        cm.clearNode(that.nodes.buttonsHolder);
         that.clearError();
         that.triggerEvent('onClear');
         return that;
@@ -10639,27 +11000,36 @@ function(params){
 
     that.reset = function(){
         cm.forEach(that.fields, function(field){
-            field['controller'].reset();
+            if(!field.preventReset){
+                field.controller.reset();
+            }
         });
         that.clearError();
         that.triggerEvent('onReset');
         return that;
     };
 
-    that.validate = function(){
-        var data = validateHelper();
+    that.validate = function(options){
+        options = cm.merge({
+            'silent' : false,
+            'triggerEvents' : true
+        }, options);
         // Clear previous notifications
         that.clearNotification();
         // Show new notifications if exists
-        if(!data['valid']){
-            if(that.params['showNotifications'] && that.params['showValidationNotification']){
+        var data = validateHelper(options);
+        if(!data.valid && !options.silent){
+            if(that.params.showNotifications && that.params.showValidationNotification){
                 that.renderNotification({
-                    'label' : data['message'],
+                    'label' : data.message,
                     'type' : 'danger'
                 });
             }
         }
-        that.triggerEvent('onValidate', data);
+        // Trigger events
+        if(options.triggerEvents && !options.silent){
+            that.triggerEvent('onValidate', data);
+        }
         return data;
     };
 
@@ -10668,20 +11038,22 @@ function(params){
             'valid' : true
         };
         // Validate
-        if(that.params['validate']){
+        if(that.params.validate){
             data = that.validate();
         }
         // Send
-        if(data['valid']){
+        if(data.valid){
             if(that.isAjax){
-                that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params['ajax']));
+                that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params.ajax));
             }else{
-                that.clearError(that);
-                that.triggerEvent('onSendStart', that.get());
-                that.triggerEvent('onSend', that.get());
-                that.triggerEvent('onSendEnd', that.get());
+                sendPlaceholderHelper();
             }
         }
+        return that;
+    };
+
+    that.sendPlaceholder = function(){
+        sendPlaceholderHelper();
         return that;
     };
 
@@ -10696,19 +11068,19 @@ function(params){
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
-                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                that.params.ajax = cm.merge(that._raw.params.ajax, o);
                 break;
             case 'current':
-                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                that.params.ajax = cm.merge(that.params.ajax, o);
                 break;
             case 'update':
-                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                that.params.ajax = cm.merge(that._update.params.ajax, o);
                 break;
         }
         if(update){
-            that._update.params['ajax'] = cm.clone(that.params['ajax']);
+            that._update.params.ajax = cm.clone(that.params.ajax);
         }
-        that.isAjax = that.params['ajax'] && !cm.isEmpty(that.params['ajax']['url']);
+        that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url);
         return that;
     };
 
@@ -10718,8 +11090,8 @@ function(params){
     };
 
     that.clearNotification = function(){
-        cm.removeClass(that.nodes['notifications'], 'is-show', true);
-        that.components['notifications'].clear();
+        cm.removeClass(that.nodes.notifications, 'is-show', true);
+        that.components.notifications.clear();
         return that;
     };
 
@@ -10734,26 +11106,26 @@ function(params){
     };
 
     that.showLoader = function(isImmediately){
-        that.components['loader'] && that.components['loader'].open(isImmediately);
+        that.components.loader && that.components.loader.open(isImmediately);
         return that;
     };
 
     that.hideLoader = function(isImmediately){
-        that.components['loader'] && that.components['loader'].close(isImmediately);
+        that.components.loader && that.components.loader.close(isImmediately);
         return that;
     };
 
 
     that.getName = function(){
-        return that.params['name'];
+        return that.params.name;
     };
 
     that.getContainer = function(){
-        return that.nodes['container'];
+        return that.nodes.container;
     };
 
     that.getButtonsContainer = function(){
-        return that.nodes['buttonsContainer'];
+        return that.nodes.buttonsContainer;
     };
 
     init();
@@ -10808,7 +11180,8 @@ cm.define('Com.FormField', {
         'className' : '',                   // is-box
         'constructor' : false,
         'constructorParams' : {},
-        'Com.HelpBubble' : {
+        'helpConstructor' : 'Com.HelpBubble',
+        'helpParams' : {
             'renderStructure' : true
         }
     }
@@ -10824,35 +11197,35 @@ function(params){
 
     var init = function(){
         that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataConfig(that.params['node']);
+        that.convertEvents(that.params.events);
+        that.getDataConfig(that.params.node);
         that.callbacksProcess();
         validateParams();
         render();
-        that.addToStack(that.params['node']);
+        that.addToStack(that.params.node);
         that.triggerEvent('onRender');
     };
 
     var validateParams = function(){
-        if(that.params['constructor']){
-            cm.getConstructor(that.params['constructor'], function(classConstructor){
-                that.params['constructor'] = classConstructor;
+        if(that.params.constructor){
+            cm.getConstructor(that.params.constructor, function(classConstructor){
+                that.params.constructor = classConstructor;
             });
         }
-        that.params['constructorParams']['node'] = that.params['node'];
-        that.params['constructorParams']['name'] = that.params['name'];
-        that.params['constructorParams']['options'] = that.params['options'];
-        that.params['constructorParams']['value'] = that.params['dataValue'] || that.params['value'];
-        that.params['Com.HelpBubble']['content'] = that.params['help'];
-        that.params['Com.HelpBubble']['name'] = that.params['name'];
-        that.form = that.params['form'];
+        that.params.constructorParams.node = that.params.node;
+        that.params.constructorParams.name = that.params.name;
+        that.params.constructorParams.options = that.params.options;
+        that.params.constructorParams.value = that.params.dataValue || that.params.value;
+        that.params.helpParams.content = that.params.help;
+        that.params.helpParams.name = that.params.name;
+        that.form = that.params.form;
     };
 
     var render = function(){
         // Render structure
         that.nodes = that.callbacks.render(that) || {};
         // Append
-        that.params['container'].appendChild(that.nodes['container']);
+        that.params.container.appendChild(that.nodes.container);
         // Construct
         that.callbacks.construct(that);
     };
@@ -10860,45 +11233,45 @@ function(params){
     /* ******* CALLBACKS ******* */
 
     that.callbacks.construct = function(that){
-        that.controller = that.callbacks.controller(that, that.params['constructorParams']);
+        that.controller = that.callbacks.controller(that, that.params.constructorParams);
     };
 
     that.callbacks.controller = function(that, params){
-        if(that.params['constructor']){
-            return new that.params['constructor'](params);
+        if(that.params.constructor){
+            return new that.params.constructor(params);
         }
     };
 
     that.callbacks.render = function(that){
         var nodes = {};
         // Structure
-        nodes['container'] = cm.node('dl', {'class' : 'pt__field'},
-            nodes['label'] = cm.node('dt',
-                cm.node('label', that.params['label'])
+        nodes.container = cm.node('dl', {'class' : 'pt__field'},
+            nodes.label = cm.node('dt',
+                cm.node('label', that.params.label)
             ),
-            nodes['value'] = cm.node('dd', that.params['node'])
+            nodes.value = cm.node('dd', that.params.node)
         );
-        !that.params['visible'] && cm.addClass(nodes['container'], 'is-hidden');
+        !that.params.visible && cm.addClass(nodes.container, 'is-hidden');
         // Style
-        cm.addClass(nodes['container'], that.params['className']);
+        cm.addClass(nodes.container, that.params.className);
         // Attributes
-        if(!cm.isEmpty(that.params['name'])){
-            that.params['node'].setAttribute('name', that.params['name']);
+        if(!cm.isEmpty(that.params.name)){
+            that.params.node.setAttribute('name', that.params.name);
         }
-        if(!cm.isEmpty(that.params['value'])){
-            that.params['node'].setAttribute('value', that.params['value']);
+        if(!cm.isEmpty(that.params.value)){
+            that.params.node.setAttribute('value', that.params.value);
         }
-        if(!cm.isEmpty(that.params['dataValue'])){
-            that.params['node'].setAttribute('data-value', JSON.stringify(that.params['dataValue']));
+        if(!cm.isEmpty(that.params.dataValue)){
+            that.params.node.setAttribute('data-value', JSON.stringify(that.params.dataValue));
         }
-        if(!cm.isEmpty(that.params['placeholder'])){
-            that.params['node'].setAttribute('placeholder', that.params['placeholder']);
+        if(!cm.isEmpty(that.params.placeholder)){
+            that.params.node.setAttribute('placeholder', that.params.placeholder);
         }
-        if(!cm.isEmpty(that.params['help'])){
-            cm.getConstructor('Com.HelpBubble', function(classConstructor){
-                that.components['help'] = new classConstructor(
-                    cm.merge(that.params['Com.HelpBubble'], {
-                        'container' : nodes['label']
+        if(!cm.isEmpty(that.params.help)){
+            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+                that.components.help = new classConstructor(
+                    cm.merge(that.params.helpParams, {
+                        'container' : nodes.label
                     })
                 );
             });
@@ -10907,17 +11280,17 @@ function(params){
     };
 
     that.callbacks.clearError = function(that){
-        cm.removeClass(that.nodes['container'], 'error');
-        cm.remove(that.nodes['errors']);
+        cm.removeClass(that.nodes.container, 'error');
+        cm.remove(that.nodes.errors);
     };
 
     that.callbacks.renderError = function(that, message){
         that.callbacks.clearError(that);
-        cm.addClass(that.nodes['container'], 'error');
-        that.nodes['errors'] = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+        cm.addClass(that.nodes.container, 'error');
+        that.nodes.errors = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
             cm.node('li', {'class' : 'error'}, message)
         );
-        cm.appendChild(that.nodes['errors'], that.nodes['value']);
+        cm.appendChild(that.nodes.errors, that.nodes.value);
     };
 
     that.callbacks.set = function(that, value){
@@ -10987,17 +11360,17 @@ Com.FormFields.add('buttons', {
     'callbacks' : {
         'render' : function(that){
             var nodes = {};
-            nodes['container'] = that.params['node'];
-            nodes['inner'] = cm.node('div', {'class' : 'inner'});
-            cm.appendChild(nodes['inner'], nodes['container']);
+            nodes.container = that.params.node;
+            nodes.inner = cm.node('div', {'class' : 'inner'});
+            cm.appendChild(nodes.inner, nodes.container);
             return nodes;
         },
         'controller' : function(that){
             var buttons = {},
                 node;
-            cm.forEach(that.params['options'], function(item){
-                node = cm.node('button', item['text']);
-                switch(item['value']){
+            cm.forEach(that.params.options, function(item){
+                node = cm.node('button', item.text);
+                switch(item.value){
                     case 'submit':
                         node.type = 'submit';
                         cm.addClass(node, 'button-primary');
@@ -11027,8 +11400,8 @@ Com.FormFields.add('buttons', {
                     default:
                         break;
                 }
-                buttons[item['value']] = node;
-                that.params['node'].appendChild(node);
+                buttons[item.value] = node;
+                that.params.node.appendChild(node);
             });
             return buttons;
         }
@@ -11149,13 +11522,11 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     classProto.onSetEvents = function(){
         var that = this;
         that.params['toggleOnHashChange'] && cm.addEvent(window, 'hashchange', that.hashChangeHandler);
-        return that;
     };
 
     classProto.onUnsetEvents = function(){
         var that = this;
         that.params['toggleOnHashChange'] && cm.removeEvent(window, 'hashchange', that.hashChangeHandler);
-        return that;
     };
 
     classProto.onConstructEnd = function(){
@@ -12705,6 +13076,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.CalendarEvents', {
     'modules' : [
         'Params',
@@ -14684,6 +15056,7 @@ cm.define('Com.DialogContainer', {
         'container' : 'document.body',
         'destructOnClose' : false,
         'renderButtons' : false,
+        'renderButtonsPositions' : false,
         'renderTitle' : true,
         'renderHelp' : false,
         'justifyButtons' : 'right',
@@ -14752,9 +15125,15 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
     classProto.renderButtonsView = function(){
         var that = this;
         // Structure
-        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
+        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons is-adaptive'},
             that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
         );
+        if(that.params['renderButtonsPositions']){
+            that.nodes['buttonsHolderLeft'] = cm.node('div', {'class' : 'left'});
+            that.nodes['buttonsHolderRight'] = cm.node('div', {'class' : 'right'});
+            cm.appendChild(that.nodes['buttonsHolderLeft'], that.nodes['buttonsHolder']);
+            cm.appendChild(that.nodes['buttonsHolderRight'], that.nodes['buttonsHolder']);
+        }
         cm.addClass(that.nodes['buttons'], ['pull', that.params['justifyButtons']].join('-'));
         // Render buttons
         cm.forEach(that.buttons, function(item){
@@ -14770,19 +15149,47 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             'name' : '',
             'label' : '',
             'style' : 'button-primary',
+            'justify' : 'auto',
             'embed' : false,
             'callback' : function(){}
         }, item);
+        // Validate
+        item['justify'] = that.params['renderButtonsPositions'] ? item['justify'] : 'auto';
         // Structure
         item['node'] = cm.node('button', {'class' : ['button', item['style']].join(' ')}, item['label']);
         cm.addEvent(item['node'], 'click', item['callback']);
         // Embed
         that.buttons[item['name']] = item;
-        if(that.nodes['buttonsHolder']){
-            item['embed'] = true;
-            cm.appendChild(item['node'], that.nodes['buttonsHolder']);
-        }
+        that.embedButton(item);
         return item;
+    };
+
+    classProto.embedButton = function(item){
+        var that = this;
+        switch(item['justify']){
+            case 'right':
+                if(that.nodes['buttonsHolderRight']){
+                    item['embed'] = true;
+                    cm.appendChild(item['node'], that.nodes['buttonsHolderRight']);
+                }
+                break;
+
+            case 'left':
+                if(that.nodes['buttonsHolderLeft']){
+                    item['embed'] = true;
+                    cm.appendChild(item['node'], that.nodes['buttonsHolderLeft']);
+                }
+                break;
+
+            case 'auto':
+            default:
+                if(that.nodes['buttonsHolder']){
+                    item['embed'] = true;
+                    cm.appendChild(item['node'], that.nodes['buttonsHolder']);
+                }
+                break;
+        }
+        return that;
     };
 
     classProto.renderButton = function(item){
@@ -14793,10 +15200,10 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         }else{
             item = that.addButton(item);
         }
+        // TODO: Check this moment
         // Embed
-        if(!item['embed'] && that.nodes['buttonsHolder']){
-            item['embed'] = true;
-            cm.appendChild(item['node'], that.nodes['buttonsHolder']);
+        if(!item['embed']){
+            that.embedButton(item);
         }
         return that;
     };
@@ -14806,6 +15213,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         return that.buttons[name];
     };
 });
+
 cm.define('Com.Draganddrop', {
     'modules' : [
         'Params',
@@ -16530,6 +16938,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         var that = this,
             item = {
                 '_type' : 'file',
+                '_isFile' : false,
                 'value' : null,
                 'error' : null,
                 'name' : '',
@@ -16539,6 +16948,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
             },
             parsed;
         if(cm.isFile(o)){
+            item['_isFile'] = true;
             item['file'] = o;
             item['type'] = o.type;
             item['name'] = o.name;
@@ -16943,6 +17353,9 @@ cm.define('Com.Gallery', {
         'showArrowTitles' : false,
         'autoplay' : true,
         'zoom' : true,
+        'types' : {
+            'image' : 'jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff'
+        },
         'icons' : {
             'prev' : 'icon default prev',
             'next' : 'icon default next',
@@ -17051,8 +17464,14 @@ function(params){
             'mime' : ''
         }, item);
         // Check type
+        try{
+            item['_url'] = new URL(item['src']);
+        }catch(e){
+        }
+        item['_regexp'] = new RegExp('\\.(' + that.params['types']['image'] + ')$', 'gi');
         if(
-            /\.(jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff)$/gi.test(item['src'])
+            item['_regexp'].test(item['src'])
+            || (item['_url'] && item['_regexp'].test(item['_url'].pathname))
             || /^data:image/gi.test(item['src'])
             || /^image/gi.test(item['mime'])
             || item['type'] === 'image'
@@ -17290,6 +17709,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.GalleryLayout', {
     'modules' : [
         'Params',
@@ -17933,7 +18353,11 @@ cm.define('Com.Gridlist', {
         'onRender',
         'onRenderStart',
         'onRenderEnd',
+        'onLoadStart',
         'onLoadEnd',
+        'onLoadError',
+        'onPageRenderStart',
+        'onPageRenderEnd',
         'onRenderTitleItem',
         'onRenderFilterItem',
         'onColumnsChange',
@@ -17969,13 +18393,17 @@ cm.define('Com.Gridlist', {
         'visibleDateFormat' : 'cm._config.dateTimeFormat',          // Render date format
 
         // Pagination and ajax data request
+        'renderEmptyMessage' : true,
+        'renderEmptyTable' : false,
         'renderFilter' : false,
         'divideTableHeader' : false,
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
         'responseErrorsKey' : 'errors',
+        'responseMessageKey' : 'message',
         'responseCountKey' : 'count',                               // Response data count response key
+        'showLoader' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -18008,7 +18436,9 @@ cm.define('Com.Gridlist', {
         'Com.GridlistHelper' : {
             'customEvents' : false
         },
-        'Com.Pagination' : {
+        'autoSend' : true,
+        'paginationConstructor' : 'Com.Pagination',
+        'paginationParams' : {
             'renderStructure' : true,
             'embedStructureOnRender' : true,
             'animateSwitch' : true,
@@ -18058,20 +18488,25 @@ function(params){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
         // Data
-        that.params['data'] = that.callbacks.filter(that, that.params['data']);
+        if(!cm.isEmpty(that.params['data']) && cm.isArray(that.params['data'])){
+            that.params['data'] = that.callbacks.filter(that, that.params['data']);
+        }
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
             that.params['pagination'] = true;
-            that.params['Com.Pagination']['ajax'] = that.params['ajax'];
-            that.params['Com.Pagination']['responseKey'] = that.params['responseKey'];
-            that.params['Com.Pagination']['responseCountKey'] = that.params['responseCountKey'];
-            that.params['Com.Pagination']['responseErrorsKey'] = that.params['responseErrorsKey'];
+            that.params['paginationParams']['autoSend'] = that.params['autoSend'];
+            that.params['paginationParams']['ajax'] = that.params['ajax'];
+            that.params['paginationParams']['showLoader'] = that.params['showLoader'];
+            that.params['paginationParams']['responseKey'] = that.params['responseKey'];
+            that.params['paginationParams']['responseCountKey'] = that.params['responseCountKey'];
+            that.params['paginationParams']['responseMessageKey'] = that.params['responseMessageKey'];
+            that.params['paginationParams']['responseErrorsKey'] = that.params['responseErrorsKey'];
         }else{
-            that.params['Com.Pagination']['count'] = that.params['data'].length;
+            that.params['paginationParams']['count'] = that.params['data'].length;
         }
         // Pagination
-        that.params['Com.Pagination']['perPage'] = that.params['perPage'];
+        that.params['paginationParams']['perPage'] = that.params['perPage'];
         // Helper
         that.params['Com.GridlistHelper']['columns'] = that.params['columns'];
     };
@@ -18220,9 +18655,9 @@ function(params){
     /*** PAGINATION AND TABLE ****/
 
     var renderPagination = function(){
-        cm.getConstructor('Com.Pagination', function(classConstructor, className){
+        cm.getConstructor(that.params['paginationConstructor'], function(classConstructor){
             that.components['pagination'] = new classConstructor(
-                cm.merge(that.params[className], {
+                cm.merge(that.params['paginationParams'], {
                     'container' : that.nodes['container'],
                     'callbacks' : {
                         'afterPrepare' : function(pagination, config){
@@ -18230,14 +18665,21 @@ function(params){
                         }
                     },
                     'events' : {
-                        'onPageRender' : function(pagination, data){
-                            renderPaginationPage(data);
+                        'onStart' : function(pagination){
+                            that.triggerEvent('onLoadStart');
                         },
-                        'onPageRenderEnd' : function(pagination, data){
-                            that.redraw();
-                            that.triggerEvent('onLoadEnd', {
-                                'page' : data
+                        'onPageRenderError' : function(pagination, page){
+                            that.triggerEvent('onLoadError', {
+                                'page' : page
                             });
+                            that.triggerEvent('onLoadEnd');
+                        },
+                        'onPageRender' : function(pagination, page){
+                            that.callbacks.renderPage(that, page);
+                        },
+                        'onPageRenderEnd' : function(pagination, page){
+                            that.redraw();
+                            that.triggerEvent('onLoadEnd', {'page' : page});
                         },
                         'onSetCount' : function(pagination, count){
                             that.params['showCounter'] && renderCounter(count);
@@ -18246,28 +18688,6 @@ function(params){
                 })
             );
         });
-    };
-
-    var renderPaginationPage = function(data){
-        var startIndex, endIndex, dataArray;
-        if(that.isAjax){
-            if(!cm.isEmpty(data['data'])){
-                data['data'] = that.callbacks.filter(that, data['data']);
-            }
-            if(!cm.isEmpty(data['data'])){
-                renderTable(data['page'], data['data'], data['container']);
-            }else{
-                if(that.params['renderEmptyTable']){
-                    renderTable(data['page'], data['data'], data['container']);
-                }
-                renderEmptiness(data['container'], data['errors']);
-            }
-        }else{
-            startIndex = that.params['perPage'] * (data['page'] - 1);
-            endIndex = Math.min(that.params['perPage'] * data['page'], that.params['data'].length);
-            dataArray = that.params['data'].slice(startIndex, endIndex);
-            renderTable(data['page'], dataArray, data['container']);
-        }
     };
 
     var renderCounter = function(count){
@@ -18282,6 +18702,9 @@ function(params){
 
     var renderEmptiness = function(container, errors){
         errors = !cm.isEmpty(errors) ? errors : that.lang('empty');
+        if(that.nodes['empty'] && cm.isParent(container, that.nodes['empty'])){
+            cm.remove(that.nodes['empty']);
+        }
         that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
         cm.appendChild(that.nodes['empty'], container);
     };
@@ -18322,6 +18745,9 @@ function(params){
         });
         // Reset table
         resetTable();
+        if(that.nodes['table'] && cm.isParent(container, that.nodes['table'])){
+            cm.remove(that.nodes['table']);
+        }
         // Render Table
         that.nodes['table'] = cm.node('div', {'class' : 'pt__gridlist'},
             that.nodes['tableInner'] = cm.node('table',
@@ -18732,7 +19158,7 @@ function(params){
             item['nodes']['itemsList'] = item['nodes']['linksList'] = cm.node('ul')
         )
         // Items
-        renderCellActionItems(config, row, item, 'links');
+        item['links'] = renderCellActionItems(config, row, item, 'links');
         // Embed
         if(item['nodes']['links'].length){
             cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
@@ -18754,7 +19180,7 @@ function(params){
             )
         );
         // Items
-        renderCellActionItems(config, row, item, 'actions');
+        item['actions'] = renderCellActionItems(config, row, item, 'actions');
         // Embed
         if(item['nodes']['actions'].length){
             cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
@@ -18770,8 +19196,9 @@ function(params){
     };
 
     var renderCellActionItems = function(config, row, item, list){
-        var isInArray, isEmpty;
-        cm.forEach(config[list], function(actionItem){
+        var isInArray, isEmpty,
+            items = [];
+        cm.forEach(config[list], function(actionItem, key){
             actionItem = cm.merge({
                 'name' : '',
                 'label' : '',
@@ -18790,7 +19217,10 @@ function(params){
             if(isEmpty || isInArray){
                 renderCellActionItem(config, row, item, actionItem);
             }
+            // Export
+            items.push(actionItem);
         });
+        return items;
     }
 
     var renderCellActionItem = function(config, row, item, actionItem){
@@ -18809,15 +19239,14 @@ function(params){
         );
         if(actionItem['constructor']){
             cm.getConstructor(actionItem['constructor'], function(classConstructor){
-                actionItem['controller'] = new classConstructor(
-                    cm.merge(actionItem['constructorParams'], {
-                        'node' : actionItem['node'],
-                        'data' : row['data'],
-                        'rowItem' : row,
-                        'cellItem' : item,
-                        'actionItem' : actionItem
-                    })
-                );
+                actionItem['_constructorParams'] = cm.merge(actionItem['constructorParams'], {
+                    'node' : actionItem['node'],
+                    'data' : row['data'],
+                    'rowItem' : row,
+                    'cellItem' : item,
+                    'actionItem' : actionItem
+                });
+                actionItem['controller'] = new classConstructor(actionItem['_constructorParams']);
                 actionItem['controller'].addEvent('onRenderControllerEnd', function(){
                     item['component'] && item['component'].hide(false);
                 });
@@ -18834,13 +19263,14 @@ function(params){
 
     /*** HELPING FUNCTIONS ***/
 
-    var resetTable = function(){
+    var resetTable = function(container){
+        cm.customEvent.trigger(that.nodes['table'], 'destruct', {
+            'direction' : 'child',
+            'self' : false
+        });
         that.unCheckAll();
         that.rows = [];
         that.checked = [];
-        if(!that.params['pagination']){
-            cm.remove(that.nodes['table']);
-        }
     };
 
     var arraySort = function(){
@@ -18960,10 +19390,6 @@ function(params){
 
     /******* CALLBACKS *******/
 
-    that.callbacks.filter = function(that, data){
-        return data;
-    };
-
     that.callbacks.paginationAfterPrepare = function(that, pagination, config){
         config['url'] = cm.strReplace(config['url'], {
             '%sortBy%' : that.sortBy,
@@ -18976,6 +19402,37 @@ function(params){
             '%orderByLower%' : that.orderBy.toLowerCase()
         });
         return config;
+    };
+
+    that.callbacks.filter = function(that, data){
+        return data;
+    };
+
+    that.callbacks.renderPage = function(that, page){
+        that.triggerEvent('onPageRenderStart', {'page' : page});
+        if(!that.isAjax){
+            page.data = that.getStaticPageData(page.page);
+        }
+        if(!cm.isEmpty(page.data) && cm.isArray(page.data)){
+            page.data = that.callbacks.filter(that, page.data);
+        }
+        that.renderPageTable(page);
+        that.triggerEvent('onPageRenderEnd', {'page' : page});
+    };
+
+    /******* TABLE *******/
+
+    that.renderPageTable = function(page){
+        if(!cm.isEmpty(page['data'])){
+            renderTable(page['page'], page['data'], page['container']);
+        }else{
+            if(that.params['renderEmptyTable']){
+                renderTable(page['page'], page['data'], page['container']);
+            }
+            if(that.params['renderEmptyMessage']){
+                renderEmptiness(page['container'], page['message']);
+            }
+        }
     };
 
     /******* MAIN *******/
@@ -19006,6 +19463,10 @@ function(params){
     that.abort = function(){
         that.components['pagination'] && that.components['pagination'].abort();
         return that;
+    };
+
+    that.getRows = function(){
+        return that.rows;
     };
 
     that.check = function(id){
@@ -19074,6 +19535,12 @@ function(params){
             rows.push(item['data'][that.params['uniqueKey']]);
         });
         return rows;
+    };
+
+    that.getStaticPageData = function(page){
+        var startIndex = that.params.perPage * (page - 1),
+            endIndex = Math.min(that.params.perPage * page, that.params.data.length);
+        return that.params.data.slice(startIndex, endIndex);
     };
 
     that.setRowStatus = function(id, status){
@@ -20678,11 +21145,11 @@ cm.define('Com.Overlay', {
         'name' : '',
         'container' : 'document.body',
         'appendMode' : 'appendChild',
-        'theme' : 'default',                // transparent | default | light | dark
+        'theme' : 'default',                // transparent | default | light | solid-light | dark
         'className' : '',
         'position' : 'fixed',
         'lazy' : false,
-        'delay' : 'cm._config.loadDelay',
+        'delay' : 'cm._config.lazyDelay',
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
@@ -20931,6 +21398,7 @@ cm.define('Com.Pagination', {
         'onError',
         'onPageRender',
         'onPageRenderEnd',
+        'onPageRenderError',
         'onPageSwitched',
         'onEnd',
         'onSetCount'
@@ -20965,6 +21433,7 @@ cm.define('Com.Pagination', {
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
         'responseErrorsKey': 'errors',
+        'responseMessageKey' : 'message',
         'responseHTML' : false,                                     // If true, html will append automatically
         'cache' : true,                                             // Cache response data
         'ajax' : {
@@ -21189,26 +21658,28 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return data;
     };
 
-    classProto.callbacks.response = function(that, config, response, errors){
+    classProto.callbacks.response = function(that, config, response, errors, message){
         // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        that.callbacks.render(that, response, errors);
+        that.callbacks.render(that, response, errors, message);
     };
 
     classProto.callbacks.error = function(that, config, response){
-        var errors;
+        var errors, message;
         if(!cm.isEmpty(response)){
             errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            message = cm.reducePath(that.params.responseMessageKey, response);
         }
         that.triggerEvent('onError', {
             'response' : response,
-            'errors' : errors
+            'errors' : errors,
+            'message' : message
         });
-        that.callbacks.response(that, config, null, errors);
+        that.callbacks.response(that, config, null, errors, message);
     };
 
     classProto.callbacks.abort = function(that, config){
@@ -21253,7 +21724,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    classProto.callbacks.render = function(that, data, errors){
+    classProto.callbacks.render = function(that, data, errors, message){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -21262,11 +21733,15 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
             'errors' : errors,
+            'message' : message,
             'total' : that.getCount(),
             'isVisible' : true,
             'isRendered' : true,
             'isError' : !data
         };
+        if(cm.isEmpty(page['message'])){
+            page['message'] = page['errors'];
+        }
         // Render page
         page['container'] = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
@@ -21300,6 +21775,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
                 cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
             );
         }
+        that.triggerEvent('onPageRenderError', page);
     };
 
     classProto.callbacks.switchPage = function(that, page){
@@ -22078,6 +22554,7 @@ cm.define('Com.Request', {
         'renderContentOnSuccess' : true,
         'className' : '',
         'autoSend' : false,
+        'promise' : false,
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
@@ -22089,11 +22566,12 @@ cm.define('Com.Request', {
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
+            'variables' : {},
+            'variablesMap' : {},
             'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
-            'params' : ''                              // Params object. Variables: %baseUrl%, %callback%.
+            'params' : ''                               // Params object. Variables: %baseUrl%, %callback%.
         },
-        'variables' : {},
-        'showOverlay' : true,
+        'showLoader' : true,
         'animateDuration' : 'cm._config.animDuration',
         'overlayContainer' : 'document.body',
         'overlayConstructor' : 'Com.Overlay',
@@ -22117,10 +22595,8 @@ function(params){
     that.animations = {};
     that.components = {};
     that.requestData = {};
-    that.responceData = null;
-    that.responceDataFiltered = null;
-    that.responceDataHTML = null;
-    that.responceDataStatus = null;
+    that.responseData = {};
+    that.previousResponseData = {};
     that.isProcess = false;
     that.isError = false;
     that.isRendering = false;
@@ -22132,23 +22608,32 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.destructHandler = that.destruct.bind(that);
         that.requestHandler = that.request.bind(that);
+        that.sendHandler = that.send.bind(that);
         that.setParams(params);
-        that.convertEvents(that.params['events']);
-        //that.validateParams();
-        that.addToStack(that.params['node']);
+        that.convertEvents(that.params.events);
+        that.validateParams();
+        that.addToStack(that.params.node);
         that.triggerEvent('onRenderStart');
         that.render();
-        that.addToStack(that.nodes['container']);
+        that.addToStack(that.nodes.container);
         that.triggerEvent('onRender');
-        that.params['autoSend'] && that.send();
+        that.params.autoSend && that.send();
         return that;
+    };
+
+    classProto.validateParams = function(){
+        var that = this;
+        // Legacy parameter name
+        if(!cm.isUndefined(that.params.showOverlay)){
+            that.params.showLoader = that.params.showOverlay;
+        }
     };
 
     classProto.destruct = function(){
         var that = this;
         if(!that.isDestructed){
             that.isDestructed = true;
-            that.components['overlay'] && that.components['overlay'].destruct();
+            that.components.overlay && that.components.overlay.destruct();
             that.removeFromStack();
         }
         return that;
@@ -22160,47 +22645,59 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             that.abort();
         }
         if(!that.isProcess && !that.isRendering){
+            if(that.params.promise){
+                return new Promise(that.requestHandler);
+            }
             that.request();
         }
         return that;
     };
 
+    classProto.get = function(){
+        var that = this;
+        return that.responseData;
+    };
+
     classProto.render = function(){
         var that = this;
+        // Keys
+        if(cm.isEmpty(that.params.responseHTMLKey)){
+            that.params.responseHTMLKey = that.params.responseKey;
+        }
         // Structure
         that.renderView();
-        if(that.params['wrapContent'] && cm.isNode(that.params['container'])){
-            cm.appendNodes(that.params['container'].childNodes, that.nodes['inner']);
+        if(that.params.wrapContent && cm.isNode(that.params.container)){
+            cm.appendNodes(that.params.container.childNodes, that.nodes.inner);
         }
         // Attributes
         that.setAttributes();
         // Overlay
-        if(that.params['responseHTML']){
-            that.params['overlayParams']['container'] =
-                that.params['overlayParams']['container']
-                || that.params['overlayContainer']
-                || that.nodes['container']
+        if(that.params.responseHTML){
+            that.params.overlayParams.container =
+                that.params.overlayParams.container
+                || that.params.overlayContainer
+                || that.nodes.container
                 || document.body;
         }else{
-            that.params['overlayParams']['container'] =
-                that.params['overlayParams']['container']
-                || that.params['overlayContainer']
+            that.params.overlayParams.container =
+                that.params.overlayParams.container
+                || that.params.overlayContainer
                 || document.body;
         }
-        if(that.params['showOverlay']){
-            cm.getConstructor(that.params['overlayConstructor'], function(classConstructor){
-                that.components['overlay'] = new classConstructor(that.params['overlayParams']);
+        if(that.params.showOverlay){
+            cm.getConstructor(that.params.overlayConstructor, function(classConstructor){
+                that.components.overlay = new classConstructor(that.params.overlayParams);
             });
         }
         // Append
-        that.embedStructure(that.nodes['container']);
+        that.embedStructure(that.nodes.container);
         return that;
     };
 
     classProto.renderView = function(){
         var that = this;
-        that.nodes['container'] = cm.node('div', {'class' : 'com__request'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'})
+        that.nodes.container = cm.node('div', {'class' : 'com__request'},
+            that.nodes.inner = cm.node('div', {'class' : 'inner'})
         );
         return that;
     };
@@ -22208,9 +22705,9 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.setAttributes = function(){
         var that = this;
         // CSS Class
-        cm.addClass(that.nodes['container'], that.params['className']);
+        cm.addClass(that.nodes.container, that.params.className);
         // Animations
-        that.animations['container'] = new cm.Animation(that.nodes['container']);
+        that.animations.container = new cm.Animation(that.nodes.container);
         return that;
     };
 
@@ -22219,17 +22716,17 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
-                that.params['ajax'] = cm.merge(that._raw.params['ajax'], o);
+                that.params.ajax = cm.merge(that._raw.params.ajax, o);
                 break;
             case 'current':
-                that.params['ajax'] = cm.merge(that.params['ajax'], o);
+                that.params.ajax = cm.merge(that.params.ajax, o);
                 break;
             case 'update':
-                that.params['ajax'] = cm.merge(that._update.params['ajax'], o);
+                that.params.ajax = cm.merge(that._update.params.ajax, o);
                 break;
         }
         if(update){
-            that._update.params['ajax'] = cm.clone(that.params['ajax']);
+            that._update.params.ajax = cm.clone(that.params.ajax);
         }
         return that;
     };
@@ -22239,38 +22736,38 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
         switch(mode){
             case 'raw':
-                that.params['variables'] = cm.merge(that._raw.params['variables'], o);
+                that.params.ajax.variables = cm.merge(that._raw.params.ajax.variables, o);
                 break;
             case 'current':
-                that.params['variables'] = cm.merge(that.params['variables'], o);
+                that.params.ajax.variables = cm.merge(that.params.ajax.variables, o);
                 break;
             case 'update':
-                that.params['variables'] = cm.merge(that._update.params['variables'], o);
+                that.params.ajax.variables = cm.merge(that._update.params.ajax.variables, o);
                 break;
         }
         if(update){
-            that._update.params['variables'] = cm.clone(that.params['variables']);
+            that._update.params.ajax.variables = cm.clone(that.params.ajax.variables);
         }
         return that;
     };
 
     /* *** REQUEST *** */
 
-    classProto.request = function(){
+    classProto.request = function(resolve, reject){
         var that = this;
         that.prepare();
-        that.components['ajax'] = cm.ajax(
+        that.components.ajax = cm.ajax(
             cm.merge(that.requestData, {
                 'onStart' : function(){
                     that.start();
                 },
-                'onSuccess' : function(data){
-                    that.responceData = data;
-                    that.response();
+                'onSuccess' : function(data, event){
+                    event = data instanceof ProgressEvent ? data : event;
+                    that.response('success', data, event, resolve);
                 },
-                'onError' : function(data){
-                    that.responceData = data;
-                    that.error();
+                'onError' : function(data, event){
+                    event = data instanceof ProgressEvent ? data : event;
+                    that.response('error', data, event, reject);
                 },
                 'onAbort' : function(){
                     that.aborted();
@@ -22286,20 +22783,22 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.prepare = function(){
         var that = this;
         that.isError = false;
-        that.responceData = null;
-        that.responceDataFiltered = null;
-        that.responceDataHTML = null;
-        that.responceDataStatus = null;
-        that.requestData = cm.clone(that.params['ajax']);
-        that.requestData['url'] = cm.strReplace(that.requestData['url'], that.params['variables']);
-        that.requestData['params'] = cm.objectReplace(that.requestData['params'], that.params['variables']);
+        // Request data
+        that.requestData = cm.clone(that.params.ajax);
+        that.requestData.url = cm.strReplace(that.requestData.url, that.params.variables);
+        that.requestData.params = cm.objectReplace(that.requestData.params, that.params.variables);
+        that.previousResponseData = cm.clone(that.responseData);
+        // Response data
+        that.responseData = {
+            'request' : that.requestData
+        };
         return that;
     };
 
     classProto.abort = function(){
         var that = this;
-        if(that.components['ajax'] && that.components['ajax'].abort){
-            that.components['ajax'].abort();
+        if(that.components.ajax && that.components.ajax.abort){
+            that.components.ajax.abort();
         }
         return that;
     };
@@ -22308,8 +22807,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isProcess = true;
         // Show Overlay
-        if(that.params['showOverlay']){
-            that.components['overlay'] && that.components['overlay'].open();
+        if(that.params.showLoader){
+            that.components.overlay && that.components.overlay.open();
         }
         that.triggerEvent('onStart');
         return that;
@@ -22319,37 +22818,44 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isProcess = false;
         // Hide Overlay
-        if(that.params['showOverlay']){
-            that.components['overlay'] && that.components['overlay'].close();
+        if(that.params.showLoader){
+            that.components.overlay && that.components.overlay.close();
         }
         that.triggerEvent('onEnd');
         return that;
     };
 
-    classProto.filter = function(){
-        var that = this,
-            errorsItem = cm.reducePath(that.params['responseErrorsKey'], that.responceData),
-            dataFiltered = cm.reducePath(that.params['responseKey'], that.responceData),
-            dataStatus = cm.reducePath(that.params['responseStatusKey'], that.responceData),
-            dataHTML;
-        if(cm.isEmpty(errorsItem)){
-            if(cm.isEmpty(that.params['responseHTMLKey'])){
-                dataHTML = cm.reducePath(that.params['responseKey'], that.responceData);
-            }else{
-                dataHTML = cm.reducePath(that.params['responseHTMLKey'], that.responceData);
-            }
-            that.responceDataFiltered = !cm.isEmpty(dataFiltered) ? dataFiltered : [];
-            that.responceDataHTML = !cm.isEmpty(dataHTML) ? dataHTML : '';
-            that.responceDataStatus = !cm.isEmpty(dataStatus) ? dataStatus : false;
+    classProto.filter = function(){var that = this;
+        that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
+        that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
+        that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
+        that.responseData.status = cm.reducePath(that.params.responseStatusKey, that.responseData.response);
+        that.responseData.data = cm.reducePath(that.params.responseKey, that.responseData.response);
+        that.responseData.html = cm.reducePath(that.params.responseHTMLKey, that.responseData.response);
+        // Validate
+        if(cm.isEmpty(that.responseData.status)){
+            that.responseData.status = false;
         }
+        if(cm.isEmpty(that.responseData.data)){
+            that.responseData.data = [];
+        }
+        that.responseData.filtered = that.responseData.data;
     };
 
-    classProto.response = function(){
+    classProto.response = function(status, data, event, callback){
         var that = this;
-        if(!cm.isEmpty(that.responceData)){
+        if(event instanceof ProgressEvent){
+            that.responseData.target = event.target;
+        }
+        that.responseData.response = data;
+        that.responseData.callback = callback;
+        if(!cm.isEmpty(that.responseData.response)){
             that.filter();
         }
-        if(!cm.isEmpty(that.responceDataFiltered) || that.responceDataStatus){
+        if(
+            status === 'success'
+            && (!cm.isEmpty(that.responseData.data) || that.responseData.status)
+        ){
             that.success();
         }else{
             that.error();
@@ -22358,43 +22864,30 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     };
 
     classProto.error = function(){
-        var that = this,
-            errors,
-            message,
-            code;
+        var that = this;
         that.isError = true;
-        if(!cm.isEmpty(that.responceData)){
-            errors = cm.reducePath(that.params['responseErrorsKey'], that.responceData);
-            message = cm.reducePath(that.params['responseMessageKey'], that.responceData);
-            code = cm.reducePath(that.params['responseCodeKey'], that.responceData);
-        }
+        that.responseData.isError = true;
         that.renderError();
-        that.triggerEvent('onError', {
-            'response' : that.responceData,
-            'status' : that.responceDataStatus,
-            'data' : that.responceDataFiltered,
-            'filtered' : that.responceDataFiltered,
-            'html' : that.responceDataHTML,
-            'errors' : errors,
-            'message' : message,
-            'code' : code
-        });
+        that.triggerEvent('onError', that.responseData);
+        // Promise callback
+        if(cm.isFunction(that.responseData.callback)){
+            that.responseData.callback(that.responseData);
+        }
         return that;
     };
 
     classProto.success = function(){
         var that = this;
         that.isError = false;
-        if(!that.responceDataStatus || (that.responceDataStatus && that.params['renderContentOnSuccess'])){
+        that.responseData.isError = false;
+        if(!that.responseData.status || (that.responseData.status && that.params.renderContentOnSuccess)){
             that.renderResponse();
         }
-        that.triggerEvent('onSuccess', {
-            'response' : that.responceData,
-            'status' : that.responceDataStatus,
-            'data' : that.responceDataFiltered,
-            'filtered' : that.responceDataFiltered,
-            'html' : that.responceDataHTML
-        });
+        that.triggerEvent('onSuccess', that.responseData);
+        // Promise callback
+        if(cm.isFunction(that.responseData.callback)){
+            that.responseData.callback(that.responseData);
+        }
         return that;
     };
 
@@ -22417,8 +22910,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.renderResponse = function(){
         var that = this,
             nodes;
-        if(that.params['responseHTML']){
-            nodes = cm.strToHTML(that.responceDataHTML);
+        if(that.params.responseHTML){
+            nodes = cm.strToHTML(that.responseData.html);
             that.renderContent(nodes);
         }
         return that;
@@ -22427,13 +22920,13 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
     classProto.renderContent = function(nodes){
         var that = this,
             temporary;
-        if(cm.isNode(that.params['responseContainer'])){
+        if(cm.isNode(that.params.responseContainer)){
             that.triggerEvent('onContentRenderStart', nodes);
-            cm.clearNode(that.params['responseContainer']);
-            cm.appendNodes(nodes, that.params['responseContainer']);
+            cm.clearNode(that.params.responseContainer);
+            cm.appendNodes(nodes, that.params.responseContainer);
             that.triggerEvent('onContentRender', nodes);
             that.triggerEvent('onContentRenderEnd', nodes);
-        }else if(cm.isNode(that.params['container'])){
+        }else if(cm.isNode(that.params.container)){
             temporary = that.renderTemporary(false);
             cm.appendNodes(nodes, temporary);
             that.appendResponse(temporary);
@@ -22449,25 +22942,25 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this,
             temporary,
             node;
-        if(that.params['responseHTML']){
+        if(that.params.responseHTML){
             node = cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'));
             // Append
-            if(cm.isNode(that.params['responseContainer'])){
+            if(cm.isNode(that.params.responseContainer)){
                 that.triggerEvent('onContentRenderStart', node);
-                if(that.params['swapContentOnError']){
-                    cm.clearNode(that.params['responseContainer']);
-                    cm.appendChild(node, that.params['responseContainer']);
+                if(that.params.swapContentOnError){
+                    cm.clearNode(that.params.responseContainer);
+                    cm.appendChild(node, that.params.responseContainer);
                 }else{
-                    cm.remove(that.nodes['error']);
-                    that.nodes['error'] = node;
-                    cm.insertFirst(that.nodes['error'], that.params['responseContainer']);
+                    cm.remove(that.nodes.error);
+                    that.nodes.error = node;
+                    cm.insertFirst(that.nodes.error, that.params.responseContainer);
                 }
                 that.triggerEvent('onContentRender', node);
                 that.triggerEvent('onContentRenderEnd', node);
-            }else if(cm.isNode(that.params['container'])){
+            }else if(cm.isNode(that.params.container)){
                 temporary = that.renderTemporary();
                 cm.appendChild(node, temporary);
-                if(that.params['swapContentOnError']){
+                if(that.params.swapContentOnError){
                     that.appendResponse(temporary);
                 }else{
                     that.appendError(temporary);
@@ -22485,15 +22978,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         var that = this;
         that.isRendering = true;
         that.triggerEvent('onContentRenderStart', temporary);
-        cm.remove(that.nodes['error']);
-        that.nodes['error'] = temporary;
-        cm.addClass(that.nodes['error'], 'is-show');
-        if(that.nodes['temporary']){
-            cm.insertFirst(that.nodes['error'], that.nodes['temporary']);
+        cm.remove(that.nodes.error);
+        that.nodes.error = temporary;
+        cm.addClass(that.nodes.error, 'is-show');
+        if(that.nodes.temporary){
+            cm.insertFirst(that.nodes.error, that.nodes.temporary);
         }else{
-            cm.insertFirst(that.nodes['error'], that.nodes['inner']);
+            cm.insertFirst(that.nodes.error, that.nodes.inner);
         }
-        cm.addClass(that.nodes['container'], 'is-show is-loaded', true);
+        cm.addClass(that.nodes.container, 'is-show is-loaded', true);
         that.isRendering = false;
         that.triggerEvent('onContentRender', temporary);
         that.triggerEvent('onContentRenderEnd', temporary);
@@ -22506,38 +22999,38 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.isRendering = true;
         that.triggerEvent('onContentRenderStart', temporary);
         // Wrap old content
-        if(!that.nodes['temporary']){
-            that.nodes['temporary'] = that.renderTemporary(false);
-            cm.appendNodes(that.nodes['inner'].childNodes, that.nodes['temporary']);
-            cm.appendChild(that.nodes['temporary'], that.nodes['inner']);
-            cm.customEvent.trigger(that.nodes['temporary'], 'destruct', {
+        if(!that.nodes.temporary){
+            that.nodes.temporary = that.renderTemporary(false);
+            cm.appendNodes(that.nodes.inner.childNodes, that.nodes.temporary);
+            cm.appendChild(that.nodes.temporary, that.nodes.inner);
+            cm.customEvent.trigger(that.nodes.temporary, 'destruct', {
                 'direction' : 'child',
                 'self' : false
             });
         }
-        cm.removeClass(that.nodes['temporary'], 'is-show', true);
+        cm.removeClass(that.nodes.temporary, 'is-show', true);
         // Append temporary
-        cm.appendChild(temporary, that.nodes['inner']);
+        cm.appendChild(temporary, that.nodes.inner);
         cm.addClass(temporary, 'is-show', true);
         // Show container
-        cm.removeClass(that.nodes['container'], 'is-loaded', true);
-        cm.addClass(that.nodes['container'], 'is-show', true);
-        that.triggerEvent('onContentRender', that.nodes['temporary']);
+        cm.removeClass(that.nodes.container, 'is-loaded', true);
+        cm.addClass(that.nodes.container, 'is-show', true);
+        that.triggerEvent('onContentRender', that.nodes.temporary);
         // Animate
         height = temporary.offsetHeight;
-        that.animations['container'].go({
+        that.animations.container.go({
             'style' : {'height' : [height, 'px'].join('')},
-            'duration' : that.params['animateDuration'],
+            'duration' : that.params.animateDuration,
             'anim' : 'smooth',
             'onStop' : function(){
                 // Remove old temporary
-                cm.remove(that.nodes['temporary']);
+                cm.remove(that.nodes.temporary);
                 // Apply new temporary
-                that.nodes['temporary'] = temporary;
-                that.nodes['container'].style.height = '';
-                cm.addClass(that.nodes['container'], 'is-loaded', true);
+                that.nodes.temporary = temporary;
+                that.nodes.container.style.height = '';
+                cm.addClass(that.nodes.container, 'is-loaded', true);
                 that.isRendering = false;
-                that.triggerEvent('onContentRenderEnd', that.nodes['temporary']);
+                that.triggerEvent('onContentRenderEnd', that.nodes.temporary);
             }
         });
         return that;
@@ -22761,11 +23254,15 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
         // Handle route redirect or route
         if(matchRouteRedirect){
-            that.redirect(matchRouteRedirect, route.hash, {
-                'urlParams' : route['urlParams'],
-                'captures' : route['captures'],
-                'data' : route['data']
-            });
+            if(cm.isArray(matchRouteRedirect)){
+                that.redirect.apply(that, matchRouteRedirect);
+            }else{
+                that.redirect(matchRouteRedirect, route.hash, {
+                    'urlParams' : route['urlParams'],
+                    'captures' : route['captures'],
+                    'data' : route['data']
+                });
+            }
         }else{
             that.constructRoute(route);
         }
@@ -22835,14 +23332,17 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             routeRedirect;
         if(!cm.isEmpty(route.redirectTo)){
             if(cm.isObject(route.redirectTo)){
-                cm.forEach(route.redirectTo, function(item, route){
-                    if(that.checkRoleAccess(route)){
+                cm.forEach(route.redirectTo, function(item, role){
+                    if(that.checkRoleAccess(role)){
                         routeRedirect = item;
                     }
                 });
             }else{
                 routeRedirect = route.redirectTo;
             }
+        }
+        if(cm.isFunction(routeRedirect)){
+            routeRedirect = routeRedirect(route);
         }
         return routeRedirect;
     };
@@ -25195,16 +25695,19 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         if(cm.isNode(that.params['node'])){
             that.collectTabs();
         }
-        return that;
     };
 
     classProto.onSetEvents = function(){
         var that = this;
+        // Call parent method
+        classInherit.prototype.onSetEvents.apply(that, arguments);
         cm.addEvent(that.params['documentNode'], 'click', that.windowClickHandler);
     };
 
     classProto.onUnsetEvents = function(){
         var that = this;
+        // Call parent method
+        classInherit.prototype.onUnsetEvents.apply(that, arguments);
         cm.removeEvent(that.params['documentNode'], 'click', that.windowClickHandler);
     };
 
@@ -25778,6 +26281,9 @@ function(params){
 
     that.nodes = {};
     that.groups = {};
+    that.items = [];
+
+    that.isHidden = true;
 
     var init = function(){
         that.setParams(params);
@@ -25793,7 +26299,7 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar'},
+        that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar is-hidden'},
             that.nodes['toolbar'] = cm.node('div', {'class' : 'pt__toolbar'},
                 that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
                     that.nodes['left'] = cm.node('div', {'class' : 'left'}),
@@ -25818,12 +26324,13 @@ function(params){
 
     that.addGroup = function(item){
         item = cm.merge({
+            'name' : '',
+            'position' : 'left',            // left | center | right | justify
+            'hidden' : false,
             'container' : cm.node('ul', {'class' : 'group'}),
             'node' : null,
             'adaptive' : true,
             'flex' : false,
-            'name' : '',
-            'position' : 'left',            // left | center | right | justify
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -25832,6 +26339,7 @@ function(params){
             }
             item['adaptive'] && cm.addClass(item['container'], 'is-adaptive');
             item['flex'] && cm.addClass(item['container'], 'is-flex');
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Position
             if(/left|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
@@ -25844,16 +26352,12 @@ function(params){
         return that;
     };
 
-    that.getGroup = function(name){
-        return that.groups[name];
-    };
-
     that.removeGroup = function(name){
         var item;
         if(cm.isObject(arguments[0])){
             item = name;
         }else{
-            item = that.groups[name];
+            item = that.getGroup(name);
         }
         if(item){
             cm.remove(item['container']);
@@ -25863,20 +26367,60 @@ function(params){
         return that;
     };
 
+    that.getGroup = function(name){
+        return that.groups[name];
+    };
+
+    that.showGroup = function(name){
+        var item = that.getGroup(name);
+        if(item){
+            item['hidden'] = false;
+            cm.removeClass(item['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.hideGroup = function(name){
+        var item = that.getGroup(name);
+        if(item){
+            item['hidden'] = true;
+            cm.addClass(item['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.isGroupEmpty = function(name){
+        var item = that.getGroup(name);
+        if(item){
+            return cm.getLength(item.items) === 0;
+        }
+        return true;
+    };
+
+    that.toggleGroupVisibility = function(name){
+        if(that.isGroupEmpty(name)){
+            that.hideGroup(name);
+        }else{
+            that.showGroup(name);
+        }
+        return that;
+    };
+
     that.addField = function(item){
         var group;
         item = cm.merge({
+            'name' : '',
+            'hidden' : false,
             'container' : cm.node('li'),
             'node' : null,
-            'name' : '',
             'size' : null,
-            'hidden' : false,
             'group' : null,
             'constructor' : false,
             'constructorParams' : {}
         }, item);
+        group = that.groups[item['group']];
         // Render
-        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+        if(group && !group.items[item['name']]){
             // Styles
             item['size'] && cm.addClass(item['container'], item['size']);
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
@@ -25896,6 +26440,8 @@ function(params){
             }
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;
+            that.items = cm.arrayAdd(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
         return that;
@@ -25907,6 +26453,7 @@ function(params){
             item['hidden'] = false;
             cm.removeClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.hideField = function(name, groupName){
@@ -25915,6 +26462,7 @@ function(params){
             item['hidden'] = true;
             cm.addClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.addButton = function(item){
@@ -25922,11 +26470,12 @@ function(params){
         item = cm.merge({
             'container' : cm.node('li'),
             'node' : null,
-            'type' : 'primary',                                 // primary, secondary, success, danger, warning
+            'type' : 'primary',             // primary, secondary, success, danger, warning
             'name' : '',
             'label' : '',
             'title' : '',
             'group' : '',
+            'access' : true,
             'disabled' : false,
             'hidden' : false,
             'className' : '',
@@ -25936,12 +26485,13 @@ function(params){
             'constructorParams' : {},
             'callback' : function(){}
         }, item);
+        group = that.groups[item['group']];
         // Validate
         if(cm.isEmpty(item['name'])){
             item['name'] = item['label'];
         }
         // Render
-        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+        if(item['access'] && group && !group.items[item['name']]){
             // Structure
             item['node'] = cm.node('a', item['attr']);
             // Styles
@@ -25971,6 +26521,8 @@ function(params){
             cm.appendChild(item['node'], item['container']);
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;
+            that.items = cm.arrayAdd(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
         return that;
@@ -25982,6 +26534,7 @@ function(params){
             item['disabled'] = false;
             cm.removeClass(item['node'], 'button-disabled');
         }
+        return that;
     };
 
     that.disableButton = function(name, groupName){
@@ -25990,6 +26543,7 @@ function(params){
             item['disabled'] = true;
             cm.addClass(item['node'], 'button-disabled');
         }
+        return that;
     };
 
     that.showButton = function(name, groupName){
@@ -25998,6 +26552,7 @@ function(params){
             item['hidden'] = false;
             cm.removeClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.hideButton = function(name, groupName){
@@ -26006,6 +26561,7 @@ function(params){
             item['hidden'] = true;
             cm.addClass(item['container'], 'is-hidden');
         }
+        return that;
     };
 
     that.addLabel = function(item){
@@ -26019,8 +26575,9 @@ function(params){
             'hidden' : false,
             'group' : null
         }, item);
+        group = that.groups[item['group']];
         // Render
-        if((group = that.groups[item['group']]) && !group.items[item['name']]){
+        if(group && !group.items[item['name']]){
             // Structure
             item['node'] = cm.node('div', {'innerHTML' : item['label']});
             // Styles
@@ -26032,32 +26589,69 @@ function(params){
             }
             cm.appendChild(item['container'], group['node']);
             group.items[item['name']] = item;
+            that.items = cm.arrayAdd(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
         return that;
     };
 
     that.getField = that.getButton = that.getLabel = function(name, groupName){
-        var item, group;
-        if((group = that.groups[groupName]) && (item = group.items[name])){
-            return item;
+        var group = that.groups[groupName],
+            item;
+        if(group){
+            item = group.items[name];
         }
-        return null;
+        return item;
     };
 
     that.removeField = that.removeButton = that.removeLabel = function(name, groupName){
         var item, group;
         if(cm.isObject(arguments[0])){
-            item = name;
+            item = arguments[0];
             group = that.groups[item['group']];
-        }else if(group = that.groups[groupName]){
-            item = group.items[name];
+        }else{
+            group = that.groups[groupName];
+            if(group){
+                item = group.items[name];
+            }
         }
         if(item){
             cm.remove(item['container']);
             delete group.items[item['name']];
+            that.items = cm.arrayRemove(that.items, item);
+            that.toggleVisibility();
         }
         that.triggerEvent('onProcessEnd');
+        return that;
+    };
+
+    that.isEmpty = function(){
+        return that.items.length === 0;
+    };
+
+    that.hide = function(){
+        if(!that.isHidden){
+            that.isHidden = true;
+            cm.addClass(that.nodes['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.show = function(){
+        if(that.isHidden){
+            that.isHidden = false;
+            cm.removeClass(that.nodes['container'], 'is-hidden');
+        }
+        return that;
+    };
+
+    that.toggleVisibility = function(){
+        if(that.isEmpty()){
+            that.hide();
+        }else{
+            that.show();
+        }
         return that;
     };
 
@@ -26067,6 +26661,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Tooltip', {
     'modules' : [
         'Params',
@@ -27741,6 +28336,8 @@ cm.define('Com.Autocomplete', {
         'onReset',
         'onSelect',
         'onChange',
+        'onEnable',
+        'onDisable',
         'onClickSelect',
         'onAbort',
         'onError',
@@ -27756,6 +28353,7 @@ cm.define('Com.Autocomplete', {
         'minLength' : 3,
         'direction' : 'auto',                                       // auto | start
         'className' : '',
+        'disabled' : false,
         'delay' : 'cm._config.requestDelay',
         'clearOnEmpty' : true,                                      // Clear input and value if item didn't selected from tooltip
         'showListOnEmpty' : false,                                  // Show options list, when input is empty
@@ -27801,6 +28399,7 @@ function(params){
 
     that.components = {};
 
+    that.disabled = false;
     that.isDestructed = false;
     that.ajaxHandler = null;
     that.isOpen = false;
@@ -27848,6 +28447,8 @@ function(params){
         that.params['data'] = that.callbacks.convert(that, that.params['data']);
         // Value
         that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        // Input
+        that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
         // Tooltip
         that.params['Com.Tooltip']['className'] = [
             'com__ac-tooltip',
@@ -27877,6 +28478,8 @@ function(params){
         that.setInput(that.params['node']);
         // Set
         !cm.isEmpty(that.params['value']) && that.set(that.params['value'], false);
+        // Disabled state
+        that.params['disabled'] && that.disable();
     };
 
     var setListItem = function(index){
@@ -28104,8 +28707,8 @@ function(params){
 
     that.callbacks.filter = function(that, params){
         var data = [],
-            dataItem = cm.objectSelector(that.params['responseKey'], params['response']);
-        if(dataItem && !cm.isEmpty(dataItem)){
+            dataItem = cm.reducePath(that.params['responseKey'], params['response']);
+        if(!cm.isEmpty(dataItem)){
             data = dataItem;
         }
         return data;
@@ -28307,6 +28910,44 @@ function(params){
         return that;
     };
 
+    that.setAction = function(o, mode, update){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params.ajax = cm.merge(that._raw.params.ajax, o);
+                break;
+            case 'current':
+                that.params.ajax = cm.merge(that.params.ajax, o);
+                break;
+            case 'update':
+                that.params.ajax = cm.merge(that._update.params.ajax, o);
+                break;
+        }
+        if(update){
+            that._update.params.ajax = cm.clone(that.params.ajax);
+        }
+        return that;
+    };
+
+    that.setVariables = function(o, mode, update){
+        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
+        switch(mode){
+            case 'raw':
+                that.params.ajax.variables = cm.merge(that._raw.params.ajax.variables, o);
+                break;
+            case 'current':
+                that.params.ajax.variables = cm.merge(that.params.ajax.variables, o);
+                break;
+            case 'update':
+                that.params.ajax.variables = cm.merge(that._update.params.ajax.variables, o);
+                break;
+        }
+        if(update){
+            that._update.params.ajax.variables = cm.clone(that.params.ajax.variables);
+        }
+        return that;
+    };
+
     that.abort = function(){
         if(that.ajaxHandler && that.ajaxHandler.abort){
             that.ajaxHandler.abort();
@@ -28316,6 +28957,26 @@ function(params){
 
     that.focus = function(){
         that.params['node'].focus();
+        return that;
+    };
+
+    that.enable = function(){
+        var that = this;
+        if(that.disabled){
+            that.disabled = false;
+            that.params['node'].disabled = false;
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        var that = this;
+        if(!that.disabled){
+            that.disabled = true;
+            that.params['node'].disabled = true;
+            that.triggerEvent('onDisable');
+        }
         return that;
     };
 
@@ -28760,6 +29421,12 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                     cm.arrayAdd(that.params['value'], item['value']);
                 }
             });
+        }
+        // Checked parameter behavior override
+        if(that.params['checked'] && cm.isEmpty(that.params['value'])){
+            if(!that.params['multiple']){
+                that.params['value'] = true;
+            }
         }
     };
 
@@ -29545,6 +30212,7 @@ cm.define('Com.Datepicker', {
         'embedStructure' : 'replace',
         'customEvents' : true,
         'renderInBody' : true,
+        'size' : 'default',                     // default, full, custom
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
         'isDateTime' : false,
@@ -29660,6 +30328,9 @@ function(params){
                 nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
             )
         );
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(nodes['container'], ['size', that.params['size']].join('-'));
+        }
         /* *** ATTRIBUTES *** */
         // Title
         if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
@@ -29907,7 +30578,7 @@ function(params){
             }
         }
     };
-    
+
     var onChange = function(){
         if(!that.previousValue || (!that.value && that.previousValue) || (that.value !== that.previousValue)){
             that.triggerEvent('onChange', that.value);
@@ -30035,6 +30706,7 @@ Com.FormFields.add('date-picker', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Datepicker'
 });
+
 cm.define('Com.DateSelect', {
     'modules' : [
         'Params',
@@ -30362,6 +31034,7 @@ cm.define('Com.FileInput', {
         'file' : null,
         'showLink' : true,
         'showFilename' : true,
+        'showClearButton' : true,
         'autoOpen' : false,
         'placeholder' : null,
         'readValueType' : 'base64',         // base64 | binary
@@ -30529,6 +31202,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 )
             )
         );
+        // Clear button
+        if(!that.params['showClearButton']){
+            cm.addClass(nodes['clear'], 'is-hidden');
+        }
         // Render Browse Buttons
         if(that.params['local']){
             nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
@@ -30617,13 +31294,16 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             }
             cm.clearNode(that.nodes['content']['label']);
             cm.addClass(that.nodes['content']['label'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
-            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+            if(that.params['showClearButton']){
+                cm.removeClass(that.nodes['content']['browseLocal'], 'is-hidden');
+                cm.removeClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+                cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+                cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+            }
         }else{
             cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
+            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
             if(that.params['showFilename']){
                 if(that.params['showLink']){
                     that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
@@ -30632,11 +31312,12 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 }
                 cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
             }
-            cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
-            cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
-            cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
-            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
+            if(that.params['showClearButton']){
+                cm.addClass(that.nodes['content']['browseLocal'], 'is-hidden');
+                cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
+                cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
+                cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+            }
         }
         return that;
     };
@@ -31484,6 +32165,10 @@ cm.getConstructor('Com.IntegerInput', function(classConstructor, className, clas
         );
         // Attributes
         cm.setInputMaxLength(nodes['input'], that.params['maxLength'], that.params['max']);
+        // Placeholder
+        if(!cm.isEmpty(that.params['placeholder'])){
+            nodes['input'].placeholder = that.params['placeholder'];
+        }
         // Events
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
@@ -31533,6 +32218,7 @@ Com.FormFields.add('integer', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.IntegerInput'
 });
+
 cm.define('Com.MultipleAutocomplete', {
     'extend' : 'Com.MultipleInput',
     'params' : {
@@ -32278,6 +32964,10 @@ cm.define('Com.Select', {
         'Stack'
     ],
     'events' : [
+        'onValidateParams',
+        'onValidateParamsStart',
+        'onValidateParamsProcess',
+        'onValidateParamsEnd',
         'onRender',
         'onRenderStart',
         'onSelect',
@@ -32354,7 +33044,7 @@ function(params){
         // Set selected option
         if(that.params['multiple']){
             active = [];
-            if(that.params['value'] && cm.isArray(that.params['value'])){
+            if(!cm.isEmpty(that.params['value']) && cm.isArray(that.params['value'])){
                 cm.forEach(that.params['value'], function(item){
                     if(options[item]){
                         set(options[item], true);
@@ -32362,7 +33052,7 @@ function(params){
                 });
             }
         }else{
-            if(that.params['value'] && options[that.params['value']]){
+            if(!cm.isEmpty(that.params['value']) && options[that.params['value']]){
                 set(options[that.params['value']]);
             }else if(that.params['setInitialValue'] && optionsLength){
                 set(optionsList[0]);
@@ -32380,11 +33070,8 @@ function(params){
     };
 
     var validateParams = function(){
-        var value;
+        that.triggerEvent('onValidateParamsStart');
         if(cm.isNode(that.params['node'])){
-            value = cm.getSelectValue(that.params['node']);
-            that.params['value'] = !cm.isEmpty(that.params['selected']) ? that.params['selected'] : that.params['value'];
-            that.params['value'] = !cm.isEmpty(value) ? value : that.params['value'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['node'].multiple;
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
@@ -32394,8 +33081,27 @@ function(params){
             that.params['tabindex'] = that.params['node'].getAttribute('tabindex') || that.params['tabindex'];
             that.params['id'] = that.params['node'].id || that.params['id'];
         }
-        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
+        validateParamsValue();
         that.disabled = that.params['disabled'];
+        that.triggerEvent('onValidateParamsEnd');
+    };
+
+    var validateParamsValue = function(){
+        var dataValue,
+            value;
+        if(cm.isNode(that.params['node'])){
+            dataValue = that.params['node'].getAttribute('data-value');
+            // First try to take original value, than real time js value
+            value = cm.getSelectValue(that.params['node']);
+            // Parse JSON
+            if(!cm.isEmpty(dataValue)){
+                value = cm.parseJSON(dataValue);
+            }
+            that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];
+        }
+        that.params['value'] = !cm.isEmpty(that.params['value']) ? that.params['value'] : that.params['defaultValue'];
     };
 
     var render = function(){
@@ -32691,9 +33397,11 @@ function(params){
         delete options[option['value']];
         // Set new active option, if current active is nominated for remove
         if(that.params['multiple']){
-            active = active.filter(function(item){
-                return value != item;
-            });
+            if(cm.isArray(active)){
+                active = active.filter(function(item){
+                    return value != item;
+                });
+            }
         }else{
             if(value === active){
                 if(optionsLength){

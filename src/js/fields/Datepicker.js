@@ -29,6 +29,7 @@ cm.define('Com.Datepicker', {
         'embedStructure' : 'replace',
         'customEvents' : true,
         'renderInBody' : true,
+        'size' : 'default',                     // default, full, custom
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
         'isDateTime' : false,
@@ -144,6 +145,9 @@ function(params){
                 nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
             )
         );
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(nodes['container'], ['size', that.params['size']].join('-'));
+        }
         /* *** ATTRIBUTES *** */
         // Title
         if(that.params['showTitleTooltip'] && !cm.isEmpty(that.params['title'])){
@@ -391,7 +395,7 @@ function(params){
             }
         }
     };
-    
+
     var onChange = function(){
         if(!that.previousValue || (!that.value && that.previousValue) || (that.value !== that.previousValue)){
             that.triggerEvent('onChange', that.value);

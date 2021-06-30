@@ -192,6 +192,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         var that = this,
             item = {
                 '_type' : 'file',
+                '_isFile' : false,
                 'value' : null,
                 'error' : null,
                 'name' : '',
@@ -201,6 +202,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
             },
             parsed;
         if(cm.isFile(o)){
+            item['_isFile'] = true;
             item['file'] = o;
             item['type'] = o.type;
             item['name'] = o.name;
