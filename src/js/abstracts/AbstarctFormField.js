@@ -294,7 +294,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             case 'select' :
                 cm.forEach(options, function(item){
                     item.disabled = !cm.isUndefined(item.disabled) ? item.disabled : false;
-                    option = cm.node('option', {'value' : item.value, 'disabled' : item.disabled, 'innerHTML' : item.text});
+                    item.hidden = !cm.isUndefined(item.hidden) ? item.hidden : false;
+                    option = cm.node('option', {
+                        'value' : item.value,
+                        'disabled' : item.disabled,
+                        'hidden' : item.hidden,
+                        'innerHTML' : item.text
+                    });
                     cm.appendChild(option, that.nodes.content.input);
                 });
                 cm.setSelect(that.nodes.content.input, that.params.value);

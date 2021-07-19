@@ -27,7 +27,6 @@ function(params){
     that.nodes = {};
     that.groups = {};
     that.items = [];
-
     that.isHidden = true;
 
     var init = function(){

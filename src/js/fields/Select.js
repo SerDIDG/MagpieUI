@@ -315,29 +315,39 @@ function(params){
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
-        var myChildes = that.params['node'].childNodes;
-        cm.forEach(myChildes, function(myChild, i){
-            if(cm.isElementNode(myChild)){
-                if(myChild.tagName.toLowerCase() === 'optgroup'){
-                    var myOptionsNodes = myChild.querySelectorAll('option');
-                    var myOptions = [];
-                    cm.forEach(myOptionsNodes, function(optionNode){
-                        myOptions.push({
-                            'value' : optionNode.value,
-                            'text' : optionNode.innerHTML,
-                            'className' : optionNode.className
-                        });
-                    });
-                    renderGroup(myChild.getAttribute('label'), myOptions);
-                }else if(myChild.tagName.toLowerCase() === 'option'){
+        var nodes = that.params['node'].childNodes,
+            nodeTagName,
+            options;
+        cm.forEach(nodes, function(node, i){
+            if(cm.isElementNode(node)){
+                nodeTagName = node.tagName.toLowerCase();
+                if(nodeTagName === 'optgroup'){
+                    options = collectSelectGroupOptions(node);
+                    renderGroup(node.label, options);
+                }else if(nodeTagName === 'option'){
                     renderOption({
-                        'value' : myChild.value,
-                        'text' : myChild.innerHTML,
-                        'className' : myChild.className
+                        'value' : node.value,
+                        'text' : node.innerHTML,
+                        'className' : node.className,
+                        'hidden' : node.hidden,
+                        'disabled' : node.disabled
                     });
                 }
             }
         });
+    };
+
+    var collectSelectGroupOptions = function(node){
+        var optionNodes = node.querySelectorAll('option'),
+            options = [];
+        cm.forEach(optionNodes, function(optionNode){
+            options.push({
+                'value' : optionNode.value,
+                'text' : optionNode.innerHTML,
+                'className' : optionNode.className
+            });
+        });
+        return options;
     };
 
     /* *** GROUPS *** */
@@ -373,10 +383,6 @@ function(params){
     /* *** OPTIONS *** */
 
     var renderOption = function(item, group){
-        // Check for exists
-        if(options[item['value']]){
-            removeOption(options[item['value']]);
-        }
         // Config
         item = cm.merge({
             'hidden' : false,
@@ -388,6 +394,10 @@ function(params){
             'className' : '',
             'group': null
         }, item);
+        // Check for existing option
+        if(options[item['value']]){
+            removeOption(options[item['value']]);
+        }
         // Add link to group
         item['group'] = group;
         // Structure

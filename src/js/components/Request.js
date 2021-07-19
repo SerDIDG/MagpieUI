@@ -37,6 +37,7 @@ cm.define('Com.Request', {
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
         'responseContainer' : null,
+        'showLoader' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -45,7 +46,6 @@ cm.define('Com.Request', {
             'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
             'params' : ''                               // Params object. Variables: %baseUrl%, %callback%.
         },
-        'showLoader' : true,
         'animateDuration' : 'cm._config.animDuration',
         'overlayContainer' : 'document.body',
         'overlayConstructor' : 'Com.Overlay',
@@ -299,7 +299,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         return that;
     };
 
-    classProto.filter = function(){var that = this;
+    classProto.filter = function(){
+        var that = this;
         that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
         that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
         that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);

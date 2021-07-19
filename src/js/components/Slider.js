@@ -20,9 +20,9 @@ cm.define('Com.Slider', {
     ],
     'params' : {
         'node' : cm.node('div'),
+        'name' : '',
         'container' : false,
         'className' : null,
-        'name' : '',
         'customEvents' : true,
         'renderStructure' : false,
         'isEditing' : false,

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.0 (2021-06-30 20:19) ************ */
+/*! ************ MagpieUI v3.40.1 (2021-07-19 18:05) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.0',
+        '_version' : '3.40.1',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2079,6 +2079,7 @@ cm.arrayFilter = function(a, items){
     });
 };
 
+// TODO: check is this ever needed
 cm.arraySort = function(a, key, dir, clone){
     var newA;
     if(!cm.isArray(a)){
@@ -2947,7 +2948,10 @@ cm.node = cm.Node = function(){
         i = 0;
     if(cm.isObject(args[1])){
         cm.forEach(args[1], function(value, key){
-            if(cm.isObject(value)){
+            if(cm.isUndefined(value)){
+                return;
+            }
+            if(cm.isObject(value) && key !== 'class'){
                 value = JSON.stringify(value);
             }
             switch(key){
@@ -2955,7 +2959,7 @@ cm.node = cm.Node = function(){
                     el.style.cssText = value;
                     break;
                 case 'class':
-                    el.className = value;
+                    cm.addClass(el, value);
                     break;
                 case 'innerHTML':
                     el.innerHTML = value;
@@ -3631,8 +3635,11 @@ cm.isMobile = function(){
 };
 
 cm.decode = (function(){
-    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+    var node;
     return function(text){
+        if(!node){
+            node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+        }
         if(!cm.isEmpty(text)){
             node.innerHTML = text;
             return node.value;
@@ -3644,11 +3651,13 @@ cm.decode = (function(){
 })();
 
 cm.copyToClipboard = (function(){
-    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'}),
-        success;
+    var node, success;
     cm.insertFirst(node, document.body);
     return function(text, callback){
         callback = cm.isFunction(callback) ? callback : function(){};
+        if(!node){
+            node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+        }
         if(!cm.isEmpty(text)){
             node.value = text;
             node.select();
@@ -3993,14 +4002,17 @@ cm.getWeeksInYear = function(year){
 
 /* ******* STYLES ******* */
 
-cm.addClass = function(node, str, useHack){
-    if(!cm.isNode(node) || cm.isEmpty(str)){
-        return null;
+cm.addClass = function(node, classes, useHack){
+    if(!cm.isNode(node) || cm.isEmpty(classes)){
+        return;
     }
     if(useHack){
         useHack = node.clientHeight;
     }
-    cm.forEach(str.toString().split(/\s+/), function(item){
+    if(cm.isString(classes) || cm.isNumber(classes)){
+        classes = classes.toString().split(/\s+/);
+    }
+    cm.forEach(classes, function(item){
         if(!cm.isEmpty(item)){
             node.classList.add(item);
         }
@@ -4008,14 +4020,17 @@ cm.addClass = function(node, str, useHack){
     return node;
 };
 
-cm.removeClass = function(node, str, useHack){
-    if(!cm.isNode(node) || cm.isEmpty(str)){
-        return null;
+cm.removeClass = function(node, classes, useHack){
+    if(!cm.isNode(node) || cm.isEmpty(classes)){
+        return;
     }
     if(useHack){
         useHack = node.clientHeight;
     }
-    cm.forEach(str.toString().split(/\s+/), function(item){
+    if(cm.isString(classes) || cm.isNumber(classes)){
+        classes = classes.toString().split(/\s+/);
+    }
+    cm.forEach(classes, function(item){
         if(!cm.isEmpty(item)){
             node.classList.remove(item);
         }
@@ -4928,6 +4943,15 @@ cm.setCSSVariable = function(key, value, node){
     return node;
 };
 
+cm.getCSSVariable = function(key, node){
+    var styleObject;
+    node = !cm.isUndefined(node) ? node : document.documentElement;
+    if(cm.isNode(node)){
+        styleObject = cm.getStyleObject(node);
+        return styleObject.getPropertyValue(key);
+    }
+};
+
 /* ******* VALIDATORS ******* */
 
 cm.keyCodeTable = {
@@ -5390,25 +5414,37 @@ cm.ajax = function(o){
             'handler' : false
         }, o),
         successStatuses = [200, 201, 202, 204],
-        vars = cm._getVariables(),
+        variables = cm._getVariables(),
         response,
         callbackName,
         callbackSuccessName,
+        callbackSuccessEmitted,
         callbackErrorName,
+        callbackErrorEmitted,
         scriptNode,
         returnObject;
 
     var init = function(){
-        validate();
         if(config['type'] === 'jsonp'){
-            returnObject = {
-                'abort' : abortJSONP
-            };
+            validateJSONP();
+            validate();
+            returnObject = {'abort' : abortJSONP};
             sendJSONP();
         }else{
+            validate();
             returnObject = config['httpRequestObject'];
             send();
         }
+    };
+
+    var validateJSONP = function(){
+        // Generate unique callback name
+        callbackName = ['cmAjaxJSONP', Date.now()].join('__');
+        callbackSuccessName = [callbackName, 'Success'].join('__');
+        callbackErrorName = [callbackName, 'Error'].join('__');
+        // Add variables
+        variables['%callback%'] = callbackSuccessName;
+        variables['%25callback%25'] = callbackSuccessName;
     };
 
     var validate = function(){
@@ -5438,8 +5474,8 @@ cm.ajax = function(o){
             config['uriParams'] = cm.obj2URI(config['uriParams'], config['uriConfig']);
         }
         // Process request route
+        config['url'] = cm.strReplace(config['url'], variables);
         config['url'] = cm.fillVariables(config['url'], config['variables']);
-        config['url'] = cm.strReplace(config['url'], vars);
         if(!cm.isEmpty(config['uriParams'])){
             config['url'] = [config['url'], config['uriParams']].join('?');
         }else if(!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
@@ -5450,8 +5486,8 @@ cm.ajax = function(o){
 
     var processParams = function(data){
         if(cm.isObject(data)){
+            data = cm.objectReplace(data, variables);
             data = cm.objectFillVariables(data, config['variables']);
-            data = cm.objectReplace(data, vars);
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
                 data = cm.stringifyJSON(data);
@@ -5543,29 +5579,24 @@ cm.ajax = function(o){
     };
 
     var sendJSONP = function(){
-        // Generate unique callback name
-        callbackName = ['cmAjaxJSONP', Date.now()].join('__');
-        callbackSuccessName = [callbackName, 'Success'].join('__');
-        callbackErrorName = [callbackName, 'Error'].join('__');
         // Generate events
         window[callbackSuccessName] = function(){
-            successHandler.apply(successHandler, arguments);
-            removeJSONP();
+            if(!callbackSuccessEmitted){
+                callbackSuccessEmitted = true;
+                successHandler.apply(successHandler, arguments);
+                removeJSONP();
+            }
         };
         window[callbackErrorName] = function(){
-            errorHandler.apply(errorHandler, arguments);
-            removeJSONP();
+            if(!callbackErrorEmitted){
+                callbackErrorEmitted = true;
+                errorHandler.apply(errorHandler, arguments);
+                removeJSONP();
+            }
         };
         // Prepare url and attach events
         scriptNode = cm.Node('script', {'type' : 'application/javascript'});
-        if(/%callback%|%25callback%25/.test(config['url'])){
-            config['url'] = cm.strReplace(config['url'], {
-                '%callback%' : callbackSuccessName,
-                '%25callback%25' : callbackSuccessName
-            });
-        }else{
-            cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
-        }
+        cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
         cm.addEvent(scriptNode, 'error', window[callbackErrorName]);
         // Embed
         config['onStart']();
@@ -6424,6 +6455,20 @@ Mod['Events'] = {
         }
         return that;
     },
+    'removeAllEvent' : function(event){
+        var that = this;
+        that.events = cm.clone(that.events);
+        if(that.events[event]){
+            that.events = [];
+        }else{
+            cm.errorLog({
+                'type' : 'attention',
+                'name' : that._name['full'],
+                'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
+            });
+        }
+        return that;
+    },
     'triggerEvent' : function(event, params){
         var that = this,
             data = cm.clone(arguments),
@@ -6684,7 +6729,7 @@ Mod['Storage'] = {
             that.build['params']['name'] = '';
         }
     },
-    'storageRead' : function(key, session){
+    'storageGet' : function(key, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -6706,7 +6751,11 @@ Mod['Storage'] = {
         }
         return storage[that.params['name']][key];
     },
-    'storageReadAll' : function(session){
+    'storageRead' : function(){
+        var that = this;
+        return that.storageGet.apply(that, arguments);
+    },
+    'storageGetAll' : function(session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -6728,7 +6777,11 @@ Mod['Storage'] = {
         }
         return storage[that.params['name']];
     },
-    'storageWrite' : function(key, value, session){
+    'storageReadAll' : function(){
+        var that = this;
+        return that.storageGetAll.apply(that, arguments);
+    },
+    'storageSet' : function(key, value, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -6748,7 +6801,11 @@ Mod['Storage'] = {
         cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
-    'storageWriteAll' : function(data, session){
+    'storageWrite' : function(){
+        var that = this;
+        return that.storageSet.apply(that, arguments);
+    },
+    'storageSetAll' : function(data, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -6765,7 +6822,11 @@ Mod['Storage'] = {
         cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
-    'storageClear' : function(key, session){
+    'storageWriteAll' : function(){
+        var that = this;
+        return that.storageSetAll.apply(that, arguments);
+    },
+    'storageRemove' : function(key, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -6784,6 +6845,10 @@ Mod['Storage'] = {
         method = session ? 'sessionStorageSet' : 'storageSet';
         cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
+    },
+    'storageClear' : function(){
+        var that = this;
+        return that.storageRemove.apply(that, arguments);
     }
 };
 
@@ -9050,7 +9115,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             case 'select' :
                 cm.forEach(options, function(item){
                     item.disabled = !cm.isUndefined(item.disabled) ? item.disabled : false;
-                    option = cm.node('option', {'value' : item.value, 'disabled' : item.disabled, 'innerHTML' : item.text});
+                    item.hidden = !cm.isUndefined(item.hidden) ? item.hidden : false;
+                    option = cm.node('option', {
+                        'value' : item.value,
+                        'disabled' : item.disabled,
+                        'hidden' : item.hidden,
+                        'innerHTML' : item.text
+                    });
                     cm.appendChild(option, that.nodes.content.input);
                 });
                 cm.setSelect(that.nodes.content.input, that.params.value);
@@ -10959,6 +11030,7 @@ function(params){
                     break;
             }
         });
+        // TODO: check is this is ever needed
         if(merged){
             data = cm.merge(that.params.data, data);
         }
@@ -11129,283 +11201,6 @@ function(params){
     };
 
     init();
-});
-
-/* ******* COMPONENT: FORM FIELD ******* */
-
-Com.FormFields = (function(){
-    var stack = {};
-
-    return {
-        'add' : function(type, params){
-            stack[type] = cm.merge({
-                'node' : cm.node('div'),
-                'fieldConstructor' : null,
-                'constructor' : null,
-                'type' : type,
-                'field' : true,
-                'system' : false
-            }, params);
-        },
-        'get' : function(type){
-            return stack[type]? cm.clone(stack[type], true) : null;
-        }
-    };
-})();
-
-cm.define('Com.FormField', {
-    'modules' : [
-        'Params',
-        'Events',
-        'DataConfig',
-        'Stack',
-        'Callbacks'
-    ],
-    'events' : [
-        'onRender'
-    ],
-    'params' : {
-        'node' : cm.node('div'),
-        'container' : cm.node('div'),
-        'form' : false,
-        'name' : '',
-        'value' : null,
-        'dataValue' : null,
-        'type' : false,
-        'label' : '',
-        'help' : null,
-        'placeholder' : '',
-        'visible' : true,
-        'options' : [],
-        'className' : '',                   // is-box
-        'constructor' : false,
-        'constructorParams' : {},
-        'helpConstructor' : 'Com.HelpBubble',
-        'helpParams' : {
-            'renderStructure' : true
-        }
-    }
-},
-function(params){
-    var that = this;
-
-    that.nodes = {};
-    that.components = {};
-    that.form = null;
-    that.controller = null;
-    that.value = null;
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params.events);
-        that.getDataConfig(that.params.node);
-        that.callbacksProcess();
-        validateParams();
-        render();
-        that.addToStack(that.params.node);
-        that.triggerEvent('onRender');
-    };
-
-    var validateParams = function(){
-        if(that.params.constructor){
-            cm.getConstructor(that.params.constructor, function(classConstructor){
-                that.params.constructor = classConstructor;
-            });
-        }
-        that.params.constructorParams.node = that.params.node;
-        that.params.constructorParams.name = that.params.name;
-        that.params.constructorParams.options = that.params.options;
-        that.params.constructorParams.value = that.params.dataValue || that.params.value;
-        that.params.helpParams.content = that.params.help;
-        that.params.helpParams.name = that.params.name;
-        that.form = that.params.form;
-    };
-
-    var render = function(){
-        // Render structure
-        that.nodes = that.callbacks.render(that) || {};
-        // Append
-        that.params.container.appendChild(that.nodes.container);
-        // Construct
-        that.callbacks.construct(that);
-    };
-
-    /* ******* CALLBACKS ******* */
-
-    that.callbacks.construct = function(that){
-        that.controller = that.callbacks.controller(that, that.params.constructorParams);
-    };
-
-    that.callbacks.controller = function(that, params){
-        if(that.params.constructor){
-            return new that.params.constructor(params);
-        }
-    };
-
-    that.callbacks.render = function(that){
-        var nodes = {};
-        // Structure
-        nodes.container = cm.node('dl', {'class' : 'pt__field'},
-            nodes.label = cm.node('dt',
-                cm.node('label', that.params.label)
-            ),
-            nodes.value = cm.node('dd', that.params.node)
-        );
-        !that.params.visible && cm.addClass(nodes.container, 'is-hidden');
-        // Style
-        cm.addClass(nodes.container, that.params.className);
-        // Attributes
-        if(!cm.isEmpty(that.params.name)){
-            that.params.node.setAttribute('name', that.params.name);
-        }
-        if(!cm.isEmpty(that.params.value)){
-            that.params.node.setAttribute('value', that.params.value);
-        }
-        if(!cm.isEmpty(that.params.dataValue)){
-            that.params.node.setAttribute('data-value', JSON.stringify(that.params.dataValue));
-        }
-        if(!cm.isEmpty(that.params.placeholder)){
-            that.params.node.setAttribute('placeholder', that.params.placeholder);
-        }
-        if(!cm.isEmpty(that.params.help)){
-            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
-                that.components.help = new classConstructor(
-                    cm.merge(that.params.helpParams, {
-                        'container' : nodes.label
-                    })
-                );
-            });
-        }
-        return nodes;
-    };
-
-    that.callbacks.clearError = function(that){
-        cm.removeClass(that.nodes.container, 'error');
-        cm.remove(that.nodes.errors);
-    };
-
-    that.callbacks.renderError = function(that, message){
-        that.callbacks.clearError(that);
-        cm.addClass(that.nodes.container, 'error');
-        that.nodes.errors = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
-            cm.node('li', {'class' : 'error'}, message)
-        );
-        cm.appendChild(that.nodes.errors, that.nodes.value);
-    };
-
-    that.callbacks.set = function(that, value){
-        that.controller && cm.isFunction(that.controller.set) && that.controller.set(value);
-        return value;
-    };
-
-    that.callbacks.get = function(that){
-        return that.controller && cm.isFunction(that.controller.get) ? that.controller.get() : null;
-    };
-
-    that.callbacks.reset = function(that){
-        that.controller && cm.isFunction(that.controller.reset) && that.controller.reset();
-    };
-
-    that.callbacks.destruct = function(that){
-        that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
-    };
-
-    /* ******* PUBLIC ******* */
-
-    that.set = function(value){
-        that.value = that.callbacks.set(that, value);
-        return that;
-    };
-
-    that.get = function(){
-        that.value = that.callbacks.get(that);
-        return that.value;
-    };
-
-    that.reset = function(){
-        that.callbacks.reset(that);
-        return that;
-    };
-
-    that.destruct = function(){
-        that.callbacks.destruct(that);
-        that.removeFromStack();
-        return that;
-    };
-
-    that.renderError = function(errors, message){
-        that.callbacks.renderError(that, errors, message);
-        return that;
-    };
-
-    that.clearError = function(){
-        that.callbacks.clearError(that);
-        return that;
-    };
-
-    init();
-});
-
-/* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
-
-Com.FormFields.add('empty', {
-    'field' : false,
-    'fieldConstructor' : 'Com.AbstractFormField'
-});
-
-Com.FormFields.add('buttons', {
-    'node' : cm.node('div', {'class' : 'pt__buttons pull-right'}),
-    'field' : false,
-    'system' : true,
-    'callbacks' : {
-        'render' : function(that){
-            var nodes = {};
-            nodes.container = that.params.node;
-            nodes.inner = cm.node('div', {'class' : 'inner'});
-            cm.appendChild(nodes.inner, nodes.container);
-            return nodes;
-        },
-        'controller' : function(that){
-            var buttons = {},
-                node;
-            cm.forEach(that.params.options, function(item){
-                node = cm.node('button', item.text);
-                switch(item.value){
-                    case 'submit':
-                        node.type = 'submit';
-                        cm.addClass(node, 'button-primary');
-                        cm.addEvent(node, 'click', function(e){
-                            cm.preventDefault(e);
-                            that.form.send();
-                        });
-                        break;
-
-                    case 'reset':
-                        node.type = 'reset';
-                        cm.addClass(node, 'button-secondary');
-                        cm.addEvent(node, 'click', function(e){
-                            cm.preventDefault(e);
-                            that.form.reset();
-                        });
-                        break;
-
-                    case 'clear':
-                        cm.addClass(node, 'button-secondary');
-                        cm.addEvent(node, 'click', function(e){
-                            cm.preventDefault(e);
-                            that.form.clear();
-                        });
-                        break;
-
-                    default:
-                        break;
-                }
-                buttons[item.value] = node;
-                that.params.node.appendChild(node);
-            });
-            return buttons;
-        }
-    }
 });
 
 cm.define('Com.TabsetHelper', {
@@ -11763,7 +11558,10 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                     );
                 });
             }
-        }else if(item.isAjax && (!item['cache'] || (item['cache'] && !item.isCached))){
+        }else if(
+            item.isAjax
+            && (!item['cache'] || (item['cache'] && !item.isCached))
+        ){
             that.ajaxHandler = classProto.callbacks.request(that, {
                 'config' : cm.merge(that.params['ajax'], item['ajax'])
             }, item);
@@ -12121,7 +11919,7 @@ cm.define('Com.ScrollPagination', {
         'scrollIndent' : 'Math.max(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'disabled' : false,
         'data' : [],                                                // Static data
-        'count' : 0,
+        'count' : null,
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
@@ -12192,7 +11990,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.currentPage = null;
         that.previousPage = null;
         that.nextPage = null;
-        that.pageCount = 0;
+        that.itemCount = null;
+        that.pageCount = null;
         // Binds
         that.keyDownEventHandler = that.keyDownEvent.bind(that);
         that.setHandler = that.set.bind(that);
@@ -12221,11 +12020,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         }else{
             that.params['showLoader'] = false;
         }
-        if(that.params['pageCount'] === 0 && that.params['perPage'] && that.params['count']){
-            that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
-        }else{
-            that.pageCount = that.params['pageCount'];
-        }
+        that.itemCount = that.params['count'];
+        that.setPageCount();
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
         // Set next page token
@@ -12408,13 +12204,13 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                     data = dataItem;
                 }
             }
-            if(countItem){
+            if(!cm.isEmpty(countItem)){
                 that.setCount(countItem);
             }
-            if(tokenItem){
+            if(!cm.isEmpty(tokenItem)){
                 that.setToken(that.nextPage, tokenItem);
             }
-            if(that.params['useToken'] && !tokenItem){
+            if(that.params['useToken'] && cm.isEmpty(tokenItem)){
                 that.callbacks.finalize(that);
             }
         }
@@ -12543,7 +12339,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.pageCount > 0 && that.pageCount === that.currentPage){
+        if(that.itemCount === 0 || (that.pageCount > 0 && that.pageCount === that.currentPage)){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -12601,7 +12397,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.currentPage = null;
         that.previousPage = null;
         that.nextPage = null;
-        that.pageCount = 0;
+        that.itemCount = null;
+        that.pageCount = null;
         that.isFinalize = false;
         // Set new parameters
         if(!cm.isEmpty(params)){
@@ -12655,20 +12452,26 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.setCount = function(count){
         var that = this;
-        if(!cm.isUndefined(count)){
-            count = parseInt(count.toString());
+        if(cm.isString(count)){
+            count = parseInt(count);
         }
-        if(cm.isNumber(count) && count !== that.params['count']){
-            that.params['count'] = count;
-            if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
-                that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
-            }else{
-                that.pageCount = that.params['pageCount'];
-            }
-            if(that.pageCount > 0 && that.pageCount === that.currentPage){
+        if(cm.isNumber(count) && count !== that.itemCount){
+            that.itemCount = count;
+            that.setPageCount();
+            if(that.itemCount === 0 || (that.pageCount > 0 && that.pageCount === that.currentPage)){
                 that.callbacks.finalize(that);
             }
             that.triggerEvent('onSetCount', count);
+        }
+        return that;
+    };
+
+    classProto.setPageCount = function(){
+        var that = this;
+        if(that.params['pageCount'] === 0 && that.itemCount && that.params['perPage']){
+            that.pageCount = Math.ceil(that.itemCount / that.params['perPage']);
+        }else{
+            that.pageCount = that.params['pageCount'];
         }
         return that;
     };
@@ -12771,6 +12574,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         return cm.isParent(that.nodes['container'], node, flag);
     };
 });
+
 cm.define('Com.Calendar', {
     'modules' : [
         'Params',
@@ -17025,6 +16829,283 @@ cm.getConstructor('Com.FileStats', function(classConstructor, className, classPr
         return that;
     };
 });
+/* ******* COMPONENT: FORM FIELD ******* */
+
+Com.FormFields = (function(){
+		var stack = {};
+
+		return {
+				'add' : function(type, params){
+						stack[type] = cm.merge({
+								'node' : cm.node('div'),
+								'fieldConstructor' : null,
+								'constructor' : null,
+								'type' : type,
+								'field' : true,
+								'system' : false
+						}, params);
+				},
+				'get' : function(type){
+						return stack[type]? cm.clone(stack[type], true) : null;
+				}
+		};
+})();
+
+cm.define('Com.FormField', {
+		'modules' : [
+				'Params',
+				'Events',
+				'DataConfig',
+				'Stack',
+				'Callbacks'
+		],
+		'events' : [
+				'onRender'
+		],
+		'params' : {
+				'node' : cm.node('div'),
+				'container' : cm.node('div'),
+				'form' : false,
+				'name' : '',
+				'value' : null,
+				'dataValue' : null,
+				'type' : false,
+				'label' : '',
+				'help' : null,
+				'placeholder' : '',
+				'visible' : true,
+				'options' : [],
+				'className' : '',                   // is-box
+				'constructor' : false,
+				'constructorParams' : {},
+				'helpConstructor' : 'Com.HelpBubble',
+				'helpParams' : {
+						'renderStructure' : true
+				}
+		}
+},
+function(params){
+		var that = this;
+
+		that.nodes = {};
+		that.components = {};
+		that.form = null;
+		that.controller = null;
+		that.value = null;
+
+		var init = function(){
+				that.setParams(params);
+				that.convertEvents(that.params.events);
+				that.getDataConfig(that.params.node);
+				that.callbacksProcess();
+				validateParams();
+				render();
+				that.addToStack(that.params.node);
+				that.triggerEvent('onRender');
+		};
+
+		var validateParams = function(){
+				if(that.params.constructor){
+						cm.getConstructor(that.params.constructor, function(classConstructor){
+								that.params.constructor = classConstructor;
+						});
+				}
+				that.params.constructorParams.node = that.params.node;
+				that.params.constructorParams.name = that.params.name;
+				that.params.constructorParams.options = that.params.options;
+				that.params.constructorParams.value = that.params.dataValue || that.params.value;
+				that.params.helpParams.content = that.params.help;
+				that.params.helpParams.name = that.params.name;
+				that.form = that.params.form;
+		};
+
+		var render = function(){
+				// Render structure
+				that.nodes = that.callbacks.render(that) || {};
+				// Append
+				that.params.container.appendChild(that.nodes.container);
+				// Construct
+				that.callbacks.construct(that);
+		};
+
+		/* ******* CALLBACKS ******* */
+
+		that.callbacks.construct = function(that){
+				that.controller = that.callbacks.controller(that, that.params.constructorParams);
+		};
+
+		that.callbacks.controller = function(that, params){
+				if(that.params.constructor){
+						return new that.params.constructor(params);
+				}
+		};
+
+		that.callbacks.render = function(that){
+				var nodes = {};
+				// Structure
+				nodes.container = cm.node('dl', {'class' : 'pt__field'},
+						nodes.label = cm.node('dt',
+								cm.node('label', that.params.label)
+						),
+						nodes.value = cm.node('dd', that.params.node)
+				);
+				!that.params.visible && cm.addClass(nodes.container, 'is-hidden');
+				// Style
+				cm.addClass(nodes.container, that.params.className);
+				// Attributes
+				if(!cm.isEmpty(that.params.name)){
+						that.params.node.setAttribute('name', that.params.name);
+				}
+				if(!cm.isEmpty(that.params.value)){
+						that.params.node.setAttribute('value', that.params.value);
+				}
+				if(!cm.isEmpty(that.params.dataValue)){
+						that.params.node.setAttribute('data-value', JSON.stringify(that.params.dataValue));
+				}
+				if(!cm.isEmpty(that.params.placeholder)){
+						that.params.node.setAttribute('placeholder', that.params.placeholder);
+				}
+				if(!cm.isEmpty(that.params.help)){
+						cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+								that.components.help = new classConstructor(
+										cm.merge(that.params.helpParams, {
+												'container' : nodes.label
+										})
+								);
+						});
+				}
+				return nodes;
+		};
+
+		that.callbacks.clearError = function(that){
+				cm.removeClass(that.nodes.container, 'error');
+				cm.remove(that.nodes.errors);
+		};
+
+		that.callbacks.renderError = function(that, message){
+				that.callbacks.clearError(that);
+				cm.addClass(that.nodes.container, 'error');
+				that.nodes.errors = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
+						cm.node('li', {'class' : 'error'}, message)
+				);
+				cm.appendChild(that.nodes.errors, that.nodes.value);
+		};
+
+		that.callbacks.set = function(that, value){
+				that.controller && cm.isFunction(that.controller.set) && that.controller.set(value);
+				return value;
+		};
+
+		that.callbacks.get = function(that){
+				return that.controller && cm.isFunction(that.controller.get) ? that.controller.get() : null;
+		};
+
+		that.callbacks.reset = function(that){
+				that.controller && cm.isFunction(that.controller.reset) && that.controller.reset();
+		};
+
+		that.callbacks.destruct = function(that){
+				that.controller && cm.isFunction(that.controller.destruct) && that.controller.destruct();
+		};
+
+		/* ******* PUBLIC ******* */
+
+		that.set = function(value){
+				that.value = that.callbacks.set(that, value);
+				return that;
+		};
+
+		that.get = function(){
+				that.value = that.callbacks.get(that);
+				return that.value;
+		};
+
+		that.reset = function(){
+				that.callbacks.reset(that);
+				return that;
+		};
+
+		that.destruct = function(){
+				that.callbacks.destruct(that);
+				that.removeFromStack();
+				return that;
+		};
+
+		that.renderError = function(errors, message){
+				that.callbacks.renderError(that, errors, message);
+				return that;
+		};
+
+		that.clearError = function(){
+				that.callbacks.clearError(that);
+				return that;
+		};
+
+		init();
+});
+
+/* ******* COMPONENT: FORM FIELD: DECORATORS ******* */
+
+Com.FormFields.add('empty', {
+		'field' : false,
+		'fieldConstructor' : 'Com.AbstractFormField'
+});
+
+Com.FormFields.add('buttons', {
+		'node' : cm.node('div', {'class' : 'pt__buttons pull-right'}),
+		'field' : false,
+		'system' : true,
+		'callbacks' : {
+				'render' : function(that){
+						var nodes = {};
+						nodes.container = that.params.node;
+						nodes.inner = cm.node('div', {'class' : 'inner'});
+						cm.appendChild(nodes.inner, nodes.container);
+						return nodes;
+				},
+				'controller' : function(that){
+						var buttons = {},
+								node;
+						cm.forEach(that.params.options, function(item){
+								node = cm.node('button', item.text);
+								switch(item.value){
+										case 'submit':
+												node.type = 'submit';
+												cm.addClass(node, 'button-primary');
+												cm.addEvent(node, 'click', function(e){
+														cm.preventDefault(e);
+														that.form.send();
+												});
+												break;
+
+										case 'reset':
+												node.type = 'reset';
+												cm.addClass(node, 'button-secondary');
+												cm.addEvent(node, 'click', function(e){
+														cm.preventDefault(e);
+														that.form.reset();
+												});
+												break;
+
+										case 'clear':
+												cm.addClass(node, 'button-secondary');
+												cm.addEvent(node, 'click', function(e){
+														cm.preventDefault(e);
+														that.form.clear();
+												});
+												break;
+
+										default:
+												break;
+								}
+								buttons[item.value] = node;
+								that.params.node.appendChild(node);
+						});
+						return buttons;
+				}
+		}
+});
+
 cm.define('Com.FormStepsLoader', {
     'modules' : [
         'Params',
@@ -18734,7 +18815,7 @@ function(params){
         }
         // Append
         cm.appendChild(nodes['container'], container);
-    }
+    };
 
     var renderTable = function(page, data, container){
         // API onRenderStart event
@@ -19196,7 +19277,8 @@ function(params){
     };
 
     var renderCellActionItems = function(config, row, item, list){
-        var isInArray, isEmpty,
+        var isInArray,
+            isEmpty,
             items = [];
         cm.forEach(config[list], function(actionItem, key){
             actionItem = cm.merge({
@@ -21669,9 +21751,10 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
     };
 
     classProto.callbacks.error = function(that, config, response){
-        var errors, message;
+        var errors,
+            message;
         if(!cm.isEmpty(response)){
-            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            errors = cm.reducePath(that.params.responseErrorsKey, response);
             message = cm.reducePath(that.params.responseMessageKey, response);
         }
         that.triggerEvent('onError', {
@@ -22563,6 +22646,7 @@ cm.define('Com.Request', {
         'responseHTMLKey' : 'data',
         'responseStatusKey' : 'data.success',
         'responseContainer' : null,
+        'showLoader' : true,
         'ajax' : {
             'type' : 'json',
             'method' : 'get',
@@ -22571,7 +22655,6 @@ cm.define('Com.Request', {
             'url' : '',                                 // Request URL. Variables: %baseUrl%, %callback%.
             'params' : ''                               // Params object. Variables: %baseUrl%, %callback%.
         },
-        'showLoader' : true,
         'animateDuration' : 'cm._config.animDuration',
         'overlayContainer' : 'document.body',
         'overlayConstructor' : 'Com.Overlay',
@@ -22825,7 +22908,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         return that;
     };
 
-    classProto.filter = function(){var that = this;
+    classProto.filter = function(){
+        var that = this;
         that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
         that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
         that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
@@ -23119,10 +23203,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         ){
             return el;
         }
-        if(el = that.getTargetLink(el.parentNode)){
-            return el;
+        el = that.getTargetLink(el.parentNode);
+        if(!cm.isElementNode(el)){
+            return false;
         }
-        return false;
+        return el;
     };
 
     classProto.popstateEvent = function(e){
@@ -23594,6 +23679,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
+        // Get item
         if(that.routes[route]){
             item = that.routes[route];
             // Process state
@@ -23847,9 +23933,9 @@ cm.define('Com.Slider', {
     ],
     'params' : {
         'node' : cm.node('div'),
+        'name' : '',
         'container' : false,
         'className' : null,
-        'name' : '',
         'customEvents' : true,
         'renderStructure' : false,
         'isEditing' : false,
@@ -26282,7 +26368,6 @@ function(params){
     that.nodes = {};
     that.groups = {};
     that.items = [];
-
     that.isHidden = true;
 
     var init = function(){
@@ -30212,7 +30297,7 @@ cm.define('Com.Datepicker', {
         'embedStructure' : 'replace',
         'customEvents' : true,
         'renderInBody' : true,
-        'size' : 'default',                     // default, full, custom
+        'size' : 'default',                                                 // default, full, custom
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
         'isDateTime' : false,
@@ -31084,7 +31169,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Bind context to methods
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
-        // Call parent methods
+        // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
 
@@ -33266,29 +33351,39 @@ function(params){
     /* *** COLLECTORS *** */
 
     var collectSelectOptions = function(){
-        var myChildes = that.params['node'].childNodes;
-        cm.forEach(myChildes, function(myChild, i){
-            if(cm.isElementNode(myChild)){
-                if(myChild.tagName.toLowerCase() === 'optgroup'){
-                    var myOptionsNodes = myChild.querySelectorAll('option');
-                    var myOptions = [];
-                    cm.forEach(myOptionsNodes, function(optionNode){
-                        myOptions.push({
-                            'value' : optionNode.value,
-                            'text' : optionNode.innerHTML,
-                            'className' : optionNode.className
-                        });
-                    });
-                    renderGroup(myChild.getAttribute('label'), myOptions);
-                }else if(myChild.tagName.toLowerCase() === 'option'){
+        var nodes = that.params['node'].childNodes,
+            nodeTagName,
+            options;
+        cm.forEach(nodes, function(node, i){
+            if(cm.isElementNode(node)){
+                nodeTagName = node.tagName.toLowerCase();
+                if(nodeTagName === 'optgroup'){
+                    options = collectSelectGroupOptions(node);
+                    renderGroup(node.label, options);
+                }else if(nodeTagName === 'option'){
                     renderOption({
-                        'value' : myChild.value,
-                        'text' : myChild.innerHTML,
-                        'className' : myChild.className
+                        'value' : node.value,
+                        'text' : node.innerHTML,
+                        'className' : node.className,
+                        'hidden' : node.hidden,
+                        'disabled' : node.disabled
                     });
                 }
             }
         });
+    };
+
+    var collectSelectGroupOptions = function(node){
+        var optionNodes = node.querySelectorAll('option'),
+            options = [];
+        cm.forEach(optionNodes, function(optionNode){
+            options.push({
+                'value' : optionNode.value,
+                'text' : optionNode.innerHTML,
+                'className' : optionNode.className
+            });
+        });
+        return options;
     };
 
     /* *** GROUPS *** */
@@ -33324,10 +33419,6 @@ function(params){
     /* *** OPTIONS *** */
 
     var renderOption = function(item, group){
-        // Check for exists
-        if(options[item['value']]){
-            removeOption(options[item['value']]);
-        }
         // Config
         item = cm.merge({
             'hidden' : false,
@@ -33339,6 +33430,10 @@ function(params){
             'className' : '',
             'group': null
         }, item);
+        // Check for existing option
+        if(options[item['value']]){
+            removeOption(options[item['value']]);
+        }
         // Add link to group
         item['group'] = group;
         // Structure

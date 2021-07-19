@@ -28,7 +28,7 @@ cm.define('Com.ScrollPagination', {
         'scrollIndent' : 'Math.max(%scrollHeight% / 2, 600)',       // Variables: %blockHeight%.
         'disabled' : false,
         'data' : [],                                                // Static data
-        'count' : 0,
+        'count' : null,
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
@@ -99,7 +99,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.currentPage = null;
         that.previousPage = null;
         that.nextPage = null;
-        that.pageCount = 0;
+        that.itemCount = null;
+        that.pageCount = null;
         // Binds
         that.keyDownEventHandler = that.keyDownEvent.bind(that);
         that.setHandler = that.set.bind(that);
@@ -128,11 +129,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         }else{
             that.params['showLoader'] = false;
         }
-        if(that.params['pageCount'] === 0 && that.params['perPage'] && that.params['count']){
-            that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
-        }else{
-            that.pageCount = that.params['pageCount'];
-        }
+        that.itemCount = that.params['count'];
+        that.setPageCount();
         // Set start page token
         that.setToken(that.params['startPage'], that.params['startPageToken']);
         // Set next page token
@@ -315,13 +313,13 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                     data = dataItem;
                 }
             }
-            if(countItem){
+            if(!cm.isEmpty(countItem)){
                 that.setCount(countItem);
             }
-            if(tokenItem){
+            if(!cm.isEmpty(tokenItem)){
                 that.setToken(that.nextPage, tokenItem);
             }
-            if(that.params['useToken'] && !tokenItem){
+            if(that.params['useToken'] && cm.isEmpty(tokenItem)){
                 that.callbacks.finalize(that);
             }
         }
@@ -450,7 +448,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
         // Check pages count
-        if(that.pageCount > 0 && that.pageCount === that.currentPage){
+        if(that.itemCount === 0 || (that.pageCount > 0 && that.pageCount === that.currentPage)){
             that.callbacks.finalize(that);
         }
         // Show / Hide Load More Button
@@ -508,7 +506,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.currentPage = null;
         that.previousPage = null;
         that.nextPage = null;
-        that.pageCount = 0;
+        that.itemCount = null;
+        that.pageCount = null;
         that.isFinalize = false;
         // Set new parameters
         if(!cm.isEmpty(params)){
@@ -562,20 +561,26 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.setCount = function(count){
         var that = this;
-        if(!cm.isUndefined(count)){
-            count = parseInt(count.toString());
+        if(cm.isString(count)){
+            count = parseInt(count);
         }
-        if(cm.isNumber(count) && count !== that.params['count']){
-            that.params['count'] = count;
-            if(that.params['pageCount'] === 0 && that.params['count'] && that.params['perPage']){
-                that.pageCount = Math.ceil(that.params['count'] / that.params['perPage']);
-            }else{
-                that.pageCount = that.params['pageCount'];
-            }
-            if(that.pageCount > 0 && that.pageCount === that.currentPage){
+        if(cm.isNumber(count) && count !== that.itemCount){
+            that.itemCount = count;
+            that.setPageCount();
+            if(that.itemCount === 0 || (that.pageCount > 0 && that.pageCount === that.currentPage)){
                 that.callbacks.finalize(that);
             }
             that.triggerEvent('onSetCount', count);
+        }
+        return that;
+    };
+
+    classProto.setPageCount = function(){
+        var that = this;
+        if(that.params['pageCount'] === 0 && that.itemCount && that.params['perPage']){
+            that.pageCount = Math.ceil(that.itemCount / that.params['perPage']);
+        }else{
+            that.pageCount = that.params['pageCount'];
         }
         return that;
     };

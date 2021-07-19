@@ -398,7 +398,7 @@ function(params){
         }
         // Append
         cm.appendChild(nodes['container'], container);
-    }
+    };
 
     var renderTable = function(page, data, container){
         // API onRenderStart event
@@ -860,7 +860,8 @@ function(params){
     };
 
     var renderCellActionItems = function(config, row, item, list){
-        var isInArray, isEmpty,
+        var isInArray,
+            isEmpty,
             items = [];
         cm.forEach(config[list], function(actionItem, key){
             actionItem = cm.merge({

@@ -166,7 +166,8 @@
         }
     }
 
-    &.is-flexible-in {
+    &.is-flexible-in,
+    &.is-flexible-uniform {
         overflow: visible;
 
         > ul {
@@ -176,13 +177,6 @@
             > li {
                 .display-flex;
                 .mx__flex(1 1 0);
-            }
-        }
-
-        .ie9 &,
-        .ie8 & {
-            > ul {
-                .cm__list-table;
             }
         }
     }

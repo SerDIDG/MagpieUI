@@ -80,10 +80,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         ){
             return el;
         }
-        if(el = that.getTargetLink(el.parentNode)){
-            return el;
+        el = that.getTargetLink(el.parentNode);
+        if(!cm.isElementNode(el)){
+            return false;
         }
-        return false;
+        return el;
     };
 
     classProto.popstateEvent = function(e){
@@ -555,6 +556,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(that.routesBinds[route]){
             route = that.routesBinds[route];
         }
+        // Get item
         if(that.routes[route]){
             item = that.routes[route];
             // Process state

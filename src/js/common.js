@@ -480,6 +480,7 @@ cm.arrayFilter = function(a, items){
     });
 };
 
+// TODO: check is this ever needed
 cm.arraySort = function(a, key, dir, clone){
     var newA;
     if(!cm.isArray(a)){
@@ -1348,7 +1349,10 @@ cm.node = cm.Node = function(){
         i = 0;
     if(cm.isObject(args[1])){
         cm.forEach(args[1], function(value, key){
-            if(cm.isObject(value)){
+            if(cm.isUndefined(value)){
+                return;
+            }
+            if(cm.isObject(value) && key !== 'class'){
                 value = JSON.stringify(value);
             }
             switch(key){
@@ -1356,7 +1360,7 @@ cm.node = cm.Node = function(){
                     el.style.cssText = value;
                     break;
                 case 'class':
-                    el.className = value;
+                    cm.addClass(el, value);
                     break;
                 case 'innerHTML':
                     el.innerHTML = value;
@@ -2032,8 +2036,11 @@ cm.isMobile = function(){
 };
 
 cm.decode = (function(){
-    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+    var node;
     return function(text){
+        if(!node){
+            node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+        }
         if(!cm.isEmpty(text)){
             node.innerHTML = text;
             return node.value;
@@ -2045,11 +2052,13 @@ cm.decode = (function(){
 })();
 
 cm.copyToClipboard = (function(){
-    var node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'}),
-        success;
+    var node, success;
     cm.insertFirst(node, document.body);
     return function(text, callback){
         callback = cm.isFunction(callback) ? callback : function(){};
+        if(!node){
+            node = cm.node('textarea', {'class' : 'cm__textarea-clipboard'});
+        }
         if(!cm.isEmpty(text)){
             node.value = text;
             node.select();
@@ -2394,14 +2403,17 @@ cm.getWeeksInYear = function(year){
 
 /* ******* STYLES ******* */
 
-cm.addClass = function(node, str, useHack){
-    if(!cm.isNode(node) || cm.isEmpty(str)){
-        return null;
+cm.addClass = function(node, classes, useHack){
+    if(!cm.isNode(node) || cm.isEmpty(classes)){
+        return;
     }
     if(useHack){
         useHack = node.clientHeight;
     }
-    cm.forEach(str.toString().split(/\s+/), function(item){
+    if(cm.isString(classes) || cm.isNumber(classes)){
+        classes = classes.toString().split(/\s+/);
+    }
+    cm.forEach(classes, function(item){
         if(!cm.isEmpty(item)){
             node.classList.add(item);
         }
@@ -2409,14 +2421,17 @@ cm.addClass = function(node, str, useHack){
     return node;
 };
 
-cm.removeClass = function(node, str, useHack){
-    if(!cm.isNode(node) || cm.isEmpty(str)){
-        return null;
+cm.removeClass = function(node, classes, useHack){
+    if(!cm.isNode(node) || cm.isEmpty(classes)){
+        return;
     }
     if(useHack){
         useHack = node.clientHeight;
     }
-    cm.forEach(str.toString().split(/\s+/), function(item){
+    if(cm.isString(classes) || cm.isNumber(classes)){
+        classes = classes.toString().split(/\s+/);
+    }
+    cm.forEach(classes, function(item){
         if(!cm.isEmpty(item)){
             node.classList.remove(item);
         }
@@ -3329,6 +3344,15 @@ cm.setCSSVariable = function(key, value, node){
     return node;
 };
 
+cm.getCSSVariable = function(key, node){
+    var styleObject;
+    node = !cm.isUndefined(node) ? node : document.documentElement;
+    if(cm.isNode(node)){
+        styleObject = cm.getStyleObject(node);
+        return styleObject.getPropertyValue(key);
+    }
+};
+
 /* ******* VALIDATORS ******* */
 
 cm.keyCodeTable = {
@@ -3791,25 +3815,37 @@ cm.ajax = function(o){
             'handler' : false
         }, o),
         successStatuses = [200, 201, 202, 204],
-        vars = cm._getVariables(),
+        variables = cm._getVariables(),
         response,
         callbackName,
         callbackSuccessName,
+        callbackSuccessEmitted,
         callbackErrorName,
+        callbackErrorEmitted,
         scriptNode,
         returnObject;
 
     var init = function(){
-        validate();
         if(config['type'] === 'jsonp'){
-            returnObject = {
-                'abort' : abortJSONP
-            };
+            validateJSONP();
+            validate();
+            returnObject = {'abort' : abortJSONP};
             sendJSONP();
         }else{
+            validate();
             returnObject = config['httpRequestObject'];
             send();
         }
+    };
+
+    var validateJSONP = function(){
+        // Generate unique callback name
+        callbackName = ['cmAjaxJSONP', Date.now()].join('__');
+        callbackSuccessName = [callbackName, 'Success'].join('__');
+        callbackErrorName = [callbackName, 'Error'].join('__');
+        // Add variables
+        variables['%callback%'] = callbackSuccessName;
+        variables['%25callback%25'] = callbackSuccessName;
     };
 
     var validate = function(){
@@ -3839,8 +3875,8 @@ cm.ajax = function(o){
             config['uriParams'] = cm.obj2URI(config['uriParams'], config['uriConfig']);
         }
         // Process request route
+        config['url'] = cm.strReplace(config['url'], variables);
         config['url'] = cm.fillVariables(config['url'], config['variables']);
-        config['url'] = cm.strReplace(config['url'], vars);
         if(!cm.isEmpty(config['uriParams'])){
             config['url'] = [config['url'], config['uriParams']].join('?');
         }else if(!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
@@ -3851,8 +3887,8 @@ cm.ajax = function(o){
 
     var processParams = function(data){
         if(cm.isObject(data)){
+            data = cm.objectReplace(data, variables);
             data = cm.objectFillVariables(data, config['variables']);
-            data = cm.objectReplace(data, vars);
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
                 data = cm.stringifyJSON(data);
@@ -3944,29 +3980,24 @@ cm.ajax = function(o){
     };
 
     var sendJSONP = function(){
-        // Generate unique callback name
-        callbackName = ['cmAjaxJSONP', Date.now()].join('__');
-        callbackSuccessName = [callbackName, 'Success'].join('__');
-        callbackErrorName = [callbackName, 'Error'].join('__');
         // Generate events
         window[callbackSuccessName] = function(){
-            successHandler.apply(successHandler, arguments);
-            removeJSONP();
+            if(!callbackSuccessEmitted){
+                callbackSuccessEmitted = true;
+                successHandler.apply(successHandler, arguments);
+                removeJSONP();
+            }
         };
         window[callbackErrorName] = function(){
-            errorHandler.apply(errorHandler, arguments);
-            removeJSONP();
+            if(!callbackErrorEmitted){
+                callbackErrorEmitted = true;
+                errorHandler.apply(errorHandler, arguments);
+                removeJSONP();
+            }
         };
         // Prepare url and attach events
         scriptNode = cm.Node('script', {'type' : 'application/javascript'});
-        if(/%callback%|%25callback%25/.test(config['url'])){
-            config['url'] = cm.strReplace(config['url'], {
-                '%callback%' : callbackSuccessName,
-                '%25callback%25' : callbackSuccessName
-            });
-        }else{
-            cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
-        }
+        cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
         cm.addEvent(scriptNode, 'error', window[callbackErrorName]);
         // Embed
         config['onStart']();

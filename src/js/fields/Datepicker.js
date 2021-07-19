@@ -29,7 +29,7 @@ cm.define('Com.Datepicker', {
         'embedStructure' : 'replace',
         'customEvents' : true,
         'renderInBody' : true,
-        'size' : 'default',                     // default, full, custom
+        'size' : 'default',                                                 // default, full, custom
         'format' : 'cm._config.dateFormat',
         'displayFormat' : 'cm._config.displayDateFormat',
         'isDateTime' : false,

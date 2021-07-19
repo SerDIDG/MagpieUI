@@ -278,9 +278,10 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
     };
 
     classProto.callbacks.error = function(that, config, response){
-        var errors, message;
+        var errors,
+            message;
         if(!cm.isEmpty(response)){
-            errors = cm.reducePath(that.params['responseErrorsKey'], response);
+            errors = cm.reducePath(that.params.responseErrorsKey, response);
             message = cm.reducePath(that.params.responseMessageKey, response);
         }
         that.triggerEvent('onError', {

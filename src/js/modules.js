@@ -323,6 +323,20 @@ Mod['Events'] = {
         }
         return that;
     },
+    'removeAllEvent' : function(event){
+        var that = this;
+        that.events = cm.clone(that.events);
+        if(that.events[event]){
+            that.events = [];
+        }else{
+            cm.errorLog({
+                'type' : 'attention',
+                'name' : that._name['full'],
+                'message' : [cm.strWrap(event, '"'), 'does not exists.'].join(' ')
+            });
+        }
+        return that;
+    },
     'triggerEvent' : function(event, params){
         var that = this,
             data = cm.clone(arguments),
@@ -583,7 +597,7 @@ Mod['Storage'] = {
             that.build['params']['name'] = '';
         }
     },
-    'storageRead' : function(key, session){
+    'storageGet' : function(key, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -605,7 +619,11 @@ Mod['Storage'] = {
         }
         return storage[that.params['name']][key];
     },
-    'storageReadAll' : function(session){
+    'storageRead' : function(){
+        var that = this;
+        return that.storageGet.apply(that, arguments);
+    },
+    'storageGetAll' : function(session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -627,7 +645,11 @@ Mod['Storage'] = {
         }
         return storage[that.params['name']];
     },
-    'storageWrite' : function(key, value, session){
+    'storageReadAll' : function(){
+        var that = this;
+        return that.storageGetAll.apply(that, arguments);
+    },
+    'storageSet' : function(key, value, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -647,7 +669,11 @@ Mod['Storage'] = {
         cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
-    'storageWriteAll' : function(data, session){
+    'storageWrite' : function(){
+        var that = this;
+        return that.storageSet.apply(that, arguments);
+    },
+    'storageSetAll' : function(data, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -664,7 +690,11 @@ Mod['Storage'] = {
         cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
     },
-    'storageClear' : function(key, session){
+    'storageWriteAll' : function(){
+        var that = this;
+        return that.storageSetAll.apply(that, arguments);
+    },
+    'storageRemove' : function(key, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
             storage = JSON.parse(cm[method](that._className)) || {};
@@ -683,6 +713,10 @@ Mod['Storage'] = {
         method = session ? 'sessionStorageSet' : 'storageSet';
         cm[method](that._className, JSON.stringify(storage));
         return storage[that.params['name']];
+    },
+    'storageClear' : function(){
+        var that = this;
+        return that.storageRemove.apply(that, arguments);
     }
 };
 

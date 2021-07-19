@@ -353,7 +353,10 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                     );
                 });
             }
-        }else if(item.isAjax && (!item['cache'] || (item['cache'] && !item.isCached))){
+        }else if(
+            item.isAjax
+            && (!item['cache'] || (item['cache'] && !item.isCached))
+        ){
             that.ajaxHandler = classProto.callbacks.request(that, {
                 'config' : cm.merge(that.params['ajax'], item['ajax'])
             }, item);

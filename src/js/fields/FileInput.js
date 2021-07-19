@@ -59,7 +59,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Bind context to methods
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
-        // Call parent methods
+        // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
 
