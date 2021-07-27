@@ -647,20 +647,21 @@ cm.fillDataMap = function(map, data){
     return items;
 };
 
-cm.objectFillVariables = function(o, map, replaceKeys){
+cm.objectFillVariables = function(o, map, skipEmpty, replaceKeys){
     var newO = cm.isArray(o) ? [] : {},
         newKey;
     replaceKeys = !cm.isUndefined(replaceKeys) ? replaceKeys : true;
+    skipEmpty = !cm.isUndefined(skipEmpty) ? skipEmpty : false;
     cm.forEach(o, function(value, key){
         if(cm.isString(key)){
-            newKey = replaceKeys ? cm.fillVariables(key, map) : key;
+            newKey = replaceKeys ? cm.fillVariables(key, map, skipEmpty) : key;
         }else{
             newKey = key;
         }
         if(cm.isObject(value)){
-            newO[newKey] = cm.objectFillVariables(value, map, replaceKeys);
+            newO[newKey] = cm.objectFillVariables(value, map, skipEmpty, replaceKeys);
         }else if(cm.isString(value)){
-            newO[newKey] = cm.fillVariables(value, map);
+            newO[newKey] = cm.fillVariables(value, map, skipEmpty);
         }else{
             newO[newKey] = value;
         }
@@ -2093,14 +2094,15 @@ cm.strReplace = function(str, map){
     return str;
 };
 
-cm.fillVariables = function(value, data){
+cm.fillVariables = function(value, data, skipEmpty){
     var tests;
+    skipEmpty = !cm.isUndefined(skipEmpty) ? skipEmpty : false;
     return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
         tests = [
             cm.reducePath(p1, data),
             cm.reducePath('%' + p1 + '%', data),
             cm.reducePath('{' + p1 + '}', data),
-            ''
+            skipEmpty ? math : ''
         ];
         return tests.find(function(item){
             return !cm.isUndefined(item);
@@ -3858,7 +3860,7 @@ cm.ajax = function(o){
         }
         // Process variables
         if(!cm.isEmpty(config['variablesMap'])){
-            config['_originVariables'] = config['variables'];
+            config['_originVariables'] = cm.clone(config['variables']);
             config['variables'] = cm.fillDataMap(config['variablesMap'], config['variables']);
         }
         // Process params object
@@ -3876,7 +3878,7 @@ cm.ajax = function(o){
         }
         // Process request route
         config['url'] = cm.strReplace(config['url'], variables);
-        config['url'] = cm.fillVariables(config['url'], config['variables']);
+        config['url'] = cm.fillVariables(config['url'], config['variables'], true);
         if(!cm.isEmpty(config['uriParams'])){
             config['url'] = [config['url'], config['uriParams']].join('?');
         }else if(!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
@@ -3888,7 +3890,7 @@ cm.ajax = function(o){
     var processParams = function(data){
         if(cm.isObject(data)){
             data = cm.objectReplace(data, variables);
-            data = cm.objectFillVariables(data, config['variables']);
+            data = cm.objectFillVariables(data, config['variables'], true);
             if(config['paramsType'] === 'json'){
                 config['headers']['Content-Type'] = 'application/json';
                 data = cm.stringifyJSON(data);

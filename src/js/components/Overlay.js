@@ -23,6 +23,7 @@ cm.define('Com.Overlay', {
         'position' : 'fixed',
         'lazy' : false,
         'delay' : 'cm._config.lazyDelay',
+        'content' : null,
         'showSpinner' : true,
         'showContent' : true,
         'autoOpen' : true,
@@ -75,6 +76,8 @@ function(params){
         cm.addClass(that.nodes['container'], ['transition', that.params['transition']].join('-'));
         // Set position
         that.nodes['container'].style.position = that.params['position'];
+        // Set content
+        !cm.isEmpty(that.params['content']) && that.setContent(that.params['content']);
         // Show spinner
         that.params['showSpinner'] && that.showSpinner();
         // Show content
@@ -216,8 +219,14 @@ function(params){
     };
 
     that.setContent = function(node){
-        if(cm.isNode(node)){
-            that.nodes['content'].appendChild(node);
+        if(cm.isEmpty(node)){
+            cm.clearNode(that.nodes['content']);
+        }else{
+            if(!cm.isNode(node)){
+                node = node.toString();
+                node = cm.node('div', {'innerHTML' : node});
+            }
+            cm.appendChild(node, that.nodes['content']);
         }
         return that;
     };

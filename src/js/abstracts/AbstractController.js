@@ -77,6 +77,7 @@ cm.define('Com.AbstractController', {
 function(params){
     var that = this;
     that.isDestructed = false;
+    that.isConstructed = true;
     that.nodes = {};
     that.components = {};
     that.construct(params);
@@ -112,6 +113,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.triggerEvent('onConstructProcess');
         that.addToStack(that.nodes['container']);
         that.setEvents();
+        that.isConstructed = true;
         that.triggerEvent('onRender');
         that.triggerEvent('onRenderEnd');
         that.triggerEvent('onConstructEnd');
@@ -121,6 +123,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.destruct = function(){
         var that = this;
         if(!that.isDestructed){
+            that.isConstructed = false;
             that.isDestructed = true;
             that.triggerEvent('onDestructStart');
             that.triggerEvent('onDestruct');

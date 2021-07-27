@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.1 (2021-07-19 18:05) ************ */
+/*! ************ MagpieUI v3.40.2 (2021-07-27 17:46) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4370,8 +4370,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10660,6 +10660,9 @@ button.is-hidden {
 .pt__field.is-check-line > .field__descr {
   margin-left: 8px;
 }
+.pt__field.is-flex {
+  display: flex;
+}
 .pt__field.is-box,
 .pt__field.is-form-box {
   margin-bottom: 24px;
@@ -10838,6 +10841,9 @@ ul.pt__field__hint li:before {
 @media only screen and (max-width: 640px) {
   html.is-adaptive .pt__field.is-check-line {
     display: block;
+  }
+  html.is-adaptive .pt__field.is-flex {
+    display: flex;
   }
   html.is-adaptive .pt__field.is-hidden {
     display: none;

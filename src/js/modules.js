@@ -180,6 +180,7 @@ Mod['Params'] = {
         // Validate params
         cm.forEach(that.params, function(item, key){
             switch(key){
+                case 'messages':
                 case 'strings':
                 case 'langs':
                     cm.isFunction(that.setLangs) && that.setLangs(item);
