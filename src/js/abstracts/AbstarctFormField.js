@@ -31,6 +31,7 @@ cm.define('Com.AbstractFormField', {
         'value' : null,
         'defaultValue' : null,
         'dataValue' : null,
+        'noValue' : null,
         'isOptionValue' : false,
         'setHiddenValue' : true,
         'minLength' : 0,
@@ -152,6 +153,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
         that.params.constructorParams.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
         that.params.constructorParams.defaultValue = that.params.defaultValue;
+        that.params.constructorParams.noValue = that.params.noValue;
         that.params.constructorParams.required = that.params.required;
         that.params.constructorParams.validate = that.params.validate;
         that.params.constructorParams.disabled = that.params.disabled;

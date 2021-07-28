@@ -4,7 +4,8 @@ cm.define('Com.Check', {
         'controllerEvents' : true,
         'type' : 'checkbox',
         'multiple' : false,
-        'inline' : false
+        'inline' : false,
+        'noValue' : null
     }
 },
 function(params){
@@ -115,7 +116,8 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }else{
             inputContainer = that.renderInput({
                 'text' : that.params['placeholder'],
-                'value' : that.params['value']
+                'value' : that.params['value'],
+                'noValue' : that.params['noValue']
             });
             cm.appendChild(inputContainer, nodes['container']);
         }
@@ -130,7 +132,8 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         item = cm.merge({
             'nodes' : nodes,
             'text' : '',
-            'value' : null
+            'value' : null,
+            'noValue' : null
         }, item);
         // Structure
         nodes['container'] = cm.node('label',
@@ -180,7 +183,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             if(item['input'].checked){
                 value = !cm.isEmpty(item['value']) ? item['value'] : true;
             }else{
-                value = false;
+                value = !cm.isEmpty(item['noValue']) ? item['noValue'] : false;
             }
         }
         that.set(value, triggerEvents);
@@ -200,7 +203,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 });
             }
         }else{
-            that.hidden[0]['input'].checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
+            that.hidden[0]['input'].checked = that.testInputValue(value, null, that.params['noValue']);
         }
     };
 
@@ -217,8 +220,14 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 });
             }
         }else{
-            that.inputs[0]['input'].checked = !(cm.isEmpty(value) || value === 0 || value === '0' || value === false);
+            that.inputs[0]['input'].checked = that.testInputValue(value, null, that.params['noValue']);
         }
+    };
+
+    classProto.testInputValue = function(value, yesValue, noValue){
+        // TODO: Check all variants
+        return (!cm.isEmpty(yesValue) && value === yesValue)
+            || !(cm.isEmpty(value) || value === 0 || value === '0' || value === false || value === noValue);
     };
 });
 

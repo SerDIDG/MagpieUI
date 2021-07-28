@@ -162,155 +162,147 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processRoute = function(state){
         var that = this,
-            route,
-            matchRouteRedirect,
-            matchRouteData,
-            matchRoutesData = [];
+            matchedRouteData,
+            routeItem;
         // Destruct old route
         that.destructRoute(that.current);
         // Match route
-        cm.forEach(that.routes, function(item, route){
-            var isMatch = state.route.match(item.regexp),
-                hasAccess = that.checkRoleAccess(item.access),
-                routeData;
-            if(isMatch){
-                item = cm.clone(item);
-                routeData = {
-                    'hasAccess' : hasAccess,
-                    'roure': route,
-                    'item' : item,
-                    'captures' : isMatch
-                };
-                if(hasAccess){
-                    matchRouteData = routeData;
-                }else{
-                    matchRoutesData.push(routeData);
-                    state.match.push(item);
-                }
-            }
-        });
-        // Try to find route redirects if exists
-        if(!cm.isEmpty(matchRouteData)){
-            matchRouteRedirect = that.getRouteRedirect(matchRouteData.item);
-        }else{
-            cm.forEach(matchRoutesData, function(routeData){
-                // TODO: check redirect access
-                var redirect = that.getRouteRedirect(routeData.item);
-                if(redirect){
-                    matchRouteData = routeData;
-                    matchRouteRedirect = redirect;
-                }
-            });
-            // If routes and does not found - process error route
-            if(cm.isEmpty(matchRouteData)){
-                matchRouteData = {
-                    'hasAccess' : true,
-                    'route' : 'error',
-                    'item' : that.get('error')
-                };
-            }
+        matchedRouteData = that.getStateMatchedRoute(state);
+        // Is not found matched route
+        if(cm.isEmpty(matchedRouteData)){
+            matchedRouteData = {
+                'hasAccess' : true,
+                'route' : 'error',
+                'item' : that.get('error')
+            };
         }
         // Process route
-        route = cm.merge(matchRouteData.item, state);
-        route.state = state;
-        if(matchRouteData.captures){
-            route.captures = that.mapCaptures(route.map, matchRouteData.captures);
+        routeItem = cm.merge(matchedRouteData.item, state);
+        routeItem.state = state;
+        if(matchedRouteData.match){
+            routeItem.captures = that.mapCaptures(routeItem.map, matchedRouteData.match);
         }
         // Handle route redirect or route
-        if(!cm.isEmpty(matchRouteRedirect)){
-            if(cm.isArray(matchRouteRedirect)){
-                that.redirect.apply(that, matchRouteRedirect);
+        if(!cm.isEmpty(matchedRouteData.redirect)){
+            if(cm.isArray(matchedRouteData.redirect)){
+                that.redirect.apply(that, matchedRouteData.redirect);
             }else{
-                that.redirect(matchRouteRedirect, route.hash, {
-                    'urlParams' : route.urlParams,
-                    'captures' : route.captures,
-                    'data' : route.data
+                that.redirect(matchedRouteData.redirect, null, {
+                    'urlParams' : routeItem.urlParams,
+                    'captures' : routeItem.captures,
+                    'data' : routeItem.data
                 });
             }
         }else{
-            that.constructRoute(route);
+            that.constructRoute(routeItem);
         }
     };
 
-    classProto.destructRoute = function(route){
+    classProto.getStateMatchedRoute = function(state){
+        var that = this,
+            match,
+            routeData,
+            mathedRouteData;
+        // Match routes
+        cm.forEach(that.routes, function(routeItem, route){
+            match = state.route.match(routeItem.regexp);
+            if(match){
+                routeItem = cm.clone(routeItem);
+                state.match.push(routeItem);
+                routeData = {
+                    'roure': route,
+                    'item' : routeItem,
+                    'match' : match,
+                    'redirect' : that.getRouteRedirect(routeItem),
+                    'access' : that.checkRouteAccess(routeItem)
+                };
+                if(routeData.redirect || routeData.access){
+                    mathedRouteData = routeData
+                }
+            }
+        });
+        return mathedRouteData;
+    };
+
+    classProto.destructRoute = function(routeItem){
         var that = this;
         // Export
-        that.previous = route;
+        that.previous = routeItem;
         // Callbacks
-        if(route){
-            if(route.constructor){
-                route.controller && route.controller.destruct && route.controller.destruct();
+        if(routeItem){
+            if(routeItem.constructor){
+                routeItem.controller && routeItem.controller.destruct && routeItem.controller.destruct();
             }else{
-                route.onDestruct(route);
-                route.callback(route);
+                routeItem.onDestruct(routeItem);
+                routeItem.callback(routeItem);
             }
         }
         return that;
     };
 
-    classProto.constructRoute = function(route){
+    classProto.constructRoute = function(routeItem){
         var that = this,
             constructor,
             constructorParams;
-        that.triggerEvent('onChangeStart', route);
+        that.triggerEvent('onChangeStart', routeItem);
         // Export
-        that.current = route;
+        that.current = routeItem;
         // Callbacks
-        if(!cm.isEmpty(route.constructor)){
-            if(cm.isObject(route.constructor)){
-                cm.forEach(route.constructor, function(item, key){
+        if(!cm.isEmpty(routeItem.constructor)){
+            if(cm.isObject(routeItem.constructor)){
+                cm.forEach(routeItem.constructor, function(item, key){
                     if(that.checkRoleAccess(key)){
                         constructor = item;
                     }
                 });
             }else{
-                constructor = route.constructor;
+                constructor = routeItem.constructor;
             }
-            if(cm.isObject(route.constructorParams)){
-                cm.forEach(route.constructorParams, function(item, key){
+            if(cm.isObject(routeItem.constructorParams)){
+                cm.forEach(routeItem.constructorParams, function(item, key){
                     if(that.checkRoleAccess(key)){
                         constructorParams = item;
                     }
                 });
             }else{
-                constructorParams = route.constructorParams;
+                constructorParams = routeItem.constructorParams;
             }
         }
         if(constructor){
             cm.getConstructor(constructor, function(classConstructor){
-                route.controller = new classConstructor(
+                routeItem.controller = new classConstructor(
                     cm.merge(constructorParams, {
                         'container' : that.params.container,
-                        'route' : route
+                        'route' : routeItem
                     })
                 );
-                route.controller.triggerEvent('onConstructComplete');
+                routeItem.controller.triggerEvent('onConstructComplete');
             });
         }else{
-            route.onConstruct(route);
-            route.callback(route);
+            routeItem.onConstruct(routeItem);
+            routeItem.callback(routeItem);
         }
-        that.triggerEvent('onChange', route);
-        that.triggerEvent('onChangeEnd', route);
+        that.triggerEvent('onChange', routeItem);
+        that.triggerEvent('onChangeEnd', routeItem);
         return that;
     };
 
-    classProto.getRouteRedirect = function(route){
+    classProto.getRouteRedirect = function(routeItem){
         var that = this,
             routeRedirect;
-        if(!cm.isEmpty(route.redirectTo)){
-            if(cm.isObject(route.redirectTo)){
-                cm.forEach(route.redirectTo, function(item, role){
+        if(!cm.isEmpty(routeItem.redirectTo)){
+            if(cm.isObject(routeItem.redirectTo)){
+                cm.forEach(routeItem.redirectTo, function(item, role){
                     if(that.checkRoleAccess(role)){
                         routeRedirect = item;
                     }
                 });
             }else{
-                routeRedirect = route.redirectTo;
+                routeRedirect = routeItem.redirectTo;
             }
         }
         if(cm.isFunction(routeRedirect)){
-            routeRedirect = routeRedirect(route);
+            routeRedirect = routeRedirect(routeItem);
         }
         return routeRedirect;
     };
@@ -396,9 +388,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.checkRouteAccess = function(route){
-        var that = this,
-            item = that.get(route);
-        return item ? that.checkRoleAccess(item.access) : false;
+        var that = this;
+        return route ? that.checkRoleAccess(route.access) : false;
     };
 
     classProto.checkRoleAccess = function(role){
@@ -438,7 +429,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'originRoute' : route,
                 'name' : null,
                 'access' : 'all',
-                'pattern' : '([\\s\\S]+?)',
+                'pattern' : '([^\\/]+?)',
                 'regexp' : null,
                 'map' : [],
                 'captures' : {},
@@ -532,6 +523,12 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.getPrevious = function(){
         var that = this;
         return that.previous;
+    };
+
+    classProto.checkAccess = function(route){
+        var that = this,
+            item = that.get(route);
+        return that.checkRouteAccess(item);
     };
 
     classProto.set = function(route, hash, params){
