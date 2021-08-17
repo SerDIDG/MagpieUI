@@ -47,6 +47,12 @@ function(params){
     that.delayInterval = null;
 
     var init = function(){
+        // Binds
+        that.openHandler = that.open.bind(that);
+        that.closeHandler = that.close.bind(that);
+        that.toggleHandler = that.toggle.bind(that);
+        // Params
+        that.params['controllerEvents'] && that.bindControllerEvents(); // ToDo: move to abstract controller
         getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
@@ -262,6 +268,18 @@ function(params){
             cm.remove(that.nodes['container']);
         }
         return that;
+    };
+
+    that.bindControllerEvents = function(){
+        cm.forEach(that._raw['events'], function(name){
+            if(!that[name]){
+                that[name] = function(){};
+            }
+            if(!that[name + 'Handler']){
+                that[name + 'Handler'] = that[name].bind(that);
+            }
+            that.addEvent(name, that[name + 'Handler']);
+        });
     };
 
     that.getNodes = function(key){

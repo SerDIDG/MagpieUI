@@ -112,7 +112,7 @@ function(params){
 		that.callbacks.render = function(that){
 				var nodes = {};
 				// Structure
-				nodes.container = cm.node('dl', {'class' : 'pt__field'},
+				nodes.container = cm.node('dl', {'class' : 'pt__field is-adaptive'},
 						nodes.label = cm.node('dt',
 								cm.node('label', that.params.label)
 						),

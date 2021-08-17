@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.3 (2021-07-28 19:24) ************ */
+/*! ************ MagpieUI v3.40.4 (2021-08-17 20:36) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4370,8 +4370,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.3');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.3') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.3') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.3') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.4');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.4#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9010,6 +9010,20 @@ button.is-hidden {
 .pt__box-editable > .l {
   overflow: hidden;
 }
+.pt__box-editable.is-flex {
+  display: flex;
+  align-items: center;
+}
+.pt__box-editable.is-flex > .l {
+  float: none;
+  flex: auto;
+  overflow: visible;
+}
+.pt__box-editable.is-flex > .r {
+  float: none;
+  flex: none;
+  align-self: flex-start;
+}
 /* *** ITEM *** */
 .pt__box-item {
   display: -webkit-flex;
@@ -9194,6 +9208,12 @@ button.is-hidden {
   html.is-adaptive .pt__box-editable > .r {
     float: none;
     margin: 0;
+  }
+  html.is-adaptive .pt__box-editable.is-adaptive.is-flex {
+    display: block;
+  }
+  html.is-adaptive .pt__box-editable.is-adaptive.is-flex > .l {
+    margin: 0 0 16px;
   }
 }
 /* ******* PARTS: BREADCRUMBS ******* */
@@ -9436,7 +9456,7 @@ button.is-hidden {
   margin: 0;
 }
 /* ******* PARTS: BUTTONS: ADAPTIVE ******* */
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 768px) {
   html.is-adaptive .pt__buttons.is-adaptive > .inner {
     display: block;
     margin: 0;
@@ -10663,6 +10683,15 @@ button.is-hidden {
 .pt__field.is-flex {
   display: flex;
 }
+.pt__field.is-flex > dt,
+.pt__field.is-flex > .field__title {
+  flex: none;
+}
+.pt__field.is-flex > dd,
+.pt__field.is-flex > .field__descr {
+  flex: auto;
+  margin-left: 16px;
+}
 .pt__field.is-box,
 .pt__field.is-form-box {
   margin-bottom: 24px;
@@ -10845,22 +10874,29 @@ ul.pt__field__hint li:before {
   html.is-adaptive .pt__field.is-flex {
     display: flex;
   }
-  html.is-adaptive .pt__field.is-hidden {
-    display: none;
+  html.is-adaptive .pt__field.is-flex > dd,
+  html.is-adaptive .pt__field.is-flex > .field__descr {
+    margin-left: 16px;
   }
-  html.is-adaptive .pt__field > dt,
-  html.is-adaptive .pt__field > .field__title {
+  html.is-adaptive .pt__field.is-adaptive {
+    display: block;
+  }
+  html.is-adaptive .pt__field.is-adaptive > dt,
+  html.is-adaptive .pt__field.is-adaptive > .field__title {
     width: auto;
     float: none;
   }
-  html.is-adaptive .pt__field > dd,
-  html.is-adaptive .pt__field > .field__descr {
+  html.is-adaptive .pt__field.is-adaptive > dd,
+  html.is-adaptive .pt__field.is-adaptive > .field__descr {
     margin: 0 0 8px;
     float: none;
   }
-  html.is-adaptive .pt__field > dd:last-child,
-  html.is-adaptive .pt__field > .field__descr:last-child {
+  html.is-adaptive .pt__field.is-adaptive > dd:last-child,
+  html.is-adaptive .pt__field.is-adaptive > .field__descr:last-child {
     margin: 0;
+  }
+  html.is-adaptive .pt__field.is-hidden {
+    display: none;
   }
 }
 /* ******* PARTS: FILE LINE ******* */

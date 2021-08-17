@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.3 (2021-07-28 19:24) ************ */
+/*! ************ MagpieUI v3.40.4 (2021-08-17 20:36) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.3',
+        '_version' : '3.40.4',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -7543,6 +7543,8 @@ function(params){
 cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.isConstructed = false;
         // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
         that.scrollHandler = that.scroll.bind(that);
@@ -8879,6 +8881,7 @@ cm.define('Com.AbstractFormField', {
         'title' : '',
         'hint' : '',
         'messagePosition' : 'content', // label | content
+        'adaptive' : true,
         'visible' : true,
         'disabled' : false,
         'checked' : null,
@@ -9194,6 +9197,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes.content.input.setAttribute('multiple', 'multiple');
         }
         // Classes
+        cm.addClass(that.nodes.container, 'is-adaptive');
         if(!that.params.visible){
             that.hide(false);
         }else{
@@ -10425,7 +10429,8 @@ function(params){
     };
 
     var renderField = function(type, params){
-        var field = Com.FormFields.get(type);
+        var field = Com.FormFields.get(type),
+            value;
         // Merge params
         params = cm.merge({
             'form' : that,
@@ -10433,6 +10438,7 @@ function(params){
             'system' : false,
             'name' : '',
             'dataName' : null,
+            'dataPath' : null,
             'label' : '',
             'originValue' : null,
             'required' : false,
@@ -10452,9 +10458,15 @@ function(params){
         params = cm.merge(cm.clone(field, true), params);
         // Validate
         params.fieldConstructor = !cm.isEmpty(params.fieldConstructor) ? params.fieldConstructor : 'Com.FormField';
-        params.value = !cm.isEmpty(that.params.data[params.name]) ? that.params.data[params.name] : params.value;
-        params.dataValue = !cm.isEmpty(that.params.data[params.dataName]) ? that.params.data[params.dataName] : params.dataValue;
         params.renderName = cm.isBoolean(params.renderName) ? params.renderName : that.params.renderNames;
+        // Value
+        if(params.dataPath){
+            value = cm.reducePath(params.dataPath, that.params.data);
+            params.value = !cm.isEmpty(value) ? value : params.value;
+        }else{
+            params.value = !cm.isEmpty(that.params.data[params.name]) ? that.params.data[params.name] : params.value;
+        }
+        params.dataValue = !cm.isEmpty(that.params.data[params.dataName]) ? that.params.data[params.dataName] : params.dataValue;
         // Render controller
         if(params.render && field && !that.fields[params.name]){
             renderFieldController(params);
@@ -10696,12 +10708,10 @@ function(params){
 
     var sendCompleteHelper = function(data){
         data = !cm.isEmpty(data) ? data : that.get('sendPath');
-        cm.forEach(that.fields, function(field, name){
-            if(typeof data[name] !== 'undefined'){
-                that.setFieldParams(name, {
-                    'originValue' : data[name]
-                });
-            }
+        that.set(data, {
+            triggerEvents: false,
+            setFields: false,
+            setOrigin: true
         });
     };
 
@@ -11050,16 +11060,33 @@ function(params){
         return that.get('all');
     };
 
-    that.set = function(data, triggerEvents){
-        var field, setValue;
-        cm.forEach(data, function(value, name){
-            field = that.fields[name];
-            if(field && !field.system){
-                setValue = data[field.dataName] || value;
-                that.fields[name].controller.set(setValue, triggerEvents);
+    that.set = function(data, params){
+        // Validate params
+        params = cm.merge({
+            triggerEvents: true,
+            setFields: true,
+            setOrigin: false
+        }, params);
+        // Set values
+        var value;
+        cm.forEach(that.fields, function(field, name){
+            if(field.dataPath){
+                value = cm.reducePath(field.dataPath, data);
+            }else{
+                value = !cm.isUndefined(data[field.dataName]) ? data[field.dataName] : data[name];
+            }
+            if(!cm.isUndefined(value)){
+                if(params.setOrigin){
+                    that.setFieldParams(name, {originValue: value});
+                }
+                if(params.setFields) {
+                    field.controller.set(value, params.triggerEvents);
+                }
             }
         });
-        that.triggerEvent('onSet');
+        if(params.triggerEvents){
+            that.triggerEvent('onSet');
+        }
         return that;
     };
 
@@ -16952,7 +16979,7 @@ function(params){
 		that.callbacks.render = function(that){
 				var nodes = {};
 				// Structure
-				nodes.container = cm.node('dl', {'class' : 'pt__field'},
+				nodes.container = cm.node('dl', {'class' : 'pt__field is-adaptive'},
 						nodes.label = cm.node('dt',
 								cm.node('label', that.params.label)
 						),
@@ -21265,6 +21292,12 @@ function(params){
     that.delayInterval = null;
 
     var init = function(){
+        // Binds
+        that.openHandler = that.open.bind(that);
+        that.closeHandler = that.close.bind(that);
+        that.toggleHandler = that.toggle.bind(that);
+        // Params
+        that.params['controllerEvents'] && that.bindControllerEvents(); // ToDo: move to abstract controller
         getLESSVariables();
         that.setParams(params);
         that.convertEvents(that.params['events']);
@@ -21480,6 +21513,18 @@ function(params){
             cm.remove(that.nodes['container']);
         }
         return that;
+    };
+
+    that.bindControllerEvents = function(){
+        cm.forEach(that._raw['events'], function(name){
+            if(!that[name]){
+                that[name] = function(){};
+            }
+            if(!that[name + 'Handler']){
+                that[name + 'Handler'] = that[name].bind(that);
+            }
+            that.addEvent(name, that[name + 'Handler']);
+        });
     };
 
     that.getNodes = function(key){
@@ -32140,6 +32185,7 @@ Com.FormFields.add('number', {
 Com.FormFields.add('hidden', {
     'node' : cm.node('input', {'type' : 'hidden'}),
     'visible' : false,
+    'adaptive' : false,
     'value' : '',
     'defaultValue' : '',
     'fieldConstructor' : 'Com.AbstractFormField',
@@ -32148,6 +32194,7 @@ Com.FormFields.add('hidden', {
         'type' : 'hidden'
     }
 });
+
 cm.define('Com.InputTrigger', {
     'extend' : 'Com.AbstractController',
     'events' : [

@@ -86,6 +86,8 @@ function(params){
 cm.getConstructor('Com.AbstractController', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(params){
         var that = this;
+        // Variables
+        that.isConstructed = false;
         // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
         that.scrollHandler = that.scroll.bind(that);

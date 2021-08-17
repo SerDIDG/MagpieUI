@@ -51,6 +51,7 @@ cm.define('Com.AbstractFormField', {
         'title' : '',
         'hint' : '',
         'messagePosition' : 'content', // label | content
+        'adaptive' : true,
         'visible' : true,
         'disabled' : false,
         'checked' : null,
@@ -366,6 +367,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes.content.input.setAttribute('multiple', 'multiple');
         }
         // Classes
+        cm.addClass(that.nodes.container, 'is-adaptive');
         if(!that.params.visible){
             that.hide(false);
         }else{

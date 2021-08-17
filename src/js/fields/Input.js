@@ -353,6 +353,7 @@ Com.FormFields.add('number', {
 Com.FormFields.add('hidden', {
     'node' : cm.node('input', {'type' : 'hidden'}),
     'visible' : false,
+    'adaptive' : false,
     'value' : '',
     'defaultValue' : '',
     'fieldConstructor' : 'Com.AbstractFormField',

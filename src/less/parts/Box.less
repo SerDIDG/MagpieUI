@@ -207,6 +207,23 @@
     > .l {
         overflow: hidden;
     }
+
+    &.is-flex {
+        display: flex;
+        align-items: center;
+
+        > .l {
+            float: none;
+            flex: auto;
+            overflow: visible;
+        }
+
+        > .r {
+            float: none;
+            flex: none;
+            align-self: flex-start;
+        }
+    }
 }
 
 /* *** ITEM *** */
@@ -414,6 +431,17 @@
                 float: none;
                 margin: 0;
             }
+
+            &.is-adaptive {
+                &.is-flex {
+                    display: block;
+
+                    > .l {
+                        margin: 0 0 @CmIndent-Small;
+                    }
+                }
+            }
+
         }
     }
 

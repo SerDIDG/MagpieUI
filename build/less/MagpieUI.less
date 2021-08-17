@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.3 (2021-07-28 19:24) ************ */
+/*! ************ MagpieUI v3.40.4 (2021-08-17 20:36) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4589,7 +4589,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.3';
+@CmVersion: '3.40.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -9562,6 +9562,23 @@ button {
     > .l {
         overflow: hidden;
     }
+
+    &.is-flex {
+        display: flex;
+        align-items: center;
+
+        > .l {
+            float: none;
+            flex: auto;
+            overflow: visible;
+        }
+
+        > .r {
+            float: none;
+            flex: none;
+            align-self: flex-start;
+        }
+    }
 }
 
 /* *** ITEM *** */
@@ -9769,6 +9786,17 @@ button {
                 float: none;
                 margin: 0;
             }
+
+            &.is-adaptive {
+                &.is-flex {
+                    display: block;
+
+                    > .l {
+                        margin: 0 0 @CmIndent-Small;
+                    }
+                }
+            }
+
         }
     }
 
@@ -9934,7 +9962,7 @@ button {
 
 /* ******* PARTS: BUTTONS: ADAPTIVE ******* */
 
-@media only screen and (max-width : @CmScreen-Mobile) {
+@media only screen and (max-width : @CmUI-AdaptiveFrom) {
 
     html.is-adaptive {
         .pt__buttons {
@@ -10825,6 +10853,17 @@ button {
 
     &.is-flex {
         display: flex;
+
+        > dt,
+        > .field__title  {
+            flex: none;
+        }
+
+        > dd,
+        > .field__descr {
+            flex: auto;
+            margin-left: @CmForm-FieldIndent;
+        }
     }
 
     &.is-box,
@@ -11019,26 +11058,35 @@ ul.pt__field__hint {
 
             &.is-flex {
                 display: flex;
+
+                > dd,
+                > .field__descr {
+                    margin-left: @CmForm-FieldIndent;
+                }
+            }
+
+            &.is-adaptive {
+                display: block;
+
+                > dt,
+                > .field__title {
+                    width: auto;
+                    float: none;
+                }
+
+                > dd,
+                > .field__descr {
+                    margin: 0 0 @CmForm-FieldInnerIndent;
+                    float: none;
+
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
             }
 
             &.is-hidden {
                 display: none;
-            }
-
-            > dt,
-            > .field__title {
-                width: auto;
-                float: none;
-            }
-
-            > dd,
-            > .field__descr {
-                margin: 0 0 @CmForm-FieldInnerIndent;
-                float: none;
-
-                &:last-child {
-                    margin: 0;
-                }
             }
         }
     }
