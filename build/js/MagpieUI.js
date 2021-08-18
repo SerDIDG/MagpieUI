@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.4 (2021-08-17 20:36) ************ */
+/*! ************ MagpieUI v3.40.5 (2021-08-18 23:57) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.4',
+        '_version' : '3.40.5',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -9197,7 +9197,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes.content.input.setAttribute('multiple', 'multiple');
         }
         // Classes
-        cm.addClass(that.nodes.container, 'is-adaptive');
+        if(that.params.adaptive){
+            cm.addClass(that.nodes.container, 'is-adaptive');
+        }
         if(!that.params.visible){
             that.hide(false);
         }else{
@@ -10429,8 +10431,7 @@ function(params){
     };
 
     var renderField = function(type, params){
-        var field = Com.FormFields.get(type),
-            value;
+        var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
             'form' : that,
@@ -10461,7 +10462,7 @@ function(params){
         params.renderName = cm.isBoolean(params.renderName) ? params.renderName : that.params.renderNames;
         // Value
         if(params.dataPath){
-            value = cm.reducePath(params.dataPath, that.params.data);
+            var value = cm.reducePath(params.dataPath, that.params.data);
             params.value = !cm.isEmpty(value) ? value : params.value;
         }else{
             params.value = !cm.isEmpty(that.params.data[params.name]) ? that.params.data[params.name] : params.value;

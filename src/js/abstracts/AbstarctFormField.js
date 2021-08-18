@@ -367,7 +367,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes.content.input.setAttribute('multiple', 'multiple');
         }
         // Classes
-        cm.addClass(that.nodes.container, 'is-adaptive');
+        if(that.params.adaptive){
+            cm.addClass(that.nodes.container, 'is-adaptive');
+        }
         if(!that.params.visible){
             that.hide(false);
         }else{
