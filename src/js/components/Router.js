@@ -532,21 +532,22 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     };
 
     classProto.set = function(route, hash, params){
-        var that = this,
-            urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures,
-            href = that.getURL(route, hash, urlParams);
-        // Important to override push / replace state params in this case
-        params = cm.merge(params, {
-            'pushState' : false,
-            'replaceState' : true
-        });
-        that.setURL(href, hash, params);
+        var that = this;
+        // Validate params
+        params = cm.merge({
+            urlParams: null,
+            captures: null
+        }, params);
+        // Get route url
+        var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
+        var url = that.getURL(route, hash, urlParams);
+        that.setURL(url, hash, params);
         return that;
     };
 
-    classProto.setURL = function(route, hash, params){
+    classProto.setURL = function(url, hash, params){
         var that = this;
-        route = that.prepareRoute(route);
+        var route = that.prepareRoute(url);
         that.pushRoute(route[0], hash || route[1], params);
         return that;
     };
@@ -601,7 +602,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }else if(cm.isArray(item.name)){
                 cm.forEach(item.name, function(name){
                     delete that.routesBinds[name];
-                })
+                });
             }
             delete that.routes[route];
         }
