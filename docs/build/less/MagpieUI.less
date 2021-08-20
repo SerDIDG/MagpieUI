@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.6 (2021-08-19 19:17) ************ */
+/*! ************ MagpieUI v3.40.7 (2021-08-20 22:59) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4545,7 +4545,9 @@ span.CodeMirror-selectedtext { background: none; }
 .svg__scale-fill { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22scale-fill.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2235%22%20viewBox%3D%220%200%2036%2035%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%2C%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.35%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.85%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22_2%22%20data-name%3D%222%22%20class%3D%22cls-1%22%20d%3D%22M35.875%2C42L32.313%2C32l-3.6%2C9.077-2-5.324L32.906%2C24%2C42%2C41.23V42H35.875ZM13.313%2C42H6V41.078l6.443-14.617%2C3.4%2C8.5Z%22%20transform%3D%22translate(-6%20-7)%22%2F%3E%20%20%3Cpath%20id%3D%22_1%22%20data-name%3D%221%22%20class%3D%22cls-2%22%20d%3D%22M21%2C20.615l7.705%2C20.462L32.313%2C32l3.563%2C10H13.313ZM35.274%2C11.01c0%2C2.207-1.063%2C4-2.373%2C4s-2.374-1.79-2.374-4%2C1.063-4%2C2.374-4S35.274%2C8.8%2C35.274%2C11.01Z%22%20transform%3D%22translate(-6%20-7)%22%2F%3E%3C%2Fsvg%3E"); }
 .svg__search { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M18.6%2C20.425L16.475%2C18.3A1.5%2C1.5%2C0%2C1%2C1%2C18.6%2C16.182L20.718%2C18.3A1.5%2C1.5%2C0%2C0%2C1%2C18.6%2C20.425Zm-11.667-4.6a7%2C7%2C0%2C1%2C1%2C9.9%2C0A7%2C7%2C0%2C0%2C1%2C6.929%2C15.828Zm8.485-8.485a5%2C5%2C0%2C1%2C0%2C0%2C7.071A5%2C5%2C0%2C0%2C0%2C15.414%2C7.343Z%22%20%2F%3E%3C%2Fsvg%3E"); }
 :root {
-		--pt-buttons--indent: @CmForm-ButtonsIndent;
+    --pt-buttons--indent: @CmForm-ButtonsIndent;
+
+    --pt-field--title-width: @CmForm-FieldTitleWidth;
 }
 
 
@@ -4589,7 +4591,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.6';
+@CmVersion: '3.40.7';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -9762,6 +9764,8 @@ button {
 
 .pt__box-code {
     .cm__box;
+    .cm__scroll--auto;
+    .cm__scrollbar;
     min-height: @CmFont-Base-LineHeight + ((@PtBoxCode-PaddingY + @CmBorder-Width ) * 2);
     display: block;
     white-space: pre-wrap;
@@ -9770,6 +9774,12 @@ button {
     border: @CmBorder-Width dashed @CmColor-Border;
     border-radius: @CmBorder-Radius;
     font-family: "Courier New", Courier, monospace;
+
+    &.is-borderless {
+        min-height: @CmFont-Base-LineHeight;
+        padding: 0;
+        border: none;
+    }
 }
 
 /* ******* PART: BOX: ADAPTIVE ******* */
@@ -10748,7 +10758,7 @@ button {
 
     > dt,
     > .field__title {
-        width: @CmForm-FieldTitleWidth;
+        width: var( --pt-field--title-width);
         display: block;
         margin: 0;
         padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
@@ -10764,7 +10774,7 @@ button {
     > dd,
     > .field__descr {
         display: block;
-        margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
+        margin: 0 0 0 calc(var(--pt-field--title-width) + @CmForm-FieldIndent);
         padding: 0;
         position: relative;
 
@@ -10860,6 +10870,7 @@ button {
 
         > dd,
         > .field__descr {
+            min-width: 0; // overflow fix
             flex: auto;
             margin-left: @CmForm-FieldIndent;
         }

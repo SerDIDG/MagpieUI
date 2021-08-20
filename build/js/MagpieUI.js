@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.6 (2021-08-19 19:17) ************ */
+/*! ************ MagpieUI v3.40.7 (2021-08-20 22:59) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.6',
+        '_version' : '3.40.7',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -9344,7 +9344,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.validateValue = function(){
+    classProto.validateValue = function(options){
         var that = this,
             constraintsData,
             testData,
@@ -9356,7 +9356,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 'value' : that.get()
             };
         if(cm.isEmpty(data.value)){
-            if(that.params.required){
+            if(that.params.required || options.required){
                 data.valid = false;
                 data.message = that.lang('required');
                 return data;
@@ -9397,15 +9397,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             data;
         // Validate options
         options = cm.merge({
+            'required' : false,
             'silent' : false,
             'triggerEvents' : true
         }, options);
 
-        if(!that.params.required && !that.params.validate){
+        if(!that.params.required && !that.params.validate && !options.required){
             return true;
         }
 
-        data = that.validateValue();
+        data = that.validateValue(options);
         if(data.valid || options.silent){
             that.clearError();
         }else{

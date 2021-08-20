@@ -19,7 +19,7 @@
 
     > dt,
     > .field__title {
-        width: @CmForm-FieldTitleWidth;
+        width: var( --pt-field--title-width);
         display: block;
         margin: 0;
         padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
@@ -35,7 +35,7 @@
     > dd,
     > .field__descr {
         display: block;
-        margin: 0 0 0 (@CmForm-FieldTitleWidth + @CmForm-FieldIndent);
+        margin: 0 0 0 calc(var(--pt-field--title-width) + @CmForm-FieldIndent);
         padding: 0;
         position: relative;
 
@@ -131,6 +131,7 @@
 
         > dd,
         > .field__descr {
+            min-width: 0; // overflow fix
             flex: auto;
             margin-left: @CmForm-FieldIndent;
         }

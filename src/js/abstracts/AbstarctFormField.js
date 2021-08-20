@@ -514,7 +514,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.validateValue = function(){
+    classProto.validateValue = function(options){
         var that = this,
             constraintsData,
             testData,
@@ -526,7 +526,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 'value' : that.get()
             };
         if(cm.isEmpty(data.value)){
-            if(that.params.required){
+            if(that.params.required || options.required){
                 data.valid = false;
                 data.message = that.lang('required');
                 return data;
@@ -567,15 +567,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             data;
         // Validate options
         options = cm.merge({
+            'required' : false,
             'silent' : false,
             'triggerEvents' : true
         }, options);
 
-        if(!that.params.required && !that.params.validate){
+        if(!that.params.required && !that.params.validate && !options.required){
             return true;
         }
 
-        data = that.validateValue();
+        data = that.validateValue(options);
         if(data.valid || options.silent){
             that.clearError();
         }else{

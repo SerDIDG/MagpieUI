@@ -407,6 +407,8 @@
 
 .pt__box-code {
     .cm__box;
+    .cm__scroll--auto;
+    .cm__scrollbar;
     min-height: @CmFont-Base-LineHeight + ((@PtBoxCode-PaddingY + @CmBorder-Width ) * 2);
     display: block;
     white-space: pre-wrap;
@@ -415,6 +417,12 @@
     border: @CmBorder-Width dashed @CmColor-Border;
     border-radius: @CmBorder-Radius;
     font-family: "Courier New", Courier, monospace;
+
+    &.is-borderless {
+        min-height: @CmFont-Base-LineHeight;
+        padding: 0;
+        border: none;
+    }
 }
 
 /* ******* PART: BOX: ADAPTIVE ******* */
