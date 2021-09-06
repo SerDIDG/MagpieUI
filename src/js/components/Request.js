@@ -158,7 +158,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
                 || that.params.overlayContainer
                 || document.body;
         }
-        if(that.params.showOverlay){
+        if(that.params.showLoader){
             cm.getConstructor(that.params.overlayConstructor, function(classConstructor){
                 that.components.overlay = new classConstructor(that.params.overlayParams);
             });

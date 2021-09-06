@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.8 (2021-09-01 23:35) ************ */
+/*! ************ MagpieUI v3.40.9 (2021-09-06 15:47) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.8',
+        '_version' : '3.40.9',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -22832,7 +22832,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
                 || that.params.overlayContainer
                 || document.body;
         }
-        if(that.params.showOverlay){
+        if(that.params.showLoader){
             cm.getConstructor(that.params.overlayConstructor, function(classConstructor){
                 that.components.overlay = new classConstructor(that.params.overlayParams);
             });
