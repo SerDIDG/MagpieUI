@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.9 (2021-09-06 15:47) ************ */
+/*! ************ MagpieUI v3.40.10 (2021-10-13 08:42) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4371,8 +4371,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.9');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.9') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.9') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.9') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.9#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.10');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.10') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.10') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.10') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.10#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9621,6 +9621,13 @@ button.is-hidden {
   -webkit-flex: 1 1 0;
   -ms-flex: 1 1 0;
   flex: 1 1 0;
+}
+.pt__columns > .inner > .column.column--flex {
+  display: flex;
+}
+.pt__columns > .inner > .column.column--flex-column {
+  display: flex;
+  flex-direction: column;
 }
 .pt__columns > .inner > .column.column--auto {
   -webkit-flex: 1 1 auto;

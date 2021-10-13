@@ -76,12 +76,18 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         var that = this;
         // Render inputs provided in DOM
         cm.forEach(that.nodes['inputs'], function(item){
-            that.addItem({'input' : item['input']}, false, true);
+            that.addItem({'input' : item['input']}, {
+                'triggerEvents' : false,
+                'immediately' : true
+            });
         });
         // Render inputs provided in parameters
         if(cm.isArray(that.params['value'])){
             cm.forEach(that.params['value'], function(item){
-                that.addItem({'value' : item}, false, true);
+                that.addItem({'value' : item}, {
+                    'triggerEvents' : false,
+                    'immediately' : true
+                });
             });
         }
     };
@@ -149,17 +155,23 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.renderMultiFieldEvents = function(){
         var that = this;
         that.components['multiField'].addEvent('onItemAdd', function(my, field){
-            that.addItemProcess({}, field, true);
+            that.addItemProcess({}, field, {
+                'triggerEvents' : true
+            });
         });
         that.components['multiField'].addEvent('onItemRemove', function(my, field){
             var index = field['index'];
             var item = that.items[index];
-            that.removeItemProcess(item, field, true);
+            that.removeItemProcess(item, field, {
+                'triggerEvents' : true
+            });
         });
         that.components['multiField'].addEvent('onItemSort', function(my, field){
             var previousIndex = field['previousIndex'];
             var item = that.items[previousIndex];
-            that.sortItemProcess(item, field, true);
+            that.sortItemProcess(item, field, {
+                'triggerEvents' : true
+            });
         });
         return that;
     };
@@ -172,25 +184,31 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     /* *** ITEMS *** */
 
-    classProto.addItem = function(item, triggerEvents, immediately){
+    classProto.addItem = function(item, params){
         var that = this;
-        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'immediately' : false
+        }, params);
         if(!that.params['max'] || that.items.length < that.params['max']){
             // Render Fields
             that.components['multiField'].addItem({}, {
                 'triggerEvents' : false,
-                'immediately' : immediately,
+                'immediately' : params.immediately,
                 'callback' : function(field){
-                    that.addItemProcess(item, field, triggerEvents);
+                    that.addItemProcess(item, field, params);
                 }
             });
         }
         return null;
     };
 
-    classProto.addItemProcess = function(item, field, triggerEvents){
+    classProto.addItemProcess = function(item, field, params){
         var that = this;
-        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'immediately' : false
+        }, params);
         // Merge config
         item = cm.merge({
             'input' : null,
@@ -224,7 +242,7 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             // Focus input after add
             that.params['focusInput'] && item['controller'].focus && item['controller'].focus();
             // Trigger set events
-            if(triggerEvents){
+            if(params.triggerEvents){
                 that.triggerEvent('onSelect');
                 that.triggerEvent('onSet');
                 that.triggerEvent('onChange');
@@ -237,22 +255,29 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         that.triggerEvent('onItemAdd', item);
     };
 
-    classProto.removeItem = function(item, triggerEvents){
+    classProto.removeItem = function(item, params){
         var that = this;
-        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'immediately' : false
+        }, params);
         // Remove Field
         that.components['multiField'].removeItem(item['field'], {
             'triggerEvents' : false,
+            'immediately' : params.immediately,
             'callback' : function(field){
-                that.removeItemProcess(item, field, triggerEvents);
+                that.removeItemProcess(item, field, params);
             }
         });
         return that;
     };
 
-    classProto.removeItemProcess = function(item, field, triggerEvents){
+    classProto.removeItemProcess = function(item, field, params){
         var that = this;
-        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+        params = cm.merge({
+            'triggerEvents' : true,
+            'immediately' : false
+        }, params);
         that.triggerEvent('onItemRemoveStart', item);
         that.items = cm.arrayRemove(that.items, item);
         that.triggerEvent('onItemRemoveProcess', item);
@@ -262,23 +287,29 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
         // Toggle toolbar visibility
         that.toggleToolbarVisibility();
         // Trigger set events
-        if(triggerEvents){
+        if(params.triggerEvents){
             that.triggerEvent('onSelect');
             that.triggerEvent('onSet');
             that.triggerEvent('onChange');
         }
     };
 
-    classProto.sortItemProcess = function(item, field){
+    classProto.sortItemProcess = function(item, field, params){
         var that = this,
             index = field['index'];
+        params = cm.merge({
+            'triggerEvents' : true,
+            'immediately' : false
+        }, params);
         that.triggerEvent('onItemSortStart', item);
         that.triggerEvent('onItemSortProcess', item);
         // Resort items in array
         that.items.splice(that.items.indexOf(item), 1);
         that.items.splice(index, 0, item);
         // Trigger event
-        that.triggerEvent('onItemSortEnd', item);
+        if(params.triggerEvents){
+            that.triggerEvent('onItemSortEnd', item);
+        }
     };
 
     /* *** TOOLBAR *** */
@@ -341,11 +372,17 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
     classProto.set = function(value, triggerEvents){
         var that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
-        cm.forEach(that.items, function(item){
-            that.removeItem(item, false);
-        });
+        while(that.items.length){
+            that.removeItem(that.items[0], {
+                'triggerEvents' : false,
+                'immediately' : true
+            });
+        }
         cm.forEach(value, function(item){
-            that.addItem({'value' : item}, false);
+            that.addItem({'value' : item}, {
+                'triggerEvents' : false,
+                'immediately' : true
+            });
         });
         // Trigger set events
         if(triggerEvents){
@@ -362,7 +399,9 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
             value;
         cm.forEach(that.items, function(item){
             value = (item['controller'] && item['controller'].get) ? item['controller'].get() : null;
-            value && data.push(value);
+            if(!cm.isEmpty(value)){
+                data.push(value);
+            }
         });
         return data;
     };

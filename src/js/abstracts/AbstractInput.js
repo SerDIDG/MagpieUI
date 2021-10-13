@@ -23,6 +23,7 @@ cm.define('Com.AbstractInput', {
         'value' : '',
         'defaultValue' : '',
         'isValueOption' : false,
+        'isValueObject' : false,
         'id' : '',
         'title' : '',
         'placeholder' : '',
@@ -182,7 +183,10 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
                 value = that.params['node'].value;
             }
             // Parse JSON
-            if(that.params['isValueOption'] && !cm.isEmpty(dataValue)){
+            if(
+                !cm.isEmpty(dataValue)
+                && (that.params['isValueOption'] || that.params['isValueObject'])
+            ){
                 value = cm.parseJSON(dataValue);
             }
             that.params['value'] = !cm.isEmpty(value) ?  value : that.params['value'];

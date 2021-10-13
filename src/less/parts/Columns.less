@@ -11,6 +11,15 @@
             position: relative;
             .mx__flex(1 1 0);
 
+            &.column--flex {
+                display: flex;
+            }
+
+            &.column--flex-column {
+                display: flex;
+                flex-direction: column;
+            }
+
             &.column--auto {
                 .mx__flex(1 1 auto);
             }

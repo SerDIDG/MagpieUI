@@ -106,7 +106,9 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         cm.getConstructor('Com.FileReader', function(classObject, className){
             that.myComponents['reader'] = new classObject(that.params[className]);
             that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
-                that.addItem({'value' : item}, true);
+                that.addItem({'value' : item}, {
+                    'triggerEvents' : true
+                });
             });
         });
         // Init Dropzone
@@ -194,7 +196,9 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
     classProto.itemAddProcess = function(my, item){
         var that = this;
         item['controller'].addEvent('onClear', function(){
-            that.removeItem(item);
+            that.removeItem(item, {
+                'triggerEvents' : true
+            });
         });
         return that;
     };
@@ -219,7 +223,9 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
                 that.processFiles(file);
             })
         }else if(!cm.isEmpty(data)){
-            that.addItem({'value' : data}, true);
+            that.addItem({'value' : data}, {
+                'triggerEvents' : true
+            });
         }
         return that;
     };
