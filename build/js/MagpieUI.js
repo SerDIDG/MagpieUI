@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.10 (2021-10-13 08:42) ************ */
+/*! ************ MagpieUI v3.40.11 (2021-10-22 16:23) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.10',
+        '_version' : '3.40.11',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -10532,6 +10532,7 @@ function(params){
             'spinner' : false,
             'spinnerClass' : '',
             'action' : 'submit',          // submit | reset | clear | custom
+            'container' : that.nodes.buttonsHolder,
             'handler' : function(){}
         }, params);
         // Render
@@ -10589,7 +10590,7 @@ function(params){
                     });
                     break;
             }
-            cm.appendChild(params.node, that.nodes.buttonsHolder);
+            cm.appendChild(params.node, params.container);
             // Export
             that.buttons[params.name] = params;
         }

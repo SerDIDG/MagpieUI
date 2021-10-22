@@ -267,6 +267,7 @@ function(params){
             'spinner' : false,
             'spinnerClass' : '',
             'action' : 'submit',          // submit | reset | clear | custom
+            'container' : that.nodes.buttonsHolder,
             'handler' : function(){}
         }, params);
         // Render
@@ -324,7 +325,7 @@ function(params){
                     });
                     break;
             }
-            cm.appendChild(params.node, that.nodes.buttonsHolder);
+            cm.appendChild(params.node, params.container);
             // Export
             that.buttons[params.name] = params;
         }

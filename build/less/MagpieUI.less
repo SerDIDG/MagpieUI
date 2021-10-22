@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.10 (2021-10-13 08:42) ************ */
+/*! ************ MagpieUI v3.40.11 (2021-10-22 16:23) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4591,7 +4591,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.10';
+@CmVersion: '3.40.11';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5191,6 +5191,7 @@ span.CodeMirror-selectedtext { background: none; }
 @PtGridlist-Cell-SpaceSize: 1px;
 @PtGridlist-Cell-SpaceBorder: @PtGridlist-Cell-SpaceSize solid transparent;
 @PtGridlist-Cell-FontSize: @PtGridlist-FontSize;
+@PtGridlist-Cell-LineHeight: @CmFont-UI-LineHeight;
 @PtGridlist-Cell-DefaultBackground: @CmColor-Primary-LightDefault;
 @PtGridlist-Cell-HoverBackground: @CmColor-Primary-LightHover;
 @PtGridlist-Cell-ActiveBackground: @CmColor-Primary-LightActive;
@@ -11547,11 +11548,11 @@ ul.pt__field__hint {
     }
 
     td, th {
-        min-height: @CmFont-UI-LineHeight;
+        min-height: @PtGridlist-Cell-LineHeight;
         vertical-align: top;
         text-align: left;
         padding: @PtGridlist-Cell-Padding;
-        line-height: @CmFont-UI-LineHeight;
+        line-height: @PtGridlist-Cell-LineHeight;
         .mx__background-clip(padding-box);
 
         > .inner {
