@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.11 (2021-10-22 16:23) ************ */
+/*! ************ MagpieUI v3.40.12 (2021-10-25 21:14) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4371,8 +4371,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.11');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.11') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.11') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.11') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.11#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.12');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.12') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.12') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.12') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.12#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -22348,26 +22348,9 @@ html.ie9 .com__palette .b-range {
   text-align: center;
   line-height: 32px;
 }
-html.ie9 .com__timeselect > .inner {
+.com__timeselect.size-full {
+  max-width: none;
   display: block;
-}
-html.ie9 .com__timeselect > .inner:after {
-  content: ".";
-  display: block;
-  clear: both;
-  visibility: hidden;
-  line-height: 0;
-  font-size: 0;
-  height: 0;
-}
-html.ie9 .com__timeselect > .inner > .field {
-  display: table-cell;
-  -webkit-flex: none;
-  -ms-flex: none;
-  flex: none;
-}
-html.ie9 .com__timeselect > .inner > .sep {
-  display: table-cell;
 }
 /* ******* COMPONENTS: TINT RANGE ******* */
 .com__tint-range {

@@ -23,20 +23,8 @@
         }
     }
 
-    html.ie9 & {
-        > .inner {
-            .clearfix;
-            display: block;
-
-            > .field {
-                display: table-cell;
-                .mx__flex(none);
-
-            }
-
-            > .sep {
-                display: table-cell;
-            }
-        }
+    &.size-full {
+        max-width: none;
+        display: block;
     }
 }

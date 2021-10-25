@@ -18,7 +18,8 @@ cm.define('Com.Toolbar', {
         'container' : null,
         'name' : '',
         'embedStructure' : 'append',
-        'adaptive' : true
+        'adaptive' : true,
+        'className' : null
     }
 },
 function(params){
@@ -51,7 +52,12 @@ function(params){
                 )
             )
         );
-        that.params['adaptive'] && cm.addClass(that.nodes['toolbar'], 'is-adaptive');
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['toolbar'], 'is-adaptive');
+        }else{
+            cm.addClass(that.nodes['toolbar'], 'is-not-adaptive');
+        }
+        that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className'])
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -158,6 +164,7 @@ function(params){
             'container' : cm.node('li'),
             'node' : null,
             'size' : null,
+            'classes' : [],
             'group' : null,
             'constructor' : false,
             'constructorParams' : {}
@@ -167,7 +174,8 @@ function(params){
         if(group && !group.items[item['name']]){
             // Styles
             item['size'] && cm.addClass(item['container'], item['size']);
-            item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            item['classes'] && cm.addClass(item['container'], item['classes']);
+            item['hidden'] && cm.addClass(item['container'], 'is-hidden')
             // Controller
             if(item['constructor']){
                 cm.getConstructor(item['constructor'], function(classConstructor){

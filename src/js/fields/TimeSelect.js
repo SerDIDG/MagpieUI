@@ -20,11 +20,13 @@ cm.define('Com.TimeSelect', {
         'embedStructure' : 'replace',
         'name' : '',
         'renderSelectsInBody' : true,
+        'size' : 'default',                              // default, full, custom
         'format' : 'cm._config.timeFormat',
         'showTitleTag' : true,
         'title' : false,
         'withHours' : true,
         'hoursInterval' : 0,
+        'hoursFormat' : 24,
         'withMinutes' : true,
         'minutesInterval' : 0,
         'withSeconds' : false,
@@ -49,6 +51,7 @@ function(params){
     that.date = new Date();
     that.value = 0;
     that.previousValue = 0;
+    that.disabled = false;
 
     var init = function(){
         that.setParams(params);
@@ -90,59 +93,26 @@ function(params){
     };
 
     var render = function(){
-        var hours = 0,
-            minutes = 0,
-            seconds = 0;
         /* *** STRUCTURE *** */
         nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
             nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
             nodes['inner'] = cm.Node('div', {'class' : 'inner'})
         );
+        if(!cm.isEmpty(that.params['size'])){
+            cm.addClass(nodes['container'], ['size', that.params['size']].join('-'));
+        }
         /* *** ITEMS *** */
         // Hours
         if(that.params['withHours']){
-            if(nodes['inner'].childNodes.length){
-                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
-            }
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-                nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
-            ));
-            while(hours < 24){
-                nodes['selectHours'].appendChild(
-                    cm.Node('option', {'value' : hours},cm.addLeadZero(hours))
-                );
-                hours += that.params['hoursInterval'];
-            }
+            renderHours();
         }
         // Minutes
         if(that.params['withMinutes']){
-            if(nodes['inner'].childNodes.length){
-                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
-            }
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-                nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
-            ));
-            while(minutes < 60){
-                nodes['selectMinutes'].appendChild(
-                    cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
-                );
-                minutes += that.params['minutesInterval'];
-            }
+            renderMinutes();
         }
         // Seconds
         if(that.params['withSeconds']){
-            if(nodes['inner'].childNodes.length){
-                nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
-            }
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-                nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
-            ));
-            while(seconds < 60){
-                nodes['selectSeconds'].appendChild(
-                    cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
-                );
-                seconds += that.params['secondsInterval'];
-            }
+            renderSeconds();
         }
         /* *** ATTRIBUTES *** */
         // Title
@@ -155,6 +125,63 @@ function(params){
         }
         /* *** INSERT INTO DOM *** */
         that.embedStructure(nodes['container']);
+    };
+
+    var renderHours = function(){
+        var hours = 0,
+            label;
+
+        if(nodes['inner'].childNodes.length){
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+        }
+        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+            nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
+        ));
+        while(hours < 24){
+            if(that.params['hoursFormat'] === 24){
+                label = cm.addLeadZero(hours);
+            }else{
+                label = [(hours % 12 || 12), (hours < 12 ? 'am' : 'pm')].join('');
+            }
+            nodes['selectHours'].appendChild(
+                cm.Node('option', {'value' : hours}, label)
+            );
+            hours += that.params['hoursInterval'];
+        }
+    };
+
+    var renderMinutes = function(){
+        var minutes = 0;
+
+        if(nodes['inner'].childNodes.length){
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+        }
+        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+            nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
+        ));
+        while(minutes < 60){
+            nodes['selectMinutes'].appendChild(
+                cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
+            );
+            minutes += that.params['minutesInterval'];
+        }
+    };
+
+    var renderSeconds = function(){
+        var seconds = 0;
+
+        if(nodes['inner'].childNodes.length){
+            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+        }
+        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
+            nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
+        ));
+        while(seconds < 60){
+            nodes['selectSeconds'].appendChild(
+                cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
+            );
+            seconds += that.params['secondsInterval'];
+        }
     };
 
     var setMiscEvents = function(){
@@ -213,8 +240,8 @@ function(params){
     /* ******* MAIN ******* */
 
     that.set = function(str, format, triggerEvents){
-        format = typeof format != 'undefined'? format : that.params['format'];
-        triggerEvents = typeof triggerEvents != 'undefined'? triggerEvents : true;
+        format = !cm.isUndefined(format) ? format : that.params['format'];
+        triggerEvents = !cm.isUndefined(triggerEvents) ? triggerEvents : true;
         // Get time
         if(cm.isEmpty(str) || typeof str == 'string' && new RegExp(cm.dateFormat(false, that.params['format'])).test(str)){
             that.clear();
@@ -270,6 +297,22 @@ function(params){
             that.triggerEvent('onClear', that.value);
             onChange();
         }
+        return that;
+    };
+
+    that.disable = function(){
+        that.disabled = true;
+        that.params['withHours'] && components['selectHours'].disable();
+        that.params['withMinutes'] && components['selectMinutes'].disable();
+        that.params['withSeconds'] && components['selectSeconds'].disable();
+        return that;
+    };
+
+    that.enable = function(){
+        that.disabled = false;
+        that.params['withHours'] && components['selectHours'].enable();
+        that.params['withMinutes'] && components['selectMinutes'].enable();
+        that.params['withSeconds'] && components['selectSeconds'].enable();
         return that;
     };
 

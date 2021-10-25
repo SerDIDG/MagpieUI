@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.11 (2021-10-22 16:23) ************ */
+/*! ************ MagpieUI v3.40.12 (2021-10-25 21:14) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4591,7 +4591,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.11';
+@CmVersion: '3.40.12';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -19994,23 +19994,12 @@ ul.pt__field__hint {
         }
     }
 
-    html.ie9 & {
-        > .inner {
-            .clearfix;
-            display: block;
-
-            > .field {
-                display: table-cell;
-                .mx__flex(none);
-
-            }
-
-            > .sep {
-                display: table-cell;
-            }
-        }
+    &.size-full {
+        max-width: none;
+        display: block;
     }
 }
+
 /* ******* COMPONENTS: TINT RANGE ******* */
 
 .com__tint-range {
