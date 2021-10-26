@@ -57,7 +57,7 @@ function(params){
         }else{
             cm.addClass(that.nodes['toolbar'], 'is-not-adaptive');
         }
-        that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className'])
+        that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className']);
         // Append
         that.embedStructure(that.nodes['container']);
     };

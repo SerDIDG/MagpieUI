@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.12 (2021-10-25 21:14) ************ */
+/*! ************ MagpieUI v3.40.13 (2021-10-26 19:18) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.12',
+        '_version' : '3.40.13',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -23747,12 +23747,18 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Validate params
         params = cm.merge({
             urlParams: null,
-            captures: null
+            captures: null,
+            assignLocation: false
         }, params);
         // Get route url
         var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
         var url = that.getURL(route, hash, urlParams);
-        that.setURL(url, hash, params);
+        // Assign new location or push/replace history state
+        if(params.assignLocation){
+            window.location.assign(url);
+        }else{
+            that.setURL(url, hash, params);
+        }
         return that;
     };
 
@@ -26486,7 +26492,7 @@ function(params){
         }else{
             cm.addClass(that.nodes['toolbar'], 'is-not-adaptive');
         }
-        that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className'])
+        that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className']);
         // Append
         that.embedStructure(that.nodes['container']);
     };

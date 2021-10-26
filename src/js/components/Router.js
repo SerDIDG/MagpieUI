@@ -536,12 +536,18 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Validate params
         params = cm.merge({
             urlParams: null,
-            captures: null
+            captures: null,
+            assignLocation: false
         }, params);
         // Get route url
         var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
         var url = that.getURL(route, hash, urlParams);
-        that.setURL(url, hash, params);
+        // Assign new location or push/replace history state
+        if(params.assignLocation){
+            window.location.assign(url);
+        }else{
+            that.setURL(url, hash, params);
+        }
         return that;
     };
 
