@@ -41,6 +41,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             });
         }
         // Checked parameter behavior override
+        // TODO: test
         if(that.params['checked'] && cm.isEmpty(that.params['value'])){
             if(!that.params['multiple']){
                 that.params['value'] = true;

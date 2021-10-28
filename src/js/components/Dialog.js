@@ -40,6 +40,7 @@ cm.define('Com.Dialog', {
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeOnBackground' : true,
+        'closeOnEsc' : true,
         'buttons' : false,
         'showHelp' : false,
         'help' : '',
@@ -118,7 +119,7 @@ function(params){
     var getLESSVariables = function(){
         that.params['duration'] = cm.getTransitionDurationFromLESS('ComDialog-Duration', that.params['duration']);
     };
-    
+
     var validateParams = function(){
         if(that.params['openTime'] !== undefined && that.params['openTime'] !== null){
             that.params['duration'] = that.params['openTime'];
@@ -490,10 +491,12 @@ function(params){
     };
 
     var windowClickEvent = function(e){
-        // ESC key
-        if(cm.isKey(e, 'escape')){
-            that.isFocus && close();
-        }
+        // Close dialog when ESC key pressed
+        cm.handleKey(e, 'escape', function(){
+            if(that.params['closeOnEsc'] && that.isFocus){
+                close();
+            }
+        });
     };
 
     var clearResizeInterval = function(){

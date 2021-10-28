@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.13 (2021-10-26 19:18) ************ */
+/*! ************ MagpieUI v3.40.14 (2021-10-28 19:51) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.13',
+        '_version' : '3.40.14',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -14324,6 +14324,7 @@ cm.define('Com.Dialog', {
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeOnBackground' : true,
+        'closeOnEsc' : true,
         'buttons' : false,
         'showHelp' : false,
         'help' : '',
@@ -14402,7 +14403,7 @@ function(params){
     var getLESSVariables = function(){
         that.params['duration'] = cm.getTransitionDurationFromLESS('ComDialog-Duration', that.params['duration']);
     };
-    
+
     var validateParams = function(){
         if(that.params['openTime'] !== undefined && that.params['openTime'] !== null){
             that.params['duration'] = that.params['openTime'];
@@ -14774,10 +14775,12 @@ function(params){
     };
 
     var windowClickEvent = function(e){
-        // ESC key
-        if(cm.isKey(e, 'escape')){
-            that.isFocus && close();
-        }
+        // Close dialog when ESC key pressed
+        cm.handleKey(e, 'escape', function(){
+            if(that.params['closeOnEsc'] && that.isFocus){
+                close();
+            }
+        });
     };
 
     var clearResizeInterval = function(){
@@ -14902,6 +14905,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.DialogContainer', {
     'extend' : 'Com.AbstractContainer',
     'params' : {
@@ -29651,6 +29655,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             });
         }
         // Checked parameter behavior override
+        // TODO: test
         if(that.params['checked'] && cm.isEmpty(that.params['value'])){
             if(!that.params['multiple']){
                 that.params['value'] = true;
