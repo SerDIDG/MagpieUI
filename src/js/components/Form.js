@@ -984,5 +984,9 @@ function(params){
         return that.nodes.buttonsContainer;
     };
 
+    that.getNodes = function(key){
+        return that.nodes[key] || that.nodes;
+    };
+
     init();
 });
