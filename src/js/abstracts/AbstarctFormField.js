@@ -300,10 +300,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                     item.hidden = !cm.isUndefined(item.hidden) ? item.hidden : false;
                     option = cm.node('option', {
                         'value' : item.value,
-                        'disabled' : item.disabled,
-                        'hidden' : item.hidden,
                         'innerHTML' : item.text
                     });
+                    option.hidden = item.hidden;
+                    option.disabled = item.disabled;
                     cm.appendChild(option, that.nodes.content.input);
                 });
                 cm.setSelect(that.nodes.content.input, that.params.value);
@@ -860,6 +860,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     /*** EVENTS ***/
 
     classProto.callbacks.success = function(that, response){
+        that.params.options = response;
         that.renderOptions(response);
         that.triggerEvent('onRequestSuccess', response);
     };

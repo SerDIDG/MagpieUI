@@ -414,6 +414,7 @@ function(params){
         }
         if(!cm.isUndefined(group)){
             item['_group'] = group;
+            item['group'] = group['name'];
         }
         // Structure
         item['node'] = cm.node('li', {'class' : item['className']},
@@ -521,7 +522,7 @@ function(params){
             cm.removeClass(item['node'], 'active');
         });
         if(option['group']){
-            nodes['text'].value = [cm.decode(option['group']['name']), cm.decode(option['text'])].join(' > ');
+            nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' > ');
         }else{
             nodes['text'].value = cm.decode(option['text']);
         }

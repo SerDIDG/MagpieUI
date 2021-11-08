@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.15 (2021-10-29 20:48) ************ */
+/*! ************ MagpieUI v3.40.16 (2021-11-08 22:10) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4371,8 +4371,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.15');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.15') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.15') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.15') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.15#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.16');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.16') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.16') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.16') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.16#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -19381,7 +19381,20 @@ ul.pt__field__hint li:before {
   object-fit: cover;
   object-position: center center;
 }
-.com__image-input__content .input__holder .input__cover {
+.com__image-input__content .input__holder:hover .input__cover,
+.com__image-input__content .input__holder:focus .input__cover,
+.com__image-input__content .input__holder:active .input__cover {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition: all 100ms ease-in-out 0ms;
+  transition: all 100ms ease-in-out 0ms;
+  -webkit-transition-delay: 0ms;
+  transition-delay: 0ms;
+}
+.com__image-input__content .input__holder.is-hidden {
+  opacity: 0;
+}
+.com__image-input__content .input__cover {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -19401,7 +19414,7 @@ ul.pt__field__hint li:before {
   -webkit-transition-delay: 300ms;
   transition-delay: 300ms;
 }
-.com__image-input__content .input__holder .input__label {
+.com__image-input__content .input__label {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -19416,17 +19429,17 @@ ul.pt__field__hint li:before {
   -webkit-justify-content: center;
   justify-content: center;
 }
-.com__image-input__content .input__holder .input__label .cm__link,
-.com__image-input__content .input__holder .input__label .link,
-.com__image-input__content .input__holder .input__label .link--inner,
-.com__image-input__content .input__holder .input__label a,
-.com__image-input__content .input__holder .input__label .com__glossary .com__glossary__title {
+.com__image-input__content .input__label .cm__link,
+.com__image-input__content .input__label .link,
+.com__image-input__content .input__label .link--inner,
+.com__image-input__content .input__label a,
+.com__image-input__content .input__label .com__glossary .com__glossary__title {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   color: #ffffff;
 }
-.com__image-input__content .input__holder .input__buttons {
+.com__image-input__content .input__buttons {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -19436,16 +19449,16 @@ ul.pt__field__hint li:before {
   -ms-flex-flow: column nowrap;
   flex-flow: column nowrap;
 }
-.com__image-input__content .input__holder .input__buttons .button-alike,
-.com__image-input__content .input__holder .input__buttons .button,
-.com__image-input__content .input__holder .input__buttons .browse-button,
-.com__image-input__content .input__holder .input__buttons .cm__button-wrapper,
-.com__image-input__content .input__holder .input__buttons .com__menu,
-.com__image-input__content .input__holder .input__buttons .com__pagination__bar ul li a,
-.com__image-input__content .input__holder .input__buttons input[type="button"],
-.com__image-input__content .input__holder .input__buttons input[type="submit"],
-.com__image-input__content .input__holder .input__buttons input[type="reset"],
-.com__image-input__content .input__holder .input__buttons button {
+.com__image-input__content .input__buttons .button-alike,
+.com__image-input__content .input__buttons .button,
+.com__image-input__content .input__buttons .browse-button,
+.com__image-input__content .input__buttons .cm__button-wrapper,
+.com__image-input__content .input__buttons .com__menu,
+.com__image-input__content .input__buttons .com__pagination__bar ul li a,
+.com__image-input__content .input__buttons input[type="button"],
+.com__image-input__content .input__buttons input[type="submit"],
+.com__image-input__content .input__buttons input[type="reset"],
+.com__image-input__content .input__buttons button {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -19459,41 +19472,36 @@ ul.pt__field__hint li:before {
   -webkit-justify-content: center;
   justify-content: center;
 }
-.com__image-input__content .input__holder .input__buttons .button-alike span,
-.com__image-input__content .input__holder .input__buttons .button span,
-.com__image-input__content .input__holder .input__buttons .browse-button span,
-.com__image-input__content .input__holder .input__buttons .cm__button-wrapper span,
-.com__image-input__content .input__holder .input__buttons .com__menu span,
-.com__image-input__content .input__holder .input__buttons .com__pagination__bar ul li a span,
-.com__image-input__content .input__holder .input__buttons input[type="button"] span,
-.com__image-input__content .input__holder .input__buttons input[type="submit"] span,
-.com__image-input__content .input__holder .input__buttons input[type="reset"] span,
-.com__image-input__content .input__holder .input__buttons button span {
+.com__image-input__content .input__buttons .button-alike span,
+.com__image-input__content .input__buttons .button span,
+.com__image-input__content .input__buttons .browse-button span,
+.com__image-input__content .input__buttons .cm__button-wrapper span,
+.com__image-input__content .input__buttons .com__menu span,
+.com__image-input__content .input__buttons .com__pagination__bar ul li a span,
+.com__image-input__content .input__buttons input[type="button"] span,
+.com__image-input__content .input__buttons input[type="submit"] span,
+.com__image-input__content .input__buttons input[type="reset"] span,
+.com__image-input__content .input__buttons button span {
   margin: auto;
 }
-.com__image-input__content .input__holder .input__buttons .button-alike.is-hidden,
-.com__image-input__content .input__holder .input__buttons .button.is-hidden,
-.com__image-input__content .input__holder .input__buttons .browse-button.is-hidden,
-.com__image-input__content .input__holder .input__buttons .cm__button-wrapper.is-hidden,
-.com__image-input__content .input__holder .input__buttons .com__menu.is-hidden,
-.com__image-input__content .input__holder .input__buttons .com__pagination__bar ul li a.is-hidden,
-.com__image-input__content .input__holder .input__buttons input[type="button"].is-hidden,
-.com__image-input__content .input__holder .input__buttons input[type="submit"].is-hidden,
-.com__image-input__content .input__holder .input__buttons input[type="reset"].is-hidden,
-.com__image-input__content .input__holder .input__buttons button.is-hidden {
+.com__image-input__content .input__buttons .button-alike.is-hidden,
+.com__image-input__content .input__buttons .button.is-hidden,
+.com__image-input__content .input__buttons .browse-button.is-hidden,
+.com__image-input__content .input__buttons .cm__button-wrapper.is-hidden,
+.com__image-input__content .input__buttons .com__menu.is-hidden,
+.com__image-input__content .input__buttons .com__pagination__bar ul li a.is-hidden,
+.com__image-input__content .input__buttons input[type="button"].is-hidden,
+.com__image-input__content .input__buttons input[type="submit"].is-hidden,
+.com__image-input__content .input__buttons input[type="reset"].is-hidden,
+.com__image-input__content .input__buttons button.is-hidden {
   display: none;
 }
-.com__image-input__content .input__holder:hover .input__cover,
-.com__image-input__content .input__holder:active .input__cover {
-  visibility: visible;
-  opacity: 1;
-  -webkit-transition: all 100ms ease-in-out 0ms;
-  transition: all 100ms ease-in-out 0ms;
-  -webkit-transition-delay: 0ms;
-  transition-delay: 0ms;
+.com__image-input__content.disabled .input__button--browse,
+.com__image-input__content.disabled .input__button--remove {
+  display: none;
 }
-.com__image-input__content .input__holder.is-hidden {
-  opacity: 0;
+.com__image-input__content.disabled .com__file-dropzone {
+  display: none;
 }
 .com__image-input__content--default .input__holder .input__label {
   display: none;

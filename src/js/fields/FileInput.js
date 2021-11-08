@@ -12,8 +12,10 @@ cm.define('Com.FileInput', {
         'showClearButton' : true,
         'autoOpen' : false,
         'placeholder' : null,
+
         'readValueType' : 'base64',         // base64 | binary
         'outputValueType' : 'object',         // file | object
+
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -22,6 +24,7 @@ cm.define('Com.FileInput', {
                 'max' : 1
             }
         },
+
         'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
@@ -29,6 +32,7 @@ cm.define('Com.FileInput', {
                 'max' : 1
             }
         },
+
         'dropzone' : true,
         'dropzoneConstructor' : 'Com.FileDropzone',
         'dropzoneParams' : {
@@ -36,6 +40,7 @@ cm.define('Com.FileInput', {
             'max' : 1,
             'rollover' : true
         },
+
         'fileReaderConstructor' : 'Com.FileReader',
         'fileReaderParams' : {}
     },
@@ -120,6 +125,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
                 that.components['dropzone'] = new classObject(
                     cm.merge(that.params['dropzoneParams'], {
+                        'disabled' : that.params['disabled'],
                         'container' : that.nodes['content']['inner'],
                         'target' : that.nodes['content']['content']
                     })
@@ -155,7 +161,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 });
             });
         }
-        return that;
     };
 
     classProto.renderContent = function(){

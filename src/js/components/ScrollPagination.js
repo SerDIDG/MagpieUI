@@ -395,6 +395,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 'pages' : that.nodes['pages'],
                 'container' : cm.node(that.params['pageTag']),
                 'data' : data,
+                'isEmpty' : false,
                 'isVisible' : false
             };
         // Clear container
@@ -620,6 +621,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         return that.currentAction;
     };
 
+    classProto.getPages = function(){
+        var that = this;
+        return that.pages;
+    };
+
     classProto.setPage = function(){
         var that = this;
         that.previousPage = that.currentPage;
@@ -650,6 +656,23 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             return page['isVisible'];
         }
         return false;
+    };
+
+    classProto.isEmpty = function(){
+        var that = this,
+            isEmpty = true;
+        cm.forEach(that.pages, function(page){
+            if(page.isEmpty === false){
+                isEmpty = false;
+            }
+        });
+        return isEmpty;
+    };
+
+    classProto.finalize = function(){
+        var that = this;
+        that.callbacks.finalize(that);
+        return that;
     };
 
     classProto.abort = function(){

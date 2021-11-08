@@ -1,6 +1,8 @@
 cm.define('Com.FileDropzone', {
     'extend' : 'Com.AbstractController',
     'events' : [
+        'onEnable',
+        'onDisable',
         'onDrop',
         'onSelect'
     ],
@@ -9,6 +11,7 @@ cm.define('Com.FileDropzone', {
         'target' : null,
         'rollover' : true,
         'max' : 0,                                  // 0 - infinity
+        'disabled' : false,
         '_height' : 128,
         '_duration' : 'cm._config.animDuration',
         'fileReaderConstructor' : 'Com.FileReader',
@@ -30,6 +33,7 @@ function(params){
 cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
+        that.disabled = false;
         that.dragInterval = null;
         that.isShow = true;
         that.isHighlighted = false;
@@ -106,21 +110,30 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 that.params['container'].style.height = that.params['height'] + 'px';
             }
         }
+        that.params['disabled'] && that.disable();
     };
 
     /* *** DROPZONE *** */
 
     classProto.dragOver = function(e){
-        var that = this,
-            target = cm.getEventTarget(e);
+        var that = this;
+
+        if(that.disabled){
+            return;
+        }
+
         cm.preventDefault(e);
+
         // Show dropzone
         that.show();
         that.showDropzone();
+
         // Hide dropzone if event not triggering inside the current document window (hax)
         that.dragInterval && clearTimeout(that.dragInterval);
         that.dragInterval = setTimeout(that.hideDropzoneHandler, 100);
+
         // Highlight dropzone
+        var target = cm.getEventTarget(e)
         if(cm.isParent(that.nodes['container'], target, true)){
             cm.addClass(that.nodes['container'], 'is-highlight');
         }else{
@@ -129,8 +142,14 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
     };
 
     classProto.dragDrop = function(e){
-        var that = this,
-            target = cm.getEventTarget(e);
+        var that = this;
+
+
+        if(that.disabled){
+            return;
+        }
+
+        var target = cm.getEventTarget(e);
         if(cm.isParent(that.nodes['container'], target, true)){
             cm.stopPropagation(e);
             cm.preventDefault(e);
@@ -147,6 +166,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 }
             }
         }
+
         // Hide dropzone and reset his state
         that.dragInterval && clearTimeout(that.dragInterval);
         that.hide();
@@ -232,5 +252,27 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 });
             }
         }
+    };
+
+    /******* PUBLIC *******/
+
+    classProto.enable = function(){
+        var that = this;
+        if(that.disabled){
+            that.disabled = false;
+            cm.removeClass(that.nodes['container'], 'disabled');
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        if(!that.disabled){
+            that.disabled = true;
+            cm.addClass(that.nodes['container'], 'disabled');
+            that.triggerEvent('onDisable');
+        }
+        return that;
     };
 });

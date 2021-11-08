@@ -1,42 +1,43 @@
 cm.define('Com.AutocompleteField', {
     'extend' : 'Com.AbstractInput',
+    'events': [
+        'onFocus',
+        'onBlur',
+    ],
     'params' : {
         'controllerEvents' : true,
-        'type' : 'text',
-        'autocompleteConstructor' : 'Com.Autocomplete',
-        'autocompleteParams' : {
-            'minLength' : 1,
-            'direction' : 'start'
+        'type': 'text',
+        'autocomplete': {
+            'constructor' : 'Com.Autocomplete',
+            'constructorParams' : {
+                'minLength' : 1,
+                'direction' : 'start'
+            }
         }
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
+function(){
+    Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto, classProto){
     classProto.construct = function(){
         var that = this;
         that.options = [];
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+
+        classProto.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
         var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
+        classProto.prototype.validateParams.apply(that, arguments);
+
         // Collect Options
         var options = that.params['node'].options;
         cm.forEach(options, function(node){
             that.options.push({
-                'value' : node.value,
-                'text' : node.innerHTML
+                'value': node.value,
+                'text': node.innerHTML
             });
         });
     };
@@ -75,20 +76,41 @@ cm.getConstructor('Com.AutocompleteField', function(classConstructor, className,
 
     classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classProto.prototype.renderViewModel.apply(that, arguments);
+
         // Init Autocomplete
-        cm.getConstructor(that.params['autocompleteConstructor'], function(classConstructor){
-            that.components['autocomplete'] = new classConstructor(
-                cm.merge(that.params['autocompleteParams'], {
-                    'node' : that.nodes['content']['input'],
-                    'data' : that.options
+        cm.getConstructor(that.params.autocomplete.constructor, function(classConstructor){
+            that.components.autocomplete = new classConstructor(
+                cm.merge(that.params.autocomplete.constructorParams, {
+                    node: that.nodes.content.input,
+                    data: that.options,
+                    callbacks: that.renderAutocompleteCallbacks.bind(that),
+                    events: that.renderAutocompleteEvents.bind(that)
                 })
             );
-            that.components['autocomplete'].addEvent('onChange', function(autocomplete, value){
-                that.set(value, true);
-            })
         })
+    };
+
+    /*** AUTOCOMPLETE ***/
+
+    classProto.renderAutocompleteCallbacks = function(){
+        var that = this;
+        return {};
+    };
+
+    classProto.renderAutocompleteEvents = function(){
+        var that = this;
+        return {
+            onChange: function(Autocomplete, value){
+                that.set(value, true);
+            },
+            onFocus: function(){
+                that.triggerEvent('onFocus')
+            },
+            onBlur: function(){
+                that.triggerEvent('onBlur')
+            }
+        };
     };
 
     /* *** DATA VALUE *** */

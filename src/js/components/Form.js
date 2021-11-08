@@ -166,9 +166,7 @@ function(params){
                         break;
                 }
                 that.components.loader = new classConstructor(
-                    cm.merge(that.params.overlayParams, {
-                        'container' : overlayContainer
-                    })
+                    cm.merge({'container': overlayContainer}, that.params.overlayParams)
                 );
             });
         }

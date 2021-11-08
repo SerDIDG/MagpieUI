@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.15 (2021-10-29 20:48) ************ */
+/*! ************ MagpieUI v3.40.16 (2021-11-08 22:10) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.15',
+        '_version' : '3.40.16',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -9140,10 +9140,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                     item.hidden = !cm.isUndefined(item.hidden) ? item.hidden : false;
                     option = cm.node('option', {
                         'value' : item.value,
-                        'disabled' : item.disabled,
-                        'hidden' : item.hidden,
                         'innerHTML' : item.text
                     });
+                    option.hidden = item.hidden;
+                    option.disabled = item.disabled;
                     cm.appendChild(option, that.nodes.content.input);
                 });
                 cm.setSelect(that.nodes.content.input, that.params.value);
@@ -9700,6 +9700,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     /*** EVENTS ***/
 
     classProto.callbacks.success = function(that, response){
+        that.params.options = response;
         that.renderOptions(response);
         that.triggerEvent('onRequestSuccess', response);
     };
@@ -10431,9 +10432,7 @@ function(params){
                         break;
                 }
                 that.components.loader = new classConstructor(
-                    cm.merge(that.params.overlayParams, {
-                        'container' : overlayContainer
-                    })
+                    cm.merge({'container': overlayContainer}, that.params.overlayParams)
                 );
             });
         }
@@ -12339,6 +12338,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 'pages' : that.nodes['pages'],
                 'container' : cm.node(that.params['pageTag']),
                 'data' : data,
+                'isEmpty' : false,
                 'isVisible' : false
             };
         // Clear container
@@ -12564,6 +12564,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         return that.currentAction;
     };
 
+    classProto.getPages = function(){
+        var that = this;
+        return that.pages;
+    };
+
     classProto.setPage = function(){
         var that = this;
         that.previousPage = that.currentPage;
@@ -12594,6 +12599,23 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             return page['isVisible'];
         }
         return false;
+    };
+
+    classProto.isEmpty = function(){
+        var that = this,
+            isEmpty = true;
+        cm.forEach(that.pages, function(page){
+            if(page.isEmpty === false){
+                isEmpty = false;
+            }
+        });
+        return isEmpty;
+    };
+
+    classProto.finalize = function(){
+        var that = this;
+        that.callbacks.finalize(that);
+        return that;
     };
 
     classProto.abort = function(){
@@ -16371,6 +16393,8 @@ function(params){
 cm.define('Com.FileDropzone', {
     'extend' : 'Com.AbstractController',
     'events' : [
+        'onEnable',
+        'onDisable',
         'onDrop',
         'onSelect'
     ],
@@ -16379,6 +16403,7 @@ cm.define('Com.FileDropzone', {
         'target' : null,
         'rollover' : true,
         'max' : 0,                                  // 0 - infinity
+        'disabled' : false,
         '_height' : 128,
         '_duration' : 'cm._config.animDuration',
         'fileReaderConstructor' : 'Com.FileReader',
@@ -16400,6 +16425,7 @@ function(params){
 cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
+        that.disabled = false;
         that.dragInterval = null;
         that.isShow = true;
         that.isHighlighted = false;
@@ -16476,21 +16502,30 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 that.params['container'].style.height = that.params['height'] + 'px';
             }
         }
+        that.params['disabled'] && that.disable();
     };
 
     /* *** DROPZONE *** */
 
     classProto.dragOver = function(e){
-        var that = this,
-            target = cm.getEventTarget(e);
+        var that = this;
+
+        if(that.disabled){
+            return;
+        }
+
         cm.preventDefault(e);
+
         // Show dropzone
         that.show();
         that.showDropzone();
+
         // Hide dropzone if event not triggering inside the current document window (hax)
         that.dragInterval && clearTimeout(that.dragInterval);
         that.dragInterval = setTimeout(that.hideDropzoneHandler, 100);
+
         // Highlight dropzone
+        var target = cm.getEventTarget(e)
         if(cm.isParent(that.nodes['container'], target, true)){
             cm.addClass(that.nodes['container'], 'is-highlight');
         }else{
@@ -16499,8 +16534,14 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
     };
 
     classProto.dragDrop = function(e){
-        var that = this,
-            target = cm.getEventTarget(e);
+        var that = this;
+
+
+        if(that.disabled){
+            return;
+        }
+
+        var target = cm.getEventTarget(e);
         if(cm.isParent(that.nodes['container'], target, true)){
             cm.stopPropagation(e);
             cm.preventDefault(e);
@@ -16517,6 +16558,7 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 }
             }
         }
+
         // Hide dropzone and reset his state
         that.dragInterval && clearTimeout(that.dragInterval);
         that.hide();
@@ -16602,6 +16644,28 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
                 });
             }
         }
+    };
+
+    /******* PUBLIC *******/
+
+    classProto.enable = function(){
+        var that = this;
+        if(that.disabled){
+            that.disabled = false;
+            cm.removeClass(that.nodes['container'], 'disabled');
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    classProto.disable = function(){
+        var that = this;
+        if(!that.disabled){
+            that.disabled = true;
+            cm.addClass(that.nodes['container'], 'disabled');
+            that.triggerEvent('onDisable');
+        }
+        return that;
     };
 });
 
@@ -20275,6 +20339,7 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
     classProto.setData = function(item){
         var that = this;
         that.item = {
+            'type' : 'image',
             'src' : item['url'],
             'mime' : item['mime'] || item['type'],
             'title' : item['name']
@@ -20288,6 +20353,7 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
         return that;
     };
 });
+
 cm.define('Com.Menu', {
     'modules' : [
         'Params',
@@ -29443,43 +29509,44 @@ Com.FormFields.add('autocomplete', {
 
 cm.define('Com.AutocompleteField', {
     'extend' : 'Com.AbstractInput',
+    'events': [
+        'onFocus',
+        'onBlur',
+    ],
     'params' : {
         'controllerEvents' : true,
-        'type' : 'text',
-        'autocompleteConstructor' : 'Com.Autocomplete',
-        'autocompleteParams' : {
-            'minLength' : 1,
-            'direction' : 'start'
+        'type': 'text',
+        'autocomplete': {
+            'constructor' : 'Com.Autocomplete',
+            'constructorParams' : {
+                'minLength' : 1,
+                'direction' : 'start'
+            }
         }
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
+function(){
+    Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
-
+cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto, classProto){
     classProto.construct = function(){
         var that = this;
         that.options = [];
-        // Call parent method
-        _inherit.prototype.construct.apply(that, arguments);
-        return that;
+
+        classProto.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
         var that = this;
-        // Call parent method
-        _inherit.prototype.validateParams.apply(that, arguments);
+        classProto.prototype.validateParams.apply(that, arguments);
+
         // Collect Options
         var options = that.params['node'].options;
         cm.forEach(options, function(node){
             that.options.push({
-                'value' : node.value,
-                'text' : node.innerHTML
+                'value': node.value,
+                'text': node.innerHTML
             });
         });
     };
@@ -29518,20 +29585,41 @@ cm.getConstructor('Com.AutocompleteField', function(classConstructor, className,
 
     classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - renderViewModel
-        _inherit.prototype.renderViewModel.apply(that, arguments);
+        classProto.prototype.renderViewModel.apply(that, arguments);
+
         // Init Autocomplete
-        cm.getConstructor(that.params['autocompleteConstructor'], function(classConstructor){
-            that.components['autocomplete'] = new classConstructor(
-                cm.merge(that.params['autocompleteParams'], {
-                    'node' : that.nodes['content']['input'],
-                    'data' : that.options
+        cm.getConstructor(that.params.autocomplete.constructor, function(classConstructor){
+            that.components.autocomplete = new classConstructor(
+                cm.merge(that.params.autocomplete.constructorParams, {
+                    node: that.nodes.content.input,
+                    data: that.options,
+                    callbacks: that.renderAutocompleteCallbacks.bind(that),
+                    events: that.renderAutocompleteEvents.bind(that)
                 })
             );
-            that.components['autocomplete'].addEvent('onChange', function(autocomplete, value){
-                that.set(value, true);
-            })
         })
+    };
+
+    /*** AUTOCOMPLETE ***/
+
+    classProto.renderAutocompleteCallbacks = function(){
+        var that = this;
+        return {};
+    };
+
+    classProto.renderAutocompleteEvents = function(){
+        var that = this;
+        return {
+            onChange: function(Autocomplete, value){
+                that.set(value, true);
+            },
+            onFocus: function(){
+                that.triggerEvent('onFocus')
+            },
+            onBlur: function(){
+                that.triggerEvent('onBlur')
+            }
+        };
     };
 
     /* *** DATA VALUE *** */
@@ -29564,6 +29652,7 @@ Com.FormFields.add('autocomplete-field', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.AutocompleteField'
 });
+
 cm.define('Com.BoxRadiusTools', {
     'extend' : 'Com.BoxTools',
     'params' : {
@@ -31282,8 +31371,10 @@ cm.define('Com.FileInput', {
         'showClearButton' : true,
         'autoOpen' : false,
         'placeholder' : null,
+
         'readValueType' : 'base64',         // base64 | binary
         'outputValueType' : 'object',         // file | object
+
         'local' : true,
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
@@ -31292,6 +31383,7 @@ cm.define('Com.FileInput', {
                 'max' : 1
             }
         },
+
         'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
@@ -31299,6 +31391,7 @@ cm.define('Com.FileInput', {
                 'max' : 1
             }
         },
+
         'dropzone' : true,
         'dropzoneConstructor' : 'Com.FileDropzone',
         'dropzoneParams' : {
@@ -31306,6 +31399,7 @@ cm.define('Com.FileInput', {
             'max' : 1,
             'rollover' : true
         },
+
         'fileReaderConstructor' : 'Com.FileReader',
         'fileReaderParams' : {}
     },
@@ -31390,6 +31484,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
                 that.components['dropzone'] = new classObject(
                     cm.merge(that.params['dropzoneParams'], {
+                        'disabled' : that.params['disabled'],
                         'container' : that.nodes['content']['inner'],
                         'target' : that.nodes['content']['content']
                     })
@@ -31425,7 +31520,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 });
             });
         }
-        return that;
     };
 
     classProto.renderContent = function(){
@@ -31686,7 +31780,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                     cm.node('div', {'class' : 'input__cover'},
                         nodes['label'] = cm.node('div', {'class' : 'input__label'}),
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'input__buttons'},
-                            nodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+                            nodes['clear'] = cm.node('div', {'class' : 'cm__button-wrapper input__button--remove'},
                                 cm.node('button', {'type' : 'button', 'class' : 'button button-danger'},
                                     cm.node('span', that.lang('remove'))
                                 )
@@ -31719,7 +31813,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     classProto.renderButtons = function(){
         var that = this;
         if(that.params['preview']){
-            that.nodes['content']['preview'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+            that.nodes['content']['preview'] = cm.node('div', {'class' : 'cm__button-wrapper input__button--preview'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('preview'))
                 )
@@ -31727,7 +31821,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.insertFirst(that.nodes['content']['preview'], that.nodes['content']['buttonsInner']);
         }
         if(that.params['local']){
-            that.nodes['content']['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
+            that.nodes['content']['browseLocal'] = cm.node('div', {'class' : 'browse-button input__button--browse'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('_browse_local'))
                 ),
@@ -31739,7 +31833,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
         }
         if(that.params['fileManager']){
-            that.nodes['content']['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+            that.nodes['content']['browseFileManager'] = cm.node('div', {'class' : 'cm__button-wrapper input__button--browse'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('_browse_filemanager'))
                 )
@@ -31747,7 +31841,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.insertFirst(that.nodes['content']['browseFileManager'], that.nodes['content']['buttonsInner']);
         }
         if(that.params['fileUploader']){
-            that.nodes['content']['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper'},
+            that.nodes['content']['browseFileUploader'] = cm.node('div', {'class' : 'cm__button-wrapper input__button--browse'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'},
                     cm.node('span', that.lang('browse'))
                 )
@@ -33619,6 +33713,7 @@ function(params){
         }
         if(!cm.isUndefined(group)){
             item['_group'] = group;
+            item['group'] = group['name'];
         }
         // Structure
         item['node'] = cm.node('li', {'class' : item['className']},
@@ -33726,7 +33821,7 @@ function(params){
             cm.removeClass(item['node'], 'active');
         });
         if(option['group']){
-            nodes['text'].value = [cm.decode(option['group']['name']), cm.decode(option['text'])].join(' > ');
+            nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' > ');
         }else{
             nodes['text'].value = cm.decode(option['text']);
         }
