@@ -2072,7 +2072,7 @@ cm.copyToClipboard = function(text, callback){
     if(!successful){
         cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
     }
-    cm.isFunction(callback) && callback(success);
+    cm.isFunction(callback) && callback(successful);
 };
 
 cm.share = function(data){
