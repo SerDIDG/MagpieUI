@@ -131,6 +131,7 @@ function(params){
             'nodes' : {},
             'src' : '',
             'title' : '',
+            'info' : null,
             'mime' : ''
         }, item);
         // Check type

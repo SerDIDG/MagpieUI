@@ -17,10 +17,12 @@ cm.define('Com.GalleryPopup', {
         'theme' : 'theme-black',
         'showCounter' : true,
         'showTitle' : true,
+        'showInfo' : false,
         'showZoom' : true,
         'autoPlay' : false,
-        'data' : [],
         'openOnSelfClick' : false,
+        'data' : [],
+
         'placeholderConstructor' : 'Com.Dialog',
         'placeholderParams' : {
             'width' : '700',
@@ -30,16 +32,15 @@ cm.define('Com.GalleryPopup', {
             'closeOnBackground' : true,
             'className' : 'com__gallery-popup'
         },
+
         'galleryConstructor' : 'Com.Gallery',
         'galleryParams' : {
             'showCaption' : false
         }
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
+function(){
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, classProto, classInherit){
@@ -90,65 +91,88 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
 
     classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Dialog
-        cm.getConstructor(that.params['placeholderConstructor'], function(classConstructor){
+        cm.getConstructor(that.params.placeholderConstructor, function(classConstructor){
             that.components['dialog'] = new classConstructor(
-                cm.merge(that.params['placeholderParams'], {
-                    'content' : that.nodes['container']
+                cm.merge(that.params.placeholderParams, {
+                    'content' : that.nodes.container,
+                    'events' : {
+                        'onOpen' : function(){
+                            cm.addEvent(window, 'keydown', that.keyPressEventHandler);
+                            that.triggerEvent('onOpen');
+                        },
+                        'onClose' : function(){
+                            that.components.gallery.stop();
+                            cm.removeEvent(window, 'keydown', that.keyPressEventHandler);
+                            that.triggerEvent('onClose');
+                        }
+                    }
                 })
             );
-            that.components['dialog'].addEvent('onOpen', function(){
-                cm.addEvent(window, 'keydown', that.keyPressEventHandler);
-                that.triggerEvent('onOpen');
-            });
-            that.components['dialog'].addEvent('onClose', function(){
-                that.components['gallery'].stop();
-                cm.removeEvent(window, 'keydown', that.keyPressEventHandler);
-                that.triggerEvent('onClose');
-            });
         });
+
         // Gallery
-        cm.getConstructor(that.params['galleryConstructor'], function(classConstructor){
-            that.components['gallery'] = new classConstructor(
-                cm.merge(that.params['galleryParams'], {
-                    'node' : that.params['node'],
-                    'container' : that.nodes['galleryContainer'],
-                    'data' : that.params['data']
+        cm.getConstructor(that.params.galleryConstructor, function(classConstructor){
+            that.components.gallery = new classConstructor(
+                cm.merge(that.params.galleryParams, {
+                    'node' : that.params.node,
+                    'container' : that.nodes.galleryContainer,
+                    'data' : that.params.data,
+                    'events' : {
+                        'onChange' : that.changeEventHandler,
+                        'onSet' : that.components.dialog.open.bind(that.components.dialog)
+                    }
                 })
             );
-            that.components['gallery'].addEvent('onChange', that.changeEventHandler);
-            that.components['gallery'].addEvent('onSet', function(){
-                that.components['dialog'].open();
-            });
         });
-        // Node's self click
-        if(that.params['openOnSelfClick']){
-            cm.addEvent(that.params['node'], 'click', that.openHandler);
+
+        if(that.params.openOnSelfClick){
+            cm.addEvent(that.params.node, 'click', that.openHandler);
         }
     };
 
     classProto.changeEvent = function(gallery, data){
         var that = this,
-            title;
-        // Set caption
-        if(that.params['showCounter']){
-            title = [(data['current']['index'] + 1), that.components['gallery'].getCount()].join('/');
+            item = {
+                data: data.current,
+                nodes: {}
+            };
+
+        // Structure
+        item.nodes.container = cm.node('div', {classes: 'com__gallery-popup__title'},
+            item.nodes.top = cm.node('div', {classes: 'com__gallery-popup__title-line'}),
+            item.nodes.bottom = cm.node('div', {classes: 'com__gallery-popup__title-line'})
+        );
+
+        if(that.params.showCounter){
+            item.counter = [(item.data.index + 1), that.components.gallery.getCount()].join('/');
+            item.nodes.counter = cm.node('span', {classes: 'counter'}, item.counter);
+            cm.appendChild(item.nodes.counter, item.nodes.top);
         }
-        if(that.params['showTitle']){
-            if(that.params['showCounter']){
-                if(!cm.isEmpty(data['current']['title'])){
-                    title = [title, data['current']['title']].join(' - ');
-                }
-            }else{
-                title = data['current']['title'];
+
+        if(that.params.showTitle){
+            item.nodes.title = cm.node('span', {classes: 'title'}, item.data.title);
+
+            if(that.params.showCounter){
+                item.nodes.sepaartor = cm.node('span', {classes: 'separator'});
+                cm.appendChild(item.nodes.sepaartor, item.nodes.top);
             }
+
+            cm.appendChild(item.nodes.title, item.nodes.top);
         }
-        if(that.params['showCounter'] || that.params['showTitle']){
-            that.components['dialog'].setTitle(title);
+
+        if(that.params.showInfo && !cm.isEmpty(item.data.info)){
+            item.nodes.info = cm.node('div', {classes: 'info'}, item.data.info);
+            cm.appendChild(item.nodes.info, item.nodes.bottom);
         }
-        that.triggerEvent('onChange', data);
+
+        if(that.params.showCounter || that.params.showTitle || that.params.showInfo){
+            that.components.dialog.setTitle(item.nodes.container);
+        }
+
+        that.triggerEvent('onChange', item);
     };
 
     classProto.keyPressEvent = function(e){
