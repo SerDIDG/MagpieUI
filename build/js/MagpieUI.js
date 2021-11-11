@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.18 (2021-11-10 23:02) ************ */
+/*! ************ MagpieUI v3.40.19 (2021-11-11 22:41) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.18',
+        '_version' : '3.40.19',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -18130,17 +18130,17 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Dialog
-        cm.getConstructor(that.params['placeholderConstructor'], function(classConstructor){
+        cm.getConstructor(that.params.placeholderConstructor, function(classConstructor){
             that.components['dialog'] = new classConstructor(
-                cm.merge(that.params['placeholderParams'], {
-                    'content' : that.nodes['container'],
+                cm.merge(that.params.placeholderParams, {
+                    'content' : that.nodes.container,
                     'events' : {
                         'onOpen' : function(){
                             cm.addEvent(window, 'keydown', that.keyPressEventHandler);
                             that.triggerEvent('onOpen');
                         },
                         'onClose' : function(){
-                            that.components['gallery'].stop();
+                            that.components.gallery.stop();
                             cm.removeEvent(window, 'keydown', that.keyPressEventHandler);
                             that.triggerEvent('onClose');
                         }
@@ -18150,12 +18150,12 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         });
 
         // Gallery
-        cm.getConstructor(that.params['galleryConstructor'], function(classConstructor){
-            that.components['gallery'] = new classConstructor(
-                cm.merge(that.params['galleryParams'], {
-                    'node' : that.params['node'],
-                    'container' : that.nodes['galleryContainer'],
-                    'data' : that.params['data'],
+        cm.getConstructor(that.params.galleryConstructor, function(classConstructor){
+            that.components.gallery = new classConstructor(
+                cm.merge(that.params.galleryParams, {
+                    'node' : that.params.node,
+                    'container' : that.nodes.galleryContainer,
+                    'data' : that.params.data,
                     'events' : {
                         'onChange' : that.changeEventHandler,
                         'onSet' : that.components.dialog.open.bind(that.components.dialog)
@@ -18164,8 +18164,8 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
             );
         });
 
-        if(that.params['openOnSelfClick']){
-            cm.addEvent(that.params['node'], 'click', that.openHandler);
+        if(that.params.openOnSelfClick){
+            cm.addEvent(that.params.node, 'click', that.openHandler);
         }
     };
 
@@ -18292,9 +18292,9 @@ function() {
 });
 
 cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, className, classProto, classInherit) {
-    classProto.constructController = function(classObject) {
+    classProto.constructController = function(ClassObject) {
         var that = this;
-        return new classObject(
+        return new ClassObject(
             cm.merge(that.params.params, {
                 data: [that.params.data],
             })
