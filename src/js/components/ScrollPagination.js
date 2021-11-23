@@ -14,7 +14,9 @@ cm.define('Com.ScrollPagination', {
         'onFinalize',
         'onSetCount',
         'onButtonShow',
-        'onButtonHide'
+        'onButtonHide',
+        'onLoaderShow',
+        'onLoaderHide'
     ],
     'params' : {
         'controllerEvents' : true,
@@ -433,10 +435,12 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             if(that.isButton){
                 cm.addClass(that.nodes['button'], 'is-hidden');
                 cm.removeClass(that.nodes['loader'], 'is-hidden');
+                that.triggerEvent('onLoaderShow');
             }else{
                 that.loaderDelay = setTimeout(function(){
                     cm.removeClass(that.nodes['loader'], 'is-hidden');
                     cm.removeClass(that.nodes['bar'], 'is-hidden');
+                    that.triggerEvent('onLoaderShow');
                 }, that.params['loaderDelay']);
             }
         }
@@ -448,6 +452,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Hide Loader
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
+        that.triggerEvent('onLoaderHide');
         // Check pages count
         if(that.itemCount === 0 || (that.pageCount > 0 && that.pageCount === that.currentPage)){
             that.callbacks.finalize(that);

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.20 (2021-11-23 17:07) ************ */
+/*! ************ MagpieUI v3.40.21 (2021-11-23 18:08) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.20',
+        '_version' : '3.40.21',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -11966,7 +11966,9 @@ cm.define('Com.ScrollPagination', {
         'onFinalize',
         'onSetCount',
         'onButtonShow',
-        'onButtonHide'
+        'onButtonHide',
+        'onLoaderShow',
+        'onLoaderHide'
     ],
     'params' : {
         'controllerEvents' : true,
@@ -12385,10 +12387,12 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             if(that.isButton){
                 cm.addClass(that.nodes['button'], 'is-hidden');
                 cm.removeClass(that.nodes['loader'], 'is-hidden');
+                that.triggerEvent('onLoaderShow');
             }else{
                 that.loaderDelay = setTimeout(function(){
                     cm.removeClass(that.nodes['loader'], 'is-hidden');
                     cm.removeClass(that.nodes['bar'], 'is-hidden');
+                    that.triggerEvent('onLoaderShow');
                 }, that.params['loaderDelay']);
             }
         }
@@ -12400,6 +12404,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Hide Loader
         that.loaderDelay && clearTimeout(that.loaderDelay);
         cm.addClass(that.nodes['loader'], 'is-hidden');
+        that.triggerEvent('onLoaderHide');
         // Check pages count
         if(that.itemCount === 0 || (that.pageCount > 0 && that.pageCount === that.currentPage)){
             that.callbacks.finalize(that);
