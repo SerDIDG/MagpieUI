@@ -307,7 +307,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             tokenItem = cm.objectPath(that.params['responseTokenKey'], response);
         if(cm.isEmpty(errorsItem)){
             if(!cm.isEmpty(dataItem)){
-                if(!that.params['responseHTML'] && that.params['perPage']){
+                if(cm.isArray(dataItem) && that.params['perPage']){
                     data = dataItem.slice(0, that.params['perPage']);
                 }else{
                     data = dataItem;

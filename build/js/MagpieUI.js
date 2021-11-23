@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.19 (2021-11-11 22:41) ************ */
+/*! ************ MagpieUI v3.40.20 (2021-11-23 17:07) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.19',
+        '_version' : '3.40.20',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -12259,7 +12259,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             tokenItem = cm.objectPath(that.params['responseTokenKey'], response);
         if(cm.isEmpty(errorsItem)){
             if(!cm.isEmpty(dataItem)){
-                if(!that.params['responseHTML'] && that.params['perPage']){
+                if(cm.isArray(dataItem) && that.params['perPage']){
                     data = dataItem.slice(0, that.params['perPage']);
                 }else{
                     data = dataItem;
