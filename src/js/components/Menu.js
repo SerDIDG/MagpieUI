@@ -10,13 +10,17 @@ cm.define('Com.Menu', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'event' : 'hover',
         'top' : 'targetHeight',
         'left' : 0,
+        'adaptiveFrom' : null,
+        'adaptiveTop' : null,
+        'adaptiveLeft' : null,
         'minWidth' : 'targetWidth',
-        'Com.Tooltip' : {
+        'tooltipConstructor' : 'Com.Tooltip',
+        'tooltipParams' : {
             'className' : 'com__menu-tooltip',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
@@ -46,17 +50,20 @@ function(params){
     };
 
     var validateParams = function(){
-        that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
-        that.params['Com.Tooltip']['top'] = that.params['top'];
-        that.params['Com.Tooltip']['left'] = that.params['left'];
-        that.params['Com.Tooltip']['minWidth'] = that.params['minWidth'];
+        that.params['tooltipParams']['targetEvent'] = that.params['event'];
+        that.params['tooltipParams']['minWidth'] = that.params['minWidth'];
+        that.params['tooltipParams']['top'] = that.params['top'];
+        that.params['tooltipParams']['left'] = that.params['left'];
+        that.params['tooltipParams']['adaptiveFrom'] = that.params['adaptiveFrom'];
+        that.params['tooltipParams']['adaptiveTop'] = that.params['adaptiveTop'];
+        that.params['tooltipParams']['adaptiveLeft'] = that.params['adaptiveLeft'];
     };
 
     var render = function(){
         // Tooltip
-        cm.getConstructor('Com.Tooltip', function(classConstructor){
+        cm.getConstructor(that.params['tooltipConstructor'], function(classConstructor){
             that.components['tooltip'] = new classConstructor(
-                cm.merge(that.params['Com.Tooltip'], {
+                cm.merge(that.params['tooltipParams'], {
                     'target' : that.nodes['container'] || that.nodes['button'],
                     'content' : that.nodes['target'],
                     'events' : {

@@ -358,6 +358,14 @@
         .pt__gridlist.is-adaptive {
             .pt__gridlist__has-background;
 
+            thead, tbody, tr, td {
+                display: block;
+            }
+
+            thead {
+                margin-bottom: @CmIndent-XXSmall;
+            }
+
             tr {
                 td, th {
                     width: auto !important;
@@ -368,26 +376,8 @@
                     text-align: left !important;
                 }
 
-                td, th {
-                    &:first-child {
-                        border-top: @CmIndent-XXSmall solid transparent;
-                    }
-                }
-            }
-
-            tbody, thead {
-                &:first-child {
-                    tr {
-                        &:first-child {
-                            td, th {
-                                border-top: @PtGridlist-Cell-SpaceBorder;
-
-                                &:first-child {
-                                    border: none;
-                                }
-                            }
-                        }
-                    }
+                &:not(:last-child) {
+                    margin-bottom: @CmIndent-XXSmall;
                 }
             }
 

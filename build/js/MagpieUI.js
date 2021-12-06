@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.21 (2021-11-23 18:08) ************ */
+/*! ************ MagpieUI v3.40.22 (2021-12-06 09:44) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.21',
+        '_version' : '3.40.22',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -18633,6 +18633,7 @@ cm.define('Com.Gridlist', {
         'childsBy' : false,                                         // Render child rows after parent, (WIP - doesn't work checking / uncheking rows and statuses for now)
 
         // Visibility
+        'adaptive' : false,
         'showCounter' : false,
         'showBulkActions' : true,
         'showTitle' : false,
@@ -18696,7 +18697,8 @@ cm.define('Com.Gridlist', {
         'Com.Toolbar' : {
             'embedStructure' : 'append'
         },
-        'Com.Menu' : {
+        'menuConstructor' : 'Com.Menu',
+        'menuParams' : {
             'left' : '-(selfWidth-targetWidth)'
         }
     },
@@ -18969,6 +18971,9 @@ function(params){
                 )
             )
         );
+        if(that.params['adaptive']){
+            cm.addClass(nodes['container'], 'is-adaptive');
+        }
         // Render Table Title
         cm.forEach(that.params['cols'], function(item, i){
             renderTitleItem(item, i, nodes['title']);
@@ -19006,7 +19011,10 @@ function(params){
                 that.nodes['content'] = cm.node('tbody')
             )
         );
-        if(!that.params['divideTableHeader']) {
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['table'], 'is-adaptive');
+        }
+        if(!that.params['divideTableHeader']){
             // Render Table Title
             cm.forEach(that.params['cols'], function(item, i){
                 renderTitleItem(item, i, that.nodes['title']);
@@ -19080,7 +19088,8 @@ function(params){
             'sort' : that.params['sort'],   // Sort this column or not
             'sortKey' : '',                 // Sort key
             'filterKey' : null,
-            'class' : '',		                // Icon css class, for type="icon"
+            'classes' : [],                 // Cell css class
+            'class' : '',		                // Item css class
             'target' : '_blank',            // Link target, for type="url"
             'rel' : '',                     // Link rel, for type="url"
             'textOverflow' : null,          // Overflow long text to single line
@@ -19094,74 +19103,78 @@ function(params){
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
         }, item);
+
         // Validate
         item['nodes'] = {};
         item['showTitle'] = cm.isBoolean(item['showTitle'])? item['showTitle'] : that.params['showTitle'];
         item['textOverflow'] = cm.isBoolean(item['textOverflow'])? item['textOverflow'] : that.params['textOverflow'];
-        // Check access
-        if(item['access']){
-            // Structure
-            item['nodes']['container'] = cm.node('th',
-                item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
-            );
-            // Set column width
-            if(/%|px|auto/.test(item['width'])){
-                item['nodes']['container'].style.width = item['width'];
-            }else{
-                item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
-            }
-            // Embed
-            cm.appendChild(item['nodes']['container'], container);
-            // Insert specific specified content in th
-            switch(item['type']){
-                case 'checkbox' :
-                    cm.addClass(item['nodes']['container'], 'control');
-                    item['nodes']['inner'].appendChild(
-                        item['nodes']['checkbox'] = cm.node('input', {'type' : 'checkbox', 'title' : that.lang('check_all')})
-                    );
-                    item['nodes']['checkbox'].checked = that.isCheckedAll;
-                    cm.addEvent(item['nodes']['checkbox'], 'click', function(){
-                        if(that.isCheckedAll){
-                            that.unCheckAll();
-                        }else{
-                            that.checkAll();
-                        }
-                    });
-                    that.nodes['checkbox'] = item['nodes']['checkbox'];
-                    break;
 
-                default:
-                    item['nodes']['inner'].appendChild(
-                        cm.node('span', item['title'])
-                    );
-                    break;
-            }
-            // Render sort arrow and set function on click to th
-            if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
-                setTableHeaderItemSort(item, i);
-                cm.addEvent(item['nodes']['inner'], 'click', function(){
-                    that.sortBy = !cm.isEmpty(item['sortKey']) ? item['sortKey'] : item['key'];
-                    that.orderBy = that.orderBy === 'ASC' ? 'DESC' : 'ASC';
-                    if(!that.isAjax){
-                        arraySort();
-                    }
-                    if(that.params['divideTableHeader']){
-                        cm.forEach(that.params['cols'], setTableHeaderItemSort);
-                    }
-                    if(that.params['pagination']){
-                        that.components['pagination'].rebuild();
+        // Check access
+        if(!item['access']){
+            return;
+        }
+
+        // Structure
+        item['nodes']['container'] = cm.node('th', {'classes' : item['classes']},
+            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
+        );
+        // Set column width
+        if(/%|px|auto/.test(item['width'])){
+            item['nodes']['container'].style.width = item['width'];
+        }else{
+            item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
+        }
+        // Embed
+        cm.appendChild(item['nodes']['container'], container);
+        // Insert specific specified content in th
+        switch(item['type']){
+            case 'checkbox' :
+                cm.addClass(item['nodes']['container'], 'control');
+                item['nodes']['inner'].appendChild(
+                    item['nodes']['checkbox'] = cm.node('input', {'type' : 'checkbox', 'title' : that.lang('check_all')})
+                );
+                item['nodes']['checkbox'].checked = that.isCheckedAll;
+                cm.addEvent(item['nodes']['checkbox'], 'click', function(){
+                    if(that.isCheckedAll){
+                        that.unCheckAll();
                     }else{
-                        renderTable(1, that.params['data'], that.nodes['container']);
+                        that.checkAll();
                     }
                 });
-            }
-            // Trigger event
-            that.triggerEvent('onRenderTitleItem', {
-                'nodes' : item['nodes'],
-                'item' : item,
-                'i' : i
+                that.nodes['checkbox'] = item['nodes']['checkbox'];
+                break;
+
+            default:
+                item['nodes']['inner'].appendChild(
+                    cm.node('span', item['title'])
+                );
+                break;
+        }
+        // Render sort arrow and set function on click to th
+        if(item['sort'] && !/icon|empty|actions|links|checkbox/.test(item['type'])){
+            setTableHeaderItemSort(item, i);
+            cm.addEvent(item['nodes']['inner'], 'click', function(){
+                that.sortBy = !cm.isEmpty(item['sortKey']) ? item['sortKey'] : item['key'];
+                that.orderBy = that.orderBy === 'ASC' ? 'DESC' : 'ASC';
+                if(!that.isAjax){
+                    arraySort();
+                }
+                if(that.params['divideTableHeader']){
+                    cm.forEach(that.params['cols'], setTableHeaderItemSort);
+                }
+                if(that.params['pagination']){
+                    that.components['pagination'].rebuild();
+                }else{
+                    renderTable(1, that.params['data'], that.nodes['container']);
+                }
             });
         }
+        // Trigger event
+        that.triggerEvent('onRenderTitleItem', {
+            'nodes' : item['nodes'],
+            'item' : item,
+            'i' : i
+        });
     };
 
     var setTableHeaderItemSort = function(item, i){
@@ -19254,93 +19267,98 @@ function(params){
         var item = {
             'nodes' : {}
         };
+
         // Check access
-        if(config['access']){
-            item['data'] = cm.objectPath(config['key'], row['data']);
-            item['text'] = cm.isEmpty(item['data'])? '' : item['data'];
-            item['title']= cm.isEmpty(config['titleText'])? item['text'] : config['titleText'];
-            // Structure
-            row['nodes']['container'].appendChild(
-                item['nodes']['container'] = cm.node('td')
-            );
-            // Text overflow
-            if(config['textOverflow']){
-                item['nodes']['inner'] = cm.node('div', {'class' : 'inner'});
-                item['nodes']['container'].appendChild(item['nodes']['inner']);
+        if(!config['access']){
+            return item;
+        }
+
+        // Validate
+        item['data'] = cm.objectPath(config['key'], row['data']);
+        item['text'] = cm.isEmpty(item['data'])? '' : item['data'];
+        item['title']= cm.isEmpty(config['titleText'])? item['text'] : config['titleText'];
+
+        // Structure
+        row['nodes']['container'].appendChild(
+            item['nodes']['container'] = cm.node('td', {'classes' : config['classes']})
+        );
+        // Text overflow
+        if(config['textOverflow']){
+            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'});
+            item['nodes']['container'].appendChild(item['nodes']['inner']);
+        }else{
+            item['nodes']['inner'] = item['nodes']['container'];
+        }
+        // Insert value by type
+        switch(config['type']){
+            case 'number' :
+                renderCellNumber(config, row, item);
+                break;
+
+            case 'date' :
+                renderCellDate(config, row, item);
+                break;
+
+            case 'icon' :
+                renderCellIcon(config, row, item);
+                break;
+
+            case 'url' :
+                renderCellURL(config, row, item);
+                break;
+
+            case 'checkbox' :
+                renderCellCheckbox(config, row, item);
+                break;
+
+            case 'links':
+                renderCellLinks(config, row, item);
+                break;
+
+            case 'actions':
+                renderCellActions(config, row, item);
+                break;
+
+            case 'empty' :
+                break;
+
+            default :
+                renderCellDefault(config, row, item);
+                break;
+        }
+        // Statuses
+        if(row['status']){
+            setRowStatus(row, row['status']);
+        }
+        // onHover Title
+        if(config['showTitle']){
+            if(item['nodes']['node']){
+                item['nodes']['node'].title = item['title'];
             }else{
-                item['nodes']['inner'] = item['nodes']['container'];
+                item['nodes']['inner'].title = item['title'];
             }
-            // Insert value by type
-            switch(config['type']){
-                case 'number' :
-                    renderCellNumber(config, row, item);
-                    break;
-
-                case 'date' :
-                    renderCellDate(config, row, item);
-                    break;
-
-                case 'icon' :
-                    renderCellIcon(config, row, item);
-                    break;
-
-                case 'url' :
-                    renderCellURL(config, row, item);
-                    break;
-
-                case 'checkbox' :
-                    renderCellCheckbox(config, row, item);
-                    break;
-
-                case 'links':
-                    renderCellLinks(config, row, item);
-                    break;
-
-                case 'actions':
-                    renderCellActions(config, row, item);
-                    break;
-
-                case 'empty' :
-                    break;
-
-                default :
-                    renderCellDefault(config, row, item);
-                    break;
-            }
-            // Statuses
-            if(row['status']){
-                setRowStatus(row, row['status']);
-            }
-            // onHover Title
-            if(config['showTitle']){
-                if(item['nodes']['node']){
-                    item['nodes']['node'].title = item['title'];
-                }else{
-                    item['nodes']['inner'].title = item['title'];
-                }
-            }
-            // onClick handler
-            if(cm.isFunction(config['onClick'])){
-                cm.addEvent(item['nodes']['node'] || item['nodes']['inner'], 'click', function(e){
-                    config['preventDefault'] && cm.preventDefault(e);
-                    // Column onClick event
-                    config['onClick'](that, {
-                        'nodes' : item['nodes'],
-                        'col' : config,
-                        'row' : row,
-                        'cell' : item
-                    });
-                });
-            }
-            // onCellRender handler
-            if(cm.isFunction(config['onRender'])){
-                config['onRender'](that, {
+        }
+        // onClick handler
+        if(cm.isFunction(config['onClick'])){
+            cm.addEvent(item['nodes']['node'] || item['nodes']['inner'], 'click', function(e){
+                config['preventDefault'] && cm.preventDefault(e);
+                // Column onClick event
+                config['onClick'](that, {
                     'nodes' : item['nodes'],
                     'col' : config,
                     'row' : row,
                     'cell' : item
                 });
-            }
+            });
+        }
+        // onCellRender handler
+        if(cm.isFunction(config['onRender'])){
+            config['onRender'](that, {
+                'nodes' : item['nodes'],
+                'col' : config,
+                'row' : row,
+                'cell' : item
+            });
         }
         return item;
     };
@@ -19434,9 +19452,9 @@ function(params){
         if(item['nodes']['actions'].length){
             cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
             // Render menu component
-            cm.getConstructor('Com.Menu', function(classConstructor, className){
+            cm.getConstructor(that.params['menuConstructor'], function(classConstructor){
                 item['component'] = new classConstructor(
-                    cm.merge(that.params[className], {
+                    cm.merge(that.params['menuParams'], {
                         'node' : item['nodes']['componentNode']
                     })
                 );
@@ -20413,13 +20431,17 @@ cm.define('Com.Menu', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'event' : 'hover',
         'top' : 'targetHeight',
         'left' : 0,
+        'adaptiveFrom' : null,
+        'adaptiveTop' : null,
+        'adaptiveLeft' : null,
         'minWidth' : 'targetWidth',
-        'Com.Tooltip' : {
+        'tooltipConstructor' : 'Com.Tooltip',
+        'tooltipParams' : {
             'className' : 'com__menu-tooltip',
             'targetEvent' : 'hover',
             'hideOnReClick' : true,
@@ -20449,17 +20471,20 @@ function(params){
     };
 
     var validateParams = function(){
-        that.params['Com.Tooltip']['targetEvent'] = that.params['event'];
-        that.params['Com.Tooltip']['top'] = that.params['top'];
-        that.params['Com.Tooltip']['left'] = that.params['left'];
-        that.params['Com.Tooltip']['minWidth'] = that.params['minWidth'];
+        that.params['tooltipParams']['targetEvent'] = that.params['event'];
+        that.params['tooltipParams']['minWidth'] = that.params['minWidth'];
+        that.params['tooltipParams']['top'] = that.params['top'];
+        that.params['tooltipParams']['left'] = that.params['left'];
+        that.params['tooltipParams']['adaptiveFrom'] = that.params['adaptiveFrom'];
+        that.params['tooltipParams']['adaptiveTop'] = that.params['adaptiveTop'];
+        that.params['tooltipParams']['adaptiveLeft'] = that.params['adaptiveLeft'];
     };
 
     var render = function(){
         // Tooltip
-        cm.getConstructor('Com.Tooltip', function(classConstructor){
+        cm.getConstructor(that.params['tooltipConstructor'], function(classConstructor){
             that.components['tooltip'] = new classConstructor(
-                cm.merge(that.params['Com.Tooltip'], {
+                cm.merge(that.params['tooltipParams'], {
                     'target' : that.nodes['container'] || that.nodes['button'],
                     'content' : that.nodes['target'],
                     'events' : {
@@ -20491,6 +20516,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.MultiField', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -27559,6 +27585,7 @@ function(params){
 
     init();
 });
+
 // This file must be deleted in future
 
 Com['UA'] = {

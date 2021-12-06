@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.21 (2021-11-23 18:08) ************ */
+/*! ************ MagpieUI v3.40.22 (2021-12-06 09:44) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.0
@@ -4371,8 +4371,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.21');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.21') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.21') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.21') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.21#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.22');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.22') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.22') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.22') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.22#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11934,6 +11934,15 @@ ul.pt__field__hint li:before {
   html.is-adaptive .pt__gridlist.is-adaptive tr:active td {
     background-color: hsl(0, 0%, 91%);
   }
+  html.is-adaptive .pt__gridlist.is-adaptive thead,
+  html.is-adaptive .pt__gridlist.is-adaptive tbody,
+  html.is-adaptive .pt__gridlist.is-adaptive tr,
+  html.is-adaptive .pt__gridlist.is-adaptive td {
+    display: block;
+  }
+  html.is-adaptive .pt__gridlist.is-adaptive thead {
+    margin-bottom: 8px;
+  }
   html.is-adaptive .pt__gridlist.is-adaptive tr td,
   html.is-adaptive .pt__gridlist.is-adaptive tr th {
     width: auto !important;
@@ -11942,21 +11951,8 @@ ul.pt__field__hint li:before {
   html.is-adaptive .pt__gridlist.is-adaptive tr th {
     text-align: left !important;
   }
-  html.is-adaptive .pt__gridlist.is-adaptive tr td:first-child,
-  html.is-adaptive .pt__gridlist.is-adaptive tr th:first-child {
-    border-top: 8px solid transparent;
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child td,
-  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child td,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child th,
-  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child th {
-    border-top: 1px solid transparent;
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child td:first-child,
-  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child td:first-child,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody:first-child tr:first-child th:first-child,
-  html.is-adaptive .pt__gridlist.is-adaptive thead:first-child tr:first-child th:first-child {
-    border: none;
+  html.is-adaptive .pt__gridlist.is-adaptive tr:not(:last-child) {
+    margin-bottom: 8px;
   }
   html.is-adaptive .pt__gridlist.is-adaptive > .com__columns__chassis {
     display: none;
