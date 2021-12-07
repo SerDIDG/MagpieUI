@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.22 (2021-12-06 09:44) ************ */
+/*! ************ MagpieUI v3.40.23 (2021-12-07 04:27) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.22',
+        '_version' : '3.40.23',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -17576,7 +17576,6 @@ cm.define('Com.Gallery', {
         'showCaption' : true,
         'showArrowTitles' : false,
         'autoplay' : true,
-        'zoom' : true,
         'types' : {
             'image' : 'jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff'
         },
@@ -17585,7 +17584,13 @@ cm.define('Com.Gallery', {
             'next' : 'icon default next',
             'zoom' : 'icon cm-i default zoom'
         },
-        'Com.Zoom' : {
+
+        'itemConstructor' : 'Com.GalleryItem',
+        'itemParams' : {},
+
+        'zoom' : true,
+        'zoomConstructor' : 'Com.Zoom',
+        'zoomParams' : {
             'autoOpen' : false,
             'removeOnClose' : true,
             'documentScroll' : true
@@ -17594,14 +17599,15 @@ cm.define('Com.Gallery', {
 },
 function(params){
     var that = this,
-        items = [],
         anim = {};
 
     that.components = {};
 
-    that.current = null;
-    that.previous = null;
+    that.currentItem = null;
+    that.previousItem = null;
+    that.temporaryItem = null;
     that.isProcess = false;
+    that.items = [];
 
     that.nodes = {
         'items' : []
@@ -17651,8 +17657,8 @@ function(params){
         }
         // Zoom
         if(that.params['zoom']){
-            cm.getConstructor('Com.Zoom', function(classConstructor){
-                that.components['zoom'] = new classConstructor(that.params['Com.Zoom']);
+            cm.getConstructor(that.params.zoomConstructor, function(classConstructor){
+                that.components['zoom'] = new classConstructor(that.params.zoomParams);
                 cm.addEvent(that.nodes['zoom'], 'click', zoom);
             });
         }else{
@@ -17668,7 +17674,7 @@ function(params){
     };
 
     var afterRender = function(){
-        if(items.length < 2){
+        if(that.items.length < 2){
             that.nodes['next'].style.display = 'none';
             that.nodes['prev'].style.display = 'none';
         }else{
@@ -17677,189 +17683,155 @@ function(params){
         }
     };
 
-    var processItem = function(item){
-        item = cm.merge({
-            'index' : items.length,
-            'isLoad' : false,
-            'type' : null,        // image | iframe
-            'nodes' : {},
-            'src' : '',
-            'title' : '',
-            'info' : null,
-            'mime' : ''
-        }, item);
-        // Check type
-        try{
-            item['_url'] = new URL(item['src']);
-        }catch(e){
-        }
-        item['_regexp'] = new RegExp('\\.(' + that.params['types']['image'] + ')$', 'gi');
-        if(
-            item['_regexp'].test(item['src'])
-            || (item['_url'] && item['_regexp'].test(item['_url'].pathname))
-            || /^data:image/gi.test(item['src'])
-            || /^image/gi.test(item['mime'])
-            || item['type'] === 'image'
-        ){
-            item['type'] = 'image';
-        }else{
-            item['type'] = 'iframe';
-        }
-        // Structure
-        if(!item['link']){
-            item['link'] = cm.node('a');
-        }
-        item['nodes']['container'] = cm.Node('div', {'class' : 'pt__image is-centered'},
-            item['nodes']['inner'] = cm.Node('div', {'class' : 'inner'})
-        );
-        // Render by type
-        if(item['type'] === 'image'){
-            item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('img', {'class' : 'descr', 'alt' : item['title'], 'title' : item['title']})
+    var processItem = function(params){
+        params = cm.merge(that.params.itemParams, params);
+
+        cm.getConstructor(that.params.itemConstructor, function(classConstructor){
+            var item = new classConstructor(
+                cm.merge(params, {
+                    index: that.items.length,
+                    types: that.params.types,
+                    showCaption: that.params.showCaption,
+                    events: {
+                        onClick: function(item){
+                            set(item.getParams('index'));
+                        },
+                        onLoad: function(item){
+                            setItem(item);
+                        },
+                        onError: function(item){
+                            setItem(item);
+                        }
+                    },
+                })
             );
-        }else{
-            item['nodes']['inner'].appendChild(
-                item['nodes']['content'] = cm.Node('iframe', {'class' : 'descr', 'allowfullscreen' : true})
-            );
-        }
-        // Caption
-        if(that.params['showCaption'] && !cm.isEmpty(item['title'] && item['type'] === 'image')){
-            item['nodes']['inner'].appendChild(
-                cm.Node('div', {'class' : 'title'},
-                    cm.Node('div', {'class' : 'inner'}, item['title'])
-                )
-            );
-        }
-        // Init animation
-        item['anim'] = new cm.Animation(item['nodes']['container']);
-        // Set image on thumb click
-        cm.addEvent(item['link'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
-            set(item['index']);
-        }, true, true);
-        // Push item to array
-        items.push(item);
+            that.items.push(item);
+        });
     };
 
     var set = function(i){
-        var item, itemOld;
-        if(!that.isProcess){
+        if (!that.isProcess) {
             that.isProcess = true;
-            // Get item
-            item = items[i];
-            itemOld = items[that.current];
+
+            // Set temporary item
+            var previous = that.currentItem;
+            var current = that.items[i];
+            that.temporaryItem = current;
+
             // API onSet
             that.triggerEvent('onSet', {
-                'current' : item,
-                'previous' : itemOld
+                'current' : current.getParams(),
+                'previous' : previous ? previous.getParams() : null
             });
-            // If current active item not equal new item - process with new item, else redraw window alignment and dimensions
-            if(i !== that.current){
+
+            if (current !== previous) {
                 // API onSet
                 that.triggerEvent('onChange', {
-                    'current' : item,
-                    'previous' : itemOld
+                    'current' : current.getParams(),
+                    'previous' : previous ? previous.getParams() : null
                 });
-                // Check type
-                if(item['type'] === 'image'){
-                    setItemImage(i, item, itemOld);
-                }else{
-                    setItemIframe(i, item, itemOld);
+                // Set by type
+                if (current.getParams('type') === 'image') {
+                    setItemImage(current);
+                } else {
+                    setItemIframe(current);
                 }
-            }else{
+            } else {
                 that.isProcess = false;
+                current.appendTo(that.nodes.holder);
             }
         }
     };
 
-    var setItemImage = function(i, item, itemOld){
-        cm.replaceClass(that.nodes['bar'], 'is-partial', 'is-full');
-        if(!item['isLoad']){
-            setLoader(i, item, itemOld);
+    var setItemImage = function(item){
+        cm.replaceClass(that.nodes.bar, 'is-partial', 'is-full');
+        if(item.isLoaded()){
+            setItem(item);
         }else{
-            setItem(i, item, itemOld);
+            setLoader(item);
         }
     };
 
-    var setItemIframe = function(i, item, itemOld){
-        cm.replaceClass(that.nodes['bar'], 'is-full', 'is-partial');
-        that.nodes['holder'].appendChild(item['nodes']['container']);
-        setLoader(i, item, itemOld);
+    var setItemIframe = function(item){
+        cm.replaceClass(that.nodes.bar, 'is-full', 'is-partial');
+        item.appendTo(that.nodes.holder);
+        setLoader(item);
     };
 
-    var setLoader = function(i, item, itemOld){
-        that.nodes['loader'].style.display = 'block';
-        anim['loader'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : that.params['duration']});
-        // Add image load event and src
-        cm.addEvent(item['nodes']['content'], 'load', function(){
-            item['isLoad'] = true;
-            // Hide loader
-            removeLoader();
-            // Set and show item
-            setItem(i, item, itemOld);
-        });
-        cm.addEvent(item['nodes']['content'], 'error', function(){
-            item['isLoad'] = false;
-            // Hide loader
-            removeLoader();
-            // Set and show item
-            setItem(i, item, itemOld);
-        });
-        item['nodes']['content'].src = item['src'];
+    var setLoader = function(item){
+        that.nodes.loader.style.display = 'block';
+        anim.loader.go({style: {opacity: 1}, anim: 'smooth', duration: that.params.duration});
+        if (item) {
+            item.load();
+        }
     };
 
-    var removeLoader = function(){
-        anim['loader'].go({'style' : {'opacity' : 0}, 'anim' : 'smooth', 'duration' : that.params['duration'], 'onStop' : function(){
-            that.nodes['loader'].style.display = 'none';
+    var removeLoader = function(item){
+        anim.loader.go({style: {opacity: 0}, anim: 'smooth', duration: that.params.duration, onStop: function(){
+            that.nodes.loader.style.display = 'none';
         }});
+        if (item) {
+            item.abort();
+        }
     };
 
-    var setItem = function(i, item, itemOld){
-        // Set new active
-        that.previous = that.current;
-        that.current = i;
-        // API onImageSetStart
-        that.triggerEvent('onItemLoad', item);
+    var setItem = function(item){
+        that.temporaryItem = null;
+        that.previousItem = that.currentItem;
+        that.currentItem = item;
+
+        that.triggerEvent('onItemLoad', that.currentItem.getParams());
+
         // Embed item content
-        if(itemOld){
-            itemOld['nodes']['container'].style.zIndex = 1;
-            item['nodes']['container'].style.zIndex = 2;
+        if(that.previousItem){
+            that.previousItem.setZIndex(1);
+            that.currentItem.setZIndex(2);
         }
-        if(item['type'] === 'image'){
-            that.nodes['holder'].appendChild(item['nodes']['container']);
+        if(that.currentItem.getParams('type') === 'image'){
+            that.currentItem.appendTo(that.nodes.holder);
         }
-        // Animate Slide
-        item['anim'].go({'style' : {'opacity' : 1}, 'anim' : 'smooth', 'duration' : that.params['duration'], 'onStop' : function(){
-            // Remove old item
-            if(itemOld){
-                cm.setOpacity(itemOld['nodes']['container'], 0);
-                cm.remove(itemOld['nodes']['container']);
-            }
-            // API onImageSet event
-            that.triggerEvent('onItemSet', item);
-            that.isProcess = false;
-        }});
+
+        // Remove loader
+        removeLoader();
+
+        // Animate item
+        that.currentItem
+            .getAnimation()
+            .go({style: {opacity: 1}, anim: 'smooth', duration: that.params.duration, onStop: function(){
+                if(!that.isProcess){
+                    return;
+                }
+                // Remove old item
+                if(that.previousItem){
+                    that.previousItem.setOpacity(0);
+                    that.previousItem.remove();
+                }
+
+                that.triggerEvent('onItemSet', that.currentItem.getParams());
+                that.isProcess = false;
+            }});
     };
 
     var next = function(){
-        set((that.current === items.length - 1)? 0 : that.current + 1);
+        var index = that.currentItem.getParams('index');
+        set((index === that.items.length - 1)? 0 : index + 1);
     };
 
     var prev = function(){
-        set((that.current === 0)? items.length - 1 : that.current - 1);
+        var index = that.currentItem.getParams('index');
+        set((index === 0)? that.items.length - 1 : index - 1);
     };
 
     var zoom = function(){
         that.components['zoom']
-            .set(items[that.current]['src'])
+            .set(that.currentItem.getParams('src'))
             .open();
     };
 
     /* ******* MAIN ******* */
 
     that.set = function(i){
-        if(!isNaN(i) && items[i]){
+        if(cm.isNumber(i) && that.items[i]){
             set(i);
         }
         return that;
@@ -17876,21 +17848,27 @@ function(params){
     };
 
     that.getCount = function(){
-        return items.length;
+        return that.items.length;
     };
 
     that.stop = function(){
         that.isProcess = false;
+        if(that.temporaryItem){
+            that.temporaryItem.remove();
+        }
+        removeLoader(that.temporaryItem);
         return that;
     };
 
     that.clear = function(){
-        if(!cm.isEmpty(that.current) && items[that.current]){
-            cm.remove(items[that.current]['nodes']['container']);
+        that.stop();
+        if(that.currentItem){
+            that.currentItem.remove();
         }
-        that.current = null;
-        that.previous = null;
-        items = [];
+        that.currentItem = null;
+        that.previousItem = null;
+        that.temporaryItem = null;
+        that.items = [];
         return that;
     };
 
@@ -17933,6 +17911,220 @@ function(params){
     };
 
     init();
+});
+
+cm.define('Com.GalleryItem', {
+    extend: 'Com.AbstractController',
+    events: [
+        'onClick',
+        'onLoad',
+        'onError',
+        'onAbort'
+    ],
+    params: {
+        renderStructure: true,
+        embedStructureOnRender: false,
+        controllerEvents: true,
+
+        index: null,
+        type: null,        // image | iframe
+        src: null,
+        title: null,
+        info: null,
+        mime: null,
+        link: null,
+
+        types: {
+            image: null,
+        },
+        showCaption: false,
+    },
+},
+function() {
+    Com.AbstractController.apply(this, arguments);
+});
+
+cm.getConstructor('Com.GalleryItem', function(classConstructor, className, classProto, classInherit) {
+    classProto.onConstructStart = function() {
+        var that = this;
+        that.hasLoaded = false;
+        that.hasProcess = false;
+
+        // Binds
+        that.loadSuccessEventHanlder = that.loadSuccessEvent.bind(that);
+        that.loadErrorEventHanlder = that.loadErrorEvent.bind(that);
+    };
+
+    classProto.onValidateParams = function() {
+        var that = this;
+
+        // Get url
+        try{
+            that.params.url = new URL(that.params.src);
+        }catch(e){
+        }
+
+        // Check type
+        that.typeRegexp = new RegExp('\\.(' + that.params.types.image + ')$', 'gi');
+        if(
+            (that.params.src && that.typeRegexp.test(that.params.src)) ||
+            (that.params.url && that.typeRegexp.test(that.params.url.pathname)) ||
+            (that.params.src && /^data:image/gi.test(that.params.src)) ||
+            (that.params.mime && /^image/gi.test(that.params.mime)) ||
+            that.params.type === 'image'
+        ){
+            that.params.type = 'image';
+        }else{
+            that.params.type = 'iframe';
+        }
+    };
+
+    classProto.renderView = function() {
+        var that = this;
+
+        // Link node
+        if (cm.isNode(that.params.link)) {
+            that.nodes.link = that.params.link;
+        } else {
+            that.nodes.link = cm.node('a');
+        }
+
+        // Structure
+        that.nodes.container = cm.Node('div', {'classes': ['pt__image', 'is-centered']},
+            that.nodes.inner = cm.Node('div', {'classes': 'inner'})
+        );
+
+        // Render by type
+        if (that.params.type === 'image') {
+            that.nodes.content = cm.node('img', {'classes': 'descr', 'alt': that.params.title, 'title': that.params.title});
+        } else {
+            that.nodes.content = cm.node('iframe', {'classes': 'descr', 'allowfullscreen': true});
+        }
+        cm.appendChild(that.nodes.content, that.nodes.inner);
+
+        // Caption
+        if (that.params.showCaption && that.params.type === 'image' && !cm.isEmpty(that.params.title)) {
+            that.nodes.caption = cm.node('div', {'classes': 'title'},
+                cm.node('div', {'classes': 'inner'}, that.params.title)
+            );
+            cm.appendChild(that.nodes.caption, that.nodes.inner);
+        }
+    };
+
+    classProto.renderViewModel = function(){
+        var that = this;
+        classInherit.prototype.renderViewModel.apply(that, arguments);
+
+        // Set image on thumb click
+        cm.addEvent(that.nodes.link, 'click', that.linkClickEvent.bind(that), true, true);
+
+        // Init animation
+        that.components.animation = new cm.Animation(that.nodes.container);
+    };
+
+    /******* EVENTS *******/
+
+    classProto.linkClickEvent = function(e) {
+        var that = this;
+        cm.preventDefault(e);
+        that.triggerEvent('onClick');
+    };
+
+    classProto.loadSuccessEvent = function() {
+        var that = this;
+        if (!that.hasProcess) {
+            return that;
+        }
+
+        that.hasProcess = false;
+        that.hasLoaded = true;
+        that.triggerEvent('onLoad');
+    };
+
+    classProto.loadErrorEvent = function() {
+        var that = this;
+        if (!that.hasProcess) {
+            return that;
+        }
+
+        that.hasProcess = false;
+        that.hasLoaded = false;
+        that.triggerEvent('onError');
+    };
+
+    /******* PUBLIC *******/
+
+    classProto.load = function() {
+        var that = this;
+        if (that.hasProcess) {
+            return that;
+        }
+
+        that.hasProcess = true;
+        if (that.hasLoaded && that.params.types === 'image') {
+            that.loadSuccessEvent();
+        } else {
+            cm.addEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
+            cm.addEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
+            that.nodes.content.src = that.params.src;
+        }
+        return that;
+    };
+
+    classProto.abort = function() {
+        var that = this;
+        if (!that.hasProcess) {
+            return that;
+        }
+
+        that.hasProcess = false;
+        cm.removeEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
+        cm.removeEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
+        that.triggerEvent('onAbort');
+        return that;
+    };
+
+    classProto.remove = function() {
+        var that = this;
+        cm.remove(that.nodes.container);
+        return that;
+    };
+
+    classProto.appendTo = function(container, insertMethod) {
+        var that = this;
+        insertMethod = !cm.isUndefined(insertMethod) ? insertMethod : 'insertLast';
+        if (cm.isNode(container)) {
+            cm[insertMethod](that.nodes.container, container);
+        }
+        return that;
+    };
+
+    classProto.isLoaded = function() {
+        var that = this;
+        return that.hasLoaded;
+    };
+
+    classProto.getContainer = function() {
+        var that = this;
+        return that.nodes.container;
+    };
+
+    classProto.getAnimation = function() {
+        var that = this;
+        return that.components.animation
+    };
+
+    classProto.setZIndex = function(value) {
+        var that = this;
+        that.nodes.container.style.zIndex = value;
+        return that;
+    };
+
+    classProto.setOpacity = function(value) {
+        var that = this;
+        that.nodes.container.style.opacity = value;
+        return that;
+    };
 });
 
 cm.define('Com.GalleryLayout', {
