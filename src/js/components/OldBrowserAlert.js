@@ -60,19 +60,19 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__oldbrowser-alert'},
-            cm.Node('div', {'class' : 'b-descr'},
-                cm.Node('p', {'innerHTML' : that.lang('descr')})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__oldbrowser-alert'},
+            cm.node('div', {'class' : 'b-descr'},
+                cm.node('p', {'innerHTML' : that.lang('descr')})
             ),
-            cm.Node('ul', {'class' : 'b-browsers'},
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked chrome', 'title' : 'Google Chrome', 'href' : 'http://www.google.com/chrome/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked firefox', 'title' : 'Mozilla Firefox', 'href' : 'http://www.mozilla.com/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked safari', 'title' : 'Apple Safari', 'href' : 'http://www.apple.com/safari/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked msie', 'title' : 'Microsoft Internet Explorer', 'href' : 'http://ie.microsoft.com/', 'target' : '_blank'}))
+            cm.node('ul', {'class' : 'b-browsers'},
+                cm.node('li', cm.node('a', {'class' : 'icon linked chrome', 'title' : 'Google Chrome', 'href' : 'http://www.google.com/chrome/', 'target' : '_blank'})),
+                cm.node('li', cm.node('a', {'class' : 'icon linked firefox', 'title' : 'Mozilla Firefox', 'href' : 'http://www.mozilla.com/', 'target' : '_blank'})),
+                cm.node('li', cm.node('a', {'class' : 'icon linked safari', 'title' : 'Apple Safari', 'href' : 'http://www.apple.com/safari/', 'target' : '_blank'})),
+                cm.node('li', cm.node('a', {'class' : 'icon linked msie', 'title' : 'Microsoft Internet Explorer', 'href' : 'http://ie.microsoft.com/', 'target' : '_blank'}))
             ),
-            cm.Node('div', {'class' : 'form'},
-                cm.Node('div', {'class' : 'btn-wrap pull-center'},
-                    that.nodes['button'] = cm.Node('input', {'type' : 'button', 'value' : that.lang('continue')})
+            cm.node('div', {'class' : 'form'},
+                cm.node('div', {'class' : 'btn-wrap pull-center'},
+                    that.nodes['button'] = cm.node('input', {'type' : 'button', 'value' : that.lang('continue')})
                 )
             )
         );

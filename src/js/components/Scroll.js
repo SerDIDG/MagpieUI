@@ -1,7 +1,7 @@
 Com['Scroll'] = function(o){
     var that = this,
         config = cm.merge({
-            'node' : cm.Node('div'),
+            'node' : cm.node('div'),
             'step' : 15,
             'time' : 50,
             'duration' : 300,
@@ -14,11 +14,11 @@ Com['Scroll'] = function(o){
             'onScrollEnd' : []
         },
         nodes = {
-            'left' : cm.Node('div'),
-            'right' : cm.Node('div'),
-            'up' : cm.Node('div'),
-            'down' : cm.Node('div'),
-            'scroll' : cm.Node('div')
+            'left' : cm.node('div'),
+            'right' : cm.node('div'),
+            'up' : cm.node('div'),
+            'down' : cm.node('div'),
+            'scroll' : cm.node('div')
         },
         anim,
         animInterval,

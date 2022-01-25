@@ -109,20 +109,20 @@ function(params){
 
     var renderView = function(){
         /* *** STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
-            that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content'},
-                that.nodes['contentUL'] = cm.Node('ul')
+        that.nodes['container'] = cm.node('div', {'class' : 'com__tabset'},
+            that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
+                that.nodes['contentUL'] = cm.node('ul')
             )
         );
-        that.nodes['headerTitle'] = cm.Node('div', {'class' : 'com__tabset__head-title'},
-            that.nodes['headerTitleText'] = cm.Node('div', {'class' : 'com__tabset__head-text'}),
-            that.nodes['headerMenu'] = cm.Node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
-                that.nodes['headerMenuButton'] = cm.Node('div', {'class' : that.params['icons']['menu']}),
-                that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'pt__menu-dropdown'})
+        that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
+            that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
+            that.nodes['headerMenu'] = cm.node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
+                that.nodes['headerMenuButton'] = cm.node('div', {'class' : that.params['icons']['menu']}),
+                that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
             )
         );
-        that.nodes['headerTabs'] = cm.Node('div', {'class' : 'com__tabset__head-tabs'},
-            that.nodes['headerUL'] = cm.Node('ul')
+        that.nodes['headerTabs'] = cm.node('div', {'class' : 'com__tabset__head-tabs'},
+            that.nodes['headerUL'] = cm.node('ul')
         );
         if(that.params['adaptive']){
             cm.addClass(that.nodes['container'], 'is-adaptive');
@@ -193,7 +193,7 @@ function(params){
         item = cm.merge({
             'id' : '',
             'title' : '',
-            'content' : cm.Node('li'),
+            'content' : cm.node('li'),
             'image' : null,
             'isHide' : true,
             'constructor' : false,
@@ -225,8 +225,8 @@ function(params){
     var renderTabLink = function(tab, image){
         var item = {};
         // Structure
-        item['container'] = cm.Node('li',
-            item['a'] = cm.Node('a',
+        item['container'] = cm.node('li',
+            item['a'] = cm.node('a',
                 item['title'] = cm.node('div', {'class' : 'title'}, tab['title'])
             )
         );

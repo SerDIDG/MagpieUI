@@ -12,7 +12,7 @@ cm.define('Com.Draganddrop', {
         'onReplace'
     ],
     'params' : {
-        'container' : cm.Node('div'),
+        'container' : cm.node('div'),
         'chassisTag' : 'div',
         'draggableContainer' : 'document.body',      // HTML node | selfParent
         'scroll' : true,
@@ -76,7 +76,7 @@ function(params){
             anims['scroll'] = new cm.Animation(that.params['scrollNode']);
             // Render temporary area
             if(that.params['renderTemporaryAria']){
-                nodes['temporaryArea'] = cm.Node('div');
+                nodes['temporaryArea'] = cm.node('div');
                 initArea(nodes['temporaryArea'], {
                     'isTemporary' : true
                 });
@@ -646,7 +646,7 @@ function(params){
                     'opacity' : 0
                 };
             }else{
-                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
+                node = cm.wrap(cm.node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
@@ -713,7 +713,7 @@ function(params){
     };
 
     var renderChassis = function(){
-        var node = cm.Node(that.params['chassisTag'], {'class' : 'pt__dnd-chassis'});
+        var node = cm.node(that.params['chassisTag'], {'class' : 'pt__dnd-chassis'});
         return {
             'node' : node,
             'anim' : new cm.Animation(node),
@@ -982,7 +982,7 @@ function(params){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggable),
-                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
+                node = cm.wrap(cm.node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
                 anim = new cm.Animation(node);
             // Append new draggable into DOM
             cm.insertAfter(node, oldDraggableNode);

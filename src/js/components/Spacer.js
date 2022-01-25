@@ -18,7 +18,7 @@ cm.define('Com.Spacer', {
         'disableEditable'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'height' : 0,
         'minHeight' : 0,
@@ -59,20 +59,20 @@ function(params){
 
     var render = function(){
         // Chassis Structure
-        that.nodes['dragContainer'] = cm.Node('div', {'class' : 'com__spacer__chassis'},
-            that.nodes['drag'] = cm.Node('div', {'class' : 'pt__drag is-vertical'},
-                cm.Node('div', {'class' : 'line'}),
-                cm.Node('div', {'class' : 'drag'},
-                    cm.Node('div', {'class' : 'icon draggable'})
+        that.nodes['dragContainer'] = cm.node('div', {'class' : 'com__spacer__chassis'},
+            that.nodes['drag'] = cm.node('div', {'class' : 'pt__drag is-vertical'},
+                cm.node('div', {'class' : 'line'}),
+                cm.node('div', {'class' : 'drag'},
+                    cm.node('div', {'class' : 'icon draggable'})
                 )
             )
         );
         // Ruler Structure
-        that.nodes['rulerContainer'] = cm.Node('div', {'class' : 'com__spacer__ruler'},
-            that.nodes['ruler'] = cm.Node('div', {'class' : 'pt__ruler is-vertical is-small'},
-                cm.Node('div', {'class' : 'line line-top'}),
-                that.nodes['rulerCounter'] = cm.Node('div', {'class' : 'counter'}),
-                cm.Node('div', {'class' : 'line line-bottom'})
+        that.nodes['rulerContainer'] = cm.node('div', {'class' : 'com__spacer__ruler'},
+            that.nodes['ruler'] = cm.node('div', {'class' : 'pt__ruler is-vertical is-small'},
+                cm.node('div', {'class' : 'line line-top'}),
+                that.nodes['rulerCounter'] = cm.node('div', {'class' : 'counter'}),
+                cm.node('div', {'class' : 'line line-bottom'})
             )
         );
         // Embed

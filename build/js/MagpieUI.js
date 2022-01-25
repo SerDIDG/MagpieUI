@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.23 (2021-12-07 04:27) ************ */
+/*! ************ MagpieUI v3.40.24 (2022-01-25 21:27) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.23',
+        '_version' : '3.40.24',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -12733,16 +12733,16 @@ function(params){
     var render = function(){
         var weekday;
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__calendar'},
-            cm.Node('div', {'class' : 'selects'},
-                nodes['months'] = cm.Node('select', {'class' : 'select months'}),
-                nodes['years'] = cm.Node('select', {'class' : 'select years'})
+        nodes['container'] = cm.node('div', {'class' : 'com__calendar'},
+            cm.node('div', {'class' : 'selects'},
+                nodes['months'] = cm.node('select', {'class' : 'select months'}),
+                nodes['years'] = cm.node('select', {'class' : 'select years'})
             ),
-            cm.Node('table',
-                cm.Node('thead',
-                    nodes['days'] = cm.Node('tr')
+            cm.node('table',
+                cm.node('thead',
+                    nodes['days'] = cm.node('tr')
                 ),
-                nodes['dates'] = cm.Node('tbody')
+                nodes['dates'] = cm.node('tbody')
             )
         );
         // Add css class
@@ -12752,18 +12752,18 @@ function(params){
             weekday = i + that.params['startWeekDay'];
             weekday = weekday > 6? Math.abs(6 - (weekday - 1)) : weekday;
             nodes['days'].appendChild(
-                cm.Node('th', that.lang('daysAbbr')[weekday])
+                cm.node('th', that.lang('daysAbbr')[weekday])
             );
         });
         // Render selects options
         that.lang('months').forEach(function(item, i){
             nodes['months'].appendChild(
-                cm.Node('option', {'value' : i}, item)
+                cm.node('option', {'value' : i}, item)
             );
         });
         for(var i = that.params['endYear']; i >= that.params['startYear']; i--){
             nodes['years'].appendChild(
-                cm.Node('option', {'value' : i}, i)
+                cm.node('option', {'value' : i}, i)
             );
         }
         // Insert into DOM
@@ -12817,7 +12817,7 @@ function(params){
         var startWeekDay = current['startWeekDay'] - that.params['startWeekDay'],
             day = ((i - 1) * 7) + 1 - (startWeekDay > 0? startWeekDay - 7 : startWeekDay),
             tr = nodes['dates'].appendChild(
-                cm.Node('tr')
+                cm.node('tr')
             );
         cm.forEach(7, function(){
             renderCell(tr, day);
@@ -12828,24 +12828,24 @@ function(params){
     var renderCell = function(tr, day){
         var td, div, params;
         tr.appendChild(
-            td = cm.Node('td')
+            td = cm.node('td')
         );
         // Render day
         if(day <= 0){
             td.appendChild(
-                div = cm.Node('div', (previous['dayCount'] + day))
+                div = cm.node('div', (previous['dayCount'] + day))
             );
             cm.addClass(td, 'out');
             cm.addEvent(div, 'click', that.prevMonth);
         }else if(day > current['dayCount']){
             td.appendChild(
-                div = cm.Node('div', (day - current['dayCount']))
+                div = cm.node('div', (day - current['dayCount']))
             );
             cm.addClass(td, 'out');
             cm.addEvent(div, 'click', that.nextMonth);
         }else{
             td.appendChild(
-                div = cm.Node('div', day)
+                div = cm.node('div', day)
             );
             cm.addClass(td, 'in');
             params = {
@@ -13109,7 +13109,7 @@ cm.define('Com.CollapsibleLayout', {
         'onExpandRight'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'remember' : false
     }
 },
@@ -13117,10 +13117,10 @@ function(params){
     var that = this;
 
     that.nodes = {
-        'leftButton' : cm.Node('div'),
-        'leftContainer' : cm.Node('div'),
-        'rightButton': cm.Node('div'),
-        'rightContainer' : cm.Node('div')
+        'leftButton' : cm.node('div'),
+        'leftContainer' : cm.node('div'),
+        'rightButton': cm.node('div'),
+        'rightContainer' : cm.node('div')
     };
 
     that.isLeftCollapsed = false;
@@ -13250,6 +13250,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Collector', {
     'modules' : [
         'Params',
@@ -13637,9 +13638,9 @@ function(params){
 
     var renderStructure = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__columns'},
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['holder'] = cm.Node('div', {'class' : 'container'})
+        nodes['container'] = cm.node('div', {'class' : 'com__columns'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['holder'] = cm.node('div', {'class' : 'container'})
             )
         );
         // Render Columns
@@ -13655,7 +13656,7 @@ function(params){
     var collectColumn = function(container){
         var item = {
             'container' : container,
-            'inner' : cm.getByAttr('data-com__columns', 'column-inner', container)[0] || cm.Node('div'),
+            'inner' : cm.getByAttr('data-com__columns', 'column-inner', container)[0] || cm.node('div'),
             'width' : container.style.width
         };
         // Render ruler
@@ -13669,8 +13670,8 @@ function(params){
             'width' : '0%'
         }, item);
         // Structure
-        item['container'] = cm.Node('div', {'class' : 'com__column'},
-            item['inner'] = cm.Node('div', {'class' : 'inner'})
+        item['container'] = cm.node('div', {'class' : 'com__column'},
+            item['inner'] = cm.node('div', {'class' : 'inner'})
         );
         // Render ruler
         renderRuler(item);
@@ -13724,11 +13725,11 @@ function(params){
 
     var renderRuler = function(item){
         // Structure
-        item['rulerContainer'] = cm.Node('div', {'class' : 'com__columns__ruler'},
-            item['ruler'] = cm.Node('div', {'class' : 'pt__ruler is-horizontal is-small'},
-                cm.Node('div', {'class' : 'line line-top'}),
-                item['rulerCounter'] = cm.Node('div', {'class' : 'counter'}, item['width']),
-                cm.Node('div', {'class' : 'line line-bottom'})
+        item['rulerContainer'] = cm.node('div', {'class' : 'com__columns__ruler'},
+            item['ruler'] = cm.node('div', {'class' : 'pt__ruler is-horizontal is-small'},
+                cm.node('div', {'class' : 'line line-top'}),
+                item['rulerCounter'] = cm.node('div', {'class' : 'counter'}, item['width']),
+                cm.node('div', {'class' : 'line line-bottom'})
             )
         );
         // Embed
@@ -13766,11 +13767,11 @@ function(params){
             'index' : i
         };
         // Structure
-        chassis['container'] = cm.Node('div', {'class' : 'com__columns__chassis'},
-            chassis['drag'] = cm.Node('div', {'class' : 'pt__drag is-horizontal'},
-                cm.Node('div', {'class' : 'line'}),
-                cm.Node('div', {'class' : 'drag'},
-                    cm.Node('div', {'class' : 'icon draggable'})
+        chassis['container'] = cm.node('div', {'class' : 'com__columns__chassis'},
+            chassis['drag'] = cm.node('div', {'class' : 'pt__drag is-horizontal'},
+                cm.node('div', {'class' : 'line'}),
+                cm.node('div', {'class' : 'drag'},
+                    cm.node('div', {'class' : 'icon draggable'})
                 )
             )
         );
@@ -13974,6 +13975,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.ColumnsHelper', {
     'modules' : [
         'Params',
@@ -14455,10 +14457,10 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__dialog', 'role' : 'dialog'},
-            nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
-            nodes['window'] = cm.Node('div', {'class' : 'com__dialog__window window'},
-                nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__dialog', 'role' : 'dialog'},
+            nodes['bg'] = cm.node('div', {'class' : 'bg'}),
+            nodes['window'] = cm.node('div', {'class' : 'com__dialog__window window'},
+                nodes['windowInner'] = cm.node('div', {'class' : 'inner'})
             )
         );
         if(that.params['appendOnRender']){
@@ -14486,7 +14488,7 @@ function(params){
         // Render close button
         if(that.params['closeButtonOutside']){
             nodes['bg'].appendChild(
-                nodes['closeOutside'] = cm.Node('div', {
+                nodes['closeOutside'] = cm.node('div', {
                     'class' : that.params['icons']['closeOutside'],
                     'title' : that.lang('closeTitle'),
                     'role' : 'button'
@@ -14498,7 +14500,7 @@ function(params){
             cm.addClass(nodes['container'], 'has-close-inside');
             cm.addClass(nodes['window'], 'has-close-inside');
             nodes['window'].appendChild(
-                nodes['closeInside'] = cm.Node('div', {
+                nodes['closeInside'] = cm.node('div', {
                     'class' : that.params['icons']['closeInside'],
                     'title' : that.lang('closeTitle'),
                     'role' : 'button'
@@ -14513,7 +14515,7 @@ function(params){
         // Render help button
         if(that.params['showHelp']){
             nodes['window'].appendChild(
-                nodes['helpInside'] = cm.Node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'))
+                nodes['helpInside'] = cm.node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'))
             );
         }
         // Set title
@@ -14548,7 +14550,7 @@ function(params){
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
-            nodes['title'] = cm.Node('div', {'class' : 'title', 'role' : 'heading'});
+            nodes['title'] = cm.node('div', {'class' : 'title', 'role' : 'heading'});
             if(!cm.isEmpty(title)){
                 if(cm.isNode(title)){
                     cm.appendChild(title, nodes['title']);
@@ -14568,9 +14570,9 @@ function(params){
 
     var renderContent = function(node){
         if(!nodes['descr']){
-            nodes['descr'] = cm.Node('div', {'class' : 'descr'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
-                    nodes['inner'] = cm.Node('div', {'class' : 'inner com__dialog__inner'})
+            nodes['descr'] = cm.node('div', {'class' : 'descr'},
+                nodes['scroll'] = cm.node('div', {'class' : 'scroll'},
+                    nodes['inner'] = cm.node('div', {'class' : 'inner com__dialog__inner'})
                 )
             );
             if(!that.params['scroll']){
@@ -14597,7 +14599,7 @@ function(params){
             // Remove old nodes
             cm.remove(nodes['buttons']);
             // Render new nodes
-            nodes['buttons'] = cm.Node('div', {'class' : 'buttons'}, node);
+            nodes['buttons'] = cm.node('div', {'class' : 'buttons'}, node);
             cm.insertLast(nodes['buttons'], nodes['windowInner']);
         }
     };
@@ -15133,7 +15135,7 @@ cm.define('Com.Draganddrop', {
         'onReplace'
     ],
     'params' : {
-        'container' : cm.Node('div'),
+        'container' : cm.node('div'),
         'chassisTag' : 'div',
         'draggableContainer' : 'document.body',      // HTML node | selfParent
         'scroll' : true,
@@ -15197,7 +15199,7 @@ function(params){
             anims['scroll'] = new cm.Animation(that.params['scrollNode']);
             // Render temporary area
             if(that.params['renderTemporaryAria']){
-                nodes['temporaryArea'] = cm.Node('div');
+                nodes['temporaryArea'] = cm.node('div');
                 initArea(nodes['temporaryArea'], {
                     'isTemporary' : true
                 });
@@ -15767,7 +15769,7 @@ function(params){
                     'opacity' : 0
                 };
             }else{
-                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
+                node = cm.wrap(cm.node('div', {'class' : 'pt__dnd-removable'}), draggable['node']);
                 anim = new cm.Animation(node);
                 style = {
                     'height' : '0px',
@@ -15834,7 +15836,7 @@ function(params){
     };
 
     var renderChassis = function(){
-        var node = cm.Node(that.params['chassisTag'], {'class' : 'pt__dnd-chassis'});
+        var node = cm.node(that.params['chassisTag'], {'class' : 'pt__dnd-chassis'});
         return {
             'node' : node,
             'anim' : new cm.Animation(node),
@@ -16103,7 +16105,7 @@ function(params){
             // Find old draggable area and index in area
             var area = oldDraggable['area'],
                 index = area['items'].indexOf(oldDraggable),
-                node = cm.wrap(cm.Node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
+                node = cm.wrap(cm.node('div', {'class' : 'pt__dnd-removable', 'style' : 'height: 0px;'}), newDraggableNode),
                 anim = new cm.Animation(node);
             // Append new draggable into DOM
             cm.insertAfter(node, oldDraggableNode);
@@ -16180,6 +16182,7 @@ function(params){
     
     init();
 });
+
 cm.define('Com.Draggable', {
     'modules' : [
         'Params',
@@ -17270,7 +17273,7 @@ cm.define('Com.FormStepsLoader', {
         'onProcessEnd'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'animateDuration' : 'cm._config.animDuration',
         'showLoader' : true,
@@ -17552,6 +17555,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Gallery', {
     'modules' : [
         'Params',
@@ -17569,8 +17573,8 @@ cm.define('Com.Gallery', {
         'onItemSet'
     ],
     'params' : {
-        'container' : cm.Node('div'),
-        'node' : cm.Node('div'),
+        'container' : cm.node('div'),
+        'node' : cm.node('div'),
         'data' : [],
         'duration' : 500,
         'showCaption' : true,
@@ -17630,24 +17634,24 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__gallery'},
-            that.nodes['holder'] = cm.Node('div', {'class' : 'holder'}),
-            that.nodes['bar'] = cm.Node('div', {'class' : 'com__gallery-controls is-full'},
-                cm.Node('div', {'class' : 'inner'},
-                    that.nodes['prev'] = cm.Node('div', {'class' : 'bar-arrow prev'},
-                        cm.Node('div', {'class' : that.params['icons']['prev']})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__gallery'},
+            that.nodes['holder'] = cm.node('div', {'class' : 'holder'}),
+            that.nodes['bar'] = cm.node('div', {'class' : 'com__gallery-controls is-full'},
+                cm.node('div', {'class' : 'inner'},
+                    that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev'},
+                        cm.node('div', {'class' : that.params['icons']['prev']})
                     ),
-                    that.nodes['next'] = cm.Node('div', {'class' : 'bar-arrow next'},
-                        cm.Node('div', {'class' : that.params['icons']['next']})
+                    that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next'},
+                        cm.node('div', {'class' : that.params['icons']['next']})
                     ),
-                    that.nodes['zoom'] = cm.Node('div', {'class' : 'bar-zoom'},
-                        cm.Node('div', {'class' : that.params['icons']['zoom']})
+                    that.nodes['zoom'] = cm.node('div', {'class' : 'bar-zoom'},
+                        cm.node('div', {'class' : that.params['icons']['zoom']})
                     )
                 )
             ),
-            that.nodes['loader'] = cm.Node('div', {'class' : 'loader'},
-                cm.Node('div', {'class' : 'bg'}),
-                cm.Node('div', {'class' : 'icon small loader centered'})
+            that.nodes['loader'] = cm.node('div', {'class' : 'loader'},
+                cm.node('div', {'class' : 'bg'}),
+                cm.node('div', {'class' : 'icon small loader centered'})
             )
         );
         // Arrow titles
@@ -17990,8 +17994,8 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
 
         // Structure
-        that.nodes.container = cm.Node('div', {'classes': ['pt__image', 'is-centered']},
-            that.nodes.inner = cm.Node('div', {'classes': 'inner'})
+        that.nodes.container = cm.node('div', {'classes': ['pt__image', 'is-centered']},
+            that.nodes.inner = cm.node('div', {'classes': 'inner'})
         );
 
         // Render by type
@@ -18141,7 +18145,7 @@ cm.define('Com.GalleryLayout', {
         'onChange'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'barDirection' : 'horizontal',      // horizontal | vertical
         'hasBar' : true,
         'Com.Gallery' : {},
@@ -18157,9 +18161,9 @@ function(params){
         items = [];
     
     that.nodes = {
-        'inner' : cm.Node('div'),
-        'preview-inner' : cm.Node('div'),
-        'bar-inner' : cm.Node('div'),
+        'inner' : cm.node('div'),
+        'preview-inner' : cm.node('div'),
+        'bar-inner' : cm.node('div'),
         'bar-items' : []
     };
 
@@ -18231,6 +18235,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.GalleryPopup', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -18733,7 +18738,7 @@ cm.define('Com.Glossary', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'showTitle' : true,
         'Com.Tooltip' : {
             'className' : 'com__glossary__tooltip',
@@ -18746,9 +18751,9 @@ function(params){
 
     that.components = {};
     that.nodes = {
-        'container' : cm.Node('div'),
-        'title' : cm.Node('div'),
-        'content' : cm.Node('div')
+        'container' : cm.node('div'),
+        'title' : cm.node('div'),
+        'content' : cm.node('div')
     };
 
     var init = function(){
@@ -18775,6 +18780,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Gridlist', {
     'modules' : [
         'Params',
@@ -20210,7 +20216,7 @@ cm.define('Com.GridlistHelper', {
         'disableEditable'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'isEditing' : true,
         'customEvents' : true,
@@ -20327,6 +20333,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.HelpBubble', {
     'extend' : 'Com.AbstractController',
     'params' : {
@@ -20555,31 +20562,34 @@ cm.getConstructor('Com.ImageBox', function(classConstructor, className, classPro
 });
 
 cm.define('Com.ImagePreviewContainer', {
-    'extend' : 'Com.AbstractContainer',
-    'params' : {
-        'constructor' : 'Com.GalleryPopup',
-        'params' : {
-            'showCounter' : false,
-            'showTitle' : true
+    extend: 'Com.AbstractContainer',
+    params: {
+        constructor: 'Com.GalleryPopup',
+        params: {
+            showCounter: false,
+            showTitle: true,
         },
-        'placeholder' : false
-    }
+        placeholder: false,
+        types: {
+            video: /video\/(mp4|webm|ogg|avi)/,
+            embed: /application\/pdf/,
+        },
+    },
 },
-function(params){
+function() {
     var that = this;
     that.item = {};
-    // Call parent class construct
     Com.AbstractContainer.apply(that, arguments);
 });
 
-cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit){
-    classProto.onRenderControllerProcess = function(){
+cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit) {
+    classProto.onRenderControllerProcess = function() {
         var that = this;
         that.setController();
         return that;
     };
 
-    classProto.set = function(item){
+    classProto.set = function(item) {
         var that = this;
         that.clear();
         that.setData(item);
@@ -20587,26 +20597,32 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
         return that;
     };
 
-    classProto.clear = function(){
+    classProto.clear = function() {
         var that = this;
-        that.components['controller'] && that.components['controller'].clear();
+        that.components.controller && that.components.controller.clear();
         return that;
     };
 
-    classProto.setData = function(item){
+    classProto.setData = function(item) {
         var that = this;
         that.item = {
-            'type' : 'image',
-            'src' : item['url'],
-            'mime' : item['mime'] || item['type'],
-            'title' : item['name']
+            type: 'image',
+            src: item.url,
+            mime: item.mime || item.type,
+            title: item.name,
         };
+        if (
+            !cm.isEmpty(that.item.mime) &&
+            (that.params.types.embed.test(that.item.mime) || that.params.types.video.test(that.item.mime))
+        ) {
+            that.item.type = 'iframe';
+        }
         return that;
     };
 
-    classProto.setController = function(){
+    classProto.setController = function() {
         var that = this;
-        that.components['controller'] && that.components['controller'].add(that.item);
+        that.components.controller && that.components.controller.add(that.item);
         return that;
     };
 });
@@ -20646,8 +20662,8 @@ function(params){
     var that = this;
 
     that.nodes = {
-        'button' : cm.Node('div'),
-        'target' : cm.Node('div')
+        'button' : cm.node('div'),
+        'target' : cm.node('div')
     };
     that.components = {};
 
@@ -21565,19 +21581,19 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__oldbrowser-alert'},
-            cm.Node('div', {'class' : 'b-descr'},
-                cm.Node('p', {'innerHTML' : that.lang('descr')})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__oldbrowser-alert'},
+            cm.node('div', {'class' : 'b-descr'},
+                cm.node('p', {'innerHTML' : that.lang('descr')})
             ),
-            cm.Node('ul', {'class' : 'b-browsers'},
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked chrome', 'title' : 'Google Chrome', 'href' : 'http://www.google.com/chrome/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked firefox', 'title' : 'Mozilla Firefox', 'href' : 'http://www.mozilla.com/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked safari', 'title' : 'Apple Safari', 'href' : 'http://www.apple.com/safari/', 'target' : '_blank'})),
-                cm.Node('li', cm.Node('a', {'class' : 'icon linked msie', 'title' : 'Microsoft Internet Explorer', 'href' : 'http://ie.microsoft.com/', 'target' : '_blank'}))
+            cm.node('ul', {'class' : 'b-browsers'},
+                cm.node('li', cm.node('a', {'class' : 'icon linked chrome', 'title' : 'Google Chrome', 'href' : 'http://www.google.com/chrome/', 'target' : '_blank'})),
+                cm.node('li', cm.node('a', {'class' : 'icon linked firefox', 'title' : 'Mozilla Firefox', 'href' : 'http://www.mozilla.com/', 'target' : '_blank'})),
+                cm.node('li', cm.node('a', {'class' : 'icon linked safari', 'title' : 'Apple Safari', 'href' : 'http://www.apple.com/safari/', 'target' : '_blank'})),
+                cm.node('li', cm.node('a', {'class' : 'icon linked msie', 'title' : 'Microsoft Internet Explorer', 'href' : 'http://ie.microsoft.com/', 'target' : '_blank'}))
             ),
-            cm.Node('div', {'class' : 'form'},
-                cm.Node('div', {'class' : 'btn-wrap pull-center'},
-                    that.nodes['button'] = cm.Node('input', {'type' : 'button', 'value' : that.lang('continue')})
+            cm.node('div', {'class' : 'form'},
+                cm.node('div', {'class' : 'btn-wrap pull-center'},
+                    that.nodes['button'] = cm.node('input', {'type' : 'button', 'value' : that.lang('continue')})
                 )
             )
         );
@@ -21607,6 +21623,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Overlay', {
     'modules' : [
         'Params',
@@ -21682,9 +21699,9 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__overlay pt__overlay'},
-            that.nodes['spinner'] = cm.Node('div', {'class' : 'overlay__spinner'}),
-            that.nodes['content'] = cm.Node('div', {'class' : 'overlay__content'})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__overlay pt__overlay'},
+            that.nodes['spinner'] = cm.node('div', {'class' : 'overlay__spinner'}),
+            that.nodes['content'] = cm.node('div', {'class' : 'overlay__content'})
         );
         // CSS Class
         cm.addClass(that.nodes['container'], that.params['className']);
@@ -24184,7 +24201,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 Com['Scroll'] = function(o){
     var that = this,
         config = cm.merge({
-            'node' : cm.Node('div'),
+            'node' : cm.node('div'),
             'step' : 15,
             'time' : 50,
             'duration' : 300,
@@ -24197,11 +24214,11 @@ Com['Scroll'] = function(o){
             'onScrollEnd' : []
         },
         nodes = {
-            'left' : cm.Node('div'),
-            'right' : cm.Node('div'),
-            'up' : cm.Node('div'),
-            'down' : cm.Node('div'),
-            'scroll' : cm.Node('div')
+            'left' : cm.node('div'),
+            'right' : cm.node('div'),
+            'up' : cm.node('div'),
+            'down' : cm.node('div'),
+            'scroll' : cm.node('div')
         },
         anim,
         animInterval,
@@ -24344,6 +24361,7 @@ Com['Scroll'] = function(o){
 
     init();
 };
+
 cm.define('Com.Slider', {
     'modules' : [
         'Params',
@@ -24401,16 +24419,16 @@ function(params){
         minHeightDimension;
 
     that.nodes = {
-        'container' : cm.Node('div'),
-        'inner' : cm.Node('div'),
-        'slides' : cm.Node('div'),
-        'slidesInner' : cm.Node('ul'),
-        'next' : cm.Node('div'),
-        'prev' : cm.Node('div'),
-        'buttons' : cm.Node('ul'),
+        'container' : cm.node('div'),
+        'inner' : cm.node('div'),
+        'slides' : cm.node('div'),
+        'slidesInner' : cm.node('ul'),
+        'next' : cm.node('div'),
+        'prev' : cm.node('div'),
+        'buttons' : cm.node('ul'),
         'items' : [],
-        'layout-inner' : cm.Node('div'),
-        'bar-inner' : cm.Node('div'),
+        'layout-inner' : cm.node('div'),
+        'bar-inner' : cm.node('div'),
         'bar-items' : []
     };
 
@@ -24658,7 +24676,7 @@ function(params){
         item = cm.merge({
             'index' : that.items.length,
             'nodes' : {
-                'container' : cm.Node('li'),
+                'container' : cm.node('li'),
                 'inner' : null
             }
         }, item);
@@ -24695,7 +24713,7 @@ function(params){
     var renderButton = function(item){
         // Structure
         that.nodes['buttons'].appendChild(
-            item['nodes']['button'] = cm.Node('li')
+            item['nodes']['button'] = cm.node('li')
         );
         if(that.params['numericButtons']){
             item['nodes']['button'].innerHTML = item['index'] + 1;
@@ -25203,7 +25221,7 @@ cm.define('Com.Sortable', {
         'onSort'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'process' : true,
         'Com.Draganddrop' : {
             'draggableContainer' : 'selfParent',
@@ -25307,6 +25325,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.Spacer', {
     'modules' : [
         'Params',
@@ -25327,7 +25346,7 @@ cm.define('Com.Spacer', {
         'disableEditable'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'height' : 0,
         'minHeight' : 0,
@@ -25368,20 +25387,20 @@ function(params){
 
     var render = function(){
         // Chassis Structure
-        that.nodes['dragContainer'] = cm.Node('div', {'class' : 'com__spacer__chassis'},
-            that.nodes['drag'] = cm.Node('div', {'class' : 'pt__drag is-vertical'},
-                cm.Node('div', {'class' : 'line'}),
-                cm.Node('div', {'class' : 'drag'},
-                    cm.Node('div', {'class' : 'icon draggable'})
+        that.nodes['dragContainer'] = cm.node('div', {'class' : 'com__spacer__chassis'},
+            that.nodes['drag'] = cm.node('div', {'class' : 'pt__drag is-vertical'},
+                cm.node('div', {'class' : 'line'}),
+                cm.node('div', {'class' : 'drag'},
+                    cm.node('div', {'class' : 'icon draggable'})
                 )
             )
         );
         // Ruler Structure
-        that.nodes['rulerContainer'] = cm.Node('div', {'class' : 'com__spacer__ruler'},
-            that.nodes['ruler'] = cm.Node('div', {'class' : 'pt__ruler is-vertical is-small'},
-                cm.Node('div', {'class' : 'line line-top'}),
-                that.nodes['rulerCounter'] = cm.Node('div', {'class' : 'counter'}),
-                cm.Node('div', {'class' : 'line line-bottom'})
+        that.nodes['rulerContainer'] = cm.node('div', {'class' : 'com__spacer__ruler'},
+            that.nodes['ruler'] = cm.node('div', {'class' : 'pt__ruler is-vertical is-small'},
+                cm.node('div', {'class' : 'line line-top'}),
+                that.nodes['rulerCounter'] = cm.node('div', {'class' : 'counter'}),
+                cm.node('div', {'class' : 'line line-bottom'})
             )
         );
         // Embed
@@ -25511,6 +25530,7 @@ function(params){
 
     init();
 });
+
 /* ******* COMPONENTS: TABSET ******* */
 
 Com.Elements['Tabset'] = {};
@@ -25622,20 +25642,20 @@ function(params){
 
     var renderView = function(){
         /* *** STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tabset'},
-            that.nodes['content'] = cm.Node('div', {'class' : 'com__tabset__content'},
-                that.nodes['contentUL'] = cm.Node('ul')
+        that.nodes['container'] = cm.node('div', {'class' : 'com__tabset'},
+            that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
+                that.nodes['contentUL'] = cm.node('ul')
             )
         );
-        that.nodes['headerTitle'] = cm.Node('div', {'class' : 'com__tabset__head-title'},
-            that.nodes['headerTitleText'] = cm.Node('div', {'class' : 'com__tabset__head-text'}),
-            that.nodes['headerMenu'] = cm.Node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
-                that.nodes['headerMenuButton'] = cm.Node('div', {'class' : that.params['icons']['menu']}),
-                that.nodes['headerMenuUL'] = cm.Node('ul', {'class' : 'pt__menu-dropdown'})
+        that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
+            that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
+            that.nodes['headerMenu'] = cm.node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
+                that.nodes['headerMenuButton'] = cm.node('div', {'class' : that.params['icons']['menu']}),
+                that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
             )
         );
-        that.nodes['headerTabs'] = cm.Node('div', {'class' : 'com__tabset__head-tabs'},
-            that.nodes['headerUL'] = cm.Node('ul')
+        that.nodes['headerTabs'] = cm.node('div', {'class' : 'com__tabset__head-tabs'},
+            that.nodes['headerUL'] = cm.node('ul')
         );
         if(that.params['adaptive']){
             cm.addClass(that.nodes['container'], 'is-adaptive');
@@ -25706,7 +25726,7 @@ function(params){
         item = cm.merge({
             'id' : '',
             'title' : '',
-            'content' : cm.Node('li'),
+            'content' : cm.node('li'),
             'image' : null,
             'isHide' : true,
             'constructor' : false,
@@ -25738,8 +25758,8 @@ function(params){
     var renderTabLink = function(tab, image){
         var item = {};
         // Structure
-        item['container'] = cm.Node('li',
-            item['a'] = cm.Node('a',
+        item['container'] = cm.node('li',
+            item['a'] = cm.node('a',
                 item['title'] = cm.node('div', {'class' : 'title'}, tab['title'])
             )
         );
@@ -26328,8 +26348,8 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this,
             nodes = {};
         // Structure
-        nodes['container'] = cm.Node('li',
-            nodes['inner'] = cm.Node('div', item['content'])
+        nodes['container'] = cm.node('li',
+            nodes['inner'] = cm.node('div', item['content'])
         );
         return nodes;
     };
@@ -26338,8 +26358,8 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this,
             nodes = {};
         // Structure
-        nodes['container'] = cm.Node('li',
-            nodes['link'] = cm.Node('a',
+        nodes['container'] = cm.node('li',
+            nodes['link'] = cm.node('a',
                 nodes['title'] = cm.node('div', {'class' : 'title'}, item['title'])
             )
         );
@@ -26559,9 +26579,9 @@ function(params){
 
     that.nodes = {
         'container' : cm.node('div'),
-        'button': cm.Node('div'),
-        'target': cm.Node('div'),
-        'title': cm.Node('div')
+        'button': cm.node('div'),
+        'target': cm.node('div'),
+        'title': cm.node('div')
     };
     that.animations = {};
 
@@ -26592,13 +26612,13 @@ function(params){
         var storageCollapsed;
         // Render Structure
         if(that.params['renderStructure']){
-            that.nodes['container'] = cm.Node('dl', {'class' : 'com__togglebox'},
-                that.nodes['titleContainer'] = cm.Node('dt',
-                    that.nodes['button'] = cm.Node('span', {'class' : 'icon default linked'}),
-                    that.nodes['title'] = cm.Node('span', {'class' : 'title'}, that.params['title'])
+            that.nodes['container'] = cm.node('dl', {'class' : 'com__togglebox'},
+                that.nodes['titleContainer'] = cm.node('dt',
+                    that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
+                    that.nodes['title'] = cm.node('span', {'class' : 'title'}, that.params['title'])
                 ),
-                that.nodes['target'] = cm.Node('dd',
-                    that.nodes['content'] = cm.Node('div', {'class' : 'inner'})
+                that.nodes['target'] = cm.node('dd',
+                    that.nodes['content'] = cm.node('div', {'class' : 'inner'})
                 )
             );
             cm.addClass(that.nodes['container'], that.params['className']);
@@ -27288,9 +27308,9 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tooltip'},
-            that.nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__tooltip'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['content'] = cm.node('div', {'class' : 'scroll'})
             )
         );
         cm.isString(that.params['scroll']) && cm.addClass(that.nodes['content'], ['is', that.params['scroll']].join('-'));
@@ -27317,8 +27337,8 @@ function(params){
     var renderTitle = function(title){
         cm.remove(that.nodes['title']);
         if(!cm.isEmpty(title)){
-            that.nodes['title'] = cm.Node('div', {'class' : 'title'},
-                cm.Node(that.params['titleTag'], title)
+            that.nodes['title'] = cm.node('div', {'class' : 'title'},
+                cm.node(that.params['titleTag'], title)
             );
             cm.insertFirst(that.nodes['title'], that.nodes['inner']);
         }
@@ -28036,7 +28056,7 @@ cm.define('Com.Zoom', {
         'onCloseStart'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : 'document.body',
         'name' : '',
         'src' :'',
@@ -28200,6 +28220,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.MultipleInput', {
     'extend' : 'Com.AbstractController',
     'events' : [
@@ -30381,7 +30402,7 @@ cm.define('Com.CodeHighlight', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'language' : 'javascript',
         'lineNumbers' : true,
@@ -30465,6 +30486,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.ColorPicker', {
     'modules' : [
         'Params',
@@ -30564,14 +30586,14 @@ function(params){
 
     var render = function(){
         /* *** RENDER STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
-            that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
-                that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
-                that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__colorpicker'},
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            that.nodes['target'] = cm.node('div', {'class' : 'pt__input'},
+                that.nodes['input'] = cm.node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                that.nodes['icon'] = cm.node('div', {'class' : that.params['icons']['picker']})
             ),
-            that.nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                that.nodes['paletteContainer'] = cm.Node('div')
+            that.nodes['menuContainer'] = cm.node('div', {'class' : 'form'},
+                that.nodes['paletteContainer'] = cm.node('div')
             )
         );
         /* *** ATTRIBUTES *** */
@@ -30599,7 +30621,7 @@ function(params){
         if(that.params['showClearButton']){
             cm.addClass(that.nodes['container'], 'has-clear-button');
             that.nodes['container'].appendChild(
-                that.nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
+                that.nodes['clearButton'] = cm.node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
             );
         }
         /* *** INSERT INTO DOM *** */
@@ -30744,6 +30766,7 @@ function(params){
 
     init();
 });
+
 cm.define('Com.FieldContent', {
     'extend' : 'Com.AbstractInput',
     'params' : {
@@ -30918,14 +30941,14 @@ function(params){
 
     var render = function(){
         /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
-                nodes['input'] = cm.Node('input', {'type' : 'text'}),
-                nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
+        nodes['container'] = cm.node('div', {'class' : 'com__datepicker-input'},
+            nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            nodes['target'] = cm.node('div', {'class' : 'pt__input has-icon-right'},
+                nodes['input'] = cm.node('input', {'type' : 'text'}),
+                nodes['icon'] = cm.node('div', {'class' : that.params['icons']['datepicker']})
             ),
-            nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
+            nodes['menuContainer'] = cm.node('div', {'class' : 'form'},
+                nodes['calendarContainer'] = cm.node('div', {'class' : 'calendar-holder'})
             )
         );
         if(!cm.isEmpty(that.params['size'])){
@@ -30952,21 +30975,21 @@ function(params){
         if(that.params['showClearButton']){
             cm.addClass(nodes['container'], 'has-clear-button');
             nodes['container'].appendChild(
-                nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
+                nodes['clearButton'] = cm.node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
             );
         }
         // Today / Now Button
         if(that.params['showTodayButton']){
             nodes['menuContainer'].appendChild(
-                nodes['todayButton'] = cm.Node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
+                nodes['todayButton'] = cm.node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
             );
         }
         // Time Select
         if(that.params['isDateTime']){
-            nodes['timeHolder'] = cm.Node('div', {'class' : 'time-holder'},
-                cm.Node('dl', {'class' : 'form-box'},
-                    cm.Node('dt', that.lang('Time')),
-                    nodes['timeContainer'] = cm.Node('dd')
+            nodes['timeHolder'] = cm.node('div', {'class' : 'time-holder'},
+                cm.node('dl', {'class' : 'form-box'},
+                    cm.node('dt', that.lang('Time')),
+                    nodes['timeContainer'] = cm.node('dd')
                 )
             );
             cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);
@@ -31322,7 +31345,7 @@ cm.define('Com.DateSelect', {
     ],
     'params' : {
         'input' : null,                                 // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'name' : '',
         'embedStructure' : 'replace',
         'container' : null,
@@ -31393,11 +31416,11 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__dateselect'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            cm.Node('div', {'class' : 'pt__toolbar bottom'},
-                cm.Node('div', {'class' : 'inner clear'},
-                    nodes['fields'] = cm.Node('ul', {'class' : 'group'})
+        nodes['container'] = cm.node('div', {'class' : 'com__dateselect'},
+            nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            cm.node('div', {'class' : 'pt__toolbar bottom'},
+                cm.node('div', {'class' : 'inner clear'},
+                    nodes['fields'] = cm.node('ul', {'class' : 'group'})
                 )
             )
         );
@@ -31428,7 +31451,7 @@ function(params){
 
     var renderYearField = function(){
         // Structure
-        nodes['year'] = cm.Node('li', {'class' : 'is-field'});
+        nodes['year'] = cm.node('li', {'class' : 'is-field'});
         cm.addClass(nodes['year'], that.params['fieldSizes']['year']);
         cm.appendChild(nodes['year'], nodes['fields']);
         // Render component
@@ -31454,7 +31477,7 @@ function(params){
 
     var renderMonthField = function(){
         // Structure
-        nodes['month'] = cm.Node('li', {'class' : 'is-field'});
+        nodes['month'] = cm.node('li', {'class' : 'is-field'});
         cm.addClass(nodes['month'], that.params['fieldSizes']['month']);
         cm.appendChild(nodes['month'], nodes['fields']);
         // Render component
@@ -31480,7 +31503,7 @@ function(params){
 
     var renderDayField = function(){
         // Structure
-        nodes['day'] = cm.Node('li', {'class' : 'is-field'});
+        nodes['day'] = cm.node('li', {'class' : 'is-field'});
         cm.addClass(nodes['day'], that.params['fieldSizes']['day']);
         cm.appendChild(nodes['day'], nodes['fields']);
         // Render component
@@ -31623,6 +31646,7 @@ Com.FormFields.add('date-select', {
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.DateSelect'
 });
+
 cm.define('Com.FileInput', {
     'extend' : 'Com.AbstractInput',
     'params' : {
@@ -31638,8 +31662,9 @@ cm.define('Com.FileInput', {
         'autoOpen' : false,
         'placeholder' : null,
 
+        'accept' : [],                      // empty - accept all, example: ['image/png', 'image/jpeg']
         'readValueType' : 'base64',         // base64 | binary
-        'outputValueType' : 'object',         // file | object
+        'outputValueType' : 'object',       // file | object
 
         'local' : true,
         'fileManager' : false,
@@ -31819,6 +31844,9 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                     nodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
+            if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
+                nodes['input'].accept = that.params['accept'].join(',');
+            }
             cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
             cm.insertFirst(nodes['browseLocal'], nodes['buttonsInner']);
         }
@@ -31870,6 +31898,19 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }
     };
 
+    classProto.isAcceptableFileFormat = function(item){
+        var that = this;
+        if(
+            !cm.isEmpty(item) &&
+            !cm.isEmpty(item.type) &&
+            !cm.isEmpty(that.params.accept) &&
+            cm.isArray(that.params.accept)
+        ){
+            return cm.inArray(that.params.accept, item.type);
+        }
+        return true;
+    };
+
     /* *** DATA *** */
 
     classProto.get = function(){
@@ -31886,7 +31927,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.validateValue = function(value){
         var that = this,
             item = that.components['validator'].validate(value);
-        return (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file'])) ? item : '';
+        return (
+            that.isAcceptableFileFormat(item) &&
+            (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file']))
+        ) ? item : '';
     };
 
     classProto.setData = function(){
@@ -32001,7 +32045,8 @@ cm.define('Com.ImageInput', {
         'size' : 'default',                     // default, full, custom
         'aspect' : false,                       // 1x1, 3x2, etc
         'types' : {
-            'video' : /video\/(mp4|webm|ogg|avi)/
+            'video' : /video\/(mp4|webm|ogg|avi)/,
+            'embed' : /application\/pdf/
         },
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
@@ -32095,6 +32140,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                     that.nodes['content']['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
+            if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
+                that.nodes['content']['input'].accept = that.params['accept'].join(',');
+            }
             cm.addEvent(that.nodes['content']['input'], 'change', that.browseActionHandler);
             cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
         }
@@ -32147,6 +32195,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this;
         // Clear
         that.nodes['content']['image'].style.backgroundImage = '';
+        cm.remove(that.nodes['content']['iframe']);
         cm.remove(that.nodes['content']['video']);
         // Set
         if(cm.isEmpty(that.value)){
@@ -32155,14 +32204,19 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
         }else{
             that.components['preview'] && that.components['preview'].set(that.value);
-            if(that.params.types.video.test(that.value.type)){
+            if(that.params.types.video.test(that.value.type)) {
                 that.nodes['content']['video'] = cm.node('video',
-                    cm.node('source', {'src' : that.value['url']})
+                    cm.node('source', {'src': that.value['url']})
                 );
                 that.nodes['content']['video'].muted = true;
                 that.nodes['content']['video'].autoplay = false;
                 that.nodes['content']['video'].loop = true;
                 cm.appendChild(that.nodes['content']['video'], that.nodes['content']['image']);
+            /*
+            }else if(that.params.types.embed.test(that.value.type)) {
+                that.nodes['content']['iframe'] = cm.node('iframe', {'src' : that.value['url']});
+                cm.appendChild(that.nodes['content']['iframe'], that.nodes['content']['image']);
+            */
             }else{
                 that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
             }
@@ -34859,7 +34913,7 @@ cm.define('Com.TimeSelect', {
     ],
     'params' : {
         'input' : null,                                  // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'embedStructure' : 'replace',
         'name' : '',
@@ -34938,9 +34992,9 @@ function(params){
 
     var render = function(){
         /* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__timeselect'},
+            nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(nodes['container'], ['size', that.params['size']].join('-'));
@@ -34976,10 +35030,10 @@ function(params){
             label;
 
         if(nodes['inner'].childNodes.length){
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            nodes['inner'].appendChild(cm.node('div', {'class' : 'sep'}, that.lang('separator')));
         }
-        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-            nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
+        nodes['inner'].appendChild(cm.node('div', {'class' : 'field'},
+            nodes['selectHours'] = cm.node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
         ));
         while(hours < 24){
             if(that.params['hoursFormat'] === 24){
@@ -34988,7 +35042,7 @@ function(params){
                 label = [(hours % 12 || 12), (hours < 12 ? 'am' : 'pm')].join('');
             }
             nodes['selectHours'].appendChild(
-                cm.Node('option', {'value' : hours}, label)
+                cm.node('option', {'value' : hours}, label)
             );
             hours += that.params['hoursInterval'];
         }
@@ -34998,14 +35052,14 @@ function(params){
         var minutes = 0;
 
         if(nodes['inner'].childNodes.length){
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            nodes['inner'].appendChild(cm.node('div', {'class' : 'sep'}, that.lang('separator')));
         }
-        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-            nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
+        nodes['inner'].appendChild(cm.node('div', {'class' : 'field'},
+            nodes['selectMinutes'] = cm.node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
         ));
         while(minutes < 60){
             nodes['selectMinutes'].appendChild(
-                cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
+                cm.node('option', {'value' : minutes}, cm.addLeadZero(minutes))
             );
             minutes += that.params['minutesInterval'];
         }
@@ -35015,14 +35069,14 @@ function(params){
         var seconds = 0;
 
         if(nodes['inner'].childNodes.length){
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            nodes['inner'].appendChild(cm.node('div', {'class' : 'sep'}, that.lang('separator')));
         }
-        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-            nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
+        nodes['inner'].appendChild(cm.node('div', {'class' : 'field'},
+            nodes['selectSeconds'] = cm.node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
         ));
         while(seconds < 60){
             nodes['selectSeconds'].appendChild(
-                cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
+                cm.node('option', {'value' : seconds},cm.addLeadZero(seconds))
             );
             seconds += that.params['secondsInterval'];
         }

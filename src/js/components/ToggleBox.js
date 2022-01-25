@@ -40,9 +40,9 @@ function(params){
 
     that.nodes = {
         'container' : cm.node('div'),
-        'button': cm.Node('div'),
-        'target': cm.Node('div'),
-        'title': cm.Node('div')
+        'button': cm.node('div'),
+        'target': cm.node('div'),
+        'title': cm.node('div')
     };
     that.animations = {};
 
@@ -73,13 +73,13 @@ function(params){
         var storageCollapsed;
         // Render Structure
         if(that.params['renderStructure']){
-            that.nodes['container'] = cm.Node('dl', {'class' : 'com__togglebox'},
-                that.nodes['titleContainer'] = cm.Node('dt',
-                    that.nodes['button'] = cm.Node('span', {'class' : 'icon default linked'}),
-                    that.nodes['title'] = cm.Node('span', {'class' : 'title'}, that.params['title'])
+            that.nodes['container'] = cm.node('dl', {'class' : 'com__togglebox'},
+                that.nodes['titleContainer'] = cm.node('dt',
+                    that.nodes['button'] = cm.node('span', {'class' : 'icon default linked'}),
+                    that.nodes['title'] = cm.node('span', {'class' : 'title'}, that.params['title'])
                 ),
-                that.nodes['target'] = cm.Node('dd',
-                    that.nodes['content'] = cm.Node('div', {'class' : 'inner'})
+                that.nodes['target'] = cm.node('dd',
+                    that.nodes['content'] = cm.node('div', {'class' : 'inner'})
                 )
             );
             cm.addClass(that.nodes['container'], that.params['className']);

@@ -131,10 +131,10 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__dialog', 'role' : 'dialog'},
-            nodes['bg'] = cm.Node('div', {'class' : 'bg'}),
-            nodes['window'] = cm.Node('div', {'class' : 'com__dialog__window window'},
-                nodes['windowInner'] = cm.Node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__dialog', 'role' : 'dialog'},
+            nodes['bg'] = cm.node('div', {'class' : 'bg'}),
+            nodes['window'] = cm.node('div', {'class' : 'com__dialog__window window'},
+                nodes['windowInner'] = cm.node('div', {'class' : 'inner'})
             )
         );
         if(that.params['appendOnRender']){
@@ -162,7 +162,7 @@ function(params){
         // Render close button
         if(that.params['closeButtonOutside']){
             nodes['bg'].appendChild(
-                nodes['closeOutside'] = cm.Node('div', {
+                nodes['closeOutside'] = cm.node('div', {
                     'class' : that.params['icons']['closeOutside'],
                     'title' : that.lang('closeTitle'),
                     'role' : 'button'
@@ -174,7 +174,7 @@ function(params){
             cm.addClass(nodes['container'], 'has-close-inside');
             cm.addClass(nodes['window'], 'has-close-inside');
             nodes['window'].appendChild(
-                nodes['closeInside'] = cm.Node('div', {
+                nodes['closeInside'] = cm.node('div', {
                     'class' : that.params['icons']['closeInside'],
                     'title' : that.lang('closeTitle'),
                     'role' : 'button'
@@ -189,7 +189,7 @@ function(params){
         // Render help button
         if(that.params['showHelp']){
             nodes['window'].appendChild(
-                nodes['helpInside'] = cm.Node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'))
+                nodes['helpInside'] = cm.node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'))
             );
         }
         // Set title
@@ -224,7 +224,7 @@ function(params){
             // Remove old nodes
             cm.remove(nodes['title']);
             // Render new nodes
-            nodes['title'] = cm.Node('div', {'class' : 'title', 'role' : 'heading'});
+            nodes['title'] = cm.node('div', {'class' : 'title', 'role' : 'heading'});
             if(!cm.isEmpty(title)){
                 if(cm.isNode(title)){
                     cm.appendChild(title, nodes['title']);
@@ -244,9 +244,9 @@ function(params){
 
     var renderContent = function(node){
         if(!nodes['descr']){
-            nodes['descr'] = cm.Node('div', {'class' : 'descr'},
-                nodes['scroll'] = cm.Node('div', {'class' : 'scroll'},
-                    nodes['inner'] = cm.Node('div', {'class' : 'inner com__dialog__inner'})
+            nodes['descr'] = cm.node('div', {'class' : 'descr'},
+                nodes['scroll'] = cm.node('div', {'class' : 'scroll'},
+                    nodes['inner'] = cm.node('div', {'class' : 'inner com__dialog__inner'})
                 )
             );
             if(!that.params['scroll']){
@@ -273,7 +273,7 @@ function(params){
             // Remove old nodes
             cm.remove(nodes['buttons']);
             // Render new nodes
-            nodes['buttons'] = cm.Node('div', {'class' : 'buttons'}, node);
+            nodes['buttons'] = cm.node('div', {'class' : 'buttons'}, node);
             cm.insertLast(nodes['buttons'], nodes['windowInner']);
         }
     };

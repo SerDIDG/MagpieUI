@@ -15,7 +15,7 @@ cm.define('Com.TimeSelect', {
     ],
     'params' : {
         'input' : null,                                  // Deprecated, use 'node' parameter instead.
-        'node' : cm.Node('input', {'type' : 'text'}),
+        'node' : cm.node('input', {'type' : 'text'}),
         'container' : null,
         'embedStructure' : 'replace',
         'name' : '',
@@ -94,9 +94,9 @@ function(params){
 
     var render = function(){
         /* *** STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com__timeselect'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'})
+        nodes['container'] = cm.node('div', {'class' : 'com__timeselect'},
+            nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            nodes['inner'] = cm.node('div', {'class' : 'inner'})
         );
         if(!cm.isEmpty(that.params['size'])){
             cm.addClass(nodes['container'], ['size', that.params['size']].join('-'));
@@ -132,10 +132,10 @@ function(params){
             label;
 
         if(nodes['inner'].childNodes.length){
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            nodes['inner'].appendChild(cm.node('div', {'class' : 'sep'}, that.lang('separator')));
         }
-        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-            nodes['selectHours'] = cm.Node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
+        nodes['inner'].appendChild(cm.node('div', {'class' : 'field'},
+            nodes['selectHours'] = cm.node('select', {'placeholder' : that.lang('Hours'), 'title' : that.lang('HoursTitle')})
         ));
         while(hours < 24){
             if(that.params['hoursFormat'] === 24){
@@ -144,7 +144,7 @@ function(params){
                 label = [(hours % 12 || 12), (hours < 12 ? 'am' : 'pm')].join('');
             }
             nodes['selectHours'].appendChild(
-                cm.Node('option', {'value' : hours}, label)
+                cm.node('option', {'value' : hours}, label)
             );
             hours += that.params['hoursInterval'];
         }
@@ -154,14 +154,14 @@ function(params){
         var minutes = 0;
 
         if(nodes['inner'].childNodes.length){
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            nodes['inner'].appendChild(cm.node('div', {'class' : 'sep'}, that.lang('separator')));
         }
-        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-            nodes['selectMinutes'] = cm.Node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
+        nodes['inner'].appendChild(cm.node('div', {'class' : 'field'},
+            nodes['selectMinutes'] = cm.node('select', {'placeholder' : that.lang('Minutes'), 'title' : that.lang('MinutesTitle')})
         ));
         while(minutes < 60){
             nodes['selectMinutes'].appendChild(
-                cm.Node('option', {'value' : minutes}, cm.addLeadZero(minutes))
+                cm.node('option', {'value' : minutes}, cm.addLeadZero(minutes))
             );
             minutes += that.params['minutesInterval'];
         }
@@ -171,14 +171,14 @@ function(params){
         var seconds = 0;
 
         if(nodes['inner'].childNodes.length){
-            nodes['inner'].appendChild(cm.Node('div', {'class' : 'sep'}, that.lang('separator')));
+            nodes['inner'].appendChild(cm.node('div', {'class' : 'sep'}, that.lang('separator')));
         }
-        nodes['inner'].appendChild(cm.Node('div', {'class' : 'field'},
-            nodes['selectSeconds'] = cm.Node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
+        nodes['inner'].appendChild(cm.node('div', {'class' : 'field'},
+            nodes['selectSeconds'] = cm.node('select', {'placeholder' : that.lang('Seconds'), 'title' : that.lang('SecondsTitle')})
         ));
         while(seconds < 60){
             nodes['selectSeconds'].appendChild(
-                cm.Node('option', {'value' : seconds},cm.addLeadZero(seconds))
+                cm.node('option', {'value' : seconds},cm.addLeadZero(seconds))
             );
             seconds += that.params['secondsInterval'];
         }

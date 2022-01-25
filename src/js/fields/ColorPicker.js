@@ -97,14 +97,14 @@ function(params){
 
     var render = function(){
         /* *** RENDER STRUCTURE *** */
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__colorpicker'},
-            that.nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            that.nodes['target'] = cm.Node('div', {'class' : 'pt__input'},
-                that.nodes['input'] = cm.Node('input', {'type' : 'text', 'readOnly' : 'true'}),
-                that.nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['picker']})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__colorpicker'},
+            that.nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            that.nodes['target'] = cm.node('div', {'class' : 'pt__input'},
+                that.nodes['input'] = cm.node('input', {'type' : 'text', 'readOnly' : 'true'}),
+                that.nodes['icon'] = cm.node('div', {'class' : that.params['icons']['picker']})
             ),
-            that.nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                that.nodes['paletteContainer'] = cm.Node('div')
+            that.nodes['menuContainer'] = cm.node('div', {'class' : 'form'},
+                that.nodes['paletteContainer'] = cm.node('div')
             )
         );
         /* *** ATTRIBUTES *** */
@@ -132,7 +132,7 @@ function(params){
         if(that.params['showClearButton']){
             cm.addClass(that.nodes['container'], 'has-clear-button');
             that.nodes['container'].appendChild(
-                that.nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
+                that.nodes['clearButton'] = cm.node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear')})
             );
         }
         /* *** INSERT INTO DOM *** */

@@ -135,14 +135,14 @@ function(params){
 
     var render = function(){
         /* *** RENDER STRUCTURE *** */
-        nodes['container'] = cm.Node('div', {'class' : 'com__datepicker-input'},
-            nodes['hidden'] = cm.Node('input', {'type' : 'hidden'}),
-            nodes['target'] = cm.Node('div', {'class' : 'pt__input has-icon-right'},
-                nodes['input'] = cm.Node('input', {'type' : 'text'}),
-                nodes['icon'] = cm.Node('div', {'class' : that.params['icons']['datepicker']})
+        nodes['container'] = cm.node('div', {'class' : 'com__datepicker-input'},
+            nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
+            nodes['target'] = cm.node('div', {'class' : 'pt__input has-icon-right'},
+                nodes['input'] = cm.node('input', {'type' : 'text'}),
+                nodes['icon'] = cm.node('div', {'class' : that.params['icons']['datepicker']})
             ),
-            nodes['menuContainer'] = cm.Node('div', {'class' : 'form'},
-                nodes['calendarContainer'] = cm.Node('div', {'class' : 'calendar-holder'})
+            nodes['menuContainer'] = cm.node('div', {'class' : 'form'},
+                nodes['calendarContainer'] = cm.node('div', {'class' : 'calendar-holder'})
             )
         );
         if(!cm.isEmpty(that.params['size'])){
@@ -169,21 +169,21 @@ function(params){
         if(that.params['showClearButton']){
             cm.addClass(nodes['container'], 'has-clear-button');
             nodes['container'].appendChild(
-                nodes['clearButton'] = cm.Node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
+                nodes['clearButton'] = cm.node('div', {'class' : that.params['icons']['clear'], 'title' : that.lang('Clear date')})
             );
         }
         // Today / Now Button
         if(that.params['showTodayButton']){
             nodes['menuContainer'].appendChild(
-                nodes['todayButton'] = cm.Node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
+                nodes['todayButton'] = cm.node('div', {'class' : 'button today is-wide'}, that.lang(that.params['isDateTime']? 'Now' : 'Today'))
             );
         }
         // Time Select
         if(that.params['isDateTime']){
-            nodes['timeHolder'] = cm.Node('div', {'class' : 'time-holder'},
-                cm.Node('dl', {'class' : 'form-box'},
-                    cm.Node('dt', that.lang('Time')),
-                    nodes['timeContainer'] = cm.Node('dd')
+            nodes['timeHolder'] = cm.node('div', {'class' : 'time-holder'},
+                cm.node('dl', {'class' : 'form-box'},
+                    cm.node('dt', that.lang('Time')),
+                    nodes['timeContainer'] = cm.node('dd')
                 )
             );
             cm.insertAfter(nodes['timeHolder'], nodes['calendarContainer']);

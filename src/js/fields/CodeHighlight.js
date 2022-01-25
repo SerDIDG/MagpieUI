@@ -9,7 +9,7 @@ cm.define('Com.CodeHighlight', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'language' : 'javascript',
         'lineNumbers' : true,

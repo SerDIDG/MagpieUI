@@ -75,8 +75,8 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
 
         // Structure
-        that.nodes.container = cm.Node('div', {'classes': ['pt__image', 'is-centered']},
-            that.nodes.inner = cm.Node('div', {'classes': 'inner'})
+        that.nodes.container = cm.node('div', {'classes': ['pt__image', 'is-centered']},
+            that.nodes.inner = cm.node('div', {'classes': 'inner'})
         );
 
         // Render by type

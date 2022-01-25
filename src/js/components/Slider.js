@@ -55,16 +55,16 @@ function(params){
         minHeightDimension;
 
     that.nodes = {
-        'container' : cm.Node('div'),
-        'inner' : cm.Node('div'),
-        'slides' : cm.Node('div'),
-        'slidesInner' : cm.Node('ul'),
-        'next' : cm.Node('div'),
-        'prev' : cm.Node('div'),
-        'buttons' : cm.Node('ul'),
+        'container' : cm.node('div'),
+        'inner' : cm.node('div'),
+        'slides' : cm.node('div'),
+        'slidesInner' : cm.node('ul'),
+        'next' : cm.node('div'),
+        'prev' : cm.node('div'),
+        'buttons' : cm.node('ul'),
         'items' : [],
-        'layout-inner' : cm.Node('div'),
-        'bar-inner' : cm.Node('div'),
+        'layout-inner' : cm.node('div'),
+        'bar-inner' : cm.node('div'),
         'bar-items' : []
     };
 
@@ -312,7 +312,7 @@ function(params){
         item = cm.merge({
             'index' : that.items.length,
             'nodes' : {
-                'container' : cm.Node('li'),
+                'container' : cm.node('li'),
                 'inner' : null
             }
         }, item);
@@ -349,7 +349,7 @@ function(params){
     var renderButton = function(item){
         // Structure
         that.nodes['buttons'].appendChild(
-            item['nodes']['button'] = cm.Node('li')
+            item['nodes']['button'] = cm.node('li')
         );
         if(that.params['numericButtons']){
             item['nodes']['button'].innerHTML = item['index'] + 1;

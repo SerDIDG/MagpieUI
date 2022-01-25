@@ -13,8 +13,9 @@ cm.define('Com.FileInput', {
         'autoOpen' : false,
         'placeholder' : null,
 
+        'accept' : [],                      // empty - accept all, example: ['image/png', 'image/jpeg']
         'readValueType' : 'base64',         // base64 | binary
-        'outputValueType' : 'object',         // file | object
+        'outputValueType' : 'object',       // file | object
 
         'local' : true,
         'fileManager' : false,
@@ -194,6 +195,9 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                     nodes['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
+            if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
+                nodes['input'].accept = that.params['accept'].join(',');
+            }
             cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
             cm.insertFirst(nodes['browseLocal'], nodes['buttonsInner']);
         }
@@ -245,6 +249,19 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }
     };
 
+    classProto.isAcceptableFileFormat = function(item){
+        var that = this;
+        if(
+            !cm.isEmpty(item) &&
+            !cm.isEmpty(item.type) &&
+            !cm.isEmpty(that.params.accept) &&
+            cm.isArray(that.params.accept)
+        ){
+            return cm.inArray(that.params.accept, item.type);
+        }
+        return true;
+    };
+
     /* *** DATA *** */
 
     classProto.get = function(){
@@ -261,7 +278,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.validateValue = function(value){
         var that = this,
             item = that.components['validator'].validate(value);
-        return (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file'])) ? item : '';
+        return (
+            that.isAcceptableFileFormat(item) &&
+            (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file']))
+        ) ? item : '';
     };
 
     classProto.setData = function(){

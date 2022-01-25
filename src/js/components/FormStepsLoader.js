@@ -19,7 +19,7 @@ cm.define('Com.FormStepsLoader', {
         'onProcessEnd'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'name' : '',
         'animateDuration' : 'cm._config.animDuration',
         'showLoader' : true,

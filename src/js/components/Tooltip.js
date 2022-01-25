@@ -98,9 +98,9 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.Node('div', {'class' : 'com__tooltip'},
-            that.nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                that.nodes['content'] = cm.Node('div', {'class' : 'scroll'})
+        that.nodes['container'] = cm.node('div', {'class' : 'com__tooltip'},
+            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                that.nodes['content'] = cm.node('div', {'class' : 'scroll'})
             )
         );
         cm.isString(that.params['scroll']) && cm.addClass(that.nodes['content'], ['is', that.params['scroll']].join('-'));
@@ -127,8 +127,8 @@ function(params){
     var renderTitle = function(title){
         cm.remove(that.nodes['title']);
         if(!cm.isEmpty(title)){
-            that.nodes['title'] = cm.Node('div', {'class' : 'title'},
-                cm.Node(that.params['titleTag'], title)
+            that.nodes['title'] = cm.node('div', {'class' : 'title'},
+                cm.node(that.params['titleTag'], title)
             );
             cm.insertFirst(that.nodes['title'], that.nodes['inner']);
         }

@@ -14,7 +14,7 @@ cm.define('Com.CollapsibleLayout', {
         'onExpandRight'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'remember' : false
     }
 },
@@ -22,10 +22,10 @@ function(params){
     var that = this;
 
     that.nodes = {
-        'leftButton' : cm.Node('div'),
-        'leftContainer' : cm.Node('div'),
-        'rightButton': cm.Node('div'),
-        'rightContainer' : cm.Node('div')
+        'leftButton' : cm.node('div'),
+        'leftContainer' : cm.node('div'),
+        'rightButton': cm.node('div'),
+        'rightContainer' : cm.node('div')
     };
 
     that.isLeftCollapsed = false;

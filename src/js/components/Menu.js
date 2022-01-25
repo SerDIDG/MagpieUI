@@ -33,8 +33,8 @@ function(params){
     var that = this;
 
     that.nodes = {
-        'button' : cm.Node('div'),
-        'target' : cm.Node('div')
+        'button' : cm.node('div'),
+        'target' : cm.node('div')
     };
     that.components = {};
 

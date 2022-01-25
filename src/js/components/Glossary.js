@@ -12,7 +12,7 @@ cm.define('Com.Glossary', {
         'onRender'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'showTitle' : true,
         'Com.Tooltip' : {
             'className' : 'com__glossary__tooltip',
@@ -25,9 +25,9 @@ function(params){
 
     that.components = {};
     that.nodes = {
-        'container' : cm.Node('div'),
-        'title' : cm.Node('div'),
-        'content' : cm.Node('div')
+        'container' : cm.node('div'),
+        'title' : cm.node('div'),
+        'content' : cm.node('div')
     };
 
     var init = function(){

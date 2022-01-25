@@ -12,7 +12,7 @@ cm.define('Com.Sortable', {
         'onSort'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'process' : true,
         'Com.Draganddrop' : {
             'draggableContainer' : 'selfParent',

@@ -115,9 +115,9 @@ function(params){
 
     var renderStructure = function(){
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__columns'},
-            nodes['inner'] = cm.Node('div', {'class' : 'inner'},
-                nodes['holder'] = cm.Node('div', {'class' : 'container'})
+        nodes['container'] = cm.node('div', {'class' : 'com__columns'},
+            nodes['inner'] = cm.node('div', {'class' : 'inner'},
+                nodes['holder'] = cm.node('div', {'class' : 'container'})
             )
         );
         // Render Columns
@@ -133,7 +133,7 @@ function(params){
     var collectColumn = function(container){
         var item = {
             'container' : container,
-            'inner' : cm.getByAttr('data-com__columns', 'column-inner', container)[0] || cm.Node('div'),
+            'inner' : cm.getByAttr('data-com__columns', 'column-inner', container)[0] || cm.node('div'),
             'width' : container.style.width
         };
         // Render ruler
@@ -147,8 +147,8 @@ function(params){
             'width' : '0%'
         }, item);
         // Structure
-        item['container'] = cm.Node('div', {'class' : 'com__column'},
-            item['inner'] = cm.Node('div', {'class' : 'inner'})
+        item['container'] = cm.node('div', {'class' : 'com__column'},
+            item['inner'] = cm.node('div', {'class' : 'inner'})
         );
         // Render ruler
         renderRuler(item);
@@ -202,11 +202,11 @@ function(params){
 
     var renderRuler = function(item){
         // Structure
-        item['rulerContainer'] = cm.Node('div', {'class' : 'com__columns__ruler'},
-            item['ruler'] = cm.Node('div', {'class' : 'pt__ruler is-horizontal is-small'},
-                cm.Node('div', {'class' : 'line line-top'}),
-                item['rulerCounter'] = cm.Node('div', {'class' : 'counter'}, item['width']),
-                cm.Node('div', {'class' : 'line line-bottom'})
+        item['rulerContainer'] = cm.node('div', {'class' : 'com__columns__ruler'},
+            item['ruler'] = cm.node('div', {'class' : 'pt__ruler is-horizontal is-small'},
+                cm.node('div', {'class' : 'line line-top'}),
+                item['rulerCounter'] = cm.node('div', {'class' : 'counter'}, item['width']),
+                cm.node('div', {'class' : 'line line-bottom'})
             )
         );
         // Embed
@@ -244,11 +244,11 @@ function(params){
             'index' : i
         };
         // Structure
-        chassis['container'] = cm.Node('div', {'class' : 'com__columns__chassis'},
-            chassis['drag'] = cm.Node('div', {'class' : 'pt__drag is-horizontal'},
-                cm.Node('div', {'class' : 'line'}),
-                cm.Node('div', {'class' : 'drag'},
-                    cm.Node('div', {'class' : 'icon draggable'})
+        chassis['container'] = cm.node('div', {'class' : 'com__columns__chassis'},
+            chassis['drag'] = cm.node('div', {'class' : 'pt__drag is-horizontal'},
+                cm.node('div', {'class' : 'line'}),
+                cm.node('div', {'class' : 'drag'},
+                    cm.node('div', {'class' : 'icon draggable'})
                 )
             )
         );

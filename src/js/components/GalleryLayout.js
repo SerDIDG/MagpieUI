@@ -12,7 +12,7 @@ cm.define('Com.GalleryLayout', {
         'onChange'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'barDirection' : 'horizontal',      // horizontal | vertical
         'hasBar' : true,
         'Com.Gallery' : {},
@@ -28,9 +28,9 @@ function(params){
         items = [];
     
     that.nodes = {
-        'inner' : cm.Node('div'),
-        'preview-inner' : cm.Node('div'),
-        'bar-inner' : cm.Node('div'),
+        'inner' : cm.node('div'),
+        'preview-inner' : cm.node('div'),
+        'bar-inner' : cm.node('div'),
         'bar-items' : []
     };
 

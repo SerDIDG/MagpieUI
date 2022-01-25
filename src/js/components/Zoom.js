@@ -13,7 +13,7 @@ cm.define('Com.Zoom', {
         'onCloseStart'
     ],
     'params' : {
-        'node' : cm.Node('div'),
+        'node' : cm.node('div'),
         'container' : 'document.body',
         'name' : '',
         'src' :'',

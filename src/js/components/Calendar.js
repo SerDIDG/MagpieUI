@@ -67,16 +67,16 @@ function(params){
     var render = function(){
         var weekday;
         // Structure
-        nodes['container'] = cm.Node('div', {'class' : 'com__calendar'},
-            cm.Node('div', {'class' : 'selects'},
-                nodes['months'] = cm.Node('select', {'class' : 'select months'}),
-                nodes['years'] = cm.Node('select', {'class' : 'select years'})
+        nodes['container'] = cm.node('div', {'class' : 'com__calendar'},
+            cm.node('div', {'class' : 'selects'},
+                nodes['months'] = cm.node('select', {'class' : 'select months'}),
+                nodes['years'] = cm.node('select', {'class' : 'select years'})
             ),
-            cm.Node('table',
-                cm.Node('thead',
-                    nodes['days'] = cm.Node('tr')
+            cm.node('table',
+                cm.node('thead',
+                    nodes['days'] = cm.node('tr')
                 ),
-                nodes['dates'] = cm.Node('tbody')
+                nodes['dates'] = cm.node('tbody')
             )
         );
         // Add css class
@@ -86,18 +86,18 @@ function(params){
             weekday = i + that.params['startWeekDay'];
             weekday = weekday > 6? Math.abs(6 - (weekday - 1)) : weekday;
             nodes['days'].appendChild(
-                cm.Node('th', that.lang('daysAbbr')[weekday])
+                cm.node('th', that.lang('daysAbbr')[weekday])
             );
         });
         // Render selects options
         that.lang('months').forEach(function(item, i){
             nodes['months'].appendChild(
-                cm.Node('option', {'value' : i}, item)
+                cm.node('option', {'value' : i}, item)
             );
         });
         for(var i = that.params['endYear']; i >= that.params['startYear']; i--){
             nodes['years'].appendChild(
-                cm.Node('option', {'value' : i}, i)
+                cm.node('option', {'value' : i}, i)
             );
         }
         // Insert into DOM
@@ -151,7 +151,7 @@ function(params){
         var startWeekDay = current['startWeekDay'] - that.params['startWeekDay'],
             day = ((i - 1) * 7) + 1 - (startWeekDay > 0? startWeekDay - 7 : startWeekDay),
             tr = nodes['dates'].appendChild(
-                cm.Node('tr')
+                cm.node('tr')
             );
         cm.forEach(7, function(){
             renderCell(tr, day);
@@ -162,24 +162,24 @@ function(params){
     var renderCell = function(tr, day){
         var td, div, params;
         tr.appendChild(
-            td = cm.Node('td')
+            td = cm.node('td')
         );
         // Render day
         if(day <= 0){
             td.appendChild(
-                div = cm.Node('div', (previous['dayCount'] + day))
+                div = cm.node('div', (previous['dayCount'] + day))
             );
             cm.addClass(td, 'out');
             cm.addEvent(div, 'click', that.prevMonth);
         }else if(day > current['dayCount']){
             td.appendChild(
-                div = cm.Node('div', (day - current['dayCount']))
+                div = cm.node('div', (day - current['dayCount']))
             );
             cm.addClass(td, 'out');
             cm.addEvent(div, 'click', that.nextMonth);
         }else{
             td.appendChild(
-                div = cm.Node('div', day)
+                div = cm.node('div', day)
             );
             cm.addClass(td, 'in');
             params = {

@@ -6,7 +6,8 @@ cm.define('Com.ImageInput', {
         'size' : 'default',                     // default, full, custom
         'aspect' : false,                       // 1x1, 3x2, etc
         'types' : {
-            'video' : /video\/(mp4|webm|ogg|avi)/
+            'video' : /video\/(mp4|webm|ogg|avi)/,
+            'embed' : /application\/pdf/
         },
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
@@ -100,6 +101,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                     that.nodes['content']['input'] = cm.node('input', {'type' : 'file'})
                 )
             );
+            if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
+                that.nodes['content']['input'].accept = that.params['accept'].join(',');
+            }
             cm.addEvent(that.nodes['content']['input'], 'change', that.browseActionHandler);
             cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
         }
@@ -152,6 +156,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this;
         // Clear
         that.nodes['content']['image'].style.backgroundImage = '';
+        cm.remove(that.nodes['content']['iframe']);
         cm.remove(that.nodes['content']['video']);
         // Set
         if(cm.isEmpty(that.value)){
@@ -160,14 +165,19 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.addClass(that.nodes['content']['imageContainer'], 'is-default-image');
         }else{
             that.components['preview'] && that.components['preview'].set(that.value);
-            if(that.params.types.video.test(that.value.type)){
+            if(that.params.types.video.test(that.value.type)) {
                 that.nodes['content']['video'] = cm.node('video',
-                    cm.node('source', {'src' : that.value['url']})
+                    cm.node('source', {'src': that.value['url']})
                 );
                 that.nodes['content']['video'].muted = true;
                 that.nodes['content']['video'].autoplay = false;
                 that.nodes['content']['video'].loop = true;
                 cm.appendChild(that.nodes['content']['video'], that.nodes['content']['image']);
+            /*
+            }else if(that.params.types.embed.test(that.value.type)) {
+                that.nodes['content']['iframe'] = cm.node('iframe', {'src' : that.value['url']});
+                cm.appendChild(that.nodes['content']['iframe'], that.nodes['content']['image']);
+            */
             }else{
                 that.nodes['content']['image'].style.backgroundImage = cm.URLToCSSURL(that.value['url']);
             }
