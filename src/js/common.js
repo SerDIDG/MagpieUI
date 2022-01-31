@@ -4125,7 +4125,7 @@ cm.obj2URI = function(data, params){
             }
         });
         if(!cm.isEmpty(str)){
-            str = str.join(params.itemConjunction);
+            str = str.join(params.multipleValuesConjunction);
             if(!cm.isEmpty(params.prefix)){
                 str = [params.prefix, str].join(params.valueConjunction);
             }

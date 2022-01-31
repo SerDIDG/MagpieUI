@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.24 (2022-01-25 21:27) ************ */
+/*! ************ MagpieUI v3.40.25 (2022-01-31 21:31) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.24',
+        '_version' : '3.40.25',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -5724,7 +5724,7 @@ cm.obj2URI = function(data, params){
             }
         });
         if(!cm.isEmpty(str)){
-            str = str.join(params.itemConjunction);
+            str = str.join(params.multipleValuesConjunction);
             if(!cm.isEmpty(params.prefix)){
                 str = [params.prefix, str].join(params.valueConjunction);
             }
@@ -29816,17 +29816,17 @@ function(){
     Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto, classProto){
+cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.options = [];
 
-        classProto.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
         var that = this;
-        classProto.prototype.validateParams.apply(that, arguments);
+        classInherit.prototype.validateParams.apply(that, arguments);
 
         // Collect Options
         var options = that.params['node'].options;
@@ -29872,7 +29872,7 @@ cm.getConstructor('Com.AutocompleteField', function(classConstructor, className,
 
     classProto.renderViewModel = function(){
         var that = this;
-        classProto.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Init Autocomplete
         cm.getConstructor(that.params.autocomplete.constructor, function(classConstructor){

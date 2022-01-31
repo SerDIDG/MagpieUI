@@ -20,17 +20,17 @@ function(){
     Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto, classProto){
+cm.getConstructor('Com.AutocompleteField', function(classConstructor, className, classProto, classInherit){
     classProto.construct = function(){
         var that = this;
         that.options = [];
 
-        classProto.prototype.construct.apply(that, arguments);
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function(){
         var that = this;
-        classProto.prototype.validateParams.apply(that, arguments);
+        classInherit.prototype.validateParams.apply(that, arguments);
 
         // Collect Options
         var options = that.params['node'].options;
@@ -76,7 +76,7 @@ cm.getConstructor('Com.AutocompleteField', function(classConstructor, className,
 
     classProto.renderViewModel = function(){
         var that = this;
-        classProto.prototype.renderViewModel.apply(that, arguments);
+        classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Init Autocomplete
         cm.getConstructor(that.params.autocomplete.constructor, function(classConstructor){
