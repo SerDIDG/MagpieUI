@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.25 (2022-01-31 21:31) ************ */
+/*! ************ MagpieUI v3.40.26 (2022-02-01 19:00) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.25',
+        '_version' : '3.40.26',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -30035,12 +30035,26 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             });
         }
         // Checked parameter behavior override
-        // TODO: test
+        // TODO: Test
         if(that.params['checked'] && cm.isEmpty(that.params['value'])){
             if(!that.params['multiple']){
                 that.params['value'] = true;
             }
         }
+    };
+
+    classProto.onEnable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            item['input'].disabled = false;
+        });
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            item['input'].disabled = true;
+        });
     };
 
     /*** VIEW MODEL ***/

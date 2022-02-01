@@ -41,12 +41,26 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             });
         }
         // Checked parameter behavior override
-        // TODO: test
+        // TODO: Test
         if(that.params['checked'] && cm.isEmpty(that.params['value'])){
             if(!that.params['multiple']){
                 that.params['value'] = true;
             }
         }
+    };
+
+    classProto.onEnable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            item['input'].disabled = false;
+        });
+    };
+
+    classProto.onDisable = function(){
+        var that = this;
+        cm.forEach(that.inputs, function(item){
+            item['input'].disabled = true;
+        });
     };
 
     /*** VIEW MODEL ***/

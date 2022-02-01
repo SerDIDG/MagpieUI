@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.25 (2022-01-31 21:31) ************ */
+/*! ************ MagpieUI v3.40.26 (2022-02-01 19:00) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4591,7 +4591,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.25';
+@CmVersion: '3.40.26';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10032,6 +10032,12 @@ button {
     > .fields {
         &.unveil {
             display: none;
+        }
+    }
+
+    &.disabled {
+        label {
+            color: @CmColor-Font-Disabled;
         }
     }
 
