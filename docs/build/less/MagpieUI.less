@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.26 (2022-02-01 19:00) ************ */
+/*! ************ MagpieUI v3.40.27 (2022-02-16 20:13) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4591,7 +4591,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.26';
+@CmVersion: '3.40.27';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10114,6 +10114,12 @@ button {
             &.column--flex-column {
                 display: flex;
                 flex-direction: column;
+
+                > .inner {
+                    min-height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                }
             }
 
             &.column--auto {
@@ -10233,6 +10239,28 @@ button {
     }
 }
 
+.pt__columns--grid {
+    .pt__columns__indent-grid(@PtColumns-Indent);
+
+    &.indent-field {
+        .pt__columns__indent-grid(@CmForm-FieldIndent);
+    }
+
+    &.indent-field-inner {
+        .pt__columns__indent-grid(@CmForm-FieldInnerIndent);
+    }
+
+    &.indent-buttons {
+        .pt__columns__indent-grid(@CmForm-ButtonsIndent);
+    }
+
+    .for(@PtColumns-Indents); .-each(@name) {
+        &.indent-@{name} {
+            .pt__columns__indent-grid(@name);
+        }
+    }
+}
+
 .pt__columns__indent (@value : @PtColumns-Indent) {
     @half: max(round((@value / 2)), 0px);
 
@@ -10252,6 +10280,25 @@ button {
                 &:after {
                     right:  -@half;
                 }
+            }
+        }
+    }
+}
+
+.pt__columns__indent-grid (@value : @PtColumns-Indent) {
+    @half: max(round((@value / 2)), 0px);
+
+    > .inner {
+        margin-right: -@half;
+        margin-left: -@half;
+
+        > .column {
+            margin-right: 0;
+            margin-left: 0;
+
+            > .inner {
+                margin-right: @half;
+                margin-left: @half;
             }
         }
     }
@@ -13206,7 +13253,6 @@ ul.pt__field__hint {
         li {
             position: relative;
             line-height: @PtListingCounters-Height;
-            cursor: pointer;
 
             .r {
                 float: right;
@@ -13222,16 +13268,6 @@ ul.pt__field__hint {
                 margin: 0;
             }
 
-            &:hover {
-                .label {
-                    text-decoration: underline;
-                }
-
-                .cm__counter {
-                    .cm__counter--hover;
-                }
-            }
-
             &.active {
                 .label {
                     font-weight: @CmFont-Base-BoldWeight;
@@ -13240,8 +13276,26 @@ ul.pt__field__hint {
                 .cm__counter {
                     .cm__counter--active;
                 }
+            }
+        }
+    }
+
+    &.has-hover {
+        ul {
+            li {
+                cursor: pointer;
 
                 &:hover {
+                    .label {
+                        text-decoration: underline;
+                    }
+
+                    .cm__counter {
+                        .cm__counter--hover;
+                    }
+                }
+
+                &.active:hover {
                     .cm__counter {
                         .cm__counter--active-hover;
                     }

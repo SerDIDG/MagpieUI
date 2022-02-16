@@ -33,6 +33,8 @@
 
 var cm = {
         '_version' : '@@VERSION',
+        '_lang': 'en',
+        '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -2164,6 +2166,11 @@ cm.cutHTML = function(str){
 
 cm.splitNumber = function(str){
     return str.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+};
+
+cm.formatNumber = function(number, locale, params){
+    locale = !cm.isEmpty(locale) ? locale : cm._locale;
+    return new Intl.NumberFormat(locale, params).format(number);
 };
 
 cm.getPercentage = function(num, total){

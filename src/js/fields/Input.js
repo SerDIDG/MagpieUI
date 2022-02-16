@@ -10,7 +10,8 @@ cm.define('Com.Input', {
         'type' : 'text',
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
-        'icon' : null
+        'icon' : null,
+        'enterPressBehavior' : false,
     }
 },
 function(params){
@@ -146,6 +147,17 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.inputKeyPress = function(e){
         var that = this;
         if(that.params['type'] !== 'textarea' && cm.isKeyCode(e.keyCode, 'enter')){
+            cm.preventDefault(e);
+            that.setValue();
+            that.nodes['content']['input'].blur();
+            that.triggerEvent('onEnterPress', that.value);
+        }
+
+        // Special behavior: press Enter without Shift key for triggering onEnterPress event
+        if(
+            that.params['type'] === 'textarea' && that.params.enterPressBehavior &&
+            cm.isKeyCode(e.keyCode, 'enter') && !e.shiftKey
+        ){
             cm.preventDefault(e);
             that.setValue();
             that.nodes['content']['input'].blur();

@@ -124,7 +124,6 @@
         li {
             position: relative;
             line-height: @PtListingCounters-Height;
-            cursor: pointer;
 
             .r {
                 float: right;
@@ -140,16 +139,6 @@
                 margin: 0;
             }
 
-            &:hover {
-                .label {
-                    text-decoration: underline;
-                }
-
-                .cm__counter {
-                    .cm__counter--hover;
-                }
-            }
-
             &.active {
                 .label {
                     font-weight: @CmFont-Base-BoldWeight;
@@ -158,8 +147,26 @@
                 .cm__counter {
                     .cm__counter--active;
                 }
+            }
+        }
+    }
+
+    &.has-hover {
+        ul {
+            li {
+                cursor: pointer;
 
                 &:hover {
+                    .label {
+                        text-decoration: underline;
+                    }
+
+                    .cm__counter {
+                        .cm__counter--hover;
+                    }
+                }
+
+                &.active:hover {
                     .cm__counter {
                         .cm__counter--active-hover;
                     }

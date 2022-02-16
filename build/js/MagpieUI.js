@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.26 (2022-02-01 19:00) ************ */
+/*! ************ MagpieUI v3.40.27 (2022-02-16 20:13) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,9 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.26',
+        '_version' : '3.40.27',
+        '_lang': 'en',
+        '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
         '_isDocumentReady' : false,
         '_isDocumentLoad' : false,
@@ -3763,6 +3765,11 @@ cm.cutHTML = function(str){
 
 cm.splitNumber = function(str){
     return str.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
+};
+
+cm.formatNumber = function(number, locale, params){
+    locale = !cm.isEmpty(locale) ? locale : cm._locale;
+    return new Intl.NumberFormat(locale, params).format(number);
 };
 
 cm.getPercentage = function(num, total){
@@ -32359,7 +32366,8 @@ cm.define('Com.Input', {
         'type' : 'text',
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
-        'icon' : null
+        'icon' : null,
+        'enterPressBehavior' : false,
     }
 },
 function(params){
@@ -32495,6 +32503,17 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.inputKeyPress = function(e){
         var that = this;
         if(that.params['type'] !== 'textarea' && cm.isKeyCode(e.keyCode, 'enter')){
+            cm.preventDefault(e);
+            that.setValue();
+            that.nodes['content']['input'].blur();
+            that.triggerEvent('onEnterPress', that.value);
+        }
+
+        // Special behavior: press Enter without Shift key for triggering onEnterPress event
+        if(
+            that.params['type'] === 'textarea' && that.params.enterPressBehavior &&
+            cm.isKeyCode(e.keyCode, 'enter') && !e.shiftKey
+        ){
             cm.preventDefault(e);
             that.setValue();
             that.nodes['content']['input'].blur();
