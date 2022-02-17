@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.27 (2022-02-16 20:13) ************ */
+/*! ************ MagpieUI v3.40.28 (2022-02-17 22:19) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.27',
+        '_version' : '3.40.28',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -23089,6 +23089,7 @@ cm.define('Com.Request', {
         'className' : '',
         'autoSend' : false,
         'promise' : false,
+        'successOnEmptyData': false,
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
@@ -23361,12 +23362,14 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.filter = function(){
         var that = this;
-        that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
-        that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
-        that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
-        that.responseData.status = cm.reducePath(that.params.responseStatusKey, that.responseData.response);
-        that.responseData.data = cm.reducePath(that.params.responseKey, that.responseData.response);
-        that.responseData.html = cm.reducePath(that.params.responseHTMLKey, that.responseData.response);
+        if(!cm.isEmpty(that.responseData.response)){
+            that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
+            that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
+            that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
+            that.responseData.status = cm.reducePath(that.params.responseStatusKey, that.responseData.response);
+            that.responseData.data = cm.reducePath(that.params.responseKey, that.responseData.response);
+            that.responseData.html = cm.reducePath(that.params.responseHTMLKey, that.responseData.response);
+        }
         // Validate
         if(cm.isEmpty(that.responseData.status)){
             that.responseData.status = false;
@@ -23384,12 +23387,10 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         }
         that.responseData.response = data;
         that.responseData.callback = callback;
-        if(!cm.isEmpty(that.responseData.response)){
-            that.filter();
-        }
+        that.filter();
         if(
             status === 'success'
-            && (!cm.isEmpty(that.responseData.data) || that.responseData.status)
+            && (that.params.successOnEmptyData || !cm.isEmpty(that.responseData.data) || that.responseData.status)
         ){
             that.success();
         }else{
@@ -23690,8 +23691,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processLink = function(el){
         var that = this,
-            href = el.getAttribute('href');
-        if(!cm.isEmpty(href)){
+            href = el.getAttribute('href'),
+            preventDefault = el.dataset.preventDefault;
+        if(!cm.isEmpty(href) && preventDefault !== 'true'){
             href = that.prepareRoute(href);
             that.pushRoute(href[0], href[1]);
         }

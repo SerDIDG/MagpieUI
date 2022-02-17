@@ -29,6 +29,7 @@ cm.define('Com.Request', {
         'className' : '',
         'autoSend' : false,
         'promise' : false,
+        'successOnEmptyData': false,
         'responseKey' : 'data',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
@@ -301,12 +302,14 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.filter = function(){
         var that = this;
-        that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
-        that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
-        that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
-        that.responseData.status = cm.reducePath(that.params.responseStatusKey, that.responseData.response);
-        that.responseData.data = cm.reducePath(that.params.responseKey, that.responseData.response);
-        that.responseData.html = cm.reducePath(that.params.responseHTMLKey, that.responseData.response);
+        if(!cm.isEmpty(that.responseData.response)){
+            that.responseData.errors = cm.reducePath(that.params.responseErrorsKey, that.responseData.response);
+            that.responseData.message = cm.reducePath(that.params.responseMessageKey, that.responseData.response);
+            that.responseData.code = cm.reducePath(that.params.responseCodeKey, that.responseData.response);
+            that.responseData.status = cm.reducePath(that.params.responseStatusKey, that.responseData.response);
+            that.responseData.data = cm.reducePath(that.params.responseKey, that.responseData.response);
+            that.responseData.html = cm.reducePath(that.params.responseHTMLKey, that.responseData.response);
+        }
         // Validate
         if(cm.isEmpty(that.responseData.status)){
             that.responseData.status = false;
@@ -324,12 +327,10 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         }
         that.responseData.response = data;
         that.responseData.callback = callback;
-        if(!cm.isEmpty(that.responseData.response)){
-            that.filter();
-        }
+        that.filter();
         if(
             status === 'success'
-            && (!cm.isEmpty(that.responseData.data) || that.responseData.status)
+            && (that.params.successOnEmptyData || !cm.isEmpty(that.responseData.data) || that.responseData.status)
         ){
             that.success();
         }else{
