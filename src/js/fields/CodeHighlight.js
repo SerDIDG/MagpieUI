@@ -81,7 +81,7 @@ function(params){
 
     that.disable = function(){
         that.disabled = true;
-        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', 'nocursor');
+        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', true);
         return that;
     };
 

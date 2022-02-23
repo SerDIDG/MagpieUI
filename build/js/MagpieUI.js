@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.28 (2022-02-17 22:19) ************ */
+/*! ************ MagpieUI v3.40.29 (2022-02-23 20:41) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.28',
+        '_version' : '3.40.29',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -30497,7 +30497,7 @@ function(params){
 
     that.disable = function(){
         that.disabled = true;
-        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', 'nocursor');
+        that.components['codemirror'] && that.components['codemirror'].setOption('readOnly', true);
         return that;
     };
 
