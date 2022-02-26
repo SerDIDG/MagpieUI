@@ -138,7 +138,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             'match' : [],
             'params' : cm.merge({
                 'pushState' : true,
-                'replaceState' : false
+                'replaceState' : false,
+                'processStateRoute' : true
             }, params)
         };
         // Check hash
@@ -203,7 +204,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this,
             match,
             routeData,
-            mathedRouteData;
+            matchedRouteData;
         // Match routes
         cm.forEach(that.routes, function(routeItem, route){
             match = state.route.match(routeItem.regexp);
@@ -218,11 +219,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                     'access' : that.checkRouteAccess(routeItem)
                 };
                 if(routeData.redirect || routeData.access){
-                    mathedRouteData = routeData
+                    matchedRouteData = routeData
                 }
             }
         });
-        return mathedRouteData;
+        return matchedRouteData;
     };
 
     classProto.destructRoute = function(routeItem){

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.29 (2022-02-23 20:41) ************ */
+/*! ************ MagpieUI v3.40.30 (2022-02-26 06:05) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.29',
+        '_version' : '3.40.30',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -3757,6 +3757,26 @@ cm.removeDanger = function(str){
 
 cm.removeSpaces = function(str){
     return str.replace(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/g, '');
+};
+
+// https://doc.wikimedia.org/mediawiki-core/master/js/source/mediawiki.base.html#mw-html-method-escape
+cm.escapeHTML = function(str){
+    function escapeCallback(str){
+        switch(str){
+            case '\'':
+                return '&#039;';
+            case '"':
+                return '&quot;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '&':
+                return '&amp;';
+        }
+    }
+
+    return str.replace( /['"<>&]/g, escapeCallback );
 };
 
 cm.cutHTML = function(str){
@@ -7161,35 +7181,21 @@ Part['Autoresize'] = (function(){
     var processedNodes = [],
         nodes;
 
+    var getOffset = function(node){
+        return node.offsetHeight - node.clientHeight;
+    };
+
     var process = function(node){
-        if(!cm.inArray(processedNodes, node)){
-            if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
-                var resizeInt,
-                    rows,
-                    oldRows,
-                    matches,
-                    lineHeight = cm.getStyle(node, 'lineHeight', true),
-                    padding = cm.getStyle(node, 'paddingTop', true)
-                        + cm.getStyle(node, 'paddingBottom', true)
-                        + cm.getStyle(node, 'borderTopWidth', true)
-                        + cm.getStyle(node, 'borderBottomWidth', true);
-                cm.addEvent(node, 'scroll', function(){
-                    node.scrollTop = 0;
-                });
-                resizeInt = setInterval(function(){
-                    if(!node || !cm.inDOM(node)){
-                        clearInterval(resizeInt);
-                    }
-                    oldRows = rows;
-                    matches = node.value.match(/\n/g);
-                    rows = matches? matches.length : 0;
-                    if(rows !== oldRows){
-                        node.style.height = [(rows + 1) * lineHeight + padding, 'px'].join('');
-                    }
-                }, 5);
-            }
-            processedNodes.push(node);
+        if(cm.inArray(processedNodes, node)){
+            return;
         }
+        if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
+            cm.addEvent(node, 'input', function (event){
+                event.target.style.height = '0px';
+                event.target.style.height = [event.target.scrollHeight + getOffset(node), 'px'].join('');
+            });
+        }
+        processedNodes.push(node);
     };
 
     return function(container){
@@ -8885,9 +8891,9 @@ cm.define('Com.AbstractFormField', {
         'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text'
         'inputValueType' : 'auto',       // 'auto' | 'unset'
         'value' : null,
+        'values': null,
         'defaultValue' : null,
         'dataValue' : null,
-        'noValue' : null,
         'isOptionValue' : false,
         'setHiddenValue' : true,
         'minLength' : 0,
@@ -9010,7 +9016,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
         that.params.constructorParams.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
         that.params.constructorParams.defaultValue = that.params.defaultValue;
-        that.params.constructorParams.noValue = that.params.noValue;
+        that.params.constructorParams.values = that.params.values;
         that.params.constructorParams.required = that.params.required;
         that.params.constructorParams.validate = that.params.validate;
         that.params.constructorParams.disabled = that.params.disabled;
@@ -9370,19 +9376,25 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.validateValue = function(options){
-        var that = this,
-            constraintsData,
-            testData,
-            data = {
-                'field' : that,
-                'form' : that.components.form,
-                'valid' : true,
-                'message' : null,
-                'value' : that.get()
-            };
+    classProto.validateValue = function(data){
+        var that = this;
+
+        // Validate data config
+        data = cm.merge({
+            field: that,
+            form: that.components.form,
+            valid: true,
+            message: null,
+            value: that.get(),
+            required: false,
+            silent: false,
+            triggerEvents: true,
+        }, data);
+
+        data.required = that.params.required || data.required;
+
         if(cm.isEmpty(data.value)){
-            if(that.params.required || options.required){
+            if(data.required){
                 data.valid = false;
                 data.message = that.lang('required');
                 return data;
@@ -9406,42 +9418,46 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             return data;
         }
         if(!cm.isEmpty(that.params.constraints)){
-            testData = cm.clone(data);
-            constraintsData = that.validateConstraints(testData);
+            var testData = cm.clone(data);
+            var constraintsData = that.validateConstraints(testData);
             if(constraintsData){
                 return constraintsData;
             }
         }
-        if(that.components.controller && cm.isFunction(that.components.controller.validate)){
-            return that.components.controller.validate(data);
+        if(that.components.controller && cm.isFunction(that.components.controller.validator)){
+            return that.components.controller.validator(data);
         }
         return data;
     };
 
-    classProto.validate = function(options){
-        var that = this,
-            data;
-        // Validate options
-        options = cm.merge({
-            'required' : false,
-            'silent' : false,
-            'triggerEvents' : true
-        }, options);
+    classProto.validate = function(data){
+        var that = this;
 
-        if(!that.params.required && !that.params.validate && !options.required){
+        // Validate data config
+        data = cm.merge({
+            required: false,
+            silent: false,
+            triggerEvents: true,
+        }, data);
+
+        data.validate = that.params.validate;
+        data.required = that.params.required || data.required;
+
+        if(!data.required && !data.validate){
             return true;
         }
 
-        data = that.validateValue(options);
-        if(data.valid || options.silent){
+        data = that.validateValue(data);
+        if(data.valid || data.silent){
             that.clearError();
         }else{
             that.renderError(data.message);
         }
 
-        if(options.triggerEvents && !options.silent){
+        if(data.triggerEvents && !data.silent){
             that.triggerEvent('onValidate', data);
         }
+
         return data.valid;
     };
 
@@ -10306,7 +10322,9 @@ cm.define('Com.Form', {
         'onChange',
         'onInput',
         'onClear',
-        'onReset'
+        'onReset',
+        'onEnable',
+        'onDisable'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -10371,6 +10389,7 @@ function(params){
 
     that.isAjax = false;
     that.isProcess = false;
+    that.isEnabled = true;
 
     var init = function(){
         that.renderComponent();
@@ -11145,6 +11164,28 @@ function(params){
         return that;
     };
 
+    that.enable = function(){
+        if(!that.isEnabled){
+            that.isEnabled = true;
+            cm.forEach(that.fields, function(field){
+                field.controller.enable();
+            });
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        if(that.isEnabled){
+            that.isEnabled = false;
+            cm.forEach(that.fields, function(field){
+                field.controller.disable();
+            });
+            that.triggerEvent('onDisable');
+        }
+        return that;
+    };
+
     that.validate = function(options){
         options = cm.merge({
             'silent' : false,
@@ -11170,6 +11211,10 @@ function(params){
     };
 
     that.send = function(){
+        if(!that.isEnabled){
+            return that;
+        }
+
         var data = {
             'valid' : true
         };
@@ -11250,7 +11295,6 @@ function(params){
         that.components.loader && that.components.loader.close(isImmediately);
         return that;
     };
-
 
     that.getName = function(){
         return that.params.name;
@@ -23713,7 +23757,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             'match' : [],
             'params' : cm.merge({
                 'pushState' : true,
-                'replaceState' : false
+                'replaceState' : false,
+                'processStateRoute' : true
             }, params)
         };
         // Check hash
@@ -23778,7 +23823,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this,
             match,
             routeData,
-            mathedRouteData;
+            matchedRouteData;
         // Match routes
         cm.forEach(that.routes, function(routeItem, route){
             match = state.route.match(routeItem.regexp);
@@ -23793,11 +23838,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                     'access' : that.checkRouteAccess(routeItem)
                 };
                 if(routeData.redirect || routeData.access){
-                    mathedRouteData = routeData
+                    matchedRouteData = routeData
                 }
             }
         });
-        return mathedRouteData;
+        return matchedRouteData;
     };
 
     classProto.destructRoute = function(routeItem){
@@ -30002,282 +30047,376 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
     };
 });
 cm.define('Com.Check', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'controllerEvents' : true,
-        'type' : 'checkbox',
-        'multiple' : false,
-        'inline' : false,
-        'noValue' : null
+    extend: 'Com.AbstractInput',
+    params: {
+        controllerEvents: true,
+        type: 'checkbox',
+        inline: false,
+        multiple: false,
+        values: {
+            checked: null,
+            unchecked: null,
+        },
+    },
+    strings: {
+        'required': 'This field is required.'
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
+function() {
+    Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.Check', function(classConstructor, className, classProto, classInherit){
-    classProto.onConstructStart = function(){
+cm.getConstructor('Com.Check', function(classConstructor, className, classProto, classInherit) {
+    classProto.onConstructStart = function() {
         var that = this;
+
         // Variables
         that.inputs = [];
         that.hidden = [];
+
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
     };
 
-    classProto.onValidateParamsProcess = function(){
+    classProto.onValidateParamsProcess = function() {
         var that = this;
-        if(!cm.isEmpty(that.params['options'])){
-            that.params['multiple'] = that.params['type'] === 'checkbox';
+
+        if (!cm.isEmpty(that.params.options)) {
+            that.params.multiple = that.params.type === 'checkbox';
+
             // Convert option values
-            cm.forEach(that.params['options'], function(item){
-                if(!cm.isEmpty(item['value']) && (item['checked'] || item['selected'])){
-                    if(cm.isEmpty(that.params['value'])){
-                        that.params['value'] = [];
-                    }else if(cm.isString(that.params['value']) || cm.isNumber(that.params['value'])){
-                        that.params['value'] = [that.params['value']];
+            cm.forEach(that.params.options, function(item) {
+                if (!cm.isEmpty(item.value) && (item.checked || item.selected)) {
+                    if (cm.isEmpty(that.params.value)) {
+                        that.params.value = [];
+                    } else if (cm.isString(that.params.value) || cm.isNumber(that.params.value)) {
+                        that.params.value = [that.params.value];
                     }
-                    cm.arrayAdd(that.params['value'], item['value']);
+                    cm.arrayAdd(that.params.value, item.value);
                 }
             });
-        }
-        // Checked parameter behavior override
-        // TODO: Test
-        if(that.params['checked'] && cm.isEmpty(that.params['value'])){
-            if(!that.params['multiple']){
-                that.params['value'] = true;
+        } else {
+            that.params.type = 'checkbox';
+            that.params.multiple = false;
+
+            if (cm.isEmpty(that.params.values)) {
+                that.params.values = {
+                    checked: null,
+                    unchecked: null,
+                };
+            }
+
+            // Checked parameter behavior override
+            if (cm.isEmpty(that.params.value) && (that.params.checked)) {
+                that.params.value = true;
+            }
+
+            // Convert value parameters
+            if (!cm.isEmpty(that.params.value) && cm.isEmpty(that.params.values.checked)) {
+                that.params.values.checked = that.params.value;
+            }
+
+            if (cm.isEmpty(that.params.values.checked)) {
+                that.params.values.checked = true;
+            }
+
+            if (cm.isEmpty(that.params.values.unchecked)) {
+                that.params.values.unchecked = false;
             }
         }
     };
 
-    classProto.onEnable = function(){
+    classProto.onEnable = function() {
         var that = this;
-        cm.forEach(that.inputs, function(item){
-            item['input'].disabled = false;
+        cm.forEach(that.inputs, function(item) {
+            item.input.disabled = false;
         });
     };
 
-    classProto.onDisable = function(){
+    classProto.onDisable = function() {
         var that = this;
-        cm.forEach(that.inputs, function(item){
-            item['input'].disabled = true;
+        cm.forEach(that.inputs, function(item) {
+            item.input.disabled = true;
         });
     };
 
     /*** VIEW MODEL ***/
 
-    classProto.renderHiddenContent = function(){
+    classProto.renderHiddenContent = function() {
         var that = this,
             nodes = {},
             inputContainer;
-        that.nodes['hiddenContent'] = nodes;
+        that.nodes.hiddenContent = nodes;
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'display-none'});
+        nodes.container = cm.node('div', {classes: 'display-none'});
+
         // Render inputs
-        if(!cm.isEmpty(that.params['options'])){
-            cm.forEach(that.params['options'], function(option){
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.params.options, function(option) {
                 inputContainer = that.renderHiddenInput(option);
-                cm.appendChild(inputContainer, nodes['container']);
+                cm.appendChild(inputContainer, nodes.container);
             });
-        }else{
-            inputContainer = that.renderHiddenInput();
-            cm.appendChild(inputContainer, nodes['container']);
+        } else {
+            inputContainer = that.renderHiddenInput({
+                'value': that.params.value,
+                'values': that.params.values,
+            });
+            cm.appendChild(inputContainer, nodes.container);
         }
+
         // Export
-        return nodes['container'];
+        return nodes.container;
     };
 
-    classProto.renderHiddenInput = function(item){
-        var that = this,
-            nodes = {};
+    classProto.renderHiddenInput = function(item) {
+        var that = this;
+
         item = cm.merge({
-            'nodes' : nodes,
-            'value' : null
+            nodes: {},
+            value: null,
+            values: {
+                checked: null,
+                unchecked: null,
+            },
         }, item);
+
+        // Validate
+        if (cm.isEmpty(item.values.checked)) {
+            item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
+        }
+        if (cm.isEmpty(item.values.unchecked)) {
+            item.values.unchecked = false;
+        }
+
         // Structure
-        nodes['container'] = nodes['input'] = cm.node('input', {'type' : that.params['type']});
-        item['input'] = nodes['input'];
+        item.nodes.container = item.nodes.input = cm.node('input', {'type': that.params.type});
+        item.input = item.nodes.input;
+
         // Attributes
-        if(!cm.isEmpty(item['value'])){
-            item['input'].value = item['value'];
+        if (!cm.isEmpty(that.params.name)) {
+            item.input.setAttribute('name', that.params.name);
         }
-        if(!cm.isEmpty(that.params['name'])){
-            item['input'].setAttribute('name', that.params['name']);
-        }
+
         // Push
         that.hidden.push(item);
-        return nodes['container'];
+        return item.nodes.container;
     };
 
-    classProto.renderContent = function(){
+    classProto.renderContent = function() {
         var that = this,
             nodes = {},
             inputContainer;
-        that.nodes['content'] = nodes;
+        that.nodes.content = nodes;
         that.triggerEvent('onRenderContentStart');
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'pt__check-line'});
-        if(that.params['inline']){
-            cm.addClass(nodes['container'], 'is-line');
-        }else{
-            cm.addClass(nodes['container'], 'is-box');
+        nodes.container = cm.node('div', {classes: 'pt__check-line'});
+        if (that.params.inline) {
+            cm.addClass(nodes.container, 'is-line');
+        } else {
+            cm.addClass(nodes.container, 'is-box');
         }
+
         // Render inputs
         that.triggerEvent('onRenderContentProcess');
-        if(!cm.isEmpty(that.params['options'])){
-            cm.forEach(that.params['options'], function(option){
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.params.options, function(option) {
                 inputContainer = that.renderInput(option);
-                cm.appendChild(inputContainer, nodes['container']);
+                cm.appendChild(inputContainer, nodes.container);
             });
-        }else{
+        } else {
             inputContainer = that.renderInput({
-                'text' : that.params['placeholder'],
-                'value' : that.params['value'],
-                'noValue' : that.params['noValue']
+                'text': that.params.placeholder,
+                'value': that.params.value,
+                'values': that.params.values,
             });
-            cm.appendChild(inputContainer, nodes['container']);
+            cm.appendChild(inputContainer, nodes.container);
         }
         that.triggerEvent('onRenderContentEnd');
+
         // Push
-        return nodes['container'];
+        return nodes.container;
     };
 
-    classProto.renderInput = function(item){
+    classProto.renderInput = function(item) {
         var that = this,
             nodes = {};
         item = cm.merge({
-            'nodes' : nodes,
-            'text' : '',
-            'value' : null,
-            'noValue' : null
+            nodes: {},
+            text: '',
+            value: null,
+            values: {
+                checked: null,
+                unchecked: null,
+            },
         }, item);
-        // Structure
-        nodes['container'] = cm.node('label',
-            nodes['input'] = cm.node('input', {'type' : that.params['type']}),
-            nodes['label'] = cm.node('span', {'class' : 'label', 'innerHTML' : item['text']})
-        );
-        item['input'] = nodes['input'];
-        // Attributes
-        if(!cm.isEmpty(item['value'])){
-            nodes['input'].value = item['value'];
+
+        // Validate
+        if (cm.isEmpty(item.values.checked)) {
+            item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
         }
+        if (cm.isEmpty(item.values.unchecked)) {
+            item.values.unchecked = false;
+        }
+
+        // Structure
+        item.nodes.container = cm.node('label',
+            item.nodes.input = cm.node('input', {'type': that.params.type}),
+            item.nodes.label = cm.node('span', {
+                classes: 'label',
+                innerHTML: item.text,
+            })
+        );
+        item.input = item.nodes.input;
+
         // Events
-        cm.addEvent(item['input'], 'click', function(e){
+        cm.addEvent(item.nodes.input, 'click', function(e) {
             that.setValue(item, true);
         });
+
         // Push
         that.inputs.push(item);
-        return nodes['container'];
+        return item.nodes.container;
     };
 
-    /* *** DATA VALUE *** */
+    /*** DATA VALUE ***/
 
-    classProto.setHiddenAttributes = function(){
+    classProto.setHiddenAttributes = function() {
         var that = this;
     };
 
-    classProto.validateValue = function(value){
+    classProto.validateValue = function(value) {
         var that = this;
+        if (cm.isEmpty(that.params.options)) {
+            if (cm.isEmpty(value)) {
+                return that.params.values.unchecked;
+            } else if (cm.isBoolean(value)) {
+                return value ? that.params.values.checked : that.params.values.unchecked;
+            } else {
+                return value;
+            }
+        }
         return value;
     };
 
-    classProto.setValue = function(item, triggerEvents){
-        var that = this,
-            value = null;
-        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
+    classProto.setValue = function(item, triggerEvents) {
+        var that = this;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+
         // Get value
-        if(!cm.isEmpty(that.params['options'])){
-            if(that.params['multiple']){
+        var value = null;
+        if (!cm.isEmpty(that.params.options)) {
+            if (that.params.multiple) {
                 value = [];
-                cm.forEach(that.inputs, function(item){
-                    item['input'].checked && value.push(item['value']);
+                cm.forEach(that.inputs, function(item) {
+                    if (item.input.checked && item.values.checked) {
+                        value.push(item.values.checked);
+                    } else if(item.values.unchecked) {
+                        value.push(item.values.unchecked);
+                    }
                 });
-            }else{
-                value = item['value'];
+            } else {
+                value = item.values.checked;
             }
-        }else{
-            if(item['input'].checked){
-                value = !cm.isEmpty(item['value']) ? item['value'] : true;
-            }else{
-                value = !cm.isEmpty(item['noValue']) ? item['noValue'] : false;
-            }
+        } else {
+            value = item.input.checked ? item.values.checked : item.values.unchecked;
         }
+
         that.set(value, triggerEvents);
         return that;
     };
 
-    classProto.saveHiddenValue = function(value){
+    classProto.saveHiddenValue = function(value) {
         var that = this;
-        if(!cm.isEmpty(that.params['options'])){
-            if(that.params['multiple']){
-                cm.forEach(that.hidden, function(item){
-                    item['input'].checked = cm.inArray(value, item['value']);
-                });
-            }else{
-                cm.forEach(that.hidden, function(item){
-                    item['input'].checked = value === item['value'];
-                });
-            }
-        }else{
-            that.hidden[0]['input'].checked = that.testInputValue(value, null, that.params['noValue']);
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.hidden, function(item) {
+                that.setInputItemValue(item, value);
+            });
+        } else {
+            that.setInputItemValue(that.hidden[0], value);
         }
     };
 
-    classProto.setData = function(value){
+    classProto.setData = function(value) {
         var that = this;
-        if(!cm.isEmpty(that.params['options'])){
-            if(that.params['multiple']){
-                cm.forEach(that.inputs, function(item){
-                    item['input'].checked = cm.inArray(value, item['value']);
-                });
-            }else{
-                cm.forEach(that.inputs, function(item){
-                    item['input'].checked = value === item['value'];
-                });
-            }
-        }else{
-            that.inputs[0]['input'].checked = that.testInputValue(value, null, that.params['noValue']);
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.inputs, function(item) {
+                that.setInputItemValue(item, value);
+            });
+        } else {
+            that.setInputItemValue(that.inputs[0], value);
         }
     };
 
-    classProto.testInputValue = function(value, yesValue, noValue){
-        // TODO: Check all variants
-        return (!cm.isEmpty(yesValue) && value === yesValue)
-            || !(cm.isEmpty(value) || value === 0 || value === '0' || value === false || value === noValue);
+    classProto.setInputItemValue = function(item, value) {
+        var that = this;
+
+        if (!cm.isEmpty(that.params.options)) {
+            if (that.params.multiple) {
+                item.input.checked = cm.inArray(value, item.values.checked);
+            } else {
+                item.input.checked = value === item.values.checked;
+            }
+        } else {
+            item.input.checked = that.testInputValue(value, that.params.values.checked, that.params.values.unchecked);
+        }
+
+        item.input.value = value;
+    };
+
+    classProto.testInputValue = function(value, checkedValue, uncheckedValue) {
+        // TODO: Test all variants
+        // FIXME: Remove checks for zero, etc
+        return (
+            (!cm.isEmpty(checkedValue) && value === checkedValue) ||
+            !(cm.isEmpty(value) || value === 0 || value === '0' || value === false || value === uncheckedValue)
+        );
+    };
+
+    /*** VALIDATOR ***/
+
+    classProto.validator = function(data) {
+        var that = this;
+        if (data.required && cm.isEmpty(that.params.options)) {
+            data.valid = data.value === that.params.values.checked;
+            if (!data.valid) {
+                data.message = that.msg('required');
+            }
+        }
+        return data;
     };
 });
 
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('checkbox', {
-    'node' : cm.node('div', {'class' : 'pt__check-line'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Check',
-    'constructorParams' : {
-        'type' : 'checkbox'
-    }
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'checkbox',
+    },
 });
 
 Com.FormFields.add('radio', {
-    'node' : cm.node('div', {'class' : 'pt__check-line'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Check',
-    'constructorParams' : {
-        'type' : 'radio',
-        'inline' : true
-    }
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'radio',
+        inline: true,
+    },
 });
 
 Com.FormFields.add('check', {
-    'node' : cm.node('div', {'class' : 'pt__check-line'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Check',
-    'constructorParams' : {
-        'type' : 'checkbox',
-        'inline' : true
-    }
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'checkbox',
+        inline: true,
+    },
 });
 
 cm.define('Com.CheckTrigger', {
@@ -32369,6 +32508,7 @@ cm.define('Com.Input', {
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
         'icon' : null,
+        'autoResize' : false,
         'enterPressBehavior' : false,
     }
 },
@@ -32411,6 +32551,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.onDisable = function(){
         var that = this;
         that.nodes['content']['input'].disabled = true;
+    };
+
+    classProto.onAfterRender = function(){
+        var that = this;
+        // Autoresize
+        if(that.params['type'] === 'textarea' && that.params['autoResize']){
+            cm.addClass(that.nodes['content']['input'], 'cm-autoresize');
+            Part.Autoresize(that.nodes['container']);
+        }
     };
 
     /*** VIEW MODEL ***/
@@ -35546,7 +35695,7 @@ cm.getConstructor('Com.TwoSideMultiSelect', function(classConstructor, className
         });
     };
 });
-window.LESS = {"CmIconVars-Family":"Magpie-UI-Glyphs","CmIconVars-Color":"#666666","CmIconVars-Version":"3.40.29","CmIcon-Magnify":"\\e600","CmIcon-Reduce":"\\e601","CmIcon-CircleArrowLeft":"\\e700","CmIcon-CircleArrowRight":"\\e701","CmIcon-CircleArrowUp":"\\e702","CmIcon-CircleArrowDown":"\\e703","CmIcon-CircleClose":"\\e704","CmIcon-CircleTwitter":"\\e800","CmIcon-CircleInstagram":"\\e801","CmIcon-CircleYoutube":"\\e802","CmIcon-CircleVK":"\\e803","CmIcon-CircleFacebook":"\\e804","CmIcon-ChevronDown":"\\e900","CmIcon-ChevronUp":"\\e901","CmIcon-ChevronLeft":"\\e902","CmIcon-ChevronRight":"\\e903","CmIconIA-Spinner-BorderSize":"3px","CmIconIA-Spinner-DefaultBackground":"#e8e8e8","CmIconIA-Spinner-ActiveBackground":"#2985e0","CmVersion":"3.40.29","CmProtocol":"","CmPath-Images":"../img/MagpieUI","CmPath-Fonts":"../fonts/MagpieUI","CmScreen-Mobile":"640px","CmScreen-MobilePortrait":"480px","CmScreen-Tablet":"1024px","CmScreen-TabletPortrait":"768px","CmSize-None":"0px","CmSize-XXXXSmall":"2px","CmSize-XXXSmall":"4px","CmSize-XXSmall":"8px","CmSize-XSmall":"12px","CmSize-Small":"16px","CmSize-Medium":"24px","CmSize-Large":"32px","CmSize-XLarge":"48px","CmSize-XXLarge":"64px","CmSize-XXXLarge":"96px","CmIndent-None":"0px","CmIndent-XXXXSmall":"2px","CmIndent-XXXSmall":"4px","CmIndent-XXSmall":"8px","CmIndent-XSmall":"12px","CmIndent-Small":"16px","CmIndent-Medium":"24px","CmIndent-Large":"32px","CmIndent-XLarge":"48px","CmIndent-XXLarge":"64px","CmIndent-XXXLarge":"96px","CmIndents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"CmUI-Transition-Duration":"250ms","CmUI-Transition-DurationMedium":"150ms","CmUI-Transition-DurationShort":"100ms","CmUI-Transition-DurationLong":"500ms","CmUI-Transition-DurationXLong":"750ms","CmUI-Transition-DurationXXLong":"1000ms","CmUI-Transition-DurationReverse":"100ms","CmUI-Transition-DurationNone":"0ms","CmUI-Transition-Delay-Hide":"300ms","CmUI-MotionAsymmetric":"cubic-bezier(0.5, 0, 0.15, 1)","CmUI-Opacity-Hover":0.7,"CmUI-Shadow":[0,0,"8px","rgba(0, 0, 0, 0.15)"],"CmUI-ShadowLight":[0,0,"2px","rgba(0, 0, 0, 0.2)"],"CmUI-ShadowInner":[0,"2px","2px","rgba(0, 0, 0, 0.4)","inset"],"CmUI-Shadow-Bottom":[0,"2px","5px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-BottomLarge":[0,"2px","12px","rgba(0, 0, 0, 0.2)"],"CmUI-Shadow-BottomSmall":[0,"1px","2px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-Right":["2px",0,"5px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-Left":["-2px",0,"5px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-Card":[0,"1px","2px","rgba(0, 0, 0, 0.25)"],"CmUI-Overlay":"rgba(255, 255, 255, 0.7)","CmUI-Overlay-Fade":0.7,"CmUI-Overlay-FadeHeight":0.9,"CmUI-Overlay-FadeMedium":0.3,"CmUI-Overlay-FadeP":"70%","CmUI-Overlay-FadeHeightP":"90%","CmUI-Overlay-FadeMediumP":"30%","CmUI-Overlay-Dark":"rgba(0, 0, 0, 0.7)","CmUI-Overlay-Light":"rgba(255, 255, 255, 0.7)","CmUI-Overlay-Duration":"500ms","CmUI-AdaptiveFrom":"768px","CmUI-TooltipWidth":"320px","CmUI-ColumnIndent":"24px","CmUI-BoxIndent":"24px","CmUI-GoogleFont":"Open+Sans","CmUI-GoogleFont-Weight":"100,300,400,600,700,800","CmVar-Color-LightDefault-Lightness":"100%","CmVar-Color-LightHighlight-Lightness":"98%","CmVar-Color-LightHover-Lightness":"95%","CmVar-Color-LightActive-Lightness":"91%","CmVar-Color-LightActiveHover-Lightness":"86%","CmVar-Color-MiddleDefault-Lightness":"80%","CmVar-Color-MiddleHover-Lightness":"75%","CmVar-Color-MiddleActive-Lightness":"70%","CmVar-Color-MiddleActiveHover-Lightness":"65%","CmVar-Color-DarkDefault-Lightness":"52%","CmVar-Color-DarkHover-Lightness":"45%","CmVar-Color-DarkActive-Lightness":"35%","CmVar-Color-DarkActiveHover-Lightness":"25%","CmColor-Primary":210,"CmColor-Primary-DarkSaturation":"75%","CmColor-Primary-DarkLighten":"0%","CmColor-Primary-DarkDefault-Lightness":"52%","CmColor-Primary-DarkHover-Lightness":"45%","CmColor-Primary-DarkActive-Lightness":"35%","CmColor-Primary-DarkActiveHover-Lightness":"25%","CmColor-Primary-DarkDefault":"#2985e0","CmColor-Primary-DarkHover":"#1d73c9","CmColor-Primary-DarkActive":"#16599c","CmColor-Primary-DarkActiveHover":"#104070","CmColor-Primary-MiddleSaturation":"75%","CmColor-Primary-MiddleLighten":"0%","CmColor-Primary-MiddleDefault-Lightness":"80%","CmColor-Primary-MiddleHover-Lightness":"75%","CmColor-Primary-MiddleActive-Lightness":"70%","CmColor-Primary-MiddleActiveHover-Lightness":"65%","CmColor-Primary-MiddleDefault":"#a6ccf2","CmColor-Primary-MiddleHover":"#8fbfef","CmColor-Primary-MiddleActive":"#79b2ec","CmColor-Primary-MiddleActiveHover":"#63a6e9","CmColor-Primary-LightSaturation":"70%","CmColor-Primary-LightLighten":"0%","CmColor-Primary-LightHighlight-Lightness":"98%","CmColor-Primary-LightHover-Lightness":"95%","CmColor-Primary-LightActive-Lightness":"91%","CmColor-Primary-LightActiveHover-Lightness":"86%","CmColor-Primary-LightDefault":"transparent","CmColor-Primary-LightHighlight":"#f6fafd","CmColor-Primary-LightHover":"#e9f2fb","CmColor-Primary-LightActive":"#d8e8f8","CmColor-Primary-LightActiveHover":"#c2dbf4","CmColor-Secondary":0,"CmColor-Secondary-DarkSaturation":"0%","CmColor-Secondary-DarkLighten":"0%","CmColor-Secondary-DarkDefault-Lightness":"52%","CmColor-Secondary-DarkHover-Lightness":"45%","CmColor-Secondary-DarkActive-Lightness":"35%","CmColor-Secondary-DarkActiveHover-Lightness":"25%","CmColor-Secondary-DarkDefault":"#858585","CmColor-Secondary-DarkHover":"#737373","CmColor-Secondary-DarkActive":"#595959","CmColor-Secondary-DarkActiveHover":"#404040","CmColor-Secondary-MiddleSaturation":"0%","CmColor-Secondary-MiddleLighten":"0%","CmColor-Secondary-MiddleDefault-Lightness":"80%","CmColor-Secondary-MiddleHover-Lightness":"75%","CmColor-Secondary-MiddleActive-Lightness":"70%","CmColor-Secondary-MiddleActiveHover-Lightness":"65%","CmColor-Secondary-MiddleDefault":"#cccccc","CmColor-Secondary-MiddleHover":"#bfbfbf","CmColor-Secondary-MiddleActive":"#b3b3b3","CmColor-Secondary-MiddleActiveHover":"#a6a6a6","CmColor-Secondary-LightSaturation":"0%","CmColor-Secondary-LightLighten":"0%","CmColor-Secondary-LightHighlight-Lightness":"98%","CmColor-Secondary-LightHover-Lightness":"95%","CmColor-Secondary-LightActive-Lightness":"91%","CmColor-Secondary-LightActiveHover-Lightness":"86%","CmColor-Secondary-LightDefault":"transparent","CmColor-Secondary-LightHighlight":"#fafafa","CmColor-Secondary-LightHover":"#f2f2f2","CmColor-Secondary-LightActive":"#e8e8e8","CmColor-Secondary-LightActiveHover":"#dbdbdb","CmColor-Success":120,"CmColor-Success-DarkSaturation":"65%","CmColor-Success-DarkLighten":"-10%","CmColor-Success-DarkDefault-Lightness":"52%","CmColor-Success-DarkHover-Lightness":"45%","CmColor-Success-DarkActive-Lightness":"35%","CmColor-Success-DarkActiveHover-Lightness":"25%","CmColor-Success-DarkDefault":"#25b125","CmColor-Success-DarkHover":"#1f931f","CmColor-Success-DarkActive":"#166916","CmColor-Success-DarkActiveHover":"#0d3f0d","CmColor-Success-MiddleSaturation":"65%","CmColor-Success-MiddleLighten":"0%","CmColor-Success-MiddleDefault-Lightness":"80%","CmColor-Success-MiddleHover-Lightness":"75%","CmColor-Success-MiddleActive-Lightness":"70%","CmColor-Success-MiddleActiveHover-Lightness":"65%","CmColor-Success-MiddleDefault":"#abedab","CmColor-Success-MiddleHover":"#96e996","CmColor-Success-MiddleActive":"#81e481","CmColor-Success-MiddleActiveHover":"#6ce06c","CmColor-Success-LightSaturation":"60%","CmColor-Success-LightLighten":"0%","CmColor-Success-LightHighlight-Lightness":"98%","CmColor-Success-LightHover-Lightness":"95%","CmColor-Success-LightActive-Lightness":"91%","CmColor-Success-LightActiveHover-Lightness":"86%","CmColor-Success-LightDefault":"transparent","CmColor-Success-LightHighlight":"#f7fdf7","CmColor-Success-LightHover":"#ebfaeb","CmColor-Success-LightActive":"#daf6da","CmColor-Success-LightActiveHover":"#c6f1c6","CmColor-Danger":0,"CmColor-Danger-DarkSaturation":"65%","CmColor-Danger-DarkLighten":"0%","CmColor-Danger-DarkDefault-Lightness":"52%","CmColor-Danger-DarkHover-Lightness":"45%","CmColor-Danger-DarkActive-Lightness":"35%","CmColor-Danger-DarkActiveHover-Lightness":"25%","CmColor-Danger-DarkDefault":"#d43535","CmColor-Danger-DarkHover":"#bd2828","CmColor-Danger-DarkActive":"#931f1f","CmColor-Danger-DarkActiveHover":"#691616","CmColor-Danger-MiddleSaturation":"65%","CmColor-Danger-MiddleLighten":"0%","CmColor-Danger-MiddleDefault-Lightness":"80%","CmColor-Danger-MiddleHover-Lightness":"75%","CmColor-Danger-MiddleActive-Lightness":"70%","CmColor-Danger-MiddleActiveHover-Lightness":"65%","CmColor-Danger-MiddleDefault":"#edabab","CmColor-Danger-MiddleHover":"#e99696","CmColor-Danger-MiddleActive":"#e48181","CmColor-Danger-MiddleActiveHover":"#e06c6c","CmColor-Danger-LightSaturation":"65%","CmColor-Danger-LightLighten":"0%","CmColor-Danger-LightHighlight-Lightness":"98%","CmColor-Danger-LightHover-Lightness":"95%","CmColor-Danger-LightActive-Lightness":"91%","CmColor-Danger-LightActiveHover-Lightness":"86%","CmColor-Danger-LightDefault":"transparent","CmColor-Danger-LightHighlight":"#fdf7f7","CmColor-Danger-LightHover":"#fbeaea","CmColor-Danger-LightActive":"#f7d9d9","CmColor-Danger-LightActiveHover":"#f3c4c4","CmColor-Warning":38,"CmColor-Warning-DarkSaturation":"75%","CmColor-Warning-DarkLighten":"0%","CmColor-Warning-DarkDefault-Lightness":"52%","CmColor-Warning-DarkHover-Lightness":"45%","CmColor-Warning-DarkActive-Lightness":"35%","CmColor-Warning-DarkActiveHover-Lightness":"25%","CmColor-Warning-DarkDefault":"#e09d29","CmColor-Warning-DarkHover":"#c98a1d","CmColor-Warning-DarkActive":"#9c6b16","CmColor-Warning-DarkActiveHover":"#704d10","CmColor-Warning-MiddleSaturation":"70%","CmColor-Warning-MiddleLighten":"0%","CmColor-Warning-MiddleDefault-Lightness":"80%","CmColor-Warning-MiddleHover-Lightness":"75%","CmColor-Warning-MiddleActive-Lightness":"70%","CmColor-Warning-MiddleActiveHover-Lightness":"65%","CmColor-Warning-MiddleDefault":"#f0d6a8","CmColor-Warning-MiddleHover":"#eccb93","CmColor-Warning-MiddleActive":"#e8c17d","CmColor-Warning-MiddleActiveHover":"#e4b667","CmColor-Warning-LightSaturation":"70%","CmColor-Warning-LightLighten":"0%","CmColor-Warning-LightHighlight-Lightness":"98%","CmColor-Warning-LightHover-Lightness":"95%","CmColor-Warning-LightActive-Lightness":"91%","CmColor-Warning-LightActiveHover-Lightness":"86%","CmColor-Warning-LightDefault":"transparent","CmColor-Warning-LightHighlight":"#fdfbf6","CmColor-Warning-LightHover":"#fbf5e9","CmColor-Warning-LightActive":"#f8ecd8","CmColor-Warning-LightActiveHover":"#f4e2c2","CmColor-Font":"#666666","CmColor-Font-Opposite":"#ffffff","CmColor-Font-Hint":"#999999","CmColor-Font-Disabled":"#999999","CmColor-Font-Placeholder":"#b7b7b7","CmColor-Font-Link":"#2985e0","CmColor-Font-LinkHover":"#1d73c9","CmColor-Font-LinkActive":"#16599c","CmColor-Background":"#ffffff","CmColor-Icon":"#666666","CmColor-Mark":"#fdf6ad","CmColor-Gallery":"#111111","CmColor-Border":"#cccccc","CmColor-BorderHover":"#a6a6a6","CmColor-BorderSelected":"#a6ccf2","CmColor-BorderActive":"#2985e0","CmColor-BorderDisabled":"#e8e8e8","CmFont-Base-LightWeight":300,"CmFont-Base-NormalWeight":400,"CmFont-Base-MediumWeight":500,"CmFont-Base-BoldWeight":600,"CmFont-Base-LineHeight":"18px","CmFont-Base-LineHeightSmall":"18px","CmFont-Base-Family":"\"Open+Sans\", arial, helvetica, sans-serif","CmFont-Base-Size":"14px","CmFont-Base-SizeSmall":"12px","CmFont-Base-Weight":400,"CmFont-Base-Color":"#666666","CmFont-Base-ColorOpposite":"#ffffff","CmFont-Base-Hint-Size":"12px","CmFont-Base-Hint-Color":"#999999","CmFont-Placeholder-Size":"inherit","CmFont-Placeholder-SizeSmall":"12px","CmFont-Placeholder-Style":"inherit","CmFont-Placeholder-Color":"#b7b7b7","CmFont-UI-LightWeight":300,"CmFont-UI-NormalWeight":400,"CmFont-UI-BoldWeight":600,"CmFont-UI-LineHeight":"18px","CmFont-UI-Size":"14px","CmFont-UI-SizeSmall":"12px","CmFont-UI-Family":"\"Open+Sans\", arial, helvetica, sans-serif","CmFont-UI-Weight":400,"CmFont-UI-Color":"#666666","CmFont-UI-ColorOpposite":"#ffffff","CmFont-UI-H1-LineHeight":"32px","CmFont-UI-H1-Size":"24px","CmFont-UI-H1-Weight":300,"CmFont-UI-H1-Color":"#666666","CmFont-UI-H4-LineHeight":"24px","CmFont-UI-H4-Size":"16px","CmFont-UI-H4-Weight":300,"CmFont-UI-H4-Color":"#666666","CmBorder-Radius":"3px","CmBorder-Width":"1px","CmBorder-Style":"solid","CmBorder-BoxWidth":"2px","CmBorder-TemporaryWidth":"2px","CmBorder-Default":["1px","solid","#cccccc"],"CmBorder-Separator":["1px","dotted","#cccccc"],"CmBorder-Editable":["1px","dashed","#2985e0"],"CmBorder-Box":["2px","solid","#cccccc"],"CmBorder-BoxHover":["2px","solid","#a6a6a6"],"CmBorder-BoxActive":["2px","solid","#2985e0"],"CmBorder-BoxSelected":["2px","solid","#a6ccf2"],"CmBorder-Temporary":["2px","dashed","#cccccc"],"CmBorder-TemporaryHover":["2px","dashed","#a6a6a6"],"CmBorder-TemporaryActive":["2px","dashed","#2985e0"],"CmBorder-TemporarySelected":["2px","dashed","#a6ccf2"],"CmButton-PaddingX":"12px","CmButton-OutlineWidth":"1px","CmButton-OutlineOffset":"1px","CmInput-Padding":"6px","CmInput-BorderWidth":"1px","CmInput-BorderStyle":"solid","CmInput-DefaultBackground":"#ffffff","CmInput-DefaultBorder":"#cccccc","CmInput-HoverBackground":"#ffffff","CmInput-HoverBorder":"#a6a6a6","CmInput-ActiveBackground":"#ffffff","CmInput-ActiveBorder":"#2985e0","CmInput-DisabledBackground":"#fafafa","CmInput-DisableBorder":"#e8e8e8","CmTextarea-Height":"100px","CmSelect-Size":7,"CmScrollBar-Size":"8px","CmScrollBar-Radius":"3px","CmScrollBar-TrackBackground":"rgba(250, 250, 250, 0.5)","CmScrollBar-ThumbColor":"#dbdbdb","CmScrollBar-ThumbColorHover":"#cccccc","CmScrollBar-Light-ThumbColor":"#f6fafd","CmScrollBar-Light-ThumbColorHover":"#e9f2fb","CmForm-FieldHeight":"32px","CmForm-FieldIndent":"16px","CmForm-FieldTitleWidth":"156px","CmForm-FieldTitleWidthSpaceless":"128px","CmForm-FieldInnerIndent":"8px","CmForm-FieldSmallWidth":"210px","CmForm-ButtonsIndent":"12px","CmForm-IconsIndent":"8px","CmForm-ImageBox-ButtonWidth":"100px","CmForm-Cols-Names":["one","two","three","four","five","six","seven","eight","nine","ten"],"CmForm-Cols-Indent":"2%","CmForm-FilesList-Count":3,"CmForm-FieldPlaceholder-Scale":0.75,"CmCounter-Size":"16px","CmCounter-Border":"1px","CmCounter-Radius":"16px","PtBox-BorderWidth":"1px","PtBox-BorderColor":"#cccccc","PtBox-Padding":"4px","PtBoxItem-Sizes":[50,80,150],"PtBoxItem-DescrLines":1,"PtBoxContent-Indent":"48px","PtBoxContent-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtBoxCode-PaddingY":"8px","PtBoxCode-PaddingX":"12px","PtMenu-IndentY":"4px","PtMenu-IndentX":"0px","PtMenu-BorderWidth":"1px","PtMenu-BorderColor":"#cccccc","PtMenu-ItemIndentY":"2px","PtMenu-ItemIndentX":"12px","PtMenu-Item-Color":"#666666","PtMenu-Item-HoverColor":"#1d73c9","PtMenu-Item-ActiveColor":"#16599c","PtMenu-SeparatorIndentX":"12px","PtMenu-SeparatorSize":"1px","PtMenu-SeparatorColor":"#cccccc","PtMenu-Dropdown-IndentX":"0px","PtMenu-Dropdown-IndentY":"0px","PtLinks-Indent":"4px","PtLinks-Separator":"|","PtLinks-Separator-Color":"#666666","PtImage-Background":"#fafafa","PtImage-Color":"#ffffff","PtImage-Padding":"8px","PtImage-TitlePaddingTop":"4px","PtImage-ButtonsIndent":"8px","PtRange-Size":"24px","PtRange-Height":"200px","PtRange-Drag-Color":"#000000","PtList-PaddingY":"2px","PtList-PaddingX":"4px","PtList-Indent":"1px","PtList-ImageIndent":"8px","PtListingItems-Count":10,"PtListingItems-PaddingY":"2px","PtListingItems-PaddingX":"4px","PtListingItems-Indent":"1px","PtListingCounters-Indent":"4px","PtListingCounters-Height":"24px","PtColumns-Indent":"24px","PtColumns-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtColumns-AdaptiveFrom":"768px","PtGrid-Indent":"24px","PtGrid-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtGrid-AdaptiveFrom":"768px","PtSelectable-Hover-Background":"#fafafa","PtSelectable-Hover-Border":"#f2f2f2","PtSelectable-Active-Background":"#f6fafd","PtSelectable-Active-Border":"#d8e8f8","PtToolbar-GroupIndent":"16px","PtToolbar-ItemIndent":"4px","PtToolbar-ItemIndents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtToolbar-XXXSmall":"32px","PtToolbar-XXSmall":"56px","PtToolbar-XSmall":"76px","PtToolbar-Small":"100px","PtToolbar-Medium":"150px","PtToolbar-Large":"250px","PtToolbar-XLarge":"350px","PtLineShare-Size":"32px","PtLineShare-Indent":"8px","PtGridlist-AdaptiveFrom":"768px","PtGridlist-FontSize":"14px","PtGridlist-Title-FontSize":"14px","PtGridlist-Title-DefaultBackground":"transparent","PtGridlist-Title-HoverBackground":"#e9f2fb","PtGridlist-Title-ActiveBackground":"#d8e8f8","PtGridlist-Cell-Padding":"6px","PtGridlist-Cell-SpaceSize":"1px","PtGridlist-Cell-SpaceBorder":["1px","solid","transparent"],"PtGridlist-Cell-FontSize":"14px","PtGridlist-Cell-LineHeight":"18px","PtGridlist-Cell-DefaultBackground":"transparent","PtGridlist-Cell-HoverBackground":"#e9f2fb","PtGridlist-Cell-ActiveBackground":"#d8e8f8","PtGridlist-Cell-ActiveHoverBackground":"#c2dbf4","PtGridlist-Cell-SuccessBackground":"#daf6da","PtGridlist-Cell-SuccessHoverBackground":"#c6f1c6","PtGridlist-Cell-WarningBackground":"#f8ecd8","PtGridlist-Cell-WarningHoverBackground":"#f4e2c2","PtGridlist-Cell-DangerBackground":"#f7d9d9","PtGridlist-Cell-DangerHoverBackground":"#f3c4c4","PtGridlist-Title-HasBackground-Default":"#fafafa","PtGridlist-Title-HasBackground-Hover":"#f2f2f2","PtGridlist-Cell-HasBackground-Default":"#fafafa","PtGridlist-Cell-HasBackground-Hover":"#f2f2f2","PtGridlist-Cell-HasBackground-Active":"#e8e8e8","PtDnD-Area-Padding":"16px","PtDnD-Area-BorderRadius":"3px","PtDnD-DropDuration":"400ms","PtDnD-MoveDuration":"200ms","PtDnD-Chassis-HighlightIndent":"24px","PtDnD-Area-ActiveBackground":"rgba(54, 140, 226, 0.12)","PtDnD-Area-ActiveBorder":["1px","dashed","#2985e0"],"PtDnD-Area-HighlightBackground":"rgba(54, 140, 226, 0.05)","PtDnD-Area-HighlightBorder":["1px","dashed","rgba(41, 133, 224, 0.3)"],"ComDashboard-Area-Padding":0,"ComDashboard-Widget-Indent":"24px","ComDashboard-Placeholder-Height":"48px","PtEditable-HoverBackground":"rgba(255, 255, 255, 0.5)","PtEditable-ActiveBackground":"rgba(255, 255, 255, 0.5)","PtEditable-Drag-DefaultBackground":"#fafafa","PtEditable-Drag-HoverBackground":"#f2f2f2","PtEditable-Drag-ActiveBackground":"#d8e8f8","PtDrag-Vertical-Width":"48px","PtDrag-Vertical-Height":"16px","PtDrag-Vertical-Icon-Width":"18px","PtDrag-Vertical-Icon-Height":"6px","PtDrag-Horizontal-Width":"16px","PtDrag-Horizontal-Height":"32px","PtDrag-Horizontal-Icon-Width":"6px","PtDrag-Horizontal-Icon-Height":"14px","PtDrag-DefaultBackground":"#fafafa","PtDrag-DefaultBorder":"#cccccc","PtDrag-HoverBackground":"#f2f2f2","PtDrag-HoverBorder":"#a6a6a6","PtDrag-ActiveBackground":"#d8e8f8","PtDrag-ActiveBorder":"#79b2ec","PtDrag-Line-Size":"2px","PtDrag-Line-DefaultBackground":"#e8e8e8","PtDrag-Line-HoverBackground":"#e8e8e8","PtDrag-Line-ActiveBackground":"#2985e0","PtRuler-Line-Size":"2px","PtRuler-Line-Indent":"12px","PtRuler-Line-DefaultBackground":"#e8e8e8","PtRuler-Line-HoverBackground":"#e8e8e8","PtRuler-Line-ActiveBackground":"#2985e0","PtOverlay-Default":"rgba(255, 255, 255, 0.7)","PtOverlay-Light":"rgba(255, 255, 255, 0.7)","PtOverlay-SolidLight":"#ffffff","PtOverlay-Dark":"rgba(0, 0, 0, 0.7)","PtOverlay-Duration":"500ms","PtOverlay-Spinner-Size":"32px","PtOverlay-ZIndex":1003,"LtCollapsible-SidebarWidth":"350px","LtCollapsible-Duration":"500ms","LtComment-InnerIndent":"4px","LtForum-AdaptiveFrom":"768px","LtForum-PostBackground":"#fafafa","LtForum-PostBackgroundFeatured":"#f6fafd","LtForum-PostTitleBackground":"#e8e8e8","LtForum-PostLeftColumnSize":"174px","LtProfile-LeftColumn":"174px","LtPost-Indent":"32px","LtPost-Image-Size":"172px","LtPost-Image-Indent":"16px","ComCalendar-CellHeight":"21px","ComCalendar-CellBorderRadius":"2px","ComCalendar-Outer-Background":"transparent","ComCalendar-Outer-BackgroundHover":"transparent","ComCalendar-Outer-BorderSize":0,"ComCalendar-Outer-Border":"transparent","ComCalendar-Outer-BorderHover":"transparent","ComCalendar-Inner-Background":"#fafafa","ComCalendar-Inner-BackgroundHover":"#f2f2f2","ComCalendar-Inner-BorderSize":"1px","ComCalendar-Inner-Border":"#e8e8e8","ComCalendar-Inner-BorderHover":"#dbdbdb","ComCalendar-Weekend-Background":"#e8e8e8","ComCalendar-Weekend-BackgroundHover":"#dbdbdb","ComCalendar-Weekend-BorderSize":"1px","ComCalendar-Weekend-Border":"#e8e8e8","ComCalendar-Weekend-BorderHover":"#dbdbdb","ComCalendar-Today-Background":"transparent","ComCalendar-Today-BackgroundHover":"#c2dbf4","ComCalendar-Today-BorderSize":"2px","ComCalendar-Today-Border":"#2985e0","ComCalendar-Today-BorderHover":"#1d73c9","ComCalendar-Active-Background":"#d8e8f8","ComCalendar-Active-BackgroundHover":"#c2dbf4","ComCalendar-Active-BorderSize":"1px","ComCalendar-Active-Border":"#2985e0","ComCalendar-Active-BorderHover":"#1d73c9","ComColumns-AdaptiveFrom":"768px","ComColumns-Indent":"24px","ComColumns-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"ComColumns-MinHeight":"64px","ComColumns-HoverBackground":"rgba(0, 0, 0, 0.01)","ComColumns-ActiveBackground":"rgba(0, 0, 0, 0.01)","ComColumns-Ruler-DefaultBackground":"rgba(250, 250, 250, 0.8)","ComColumns-Ruler-ActiveBackground":"rgba(246, 250, 253, 0.8)","ComSpacer-HoverBackground":"rgba(0, 0, 0, 0.01)","ComSpacer-ActiveBackground":"#f6fafd","ComBoxTools-Width":"210px","ComBoxTools-LineSize":"32px","ComBoxTools-LineIndent":"4px","ComBoxTools-LinkSize":"24px","ComBoxTools-LinkIndent":"4px","ComPositionTools-Item-Size":"24px","ComPositionTools-Item-Indent":"4px","ComPositionTools-Item-Large-Size":"32px","ComPositionTools-Item-Large-Indent":"4px","ComRepeatTools-Item-Size":"38px","ComRepeatTools-Item-Indent":"4px","ComScaleTools-Item-Size":"38px","ComScaleTools-Item-Indent":"4px","ComDatepicker-Width":"210px","ComDatepicker-TooltipWidth":"210px","ComTimeSelect-Width":"210px","ComTimeSelect-Indent":"12px","ComColorPalette-Size":"200px","ComColorPalette-Drag-Size":"16px","ComColorPicker-Width":"210px","ComFileDropzone-Height":"128px","ComFileDropzone-Duration":"250ms","ComImageInput-Height":"128px","ComImageInput-CoverBackground":"rgba(0, 0, 0, 0.7)","ComImageInput-CoverDelay":"300ms","ComImageInput-ButtonsIndent":"4px","CmMultipleFileInput-Count":3,"ComDialog-Duration":"250ms","ComDialog-WindowDuration":"500ms","ComDialog-Indent":"24px","ComDialog-Radius":"3px","ComDialog-TitleIndent":"12px","ComDialog-IconSize":"24px","ComDialog-Overlay":"rgba(0, 0, 0, 0.7)","ComDialog-Default-Background":"#ffffff","ComDialog-Black-Background":"#111111","ComDialog-Black-TitleColor":"#ffffff","ComDialog-Light-Overlay":"rgba(255, 255, 255, 0.7)","ComDialog-Light-Background":"#ffffff","ComDialog-Light-TitleColor":"#ffffff","ComDialog-Light-TitleBackground":"#2985e0","ComDialog-Compact-Indent":"12px","ComDialog-Compact-TitleHeight":"32px","ComDialog-Compact-TitleIndent":"12px","ComDialog-Compact-IconSize":"32px","ComDialog-Box-Indent":"24px","ComTabset-AdaptiveFrom":"768px","ComTabset-BorderColor":"#cccccc","ComTabset-BorderRadius":"3px","ComTabset-BorderWidth":"1px","ComTabset-Border":["1px","solid","#cccccc"],"ComTabset-BorderOverlap":"#ffffff","ComTabset-BorderOverlapRadius":0,"ComTabset-Duration":"250ms","ComTabset-Column-Width":"256px","ComTabset-Content-Background":"#ffffff","ComTabset-Content-Padding":"24px","ComTabset-Tabs-Height":"32px","ComTabset-Tabs-Indent":"4px","ComTabset-Tabs-IndentInner":"12px","ComTabset-Tabs-IndentBetween":"-1px","ComTabset-Tabs-HorizontalIndent":"24px","ComTabset-Tabs-VerticalIndent":"24px","ComTabset-Tabs-FontSize":"14px","ComTabset-Tabs-DefaultBackground":"#e8e8e8","ComTabset-Tabs-HoverBackground":"#f2f2f2","ComTabset-Tabs-ActiveBackground":"#ffffff","ComTabset-TabsTitle-Background":"#fafafa","ComTabset-Tabs-ImageSize":"24px","ComTabset-Tabs-TitleIndent":"8px","ComPagination-Duration":"250ms","ComToggleBox-AdaptiveFrom":"768px","ComToggleBox-Size":"32px","ComToggleBox-SizeMedium":"24px","ComToggleBox-SizeUI":"24px","ComToggleBox-SizeBase":"24px","ComToggleBox-HasBackground-TitleIndentX":"8px","ComToggleBox-HasBackground-TitleIndentY":"0px","ComToggleBox-HasBackground-TitleIndent":["0px","8px"],"ComToggleBox-HasBackground-TitleBorderRadius":"3px","ComToggleBox-ContentBackgroundNormal":"#fafafa","ComToggleBox-ContentBackgroundHover":"#f2f2f2","ComToggleBox-ContentSpaceBorder":["1px","solid","transparent"],"ComToggleBox-Theme":"Light","ComToggleBox-HasBackground-TitleTheme":"Light","ComToggleBox-ThemeLight-TitleColorNormal":"#666666","ComToggleBox-ThemeLight-TitleColorHover":"#1d73c9","ComToggleBox-ThemeLight-TitleColorActive":"#666666","ComToggleBox-ThemeLight-TitleIcon":"../img/MagpieUI/icons/small/arrow-right.png","ComToggleBox-ThemeLight-TitleBackgroundNormal":"#e8e8e8","ComToggleBox-ThemeLight-TitleBackgroundHover":"#c2dbf4","ComToggleBox-ThemeLight-TitleBackgroundActive":"#e8e8e8","ComToggleBox-ThemeDark-TitleColorNormal":"#ffffff","ComToggleBox-ThemeDark-TitleColorHover":"#c2dbf4","ComToggleBox-ThemeDark-TitleColorActive":"#ffffff","ComToggleBox-ThemeDark-TitleIcon":"../img/MagpieUI/icons/small/arrow-white-right.png","ComToggleBox-ThemeDark-TitleBackgroundNormal":"#2985e0","ComToggleBox-ThemeDark-TitleBackgroundHover":"#1d73c9","ComToggleBox-ThemeDark-TitleBackgroundActive":"#2985e0","ComSelect-ListCount":7,"ComSelect-MultiListCount":5,"ComSelect-MaxHeight":"114px","ComAutocomplete-ListCount":7,"ComTagsInput-itemIndent":"12px","ComTagsInput-itemWidth":"250px","ComTagsInput-inputWidth":"200px","ComZoom-Background":"#111111","ComGallery-Background":"#111111","ComGalleryControls-Button-Size":"12px","ComGalleryLayout-ArrowWidth":"24px","ComGalleryLayout-SizesCount":12,"ComSlider-Duration":"500ms","AppPath-Images":"../img","AppPath-Fonts":"../fonts"};
+window.LESS = {"CmIconVars-Family":"Magpie-UI-Glyphs","CmIconVars-Color":"#666666","CmIconVars-Version":"3.40.30","CmIcon-Magnify":"\\e600","CmIcon-Reduce":"\\e601","CmIcon-CircleArrowLeft":"\\e700","CmIcon-CircleArrowRight":"\\e701","CmIcon-CircleArrowUp":"\\e702","CmIcon-CircleArrowDown":"\\e703","CmIcon-CircleClose":"\\e704","CmIcon-CircleTwitter":"\\e800","CmIcon-CircleInstagram":"\\e801","CmIcon-CircleYoutube":"\\e802","CmIcon-CircleVK":"\\e803","CmIcon-CircleFacebook":"\\e804","CmIcon-ChevronDown":"\\e900","CmIcon-ChevronUp":"\\e901","CmIcon-ChevronLeft":"\\e902","CmIcon-ChevronRight":"\\e903","CmIconIA-Spinner-BorderSize":"3px","CmIconIA-Spinner-DefaultBackground":"#e8e8e8","CmIconIA-Spinner-ActiveBackground":"#2985e0","CmVersion":"3.40.30","CmProtocol":"","CmPath-Images":"../img/MagpieUI","CmPath-Fonts":"../fonts/MagpieUI","CmScreen-Mobile":"640px","CmScreen-MobilePortrait":"480px","CmScreen-Tablet":"1024px","CmScreen-TabletPortrait":"768px","CmSize-None":"0px","CmSize-XXXXSmall":"2px","CmSize-XXXSmall":"4px","CmSize-XXSmall":"8px","CmSize-XSmall":"12px","CmSize-Small":"16px","CmSize-Medium":"24px","CmSize-Large":"32px","CmSize-XLarge":"48px","CmSize-XXLarge":"64px","CmSize-XXXLarge":"96px","CmIndent-None":"0px","CmIndent-XXXXSmall":"2px","CmIndent-XXXSmall":"4px","CmIndent-XXSmall":"8px","CmIndent-XSmall":"12px","CmIndent-Small":"16px","CmIndent-Medium":"24px","CmIndent-Large":"32px","CmIndent-XLarge":"48px","CmIndent-XXLarge":"64px","CmIndent-XXXLarge":"96px","CmIndents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"CmUI-Transition-Duration":"250ms","CmUI-Transition-DurationMedium":"150ms","CmUI-Transition-DurationShort":"100ms","CmUI-Transition-DurationLong":"500ms","CmUI-Transition-DurationXLong":"750ms","CmUI-Transition-DurationXXLong":"1000ms","CmUI-Transition-DurationReverse":"100ms","CmUI-Transition-DurationNone":"0ms","CmUI-Transition-Delay-Hide":"300ms","CmUI-MotionAsymmetric":"cubic-bezier(0.5, 0, 0.15, 1)","CmUI-Opacity-Hover":0.7,"CmUI-Shadow":[0,0,"8px","rgba(0, 0, 0, 0.15)"],"CmUI-ShadowLight":[0,0,"2px","rgba(0, 0, 0, 0.2)"],"CmUI-ShadowInner":[0,"2px","2px","rgba(0, 0, 0, 0.4)","inset"],"CmUI-Shadow-Bottom":[0,"2px","5px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-BottomLarge":[0,"2px","12px","rgba(0, 0, 0, 0.2)"],"CmUI-Shadow-BottomSmall":[0,"1px","2px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-Right":["2px",0,"5px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-Left":["-2px",0,"5px","rgba(0, 0, 0, 0.15)"],"CmUI-Shadow-Card":[0,"1px","2px","rgba(0, 0, 0, 0.25)"],"CmUI-Overlay":"rgba(255, 255, 255, 0.7)","CmUI-Overlay-Fade":0.7,"CmUI-Overlay-FadeHeight":0.9,"CmUI-Overlay-FadeMedium":0.3,"CmUI-Overlay-FadeP":"70%","CmUI-Overlay-FadeHeightP":"90%","CmUI-Overlay-FadeMediumP":"30%","CmUI-Overlay-Dark":"rgba(0, 0, 0, 0.7)","CmUI-Overlay-Light":"rgba(255, 255, 255, 0.7)","CmUI-Overlay-Duration":"500ms","CmUI-AdaptiveFrom":"768px","CmUI-TooltipWidth":"320px","CmUI-ColumnIndent":"24px","CmUI-BoxIndent":"24px","CmUI-GoogleFont":"Open+Sans","CmUI-GoogleFont-Weight":"100,300,400,600,700,800","CmVar-Color-LightDefault-Lightness":"100%","CmVar-Color-LightHighlight-Lightness":"98%","CmVar-Color-LightHover-Lightness":"95%","CmVar-Color-LightActive-Lightness":"91%","CmVar-Color-LightActiveHover-Lightness":"86%","CmVar-Color-MiddleDefault-Lightness":"80%","CmVar-Color-MiddleHover-Lightness":"75%","CmVar-Color-MiddleActive-Lightness":"70%","CmVar-Color-MiddleActiveHover-Lightness":"65%","CmVar-Color-DarkDefault-Lightness":"52%","CmVar-Color-DarkHover-Lightness":"45%","CmVar-Color-DarkActive-Lightness":"35%","CmVar-Color-DarkActiveHover-Lightness":"25%","CmColor-Primary":210,"CmColor-Primary-DarkSaturation":"75%","CmColor-Primary-DarkLighten":"0%","CmColor-Primary-DarkDefault-Lightness":"52%","CmColor-Primary-DarkHover-Lightness":"45%","CmColor-Primary-DarkActive-Lightness":"35%","CmColor-Primary-DarkActiveHover-Lightness":"25%","CmColor-Primary-DarkDefault":"#2985e0","CmColor-Primary-DarkHover":"#1d73c9","CmColor-Primary-DarkActive":"#16599c","CmColor-Primary-DarkActiveHover":"#104070","CmColor-Primary-MiddleSaturation":"75%","CmColor-Primary-MiddleLighten":"0%","CmColor-Primary-MiddleDefault-Lightness":"80%","CmColor-Primary-MiddleHover-Lightness":"75%","CmColor-Primary-MiddleActive-Lightness":"70%","CmColor-Primary-MiddleActiveHover-Lightness":"65%","CmColor-Primary-MiddleDefault":"#a6ccf2","CmColor-Primary-MiddleHover":"#8fbfef","CmColor-Primary-MiddleActive":"#79b2ec","CmColor-Primary-MiddleActiveHover":"#63a6e9","CmColor-Primary-LightSaturation":"70%","CmColor-Primary-LightLighten":"0%","CmColor-Primary-LightHighlight-Lightness":"98%","CmColor-Primary-LightHover-Lightness":"95%","CmColor-Primary-LightActive-Lightness":"91%","CmColor-Primary-LightActiveHover-Lightness":"86%","CmColor-Primary-LightDefault":"transparent","CmColor-Primary-LightHighlight":"#f6fafd","CmColor-Primary-LightHover":"#e9f2fb","CmColor-Primary-LightActive":"#d8e8f8","CmColor-Primary-LightActiveHover":"#c2dbf4","CmColor-Secondary":0,"CmColor-Secondary-DarkSaturation":"0%","CmColor-Secondary-DarkLighten":"0%","CmColor-Secondary-DarkDefault-Lightness":"52%","CmColor-Secondary-DarkHover-Lightness":"45%","CmColor-Secondary-DarkActive-Lightness":"35%","CmColor-Secondary-DarkActiveHover-Lightness":"25%","CmColor-Secondary-DarkDefault":"#858585","CmColor-Secondary-DarkHover":"#737373","CmColor-Secondary-DarkActive":"#595959","CmColor-Secondary-DarkActiveHover":"#404040","CmColor-Secondary-MiddleSaturation":"0%","CmColor-Secondary-MiddleLighten":"0%","CmColor-Secondary-MiddleDefault-Lightness":"80%","CmColor-Secondary-MiddleHover-Lightness":"75%","CmColor-Secondary-MiddleActive-Lightness":"70%","CmColor-Secondary-MiddleActiveHover-Lightness":"65%","CmColor-Secondary-MiddleDefault":"#cccccc","CmColor-Secondary-MiddleHover":"#bfbfbf","CmColor-Secondary-MiddleActive":"#b3b3b3","CmColor-Secondary-MiddleActiveHover":"#a6a6a6","CmColor-Secondary-LightSaturation":"0%","CmColor-Secondary-LightLighten":"0%","CmColor-Secondary-LightHighlight-Lightness":"98%","CmColor-Secondary-LightHover-Lightness":"95%","CmColor-Secondary-LightActive-Lightness":"91%","CmColor-Secondary-LightActiveHover-Lightness":"86%","CmColor-Secondary-LightDefault":"transparent","CmColor-Secondary-LightHighlight":"#fafafa","CmColor-Secondary-LightHover":"#f2f2f2","CmColor-Secondary-LightActive":"#e8e8e8","CmColor-Secondary-LightActiveHover":"#dbdbdb","CmColor-Success":120,"CmColor-Success-DarkSaturation":"65%","CmColor-Success-DarkLighten":"-10%","CmColor-Success-DarkDefault-Lightness":"52%","CmColor-Success-DarkHover-Lightness":"45%","CmColor-Success-DarkActive-Lightness":"35%","CmColor-Success-DarkActiveHover-Lightness":"25%","CmColor-Success-DarkDefault":"#25b125","CmColor-Success-DarkHover":"#1f931f","CmColor-Success-DarkActive":"#166916","CmColor-Success-DarkActiveHover":"#0d3f0d","CmColor-Success-MiddleSaturation":"65%","CmColor-Success-MiddleLighten":"0%","CmColor-Success-MiddleDefault-Lightness":"80%","CmColor-Success-MiddleHover-Lightness":"75%","CmColor-Success-MiddleActive-Lightness":"70%","CmColor-Success-MiddleActiveHover-Lightness":"65%","CmColor-Success-MiddleDefault":"#abedab","CmColor-Success-MiddleHover":"#96e996","CmColor-Success-MiddleActive":"#81e481","CmColor-Success-MiddleActiveHover":"#6ce06c","CmColor-Success-LightSaturation":"60%","CmColor-Success-LightLighten":"0%","CmColor-Success-LightHighlight-Lightness":"98%","CmColor-Success-LightHover-Lightness":"95%","CmColor-Success-LightActive-Lightness":"91%","CmColor-Success-LightActiveHover-Lightness":"86%","CmColor-Success-LightDefault":"transparent","CmColor-Success-LightHighlight":"#f7fdf7","CmColor-Success-LightHover":"#ebfaeb","CmColor-Success-LightActive":"#daf6da","CmColor-Success-LightActiveHover":"#c6f1c6","CmColor-Danger":0,"CmColor-Danger-DarkSaturation":"65%","CmColor-Danger-DarkLighten":"0%","CmColor-Danger-DarkDefault-Lightness":"52%","CmColor-Danger-DarkHover-Lightness":"45%","CmColor-Danger-DarkActive-Lightness":"35%","CmColor-Danger-DarkActiveHover-Lightness":"25%","CmColor-Danger-DarkDefault":"#d43535","CmColor-Danger-DarkHover":"#bd2828","CmColor-Danger-DarkActive":"#931f1f","CmColor-Danger-DarkActiveHover":"#691616","CmColor-Danger-MiddleSaturation":"65%","CmColor-Danger-MiddleLighten":"0%","CmColor-Danger-MiddleDefault-Lightness":"80%","CmColor-Danger-MiddleHover-Lightness":"75%","CmColor-Danger-MiddleActive-Lightness":"70%","CmColor-Danger-MiddleActiveHover-Lightness":"65%","CmColor-Danger-MiddleDefault":"#edabab","CmColor-Danger-MiddleHover":"#e99696","CmColor-Danger-MiddleActive":"#e48181","CmColor-Danger-MiddleActiveHover":"#e06c6c","CmColor-Danger-LightSaturation":"65%","CmColor-Danger-LightLighten":"0%","CmColor-Danger-LightHighlight-Lightness":"98%","CmColor-Danger-LightHover-Lightness":"95%","CmColor-Danger-LightActive-Lightness":"91%","CmColor-Danger-LightActiveHover-Lightness":"86%","CmColor-Danger-LightDefault":"transparent","CmColor-Danger-LightHighlight":"#fdf7f7","CmColor-Danger-LightHover":"#fbeaea","CmColor-Danger-LightActive":"#f7d9d9","CmColor-Danger-LightActiveHover":"#f3c4c4","CmColor-Warning":38,"CmColor-Warning-DarkSaturation":"75%","CmColor-Warning-DarkLighten":"0%","CmColor-Warning-DarkDefault-Lightness":"52%","CmColor-Warning-DarkHover-Lightness":"45%","CmColor-Warning-DarkActive-Lightness":"35%","CmColor-Warning-DarkActiveHover-Lightness":"25%","CmColor-Warning-DarkDefault":"#e09d29","CmColor-Warning-DarkHover":"#c98a1d","CmColor-Warning-DarkActive":"#9c6b16","CmColor-Warning-DarkActiveHover":"#704d10","CmColor-Warning-MiddleSaturation":"70%","CmColor-Warning-MiddleLighten":"0%","CmColor-Warning-MiddleDefault-Lightness":"80%","CmColor-Warning-MiddleHover-Lightness":"75%","CmColor-Warning-MiddleActive-Lightness":"70%","CmColor-Warning-MiddleActiveHover-Lightness":"65%","CmColor-Warning-MiddleDefault":"#f0d6a8","CmColor-Warning-MiddleHover":"#eccb93","CmColor-Warning-MiddleActive":"#e8c17d","CmColor-Warning-MiddleActiveHover":"#e4b667","CmColor-Warning-LightSaturation":"70%","CmColor-Warning-LightLighten":"0%","CmColor-Warning-LightHighlight-Lightness":"98%","CmColor-Warning-LightHover-Lightness":"95%","CmColor-Warning-LightActive-Lightness":"91%","CmColor-Warning-LightActiveHover-Lightness":"86%","CmColor-Warning-LightDefault":"transparent","CmColor-Warning-LightHighlight":"#fdfbf6","CmColor-Warning-LightHover":"#fbf5e9","CmColor-Warning-LightActive":"#f8ecd8","CmColor-Warning-LightActiveHover":"#f4e2c2","CmColor-Font":"#666666","CmColor-Font-Opposite":"#ffffff","CmColor-Font-Hint":"#999999","CmColor-Font-Disabled":"#999999","CmColor-Font-Placeholder":"#b7b7b7","CmColor-Font-Link":"#2985e0","CmColor-Font-LinkHover":"#1d73c9","CmColor-Font-LinkActive":"#16599c","CmColor-Background":"#ffffff","CmColor-Icon":"#666666","CmColor-Mark":"#fdf6ad","CmColor-Gallery":"#111111","CmColor-Border":"#cccccc","CmColor-BorderHover":"#a6a6a6","CmColor-BorderSelected":"#a6ccf2","CmColor-BorderActive":"#2985e0","CmColor-BorderDisabled":"#e8e8e8","CmFont-Base-LightWeight":300,"CmFont-Base-NormalWeight":400,"CmFont-Base-MediumWeight":500,"CmFont-Base-BoldWeight":600,"CmFont-Base-LineHeight":"18px","CmFont-Base-LineHeightSmall":"18px","CmFont-Base-Family":"\"Open+Sans\", arial, helvetica, sans-serif","CmFont-Base-Size":"14px","CmFont-Base-SizeSmall":"12px","CmFont-Base-Weight":400,"CmFont-Base-Color":"#666666","CmFont-Base-ColorOpposite":"#ffffff","CmFont-Base-Hint-Size":"12px","CmFont-Base-Hint-Color":"#999999","CmFont-Placeholder-Size":"inherit","CmFont-Placeholder-SizeSmall":"12px","CmFont-Placeholder-Style":"inherit","CmFont-Placeholder-Color":"#b7b7b7","CmFont-UI-LightWeight":300,"CmFont-UI-NormalWeight":400,"CmFont-UI-BoldWeight":600,"CmFont-UI-LineHeight":"18px","CmFont-UI-Size":"14px","CmFont-UI-SizeSmall":"12px","CmFont-UI-Family":"\"Open+Sans\", arial, helvetica, sans-serif","CmFont-UI-Weight":400,"CmFont-UI-Color":"#666666","CmFont-UI-ColorOpposite":"#ffffff","CmFont-UI-H1-LineHeight":"32px","CmFont-UI-H1-Size":"24px","CmFont-UI-H1-Weight":300,"CmFont-UI-H1-Color":"#666666","CmFont-UI-H4-LineHeight":"24px","CmFont-UI-H4-Size":"16px","CmFont-UI-H4-Weight":300,"CmFont-UI-H4-Color":"#666666","CmBorder-Radius":"3px","CmBorder-Width":"1px","CmBorder-Style":"solid","CmBorder-BoxWidth":"2px","CmBorder-TemporaryWidth":"2px","CmBorder-Default":["1px","solid","#cccccc"],"CmBorder-Separator":["1px","dotted","#cccccc"],"CmBorder-Editable":["1px","dashed","#2985e0"],"CmBorder-Box":["2px","solid","#cccccc"],"CmBorder-BoxHover":["2px","solid","#a6a6a6"],"CmBorder-BoxActive":["2px","solid","#2985e0"],"CmBorder-BoxSelected":["2px","solid","#a6ccf2"],"CmBorder-Temporary":["2px","dashed","#cccccc"],"CmBorder-TemporaryHover":["2px","dashed","#a6a6a6"],"CmBorder-TemporaryActive":["2px","dashed","#2985e0"],"CmBorder-TemporarySelected":["2px","dashed","#a6ccf2"],"CmButton-PaddingX":"12px","CmButton-OutlineWidth":"1px","CmButton-OutlineOffset":"1px","CmInput-Padding":"6px","CmInput-BorderWidth":"1px","CmInput-BorderStyle":"solid","CmInput-DefaultBackground":"#ffffff","CmInput-DefaultBorder":"#cccccc","CmInput-HoverBackground":"#ffffff","CmInput-HoverBorder":"#a6a6a6","CmInput-ActiveBackground":"#ffffff","CmInput-ActiveBorder":"#2985e0","CmInput-DisabledBackground":"#fafafa","CmInput-DisableBorder":"#e8e8e8","CmTextarea-Height":"100px","CmSelect-Size":7,"CmScrollBar-Size":"8px","CmScrollBar-Radius":"3px","CmScrollBar-TrackBackground":"rgba(250, 250, 250, 0.5)","CmScrollBar-ThumbColor":"#dbdbdb","CmScrollBar-ThumbColorHover":"#cccccc","CmScrollBar-Light-ThumbColor":"#f6fafd","CmScrollBar-Light-ThumbColorHover":"#e9f2fb","CmForm-FieldHeight":"32px","CmForm-FieldIndent":"16px","CmForm-FieldTitleWidth":"156px","CmForm-FieldTitleWidthSpaceless":"128px","CmForm-FieldInnerIndent":"8px","CmForm-FieldSmallWidth":"210px","CmForm-ButtonsIndent":"12px","CmForm-IconsIndent":"8px","CmForm-ImageBox-ButtonWidth":"100px","CmForm-Cols-Names":["one","two","three","four","five","six","seven","eight","nine","ten"],"CmForm-Cols-Indent":"2%","CmForm-FilesList-Count":3,"CmForm-FieldPlaceholder-Scale":0.75,"CmCounter-Size":"16px","CmCounter-Border":"1px","CmCounter-Radius":"16px","PtBox-BorderWidth":"1px","PtBox-BorderColor":"#cccccc","PtBox-Padding":"4px","PtBoxItem-Sizes":[50,80,150],"PtBoxItem-DescrLines":1,"PtBoxContent-Indent":"48px","PtBoxContent-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtBoxCode-PaddingY":"8px","PtBoxCode-PaddingX":"12px","PtMenu-IndentY":"4px","PtMenu-IndentX":"0px","PtMenu-BorderWidth":"1px","PtMenu-BorderColor":"#cccccc","PtMenu-ItemIndentY":"2px","PtMenu-ItemIndentX":"12px","PtMenu-Item-Color":"#666666","PtMenu-Item-HoverColor":"#1d73c9","PtMenu-Item-ActiveColor":"#16599c","PtMenu-SeparatorIndentX":"12px","PtMenu-SeparatorSize":"1px","PtMenu-SeparatorColor":"#cccccc","PtMenu-Dropdown-IndentX":"0px","PtMenu-Dropdown-IndentY":"0px","PtLinks-Indent":"4px","PtLinks-Separator":"|","PtLinks-Separator-Color":"#666666","PtImage-Background":"#fafafa","PtImage-Color":"#ffffff","PtImage-Padding":"8px","PtImage-TitlePaddingTop":"4px","PtImage-ButtonsIndent":"8px","PtRange-Size":"24px","PtRange-Height":"200px","PtRange-Drag-Color":"#000000","PtList-PaddingY":"2px","PtList-PaddingX":"4px","PtList-Indent":"1px","PtList-ImageIndent":"8px","PtListingItems-Count":10,"PtListingItems-PaddingY":"2px","PtListingItems-PaddingX":"4px","PtListingItems-Indent":"1px","PtListingCounters-Indent":"4px","PtListingCounters-Height":"24px","PtColumns-Indent":"24px","PtColumns-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtColumns-AdaptiveFrom":"768px","PtGrid-Indent":"24px","PtGrid-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtGrid-AdaptiveFrom":"768px","PtSelectable-Hover-Background":"#fafafa","PtSelectable-Hover-Border":"#f2f2f2","PtSelectable-Active-Background":"#f6fafd","PtSelectable-Active-Border":"#d8e8f8","PtToolbar-GroupIndent":"16px","PtToolbar-ItemIndent":"4px","PtToolbar-ItemIndents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"PtToolbar-XXXSmall":"32px","PtToolbar-XXSmall":"56px","PtToolbar-XSmall":"76px","PtToolbar-Small":"100px","PtToolbar-Medium":"150px","PtToolbar-Large":"250px","PtToolbar-XLarge":"350px","PtLineShare-Size":"32px","PtLineShare-Indent":"8px","PtGridlist-AdaptiveFrom":"768px","PtGridlist-FontSize":"14px","PtGridlist-Title-FontSize":"14px","PtGridlist-Title-DefaultBackground":"transparent","PtGridlist-Title-HoverBackground":"#e9f2fb","PtGridlist-Title-ActiveBackground":"#d8e8f8","PtGridlist-Cell-Padding":"6px","PtGridlist-Cell-SpaceSize":"1px","PtGridlist-Cell-SpaceBorder":["1px","solid","transparent"],"PtGridlist-Cell-FontSize":"14px","PtGridlist-Cell-LineHeight":"18px","PtGridlist-Cell-DefaultBackground":"transparent","PtGridlist-Cell-HoverBackground":"#e9f2fb","PtGridlist-Cell-ActiveBackground":"#d8e8f8","PtGridlist-Cell-ActiveHoverBackground":"#c2dbf4","PtGridlist-Cell-SuccessBackground":"#daf6da","PtGridlist-Cell-SuccessHoverBackground":"#c6f1c6","PtGridlist-Cell-WarningBackground":"#f8ecd8","PtGridlist-Cell-WarningHoverBackground":"#f4e2c2","PtGridlist-Cell-DangerBackground":"#f7d9d9","PtGridlist-Cell-DangerHoverBackground":"#f3c4c4","PtGridlist-Title-HasBackground-Default":"#fafafa","PtGridlist-Title-HasBackground-Hover":"#f2f2f2","PtGridlist-Cell-HasBackground-Default":"#fafafa","PtGridlist-Cell-HasBackground-Hover":"#f2f2f2","PtGridlist-Cell-HasBackground-Active":"#e8e8e8","PtDnD-Area-Padding":"16px","PtDnD-Area-BorderRadius":"3px","PtDnD-DropDuration":"400ms","PtDnD-MoveDuration":"200ms","PtDnD-Chassis-HighlightIndent":"24px","PtDnD-Area-ActiveBackground":"rgba(54, 140, 226, 0.12)","PtDnD-Area-ActiveBorder":["1px","dashed","#2985e0"],"PtDnD-Area-HighlightBackground":"rgba(54, 140, 226, 0.05)","PtDnD-Area-HighlightBorder":["1px","dashed","rgba(41, 133, 224, 0.3)"],"ComDashboard-Area-Padding":0,"ComDashboard-Widget-Indent":"24px","ComDashboard-Placeholder-Height":"48px","PtEditable-HoverBackground":"rgba(255, 255, 255, 0.5)","PtEditable-ActiveBackground":"rgba(255, 255, 255, 0.5)","PtEditable-Drag-DefaultBackground":"#fafafa","PtEditable-Drag-HoverBackground":"#f2f2f2","PtEditable-Drag-ActiveBackground":"#d8e8f8","PtDrag-Vertical-Width":"48px","PtDrag-Vertical-Height":"16px","PtDrag-Vertical-Icon-Width":"18px","PtDrag-Vertical-Icon-Height":"6px","PtDrag-Horizontal-Width":"16px","PtDrag-Horizontal-Height":"32px","PtDrag-Horizontal-Icon-Width":"6px","PtDrag-Horizontal-Icon-Height":"14px","PtDrag-DefaultBackground":"#fafafa","PtDrag-DefaultBorder":"#cccccc","PtDrag-HoverBackground":"#f2f2f2","PtDrag-HoverBorder":"#a6a6a6","PtDrag-ActiveBackground":"#d8e8f8","PtDrag-ActiveBorder":"#79b2ec","PtDrag-Line-Size":"2px","PtDrag-Line-DefaultBackground":"#e8e8e8","PtDrag-Line-HoverBackground":"#e8e8e8","PtDrag-Line-ActiveBackground":"#2985e0","PtRuler-Line-Size":"2px","PtRuler-Line-Indent":"12px","PtRuler-Line-DefaultBackground":"#e8e8e8","PtRuler-Line-HoverBackground":"#e8e8e8","PtRuler-Line-ActiveBackground":"#2985e0","PtOverlay-Default":"rgba(255, 255, 255, 0.7)","PtOverlay-Light":"rgba(255, 255, 255, 0.7)","PtOverlay-SolidLight":"#ffffff","PtOverlay-Dark":"rgba(0, 0, 0, 0.7)","PtOverlay-Duration":"500ms","PtOverlay-Spinner-Size":"32px","PtOverlay-ZIndex":1003,"LtCollapsible-SidebarWidth":"350px","LtCollapsible-Duration":"500ms","LtComment-InnerIndent":"4px","LtForum-AdaptiveFrom":"768px","LtForum-PostBackground":"#fafafa","LtForum-PostBackgroundFeatured":"#f6fafd","LtForum-PostTitleBackground":"#e8e8e8","LtForum-PostLeftColumnSize":"174px","LtProfile-LeftColumn":"174px","LtPost-Indent":"32px","LtPost-Image-Size":"172px","LtPost-Image-Indent":"16px","ComCalendar-CellHeight":"21px","ComCalendar-CellBorderRadius":"2px","ComCalendar-Outer-Background":"transparent","ComCalendar-Outer-BackgroundHover":"transparent","ComCalendar-Outer-BorderSize":0,"ComCalendar-Outer-Border":"transparent","ComCalendar-Outer-BorderHover":"transparent","ComCalendar-Inner-Background":"#fafafa","ComCalendar-Inner-BackgroundHover":"#f2f2f2","ComCalendar-Inner-BorderSize":"1px","ComCalendar-Inner-Border":"#e8e8e8","ComCalendar-Inner-BorderHover":"#dbdbdb","ComCalendar-Weekend-Background":"#e8e8e8","ComCalendar-Weekend-BackgroundHover":"#dbdbdb","ComCalendar-Weekend-BorderSize":"1px","ComCalendar-Weekend-Border":"#e8e8e8","ComCalendar-Weekend-BorderHover":"#dbdbdb","ComCalendar-Today-Background":"transparent","ComCalendar-Today-BackgroundHover":"#c2dbf4","ComCalendar-Today-BorderSize":"2px","ComCalendar-Today-Border":"#2985e0","ComCalendar-Today-BorderHover":"#1d73c9","ComCalendar-Active-Background":"#d8e8f8","ComCalendar-Active-BackgroundHover":"#c2dbf4","ComCalendar-Active-BorderSize":"1px","ComCalendar-Active-Border":"#2985e0","ComCalendar-Active-BorderHover":"#1d73c9","ComColumns-AdaptiveFrom":"768px","ComColumns-Indent":"24px","ComColumns-Indents":["0px","2px","4px","8px","12px","16px","24px","32px","48px","64px","96px"],"ComColumns-MinHeight":"64px","ComColumns-HoverBackground":"rgba(0, 0, 0, 0.01)","ComColumns-ActiveBackground":"rgba(0, 0, 0, 0.01)","ComColumns-Ruler-DefaultBackground":"rgba(250, 250, 250, 0.8)","ComColumns-Ruler-ActiveBackground":"rgba(246, 250, 253, 0.8)","ComSpacer-HoverBackground":"rgba(0, 0, 0, 0.01)","ComSpacer-ActiveBackground":"#f6fafd","ComBoxTools-Width":"210px","ComBoxTools-LineSize":"32px","ComBoxTools-LineIndent":"4px","ComBoxTools-LinkSize":"24px","ComBoxTools-LinkIndent":"4px","ComPositionTools-Item-Size":"24px","ComPositionTools-Item-Indent":"4px","ComPositionTools-Item-Large-Size":"32px","ComPositionTools-Item-Large-Indent":"4px","ComRepeatTools-Item-Size":"38px","ComRepeatTools-Item-Indent":"4px","ComScaleTools-Item-Size":"38px","ComScaleTools-Item-Indent":"4px","ComDatepicker-Width":"210px","ComDatepicker-TooltipWidth":"210px","ComTimeSelect-Width":"210px","ComTimeSelect-Indent":"12px","ComColorPalette-Size":"200px","ComColorPalette-Drag-Size":"16px","ComColorPicker-Width":"210px","ComFileDropzone-Height":"128px","ComFileDropzone-Duration":"250ms","ComImageInput-Height":"128px","ComImageInput-CoverBackground":"rgba(0, 0, 0, 0.7)","ComImageInput-CoverDelay":"300ms","ComImageInput-ButtonsIndent":"4px","CmMultipleFileInput-Count":3,"ComDialog-Duration":"250ms","ComDialog-WindowDuration":"500ms","ComDialog-Indent":"24px","ComDialog-Radius":"3px","ComDialog-TitleIndent":"12px","ComDialog-IconSize":"24px","ComDialog-Overlay":"rgba(0, 0, 0, 0.7)","ComDialog-Default-Background":"#ffffff","ComDialog-Black-Background":"#111111","ComDialog-Black-TitleColor":"#ffffff","ComDialog-Light-Overlay":"rgba(255, 255, 255, 0.7)","ComDialog-Light-Background":"#ffffff","ComDialog-Light-TitleColor":"#ffffff","ComDialog-Light-TitleBackground":"#2985e0","ComDialog-Compact-Indent":"12px","ComDialog-Compact-TitleHeight":"32px","ComDialog-Compact-TitleIndent":"12px","ComDialog-Compact-IconSize":"32px","ComDialog-Box-Indent":"24px","ComTabset-AdaptiveFrom":"768px","ComTabset-BorderColor":"#cccccc","ComTabset-BorderRadius":"3px","ComTabset-BorderWidth":"1px","ComTabset-Border":["1px","solid","#cccccc"],"ComTabset-BorderOverlap":"#ffffff","ComTabset-BorderOverlapRadius":0,"ComTabset-Duration":"250ms","ComTabset-Column-Width":"256px","ComTabset-Content-Background":"#ffffff","ComTabset-Content-Padding":"24px","ComTabset-Tabs-Height":"32px","ComTabset-Tabs-Indent":"4px","ComTabset-Tabs-IndentInner":"12px","ComTabset-Tabs-IndentBetween":"-1px","ComTabset-Tabs-HorizontalIndent":"24px","ComTabset-Tabs-VerticalIndent":"24px","ComTabset-Tabs-FontSize":"14px","ComTabset-Tabs-DefaultBackground":"#e8e8e8","ComTabset-Tabs-HoverBackground":"#f2f2f2","ComTabset-Tabs-ActiveBackground":"#ffffff","ComTabset-TabsTitle-Background":"#fafafa","ComTabset-Tabs-ImageSize":"24px","ComTabset-Tabs-TitleIndent":"8px","ComPagination-Duration":"250ms","ComToggleBox-AdaptiveFrom":"768px","ComToggleBox-Size":"32px","ComToggleBox-SizeMedium":"24px","ComToggleBox-SizeUI":"24px","ComToggleBox-SizeBase":"24px","ComToggleBox-HasBackground-TitleIndentX":"8px","ComToggleBox-HasBackground-TitleIndentY":"0px","ComToggleBox-HasBackground-TitleIndent":["0px","8px"],"ComToggleBox-HasBackground-TitleBorderRadius":"3px","ComToggleBox-ContentBackgroundNormal":"#fafafa","ComToggleBox-ContentBackgroundHover":"#f2f2f2","ComToggleBox-ContentSpaceBorder":["1px","solid","transparent"],"ComToggleBox-Theme":"Light","ComToggleBox-HasBackground-TitleTheme":"Light","ComToggleBox-ThemeLight-TitleColorNormal":"#666666","ComToggleBox-ThemeLight-TitleColorHover":"#1d73c9","ComToggleBox-ThemeLight-TitleColorActive":"#666666","ComToggleBox-ThemeLight-TitleIcon":"../img/MagpieUI/icons/small/arrow-right.png","ComToggleBox-ThemeLight-TitleBackgroundNormal":"#e8e8e8","ComToggleBox-ThemeLight-TitleBackgroundHover":"#c2dbf4","ComToggleBox-ThemeLight-TitleBackgroundActive":"#e8e8e8","ComToggleBox-ThemeDark-TitleColorNormal":"#ffffff","ComToggleBox-ThemeDark-TitleColorHover":"#c2dbf4","ComToggleBox-ThemeDark-TitleColorActive":"#ffffff","ComToggleBox-ThemeDark-TitleIcon":"../img/MagpieUI/icons/small/arrow-white-right.png","ComToggleBox-ThemeDark-TitleBackgroundNormal":"#2985e0","ComToggleBox-ThemeDark-TitleBackgroundHover":"#1d73c9","ComToggleBox-ThemeDark-TitleBackgroundActive":"#2985e0","ComSelect-ListCount":7,"ComSelect-MultiListCount":5,"ComSelect-MaxHeight":"114px","ComAutocomplete-ListCount":7,"ComTagsInput-itemIndent":"12px","ComTagsInput-itemWidth":"250px","ComTagsInput-inputWidth":"200px","ComZoom-Background":"#111111","ComGallery-Background":"#111111","ComGalleryControls-Button-Size":"12px","ComGalleryLayout-ArrowWidth":"24px","ComGalleryLayout-SizesCount":12,"ComSlider-Duration":"500ms","AppPath-Images":"../img","AppPath-Fonts":"../fonts"};
 if(cm._baseUrl.indexOf('serdidg.github.io') > -1){
     cm._baseUrl = [cm._baseUrl, '/MagpieUI/docs/build'].join('/');
 }else{

@@ -29,9 +29,9 @@ cm.define('Com.AbstractFormField', {
         'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text'
         'inputValueType' : 'auto',       // 'auto' | 'unset'
         'value' : null,
+        'values': null,
         'defaultValue' : null,
         'dataValue' : null,
-        'noValue' : null,
         'isOptionValue' : false,
         'setHiddenValue' : true,
         'minLength' : 0,
@@ -154,7 +154,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
         that.params.constructorParams.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
         that.params.constructorParams.defaultValue = that.params.defaultValue;
-        that.params.constructorParams.noValue = that.params.noValue;
+        that.params.constructorParams.values = that.params.values;
         that.params.constructorParams.required = that.params.required;
         that.params.constructorParams.validate = that.params.validate;
         that.params.constructorParams.disabled = that.params.disabled;
@@ -514,19 +514,25 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.validateValue = function(options){
-        var that = this,
-            constraintsData,
-            testData,
-            data = {
-                'field' : that,
-                'form' : that.components.form,
-                'valid' : true,
-                'message' : null,
-                'value' : that.get()
-            };
+    classProto.validateValue = function(data){
+        var that = this;
+
+        // Validate data config
+        data = cm.merge({
+            field: that,
+            form: that.components.form,
+            valid: true,
+            message: null,
+            value: that.get(),
+            required: false,
+            silent: false,
+            triggerEvents: true,
+        }, data);
+
+        data.required = that.params.required || data.required;
+
         if(cm.isEmpty(data.value)){
-            if(that.params.required || options.required){
+            if(data.required){
                 data.valid = false;
                 data.message = that.lang('required');
                 return data;
@@ -550,42 +556,46 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             return data;
         }
         if(!cm.isEmpty(that.params.constraints)){
-            testData = cm.clone(data);
-            constraintsData = that.validateConstraints(testData);
+            var testData = cm.clone(data);
+            var constraintsData = that.validateConstraints(testData);
             if(constraintsData){
                 return constraintsData;
             }
         }
-        if(that.components.controller && cm.isFunction(that.components.controller.validate)){
-            return that.components.controller.validate(data);
+        if(that.components.controller && cm.isFunction(that.components.controller.validator)){
+            return that.components.controller.validator(data);
         }
         return data;
     };
 
-    classProto.validate = function(options){
-        var that = this,
-            data;
-        // Validate options
-        options = cm.merge({
-            'required' : false,
-            'silent' : false,
-            'triggerEvents' : true
-        }, options);
+    classProto.validate = function(data){
+        var that = this;
 
-        if(!that.params.required && !that.params.validate && !options.required){
+        // Validate data config
+        data = cm.merge({
+            required: false,
+            silent: false,
+            triggerEvents: true,
+        }, data);
+
+        data.validate = that.params.validate;
+        data.required = that.params.required || data.required;
+
+        if(!data.required && !data.validate){
             return true;
         }
 
-        data = that.validateValue(options);
-        if(data.valid || options.silent){
+        data = that.validateValue(data);
+        if(data.valid || data.silent){
             that.clearError();
         }else{
             that.renderError(data.message);
         }
 
-        if(options.triggerEvents && !options.silent){
+        if(data.triggerEvents && !data.silent){
             that.triggerEvent('onValidate', data);
         }
+
         return data.valid;
     };
 

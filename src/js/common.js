@@ -2160,6 +2160,26 @@ cm.removeSpaces = function(str){
     return str.replace(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/g, '');
 };
 
+// https://doc.wikimedia.org/mediawiki-core/master/js/source/mediawiki.base.html#mw-html-method-escape
+cm.escapeHTML = function(str){
+    function escapeCallback(str){
+        switch(str){
+            case '\'':
+                return '&#039;';
+            case '"':
+                return '&quot;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '&':
+                return '&amp;';
+        }
+    }
+
+    return str.replace( /['"<>&]/g, escapeCallback );
+};
+
 cm.cutHTML = function(str){
     return str.replace(/<[^>]*>/g, '');
 };

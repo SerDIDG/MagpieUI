@@ -24,7 +24,9 @@ cm.define('Com.Form', {
         'onChange',
         'onInput',
         'onClear',
-        'onReset'
+        'onReset',
+        'onEnable',
+        'onDisable'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -89,6 +91,7 @@ function(params){
 
     that.isAjax = false;
     that.isProcess = false;
+    that.isEnabled = true;
 
     var init = function(){
         that.renderComponent();
@@ -863,6 +866,28 @@ function(params){
         return that;
     };
 
+    that.enable = function(){
+        if(!that.isEnabled){
+            that.isEnabled = true;
+            cm.forEach(that.fields, function(field){
+                field.controller.enable();
+            });
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        if(that.isEnabled){
+            that.isEnabled = false;
+            cm.forEach(that.fields, function(field){
+                field.controller.disable();
+            });
+            that.triggerEvent('onDisable');
+        }
+        return that;
+    };
+
     that.validate = function(options){
         options = cm.merge({
             'silent' : false,
@@ -888,6 +913,10 @@ function(params){
     };
 
     that.send = function(){
+        if(!that.isEnabled){
+            return that;
+        }
+
         var data = {
             'valid' : true
         };
@@ -968,7 +997,6 @@ function(params){
         that.components.loader && that.components.loader.close(isImmediately);
         return that;
     };
-
 
     that.getName = function(){
         return that.params.name;

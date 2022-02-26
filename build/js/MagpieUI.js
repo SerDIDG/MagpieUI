@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.29 (2022-02-23 20:41) ************ */
+/*! ************ MagpieUI v3.40.30 (2022-02-26 06:05) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.29',
+        '_version' : '3.40.30',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -3757,6 +3757,26 @@ cm.removeDanger = function(str){
 
 cm.removeSpaces = function(str){
     return str.replace(/[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+/g, '');
+};
+
+// https://doc.wikimedia.org/mediawiki-core/master/js/source/mediawiki.base.html#mw-html-method-escape
+cm.escapeHTML = function(str){
+    function escapeCallback(str){
+        switch(str){
+            case '\'':
+                return '&#039;';
+            case '"':
+                return '&quot;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '&':
+                return '&amp;';
+        }
+    }
+
+    return str.replace( /['"<>&]/g, escapeCallback );
 };
 
 cm.cutHTML = function(str){
@@ -7161,35 +7181,21 @@ Part['Autoresize'] = (function(){
     var processedNodes = [],
         nodes;
 
+    var getOffset = function(node){
+        return node.offsetHeight - node.clientHeight;
+    };
+
     var process = function(node){
-        if(!cm.inArray(processedNodes, node)){
-            if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
-                var resizeInt,
-                    rows,
-                    oldRows,
-                    matches,
-                    lineHeight = cm.getStyle(node, 'lineHeight', true),
-                    padding = cm.getStyle(node, 'paddingTop', true)
-                        + cm.getStyle(node, 'paddingBottom', true)
-                        + cm.getStyle(node, 'borderTopWidth', true)
-                        + cm.getStyle(node, 'borderBottomWidth', true);
-                cm.addEvent(node, 'scroll', function(){
-                    node.scrollTop = 0;
-                });
-                resizeInt = setInterval(function(){
-                    if(!node || !cm.inDOM(node)){
-                        clearInterval(resizeInt);
-                    }
-                    oldRows = rows;
-                    matches = node.value.match(/\n/g);
-                    rows = matches? matches.length : 0;
-                    if(rows !== oldRows){
-                        node.style.height = [(rows + 1) * lineHeight + padding, 'px'].join('');
-                    }
-                }, 5);
-            }
-            processedNodes.push(node);
+        if(cm.inArray(processedNodes, node)){
+            return;
         }
+        if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
+            cm.addEvent(node, 'input', function (event){
+                event.target.style.height = '0px';
+                event.target.style.height = [event.target.scrollHeight + getOffset(node), 'px'].join('');
+            });
+        }
+        processedNodes.push(node);
     };
 
     return function(container){
@@ -8885,9 +8891,9 @@ cm.define('Com.AbstractFormField', {
         'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text'
         'inputValueType' : 'auto',       // 'auto' | 'unset'
         'value' : null,
+        'values': null,
         'defaultValue' : null,
         'dataValue' : null,
-        'noValue' : null,
         'isOptionValue' : false,
         'setHiddenValue' : true,
         'minLength' : 0,
@@ -9010,7 +9016,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
         that.params.constructorParams.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
         that.params.constructorParams.defaultValue = that.params.defaultValue;
-        that.params.constructorParams.noValue = that.params.noValue;
+        that.params.constructorParams.values = that.params.values;
         that.params.constructorParams.required = that.params.required;
         that.params.constructorParams.validate = that.params.validate;
         that.params.constructorParams.disabled = that.params.disabled;
@@ -9370,19 +9376,25 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.validateValue = function(options){
-        var that = this,
-            constraintsData,
-            testData,
-            data = {
-                'field' : that,
-                'form' : that.components.form,
-                'valid' : true,
-                'message' : null,
-                'value' : that.get()
-            };
+    classProto.validateValue = function(data){
+        var that = this;
+
+        // Validate data config
+        data = cm.merge({
+            field: that,
+            form: that.components.form,
+            valid: true,
+            message: null,
+            value: that.get(),
+            required: false,
+            silent: false,
+            triggerEvents: true,
+        }, data);
+
+        data.required = that.params.required || data.required;
+
         if(cm.isEmpty(data.value)){
-            if(that.params.required || options.required){
+            if(data.required){
                 data.valid = false;
                 data.message = that.lang('required');
                 return data;
@@ -9406,42 +9418,46 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             return data;
         }
         if(!cm.isEmpty(that.params.constraints)){
-            testData = cm.clone(data);
-            constraintsData = that.validateConstraints(testData);
+            var testData = cm.clone(data);
+            var constraintsData = that.validateConstraints(testData);
             if(constraintsData){
                 return constraintsData;
             }
         }
-        if(that.components.controller && cm.isFunction(that.components.controller.validate)){
-            return that.components.controller.validate(data);
+        if(that.components.controller && cm.isFunction(that.components.controller.validator)){
+            return that.components.controller.validator(data);
         }
         return data;
     };
 
-    classProto.validate = function(options){
-        var that = this,
-            data;
-        // Validate options
-        options = cm.merge({
-            'required' : false,
-            'silent' : false,
-            'triggerEvents' : true
-        }, options);
+    classProto.validate = function(data){
+        var that = this;
 
-        if(!that.params.required && !that.params.validate && !options.required){
+        // Validate data config
+        data = cm.merge({
+            required: false,
+            silent: false,
+            triggerEvents: true,
+        }, data);
+
+        data.validate = that.params.validate;
+        data.required = that.params.required || data.required;
+
+        if(!data.required && !data.validate){
             return true;
         }
 
-        data = that.validateValue(options);
-        if(data.valid || options.silent){
+        data = that.validateValue(data);
+        if(data.valid || data.silent){
             that.clearError();
         }else{
             that.renderError(data.message);
         }
 
-        if(options.triggerEvents && !options.silent){
+        if(data.triggerEvents && !data.silent){
             that.triggerEvent('onValidate', data);
         }
+
         return data.valid;
     };
 
@@ -10306,7 +10322,9 @@ cm.define('Com.Form', {
         'onChange',
         'onInput',
         'onClear',
-        'onReset'
+        'onReset',
+        'onEnable',
+        'onDisable'
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -10371,6 +10389,7 @@ function(params){
 
     that.isAjax = false;
     that.isProcess = false;
+    that.isEnabled = true;
 
     var init = function(){
         that.renderComponent();
@@ -11145,6 +11164,28 @@ function(params){
         return that;
     };
 
+    that.enable = function(){
+        if(!that.isEnabled){
+            that.isEnabled = true;
+            cm.forEach(that.fields, function(field){
+                field.controller.enable();
+            });
+            that.triggerEvent('onEnable');
+        }
+        return that;
+    };
+
+    that.disable = function(){
+        if(that.isEnabled){
+            that.isEnabled = false;
+            cm.forEach(that.fields, function(field){
+                field.controller.disable();
+            });
+            that.triggerEvent('onDisable');
+        }
+        return that;
+    };
+
     that.validate = function(options){
         options = cm.merge({
             'silent' : false,
@@ -11170,6 +11211,10 @@ function(params){
     };
 
     that.send = function(){
+        if(!that.isEnabled){
+            return that;
+        }
+
         var data = {
             'valid' : true
         };
@@ -11250,7 +11295,6 @@ function(params){
         that.components.loader && that.components.loader.close(isImmediately);
         return that;
     };
-
 
     that.getName = function(){
         return that.params.name;
@@ -23713,7 +23757,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             'match' : [],
             'params' : cm.merge({
                 'pushState' : true,
-                'replaceState' : false
+                'replaceState' : false,
+                'processStateRoute' : true
             }, params)
         };
         // Check hash
@@ -23778,7 +23823,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var that = this,
             match,
             routeData,
-            mathedRouteData;
+            matchedRouteData;
         // Match routes
         cm.forEach(that.routes, function(routeItem, route){
             match = state.route.match(routeItem.regexp);
@@ -23793,11 +23838,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                     'access' : that.checkRouteAccess(routeItem)
                 };
                 if(routeData.redirect || routeData.access){
-                    mathedRouteData = routeData
+                    matchedRouteData = routeData
                 }
             }
         });
-        return mathedRouteData;
+        return matchedRouteData;
     };
 
     classProto.destructRoute = function(routeItem){
@@ -30002,282 +30047,376 @@ cm.getConstructor('Com.BoxRadiusTools', function(classConstructor, className, cl
     };
 });
 cm.define('Com.Check', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'controllerEvents' : true,
-        'type' : 'checkbox',
-        'multiple' : false,
-        'inline' : false,
-        'noValue' : null
+    extend: 'Com.AbstractInput',
+    params: {
+        controllerEvents: true,
+        type: 'checkbox',
+        inline: false,
+        multiple: false,
+        values: {
+            checked: null,
+            unchecked: null,
+        },
+    },
+    strings: {
+        'required': 'This field is required.'
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
+function() {
+    Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.Check', function(classConstructor, className, classProto, classInherit){
-    classProto.onConstructStart = function(){
+cm.getConstructor('Com.Check', function(classConstructor, className, classProto, classInherit) {
+    classProto.onConstructStart = function() {
         var that = this;
+
         // Variables
         that.inputs = [];
         that.hidden = [];
+
         // Bind context to methods
         that.setValueHandler = that.setValue.bind(that);
     };
 
-    classProto.onValidateParamsProcess = function(){
+    classProto.onValidateParamsProcess = function() {
         var that = this;
-        if(!cm.isEmpty(that.params['options'])){
-            that.params['multiple'] = that.params['type'] === 'checkbox';
+
+        if (!cm.isEmpty(that.params.options)) {
+            that.params.multiple = that.params.type === 'checkbox';
+
             // Convert option values
-            cm.forEach(that.params['options'], function(item){
-                if(!cm.isEmpty(item['value']) && (item['checked'] || item['selected'])){
-                    if(cm.isEmpty(that.params['value'])){
-                        that.params['value'] = [];
-                    }else if(cm.isString(that.params['value']) || cm.isNumber(that.params['value'])){
-                        that.params['value'] = [that.params['value']];
+            cm.forEach(that.params.options, function(item) {
+                if (!cm.isEmpty(item.value) && (item.checked || item.selected)) {
+                    if (cm.isEmpty(that.params.value)) {
+                        that.params.value = [];
+                    } else if (cm.isString(that.params.value) || cm.isNumber(that.params.value)) {
+                        that.params.value = [that.params.value];
                     }
-                    cm.arrayAdd(that.params['value'], item['value']);
+                    cm.arrayAdd(that.params.value, item.value);
                 }
             });
-        }
-        // Checked parameter behavior override
-        // TODO: Test
-        if(that.params['checked'] && cm.isEmpty(that.params['value'])){
-            if(!that.params['multiple']){
-                that.params['value'] = true;
+        } else {
+            that.params.type = 'checkbox';
+            that.params.multiple = false;
+
+            if (cm.isEmpty(that.params.values)) {
+                that.params.values = {
+                    checked: null,
+                    unchecked: null,
+                };
+            }
+
+            // Checked parameter behavior override
+            if (cm.isEmpty(that.params.value) && (that.params.checked)) {
+                that.params.value = true;
+            }
+
+            // Convert value parameters
+            if (!cm.isEmpty(that.params.value) && cm.isEmpty(that.params.values.checked)) {
+                that.params.values.checked = that.params.value;
+            }
+
+            if (cm.isEmpty(that.params.values.checked)) {
+                that.params.values.checked = true;
+            }
+
+            if (cm.isEmpty(that.params.values.unchecked)) {
+                that.params.values.unchecked = false;
             }
         }
     };
 
-    classProto.onEnable = function(){
+    classProto.onEnable = function() {
         var that = this;
-        cm.forEach(that.inputs, function(item){
-            item['input'].disabled = false;
+        cm.forEach(that.inputs, function(item) {
+            item.input.disabled = false;
         });
     };
 
-    classProto.onDisable = function(){
+    classProto.onDisable = function() {
         var that = this;
-        cm.forEach(that.inputs, function(item){
-            item['input'].disabled = true;
+        cm.forEach(that.inputs, function(item) {
+            item.input.disabled = true;
         });
     };
 
     /*** VIEW MODEL ***/
 
-    classProto.renderHiddenContent = function(){
+    classProto.renderHiddenContent = function() {
         var that = this,
             nodes = {},
             inputContainer;
-        that.nodes['hiddenContent'] = nodes;
+        that.nodes.hiddenContent = nodes;
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'display-none'});
+        nodes.container = cm.node('div', {classes: 'display-none'});
+
         // Render inputs
-        if(!cm.isEmpty(that.params['options'])){
-            cm.forEach(that.params['options'], function(option){
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.params.options, function(option) {
                 inputContainer = that.renderHiddenInput(option);
-                cm.appendChild(inputContainer, nodes['container']);
+                cm.appendChild(inputContainer, nodes.container);
             });
-        }else{
-            inputContainer = that.renderHiddenInput();
-            cm.appendChild(inputContainer, nodes['container']);
+        } else {
+            inputContainer = that.renderHiddenInput({
+                'value': that.params.value,
+                'values': that.params.values,
+            });
+            cm.appendChild(inputContainer, nodes.container);
         }
+
         // Export
-        return nodes['container'];
+        return nodes.container;
     };
 
-    classProto.renderHiddenInput = function(item){
-        var that = this,
-            nodes = {};
+    classProto.renderHiddenInput = function(item) {
+        var that = this;
+
         item = cm.merge({
-            'nodes' : nodes,
-            'value' : null
+            nodes: {},
+            value: null,
+            values: {
+                checked: null,
+                unchecked: null,
+            },
         }, item);
+
+        // Validate
+        if (cm.isEmpty(item.values.checked)) {
+            item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
+        }
+        if (cm.isEmpty(item.values.unchecked)) {
+            item.values.unchecked = false;
+        }
+
         // Structure
-        nodes['container'] = nodes['input'] = cm.node('input', {'type' : that.params['type']});
-        item['input'] = nodes['input'];
+        item.nodes.container = item.nodes.input = cm.node('input', {'type': that.params.type});
+        item.input = item.nodes.input;
+
         // Attributes
-        if(!cm.isEmpty(item['value'])){
-            item['input'].value = item['value'];
+        if (!cm.isEmpty(that.params.name)) {
+            item.input.setAttribute('name', that.params.name);
         }
-        if(!cm.isEmpty(that.params['name'])){
-            item['input'].setAttribute('name', that.params['name']);
-        }
+
         // Push
         that.hidden.push(item);
-        return nodes['container'];
+        return item.nodes.container;
     };
 
-    classProto.renderContent = function(){
+    classProto.renderContent = function() {
         var that = this,
             nodes = {},
             inputContainer;
-        that.nodes['content'] = nodes;
+        that.nodes.content = nodes;
         that.triggerEvent('onRenderContentStart');
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'pt__check-line'});
-        if(that.params['inline']){
-            cm.addClass(nodes['container'], 'is-line');
-        }else{
-            cm.addClass(nodes['container'], 'is-box');
+        nodes.container = cm.node('div', {classes: 'pt__check-line'});
+        if (that.params.inline) {
+            cm.addClass(nodes.container, 'is-line');
+        } else {
+            cm.addClass(nodes.container, 'is-box');
         }
+
         // Render inputs
         that.triggerEvent('onRenderContentProcess');
-        if(!cm.isEmpty(that.params['options'])){
-            cm.forEach(that.params['options'], function(option){
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.params.options, function(option) {
                 inputContainer = that.renderInput(option);
-                cm.appendChild(inputContainer, nodes['container']);
+                cm.appendChild(inputContainer, nodes.container);
             });
-        }else{
+        } else {
             inputContainer = that.renderInput({
-                'text' : that.params['placeholder'],
-                'value' : that.params['value'],
-                'noValue' : that.params['noValue']
+                'text': that.params.placeholder,
+                'value': that.params.value,
+                'values': that.params.values,
             });
-            cm.appendChild(inputContainer, nodes['container']);
+            cm.appendChild(inputContainer, nodes.container);
         }
         that.triggerEvent('onRenderContentEnd');
+
         // Push
-        return nodes['container'];
+        return nodes.container;
     };
 
-    classProto.renderInput = function(item){
+    classProto.renderInput = function(item) {
         var that = this,
             nodes = {};
         item = cm.merge({
-            'nodes' : nodes,
-            'text' : '',
-            'value' : null,
-            'noValue' : null
+            nodes: {},
+            text: '',
+            value: null,
+            values: {
+                checked: null,
+                unchecked: null,
+            },
         }, item);
-        // Structure
-        nodes['container'] = cm.node('label',
-            nodes['input'] = cm.node('input', {'type' : that.params['type']}),
-            nodes['label'] = cm.node('span', {'class' : 'label', 'innerHTML' : item['text']})
-        );
-        item['input'] = nodes['input'];
-        // Attributes
-        if(!cm.isEmpty(item['value'])){
-            nodes['input'].value = item['value'];
+
+        // Validate
+        if (cm.isEmpty(item.values.checked)) {
+            item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
         }
+        if (cm.isEmpty(item.values.unchecked)) {
+            item.values.unchecked = false;
+        }
+
+        // Structure
+        item.nodes.container = cm.node('label',
+            item.nodes.input = cm.node('input', {'type': that.params.type}),
+            item.nodes.label = cm.node('span', {
+                classes: 'label',
+                innerHTML: item.text,
+            })
+        );
+        item.input = item.nodes.input;
+
         // Events
-        cm.addEvent(item['input'], 'click', function(e){
+        cm.addEvent(item.nodes.input, 'click', function(e) {
             that.setValue(item, true);
         });
+
         // Push
         that.inputs.push(item);
-        return nodes['container'];
+        return item.nodes.container;
     };
 
-    /* *** DATA VALUE *** */
+    /*** DATA VALUE ***/
 
-    classProto.setHiddenAttributes = function(){
+    classProto.setHiddenAttributes = function() {
         var that = this;
     };
 
-    classProto.validateValue = function(value){
+    classProto.validateValue = function(value) {
         var that = this;
+        if (cm.isEmpty(that.params.options)) {
+            if (cm.isEmpty(value)) {
+                return that.params.values.unchecked;
+            } else if (cm.isBoolean(value)) {
+                return value ? that.params.values.checked : that.params.values.unchecked;
+            } else {
+                return value;
+            }
+        }
         return value;
     };
 
-    classProto.setValue = function(item, triggerEvents){
-        var that = this,
-            value = null;
-        triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
+    classProto.setValue = function(item, triggerEvents) {
+        var that = this;
+        triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
+
         // Get value
-        if(!cm.isEmpty(that.params['options'])){
-            if(that.params['multiple']){
+        var value = null;
+        if (!cm.isEmpty(that.params.options)) {
+            if (that.params.multiple) {
                 value = [];
-                cm.forEach(that.inputs, function(item){
-                    item['input'].checked && value.push(item['value']);
+                cm.forEach(that.inputs, function(item) {
+                    if (item.input.checked && item.values.checked) {
+                        value.push(item.values.checked);
+                    } else if(item.values.unchecked) {
+                        value.push(item.values.unchecked);
+                    }
                 });
-            }else{
-                value = item['value'];
+            } else {
+                value = item.values.checked;
             }
-        }else{
-            if(item['input'].checked){
-                value = !cm.isEmpty(item['value']) ? item['value'] : true;
-            }else{
-                value = !cm.isEmpty(item['noValue']) ? item['noValue'] : false;
-            }
+        } else {
+            value = item.input.checked ? item.values.checked : item.values.unchecked;
         }
+
         that.set(value, triggerEvents);
         return that;
     };
 
-    classProto.saveHiddenValue = function(value){
+    classProto.saveHiddenValue = function(value) {
         var that = this;
-        if(!cm.isEmpty(that.params['options'])){
-            if(that.params['multiple']){
-                cm.forEach(that.hidden, function(item){
-                    item['input'].checked = cm.inArray(value, item['value']);
-                });
-            }else{
-                cm.forEach(that.hidden, function(item){
-                    item['input'].checked = value === item['value'];
-                });
-            }
-        }else{
-            that.hidden[0]['input'].checked = that.testInputValue(value, null, that.params['noValue']);
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.hidden, function(item) {
+                that.setInputItemValue(item, value);
+            });
+        } else {
+            that.setInputItemValue(that.hidden[0], value);
         }
     };
 
-    classProto.setData = function(value){
+    classProto.setData = function(value) {
         var that = this;
-        if(!cm.isEmpty(that.params['options'])){
-            if(that.params['multiple']){
-                cm.forEach(that.inputs, function(item){
-                    item['input'].checked = cm.inArray(value, item['value']);
-                });
-            }else{
-                cm.forEach(that.inputs, function(item){
-                    item['input'].checked = value === item['value'];
-                });
-            }
-        }else{
-            that.inputs[0]['input'].checked = that.testInputValue(value, null, that.params['noValue']);
+        if (!cm.isEmpty(that.params.options)) {
+            cm.forEach(that.inputs, function(item) {
+                that.setInputItemValue(item, value);
+            });
+        } else {
+            that.setInputItemValue(that.inputs[0], value);
         }
     };
 
-    classProto.testInputValue = function(value, yesValue, noValue){
-        // TODO: Check all variants
-        return (!cm.isEmpty(yesValue) && value === yesValue)
-            || !(cm.isEmpty(value) || value === 0 || value === '0' || value === false || value === noValue);
+    classProto.setInputItemValue = function(item, value) {
+        var that = this;
+
+        if (!cm.isEmpty(that.params.options)) {
+            if (that.params.multiple) {
+                item.input.checked = cm.inArray(value, item.values.checked);
+            } else {
+                item.input.checked = value === item.values.checked;
+            }
+        } else {
+            item.input.checked = that.testInputValue(value, that.params.values.checked, that.params.values.unchecked);
+        }
+
+        item.input.value = value;
+    };
+
+    classProto.testInputValue = function(value, checkedValue, uncheckedValue) {
+        // TODO: Test all variants
+        // FIXME: Remove checks for zero, etc
+        return (
+            (!cm.isEmpty(checkedValue) && value === checkedValue) ||
+            !(cm.isEmpty(value) || value === 0 || value === '0' || value === false || value === uncheckedValue)
+        );
+    };
+
+    /*** VALIDATOR ***/
+
+    classProto.validator = function(data) {
+        var that = this;
+        if (data.required && cm.isEmpty(that.params.options)) {
+            data.valid = data.value === that.params.values.checked;
+            if (!data.valid) {
+                data.message = that.msg('required');
+            }
+        }
+        return data;
     };
 });
 
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('checkbox', {
-    'node' : cm.node('div', {'class' : 'pt__check-line'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Check',
-    'constructorParams' : {
-        'type' : 'checkbox'
-    }
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'checkbox',
+    },
 });
 
 Com.FormFields.add('radio', {
-    'node' : cm.node('div', {'class' : 'pt__check-line'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Check',
-    'constructorParams' : {
-        'type' : 'radio',
-        'inline' : true
-    }
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'radio',
+        inline: true,
+    },
 });
 
 Com.FormFields.add('check', {
-    'node' : cm.node('div', {'class' : 'pt__check-line'}),
-    'fieldConstructor' : 'Com.AbstractFormField',
-    'constructor' : 'Com.Check',
-    'constructorParams' : {
-        'type' : 'checkbox',
-        'inline' : true
-    }
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'checkbox',
+        inline: true,
+    },
 });
 
 cm.define('Com.CheckTrigger', {
@@ -32369,6 +32508,7 @@ cm.define('Com.Input', {
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
         'icon' : null,
+        'autoResize' : false,
         'enterPressBehavior' : false,
     }
 },
@@ -32411,6 +32551,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.onDisable = function(){
         var that = this;
         that.nodes['content']['input'].disabled = true;
+    };
+
+    classProto.onAfterRender = function(){
+        var that = this;
+        // Autoresize
+        if(that.params['type'] === 'textarea' && that.params['autoResize']){
+            cm.addClass(that.nodes['content']['input'], 'cm-autoresize');
+            Part.Autoresize(that.nodes['container']);
+        }
     };
 
     /*** VIEW MODEL ***/

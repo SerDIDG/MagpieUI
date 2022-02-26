@@ -11,6 +11,7 @@ cm.define('Com.Input', {
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
         'icon' : null,
+        'autoResize' : false,
         'enterPressBehavior' : false,
     }
 },
@@ -53,6 +54,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.onDisable = function(){
         var that = this;
         that.nodes['content']['input'].disabled = true;
+    };
+
+    classProto.onAfterRender = function(){
+        var that = this;
+        // Autoresize
+        if(that.params['type'] === 'textarea' && that.params['autoResize']){
+            cm.addClass(that.nodes['content']['input'], 'cm-autoresize');
+            Part.Autoresize(that.nodes['container']);
+        }
     };
 
     /*** VIEW MODEL ***/
