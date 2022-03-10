@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.30 (2022-02-26 06:05) ************ */
+/*! ************ MagpieUI v3.40.31 (2022-03-10 06:11) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.30',
+        '_version' : '3.40.31',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -7181,22 +7181,26 @@ Part['Autoresize'] = (function(){
     var processedNodes = [],
         nodes;
 
-    var getOffset = function(node){
+    function getOffset(node){
         return node.offsetHeight - node.clientHeight;
-    };
+    }
 
-    var process = function(node){
+    function process(node){
         if(cm.inArray(processedNodes, node)){
             return;
         }
         if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
-            cm.addEvent(node, 'input', function (event){
-                event.target.style.height = '0px';
-                event.target.style.height = [event.target.scrollHeight + getOffset(node), 'px'].join('');
-            });
+            cm.addEvent(node, 'input', handle);
+            cm.addEvent(node, 'focus', handle);
+            cm.addEvent(node, 'blur', handle);
         }
         processedNodes.push(node);
-    };
+    }
+
+    function handle(event){
+        event.target.style.height = '0px';
+        event.target.style.height = [event.target.scrollHeight + getOffset(event.target), 'px'].join('');
+    }
 
     return function(container){
         container = cm.isUndefined(container)? document.body : container;

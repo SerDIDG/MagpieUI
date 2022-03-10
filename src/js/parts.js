@@ -108,22 +108,26 @@ Part['Autoresize'] = (function(){
     var processedNodes = [],
         nodes;
 
-    var getOffset = function(node){
+    function getOffset(node){
         return node.offsetHeight - node.clientHeight;
-    };
+    }
 
-    var process = function(node){
+    function process(node){
         if(cm.inArray(processedNodes, node)){
             return;
         }
         if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
-            cm.addEvent(node, 'input', function (event){
-                event.target.style.height = '0px';
-                event.target.style.height = [event.target.scrollHeight + getOffset(node), 'px'].join('');
-            });
+            cm.addEvent(node, 'input', handle);
+            cm.addEvent(node, 'focus', handle);
+            cm.addEvent(node, 'blur', handle);
         }
         processedNodes.push(node);
-    };
+    }
+
+    function handle(event){
+        event.target.style.height = '0px';
+        event.target.style.height = [event.target.scrollHeight + getOffset(event.target), 'px'].join('');
+    }
 
     return function(container){
         container = cm.isUndefined(container)? document.body : container;
