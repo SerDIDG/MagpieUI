@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.32 (2022-04-01 04:09) ************ */
+/*! ************ MagpieUI v3.40.33 (2022-04-21 19:41) ************ */
 
 @charset "UTF-8";
 /*!
@@ -4591,7 +4591,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.40.32';
+@CmVersion: '3.40.33';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10999,9 +10999,19 @@ button {
         margin-bottom: @CmForm-FieldInnerIndent;
     }
 
+    &.field-inner-indent-reverse {
+        .cm__box-reverse;
+        margin-top: @CmForm-FieldInnerIndent;
+    }
+
     &.field-outer-indent {
         .cm__box;
         margin-bottom: @CmForm-FieldIndent;
+    }
+
+    &.field-outer-indent-reverse {
+        .cm__box-reverse;
+        margin-top: @CmForm-FieldIndent;
     }
 
     &.is-no-indent {

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.32 (2022-04-01 04:09) ************ */
+/*! ************ MagpieUI v3.40.33 (2022-04-21 19:41) ************ */
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.32',
+        '_version' : '3.40.33',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -6168,6 +6168,9 @@ cm.getMessage = cm.getString = function(className, str){
 
 cm.getMessages = cm.getStrings = function(className, o){
     var data;
+    if(cm.isUndefined(o) || cm.isEmpty(o)){
+        o = '*';
+    }
     cm.getConstructor(className, function(classConstructor, className, classProto){
         data = classProto.messageObject(o);
     });
@@ -6607,18 +6610,29 @@ Mod['Langs'] = {
     },
     'getLang' : function(str){
         var that = this,
+            objStr,
             langStr;
         if(cm.isUndefined(str) || cm.isEmpty(str)){
             return;
         }
         // Try to get string from current controller params array
-        langStr = cm.objectPath(str, that.params.langs);
+        objStr = str === '*' ? undefined : str;
+        langStr = cm.reducePath(objStr, that.params.langs);
         // Try to get string from current controller strings array
-        if(cm.isUndefined(langStr)){
-            langStr = cm.objectPath(str, that.strings);
+        if(
+            cm.isUndefined(langStr) ||
+            (cm.isObject(langStr) && cm.isEmpty(langStr))
+        ){
+            langStr = cm.reducePath(objStr, that.strings);
         }
         // Try to get string from parent controller
-        if(cm.isUndefined(langStr) && that._inherit){
+        if(
+            that._inherit &&
+            (
+                cm.isUndefined(langStr) ||
+                (cm.isObject(langStr) && cm.isEmpty(langStr))
+            )
+        ){
             langStr = that._inherit.prototype.getMsg(str);
         }
         return langStr;
@@ -8951,7 +8965,7 @@ cm.define('Com.AbstractFormField', {
         'required' : 'This field is required.',
         'too_short' : 'Value should be at least %count% characters.',
         'too_long' : 'Value should be less than %count% characters.',
-        '*' : '*'
+        'asterisk' : '*'
     }
 },
 function(params){
@@ -9010,7 +9024,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             && that.params.placeholderAsterisk
             && !cm.isEmpty(that.params.placeholder)
         ){
-            that.params.placeholder = [that.params.placeholder, that.lang('*')].join(' ');
+            that.params.placeholder = [that.params.placeholder, that.lang('asterisk')].join(' ');
         }
         // Constructor params
         that.params.constructorParams.id = that.params.id;
@@ -9117,7 +9131,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
         // Required
-        that.nodes.required = cm.node('span', {'class' : 'required'}, that.lang('*'));
+        that.nodes.required = cm.node('span', {'class' : 'required'}, that.lang('asterisk'));
         if(that.params.required && that.params.requiredAsterisk){
             cm.appendChild(that.nodes.required, that.nodes.label);
         }

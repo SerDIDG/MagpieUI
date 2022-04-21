@@ -431,18 +431,29 @@ Mod['Langs'] = {
     },
     'getLang' : function(str){
         var that = this,
+            objStr,
             langStr;
         if(cm.isUndefined(str) || cm.isEmpty(str)){
             return;
         }
         // Try to get string from current controller params array
-        langStr = cm.objectPath(str, that.params.langs);
+        objStr = str === '*' ? undefined : str;
+        langStr = cm.reducePath(objStr, that.params.langs);
         // Try to get string from current controller strings array
-        if(cm.isUndefined(langStr)){
-            langStr = cm.objectPath(str, that.strings);
+        if(
+            cm.isUndefined(langStr) ||
+            (cm.isObject(langStr) && cm.isEmpty(langStr))
+        ){
+            langStr = cm.reducePath(objStr, that.strings);
         }
         // Try to get string from parent controller
-        if(cm.isUndefined(langStr) && that._inherit){
+        if(
+            that._inherit &&
+            (
+                cm.isUndefined(langStr) ||
+                (cm.isObject(langStr) && cm.isEmpty(langStr))
+            )
+        ){
             langStr = that._inherit.prototype.getMsg(str);
         }
         return langStr;

@@ -4569,6 +4569,9 @@ cm.getMessage = cm.getString = function(className, str){
 
 cm.getMessages = cm.getStrings = function(className, o){
     var data;
+    if(cm.isUndefined(o) || cm.isEmpty(o)){
+        o = '*';
+    }
     cm.getConstructor(className, function(classConstructor, className, classProto){
         data = classProto.messageObject(o);
     });

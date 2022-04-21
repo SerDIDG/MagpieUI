@@ -85,7 +85,7 @@ cm.define('Com.AbstractFormField', {
         'required' : 'This field is required.',
         'too_short' : 'Value should be at least %count% characters.',
         'too_long' : 'Value should be less than %count% characters.',
-        '*' : '*'
+        'asterisk' : '*'
     }
 },
 function(params){
@@ -144,7 +144,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             && that.params.placeholderAsterisk
             && !cm.isEmpty(that.params.placeholder)
         ){
-            that.params.placeholder = [that.params.placeholder, that.lang('*')].join(' ');
+            that.params.placeholder = [that.params.placeholder, that.lang('asterisk')].join(' ');
         }
         // Constructor params
         that.params.constructorParams.id = that.params.id;
@@ -251,7 +251,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
         // Required
-        that.nodes.required = cm.node('span', {'class' : 'required'}, that.lang('*'));
+        that.nodes.required = cm.node('span', {'class' : 'required'}, that.lang('asterisk'));
         if(that.params.required && that.params.requiredAsterisk){
             cm.appendChild(that.nodes.required, that.nodes.label);
         }
