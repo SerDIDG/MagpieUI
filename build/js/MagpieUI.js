@@ -1,5 +1,5 @@
-/*! ************ MagpieUI v3.40.33 (2022-04-21 19:41) ************ */
-// TinyColor v1.4.1
+/*! ************ MagpieUI v3.40.34 (2022-06-03 19:20) ************ */
+// TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
 
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.33',
+        '_version' : '3.40.34',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -10667,8 +10667,10 @@ function(params){
     var renderSeparator = function(params){
         params = cm.merge({
             'node' : cm.node('hr'),
-            'container' : that.nodes.fields
+            'container' : that.nodes.fields,
+            'classes': []
         }, params);
+        cm.addClass(params.node, params.classes);
         cm.appendChild(params.node, params.container);
     };
 
@@ -11064,6 +11066,14 @@ function(params){
 
     that.getField = function(name){
         return that.fields[name];
+    };
+
+    that.getFields = function(names){
+        var fields = {};
+        cm.forEach(names, function(name){
+            fields[name] = that.getField(name);
+        });
+        return fields;
     };
 
     that.setFieldParams = function(name, params){

@@ -1,8 +1,8 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.33 (2022-04-21 19:41) ************ */
+/*! ************ MagpieUI v3.40.34 (2022-06-03 19:20) ************ */
 /*!
  * animate.css - https://animate.style/
- * Version - 4.1.0
+ * Version - 4.1.1
  * Licensed under the MIT license - http://opensource.org/licenses/MIT
  *
  * Copyright (c) 2020 Animate.css
@@ -3768,19 +3768,18 @@
 .cm-fat-cursor div.CodeMirror-cursors {
   z-index: 1;
 }
-.cm-fat-cursor-mark {
-  background-color: rgba(20, 255, 20, 0.5);
-  -webkit-animation: blink 1.06s steps(1) infinite;
-  -moz-animation: blink 1.06s steps(1) infinite;
-  animation: blink 1.06s steps(1) infinite;
+.cm-fat-cursor .CodeMirror-line::selection,
+.cm-fat-cursor .CodeMirror-line > span::selection,
+.cm-fat-cursor .CodeMirror-line > span > span::selection {
+  background: transparent;
 }
-.cm-animate-fat-cursor {
-  width: auto;
-  border: 0;
-  -webkit-animation: blink 1.06s steps(1) infinite;
-  -moz-animation: blink 1.06s steps(1) infinite;
-  animation: blink 1.06s steps(1) infinite;
-  background-color: #7e7;
+.cm-fat-cursor .CodeMirror-line::-moz-selection,
+.cm-fat-cursor .CodeMirror-line > span::-moz-selection,
+.cm-fat-cursor .CodeMirror-line > span > span::-moz-selection {
+  background: transparent;
+}
+.cm-fat-cursor {
+  caret-color: transparent;
 }
 @-moz-keyframes blink {
   50% {
@@ -3927,19 +3926,20 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-scroll {
   overflow: scroll !important;
   /* Things will break if this is overridden */
-  /* 30px is the magic margin used to hide the element's real scrollbars */
+  /* 50px is the magic margin used to hide the element's real scrollbars */
   /* See overflow: hidden in .CodeMirror */
-  margin-bottom: -30px;
-  margin-right: -30px;
-  padding-bottom: 30px;
+  margin-bottom: -50px;
+  margin-right: -50px;
+  padding-bottom: 50px;
   height: 100%;
   outline: none;
   /* Prevent dragging from highlighting the element */
   position: relative;
+  z-index: 0;
 }
 .CodeMirror-sizer {
   position: relative;
-  border-right: 30px solid transparent;
+  border-right: 50px solid transparent;
 }
 /* The fake, visible scrollbars. Used to force redraw during scrolling
    before actual scrolling happens, thus preventing shaking and
@@ -3951,6 +3951,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   position: absolute;
   z-index: 6;
   display: none;
+  outline: none;
 }
 .CodeMirror-vscrollbar {
   right: 0;
@@ -3984,7 +3985,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   height: 100%;
   display: inline-block;
   vertical-align: top;
-  margin-bottom: -30px;
+  margin-bottom: -50px;
 }
 .CodeMirror-gutter-wrapper {
   position: absolute;
@@ -4371,8 +4372,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.33');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.33') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.33') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.33') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.33#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.40.34');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.40.34') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.40.34') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.40.34') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.40.34#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

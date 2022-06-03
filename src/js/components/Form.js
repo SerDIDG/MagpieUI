@@ -351,8 +351,10 @@ function(params){
     var renderSeparator = function(params){
         params = cm.merge({
             'node' : cm.node('hr'),
-            'container' : that.nodes.fields
+            'container' : that.nodes.fields,
+            'classes': []
         }, params);
+        cm.addClass(params.node, params.classes);
         cm.appendChild(params.node, params.container);
     };
 
@@ -748,6 +750,14 @@ function(params){
 
     that.getField = function(name){
         return that.fields[name];
+    };
+
+    that.getFields = function(names){
+        var fields = {};
+        cm.forEach(names, function(name){
+            fields[name] = that.getField(name);
+        });
+        return fields;
     };
 
     that.setFieldParams = function(name, params){
