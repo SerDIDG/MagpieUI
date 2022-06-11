@@ -1286,6 +1286,16 @@ cm.loadScript = function(o){
     }
 };
 
+cm.addLink = function(href, callback){
+    var node  = document.createElement('link');
+    node.rel  = 'stylesheet';
+    node.type = 'text/css';
+    node.media = 'all';
+    node.href = href;
+    cm.appendChild(node, cm.getDocumentHead());
+    return node;
+}
+
 cm.getEl = function(str){
     return document.getElementById(str);
 };
