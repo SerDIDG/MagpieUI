@@ -230,7 +230,7 @@ function(params){
         }else{
             if(!cm.isNode(node)){
                 node = node.toString();
-                node = cm.node('div', {'innerHTML' : node});
+                node = cm.node('div', {'class' : 'inner', 'innerHTML' : node});
             }
             cm.appendChild(node, that.nodes['content']);
         }
