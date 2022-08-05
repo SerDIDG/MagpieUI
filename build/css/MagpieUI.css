@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.40.36 (2022-06-14 19:04) ************ */
+/*! ************ MagpieUI v3.40.37 (2022-08-05 23:40) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4372,8 +4372,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.36');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.36') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.36') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.36') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.36#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.40.37');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.40.37') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.40.37') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.40.37') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.40.37#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -17214,6 +17214,27 @@ ul.pt__field__hint li:before {
   transform: scale(0);
 }
 .com__tooltip.animate--drop-bottom-left.is-show {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+.com__tooltip.animate--drop-bottom-center {
+  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transition: -webkit-transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms, -ms-transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms, transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  -webkit-transform-origin: center top;
+  -moz-transform-origin: center top;
+  -ms-transform-origin: center top;
+  transform-origin: center top;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+.com__tooltip.animate--drop-bottom-center.is-hide {
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+.com__tooltip.animate--drop-bottom-center.is-show {
   -webkit-transform: scale(1);
   -ms-transform: scale(1);
   transform: scale(1);

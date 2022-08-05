@@ -47,6 +47,20 @@
             .mx__transform(scale(1));
         }
     }
+
+    &.animate--drop-bottom-center {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(center top);
+        .mx__transform(scale(0));
+
+        &.is-hide {
+            .mx__transform(scale(0));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
 }
 
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
