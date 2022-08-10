@@ -62,6 +62,7 @@ cm.define('Com.Gridlist', {
         'renderEmptyTable' : false,
         'renderFilter' : false,
         'divideTableHeader' : false,
+        'hideTableHeader' : false,
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
@@ -441,6 +442,9 @@ function(params){
                     renderFilterItem(item, i, that.nodes['filter']);
                 });
                 cm.appendChild(that.nodes['filter'], that.nodes['head']);
+            }
+            if(that.params.hideTableHeader){
+                cm.addClass(that.nodes['head'], 'is-hidden');
             }
         }else{
             // Render Table Title Placeholder

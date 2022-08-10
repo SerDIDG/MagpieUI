@@ -358,7 +358,11 @@
         .pt__gridlist.is-adaptive {
             .pt__gridlist__has-background;
 
-            thead, tbody, tr, td {
+            thead:not(.is-hidden) {
+                display: block;
+            }
+
+            tbody, tr, td {
                 display: block;
             }
 

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.37 (2022-08-05 23:40) ************ */
+/*! ************ MagpieUI v3.40.38 (2022-08-10 08:43) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.37',
+        '_version' : '3.40.38',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -18934,6 +18934,7 @@ cm.define('Com.Gridlist', {
         'renderEmptyTable' : false,
         'renderFilter' : false,
         'divideTableHeader' : false,
+        'hideTableHeader' : false,
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
@@ -19313,6 +19314,9 @@ function(params){
                     renderFilterItem(item, i, that.nodes['filter']);
                 });
                 cm.appendChild(that.nodes['filter'], that.nodes['head']);
+            }
+            if(that.params.hideTableHeader){
+                cm.addClass(that.nodes['head'], 'is-hidden');
             }
         }else{
             // Render Table Title Placeholder
