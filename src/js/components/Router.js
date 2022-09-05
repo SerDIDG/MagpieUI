@@ -340,8 +340,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             route = '/' + route;
         }
         // Split hash
-        route = route.split('#');
-        return route;
+        var url = route.split('?')[0].split('#')[0];
+        var hash = route.split('#')[1];
+        return [url, hash];
     };
 
     classProto.prepareHref = function(route){
