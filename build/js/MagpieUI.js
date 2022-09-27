@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.40.39 (2022-09-06 00:20) ************ */
+/*! ************ MagpieUI v3.41.0 (2022-09-27 10:38) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.40.39',
+        '_version' : '3.41.0',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -7667,6 +7667,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             case 'immediately':
                 that.triggerEvent('onRedraw');
                 break;
+            case 'frame':
             default:
                 animFrame(function(){
                     that.triggerEvent('onRedraw');
@@ -24462,6 +24463,7 @@ Com['Scroll'] = function(o){
 cm.define('Com.Slider', {
     'modules' : [
         'Params',
+        'Langs',
         'Events',
         'DataConfig',
         'DataNodes',
@@ -24494,6 +24496,7 @@ cm.define('Com.Slider', {
         'pauseOnHover' : true,
         'pauseOnScroll' : true,
         'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
+        'controlsType' : 'partial',     // full | partial | small | null
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
         'arrows' : true,                // Display arrows, can hide exists arrows
@@ -24507,6 +24510,10 @@ cm.define('Com.Slider', {
             'step' : 25,
             'time' : 25
         }
+    },
+    'strings' : {
+        'prev' : 'Previous',
+        'next' : 'Next'
     }
 },
 function(params){
@@ -24594,6 +24601,10 @@ function(params){
         cm.forEach(that.nodes['items'], collectItem);
         // Collect items from config
         cm.forEach(that.params['items'], collectItem);
+        // Controls
+        if(cm.inArray(['full', 'partial', 'small'], that.params['controlsType'])){
+            cm.addClass(that.nodes['controls'], ['is', that.params['controlsType']].join('-'));
+        }
         // Arrows
         if(that.params['arrows']){
             cm.addEvent(that.nodes['next'], 'click', that.next);
@@ -24646,12 +24657,12 @@ function(params){
                 that.nodes['slides'] = cm.node('div', {'class' : 'slides'},
                     that.nodes['slidesInner'] = cm.node('ul')
                 ),
-                cm.node('div', {'class' : 'com__gallery-controls is-partial'},
+                that.nodes['controls'] = cm.node('div', {'class' : 'com__gallery-controls'},
                     cm.node('div', {'class' : 'inner'},
-                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev'},
+                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev', 'title' : that.msg('prev')},
                             cm.node('div', {'class' : 'icon default prev'})
                         ),
-                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next'},
+                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next', 'title' : that.msg('next')},
                             cm.node('div', {'class' : 'icon default next'})
                         ),
                         cm.node('div', {'class' : 'bar-buttons'},
@@ -30100,6 +30111,11 @@ cm.define('Com.Check', {
             checked: null,
             unchecked: null,
         },
+        helpConstructor: 'Com.HelpBubble',
+        helpParams: {
+            renderStructure: true,
+            embedStructureOnRender: true
+        },
     },
     strings: {
         'required': 'This field is required.'
@@ -30287,8 +30303,10 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             nodes = {};
         item = cm.merge({
             nodes: {},
-            text: '',
             value: null,
+            text: '',
+            help: null,
+            helpType: 'tooltip',
             values: {
                 checked: null,
                 unchecked: null,
@@ -30317,6 +30335,20 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         cm.addEvent(item.nodes.input, 'click', function(e) {
             that.setValue(item, true);
         });
+
+        // Help Bubble
+        if (!cm.isEmpty(item.help)) {
+            item.helpParams = cm.merge(that.params.helpParams, {
+                title: item.label,
+                content: item.help,
+                name: that.params.name,
+                type: item.nodes.helpType,
+                container: item.nodes.container,
+            });
+            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+                item.helpController = new classConstructor(item.helpParams);
+            });
+        }
 
         // Push
         that.inputs.push(item);

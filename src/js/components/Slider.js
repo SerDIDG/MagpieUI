@@ -1,6 +1,7 @@
 cm.define('Com.Slider', {
     'modules' : [
         'Params',
+        'Langs',
         'Events',
         'DataConfig',
         'DataNodes',
@@ -33,6 +34,7 @@ cm.define('Com.Slider', {
         'pauseOnHover' : true,
         'pauseOnScroll' : true,
         'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
+        'controlsType' : 'partial',     // full | partial | small | null
         'buttons' : true,               // Display buttons, can hide exists buttons
         'numericButtons' : false,       // Render slide index on button
         'arrows' : true,                // Display arrows, can hide exists arrows
@@ -46,6 +48,10 @@ cm.define('Com.Slider', {
             'step' : 25,
             'time' : 25
         }
+    },
+    'strings' : {
+        'prev' : 'Previous',
+        'next' : 'Next'
     }
 },
 function(params){
@@ -133,6 +139,10 @@ function(params){
         cm.forEach(that.nodes['items'], collectItem);
         // Collect items from config
         cm.forEach(that.params['items'], collectItem);
+        // Controls
+        if(cm.inArray(['full', 'partial', 'small'], that.params['controlsType'])){
+            cm.addClass(that.nodes['controls'], ['is', that.params['controlsType']].join('-'));
+        }
         // Arrows
         if(that.params['arrows']){
             cm.addEvent(that.nodes['next'], 'click', that.next);
@@ -185,12 +195,12 @@ function(params){
                 that.nodes['slides'] = cm.node('div', {'class' : 'slides'},
                     that.nodes['slidesInner'] = cm.node('ul')
                 ),
-                cm.node('div', {'class' : 'com__gallery-controls is-partial'},
+                that.nodes['controls'] = cm.node('div', {'class' : 'com__gallery-controls'},
                     cm.node('div', {'class' : 'inner'},
-                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev'},
+                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev', 'title' : that.msg('prev')},
                             cm.node('div', {'class' : 'icon default prev'})
                         ),
-                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next'},
+                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next', 'title' : that.msg('next')},
                             cm.node('div', {'class' : 'icon default next'})
                         ),
                         cm.node('div', {'class' : 'bar-buttons'},

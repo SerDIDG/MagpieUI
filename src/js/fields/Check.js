@@ -9,6 +9,11 @@ cm.define('Com.Check', {
             checked: null,
             unchecked: null,
         },
+        helpConstructor: 'Com.HelpBubble',
+        helpParams: {
+            renderStructure: true,
+            embedStructureOnRender: true
+        },
     },
     strings: {
         'required': 'This field is required.'
@@ -196,8 +201,10 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             nodes = {};
         item = cm.merge({
             nodes: {},
-            text: '',
             value: null,
+            text: '',
+            help: null,
+            helpType: 'tooltip',
             values: {
                 checked: null,
                 unchecked: null,
@@ -226,6 +233,20 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         cm.addEvent(item.nodes.input, 'click', function(e) {
             that.setValue(item, true);
         });
+
+        // Help Bubble
+        if (!cm.isEmpty(item.help)) {
+            item.helpParams = cm.merge(that.params.helpParams, {
+                title: item.label,
+                content: item.help,
+                name: that.params.name,
+                type: item.nodes.helpType,
+                container: item.nodes.container,
+            });
+            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+                item.helpController = new classConstructor(item.helpParams);
+            });
+        }
 
         // Push
         that.inputs.push(item);

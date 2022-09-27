@@ -154,6 +154,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             case 'immediately':
                 that.triggerEvent('onRedraw');
                 break;
+            case 'frame':
             default:
                 animFrame(function(){
                     that.triggerEvent('onRedraw');
