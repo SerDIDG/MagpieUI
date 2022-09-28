@@ -47,6 +47,12 @@
                 display: flex;
                 .mx__flex-direction(column);
                 .mx__justify-content(center);
+
+                &.column--flex-column {
+                    > .inner {
+                        .mx__justify-content(center);
+                    }
+                }
             }
         }
     }
