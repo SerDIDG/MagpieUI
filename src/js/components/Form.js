@@ -38,6 +38,7 @@ cm.define('Com.Form', {
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
         'buttonsAlign' : 'right',
+        'buttonsClasses' : null,
         'renderNames' : false,                                      // Render visual input name attribute
         'showNotifications' : true,
         'showSuccessNotification' : false,
@@ -133,6 +134,7 @@ function(params){
                 )
             );
             cm.addClass(that.nodes.buttons, ['pull', that.params.buttonsAlign].join('-'));
+            cm.addClass(that.nodes.buttons, that.params.buttonsClasses);
             // Embed
             that.params.renderButtonsSeparator && cm.insertFirst(that.nodes.buttonsSeparator, that.nodes.buttonsContainer);
             that.params.renderButtons && cm.appendChild(that.nodes.buttonsContainer, that.nodes.container);

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.41.1 (2022-09-28 12:59) ************ */
+/*! ************ MagpieUI v3.41.2 (2022-09-30 11:37) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.41.1',
+        '_version' : '3.41.2',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -10365,6 +10365,7 @@ cm.define('Com.Form', {
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
         'buttonsAlign' : 'right',
+        'buttonsClasses' : null,
         'renderNames' : false,                                      // Render visual input name attribute
         'showNotifications' : true,
         'showSuccessNotification' : false,
@@ -10460,6 +10461,7 @@ function(params){
                 )
             );
             cm.addClass(that.nodes.buttons, ['pull', that.params.buttonsAlign].join('-'));
+            cm.addClass(that.nodes.buttons, that.params.buttonsClasses);
             // Embed
             that.params.renderButtonsSeparator && cm.insertFirst(that.nodes.buttonsSeparator, that.nodes.buttonsContainer);
             that.params.renderButtons && cm.appendChild(that.nodes.buttonsContainer, that.nodes.container);
