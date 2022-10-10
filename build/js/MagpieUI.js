@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.41.2 (2022-09-30 11:37) ************ */
+/*! ************ MagpieUI v3.42.0 (2022-10-10 09:27) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.41.2',
+        '_version' : '3.42.0',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -34071,7 +34071,9 @@ function(params){
         // Placeholder
         if(!cm.isEmpty(that.params['placeholder'])){
             nodes['items'].appendChild(
-                nodes['placeholder'] = cm.node('li', {'class' : 'title'}, that.params['placeholder'])
+                nodes['placeholder'] = cm.node('li',
+                    cm.node('div', {'class' : 'text disabled'}, that.params['placeholder'])
+                )
             );
         }
         /* *** RENDER OPTIONS *** */
@@ -34194,6 +34196,17 @@ function(params){
 
     /* *** COLLECTORS *** */
 
+    var collectSelectGroupOption = function(node){
+        return {
+            'value' : node.value,
+            'text' : node.innerHTML,
+            'classes' : [node.className],
+            'style': node.style.cssText,
+            'hidden' : node.hidden,
+            'disabled' : node.disabled
+        };
+    };
+
     var collectSelectOptions = function(){
         var nodes = that.params['node'].childNodes,
             nodeTagName,
@@ -34205,13 +34218,9 @@ function(params){
                     options = collectSelectGroupOptions(node);
                     renderGroup(node.label, options);
                 }else if(nodeTagName === 'option'){
-                    renderOption({
-                        'value' : node.value,
-                        'text' : node.innerHTML,
-                        'className' : node.className,
-                        'hidden' : node.hidden,
-                        'disabled' : node.disabled
-                    });
+                    renderOption(
+                        collectSelectGroupOption(node)
+                    );
                 }
             }
         });
@@ -34221,42 +34230,44 @@ function(params){
         var optionNodes = node.querySelectorAll('option'),
             options = [];
         cm.forEach(optionNodes, function(optionNode){
-            options.push({
-                'value' : optionNode.value,
-                'text' : optionNode.innerHTML,
-                'className' : optionNode.className
-            });
+            options.push(
+                collectSelectGroupOption(optionNode)
+            );
         });
         return options;
     };
 
     /* *** GROUPS *** */
 
-    var renderGroup = function(myName, myOptions){
+    var renderGroup = function(name, options){
         // Config
         var item = {
-            'name' : myName,
-            'options' : myOptions
+            'name' : name,
+            'options' : options
         };
+
         // Structure
-        item['optgroup'] = cm.node('optgroup', {'label' : myName});
+        item['optgroup'] = cm.node('optgroup', {'label' : item['name']});
         item['container'] = cm.node('li', {'class' : 'group'},
             item['items'] = cm.node('ul', {'class' : 'pt__listing-items'})
         );
-        if(!cm.isEmpty(myName)){
+        if(!cm.isEmpty(item['name'])){
             cm.insertFirst(
-                cm.node('div', {'class' : 'title', 'innerHTML' : myName}),
+                cm.node('div', {'class' : 'title', 'innerHTML' : item['name']}),
                 item['container']
             );
         }
+
         // Render options
-        cm.forEach(myOptions, function(myOption){
-            renderOption(myOption, item);
+        cm.forEach(item['options'], function(optionItem){
+            renderOption(optionItem, item);
         });
+
         // Append
         nodes['items'].appendChild(item['container']);
         nodes['hidden'].appendChild(item['optgroup']);
-        // Push to groups array
+
+        // Push
         groups.push(item);
         return item;
     };
@@ -34269,63 +34280,84 @@ function(params){
 
     /* *** OPTIONS *** */
 
-    var renderOption = function(item, group){
+    var renderOption = function(item, groupItem){
         // Config
         item = cm.merge({
+            'group' : null,         // Group name
+            'groupItem': null,      // Group item
             'hidden' : false,
-            'select' : false,       // select option on add
-            'selected' : false,
+            'select' : false,       // Choose option after adding
+            'selected' : false,     // For select with multiple options to choose
             'disabled' : false,
             'value' : '',
             'text' : '',
-            'className' : '',
-            'group': null
+            'classes': [],
+            'style': null
         }, item);
-        // Check for an existing option
+
+        // Validate
+        if(!cm.isEmpty(item['className'])){
+            if(cm.isArray(item['classes'])){
+                item['classes'].push(item['className']);
+            }else{
+                item['classes'] = [item['classes'], item['className']];
+            }
+        }
+
+        // Check is option with the same value exists and delete it
         if(options[item['value']]){
             removeOption(options[item['value']]);
         }
-        // Add link to a group
-        if(!cm.isEmpty(item['group'])){
-            item['_group'] = getGroup(item['group']);
-            if(!item['_group']){
-                item['_group'] = renderGroup(item['group']);
+
+        // Get group item and link it to option's config
+        if(!cm.isUndefined(groupItem)){
+            item['groupItem'] = groupItem;
+            item['group'] = groupItem['name'];
+        }else if(!cm.isEmpty(item['group'])){
+            item['groupItem'] = getGroup(item['group']);
+            if(!item['groupItem']){
+                item['groupItem'] = renderGroup(item['group']);
             }
         }
-        if(!cm.isUndefined(group)){
-            item['_group'] = group;
-            item['group'] = group['name'];
-        }
+
         // Structure
-        item['node'] = cm.node('li', {'class' : item['className']},
+        item['node'] = cm.node('li', {'classes' : item['classes'], 'style' : item['style']},
             cm.node('a', {'innerHTML' : item['text'], 'title' : item['text']})
         );
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
-        // Label onlick event
-        cm.addEvent(item['node'], 'click', function(){
-            if(!item['disabled'] && !that.disabled){
-                set(item, true);
-            }
-            !that.params['multiple'] && components['menu'].hide(false);
-        });
-        // Hidden / Disabled
+
+        // Hidden / Disabled attributes
         item['hidden'] && cm.addClass(item['node'], 'hidden');
         item['disabled'] && cm.addClass(item['node'], 'disabled');
+
         // Append
-        if(item['_group']){
-            item['_group']['items'].appendChild(item['node']);
-            item['_group']['optgroup'].appendChild(item['option']);
+        if(item['groupItem']){
+            item['groupItem']['items'].appendChild(item['node']);
+            item['groupItem']['optgroup'].appendChild(item['option']);
         }else{
             nodes['items'].appendChild(item['node']);
             nodes['hidden'].appendChild(item['option']);
         }
+
+        // Label click event
+        cm.addEvent(item['node'], 'click', function(){
+            if(!item['disabled'] && !that.disabled){
+                set(item, true);
+            }
+            if(!that.params['multiple']){
+                components['menu'].hide(false);
+            }
+        });
+
         // Push
         optionsList.push(options[item['value']] = item);
         optionsLength = optionsList.length;
+
         // Select
         if(item['select']){
             set(item, false);
         }
+
         return item;
     };
 

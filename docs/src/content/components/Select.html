@@ -268,8 +268,16 @@ new Com.Select({
         </select>
         <hr>
 
-        <h2>Select with hidden option:</h2>
+        <h2>Select with disabled option:</h2>
         <select name="select-4" data-element="Com.Select">
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3" disabled>Three</option>
+        </select>
+        <hr>
+
+        <h2>Select with hidden option:</h2>
+        <select name="select-5" data-element="Com.Select">
             <option hidden></option>
             <option value="1">One</option>
             <option value="2">Two</option>
@@ -277,11 +285,11 @@ new Com.Select({
         <hr>
 
         <h2>Empty select:</h2>
-        <select name="select-5" data-element="Com.Select"></select>
+        <select name="select-6" data-element="Com.Select"></select>
         <hr>
 
         <h2>Disabled select:</h2>
-        <select name="select-6" data-element="Com.Select" disabled>
+        <select name="select-7" data-element="Com.Select" disabled>
             <option value="1">One</option>
             <option value="2">Two</option>
             <option value="3">Three</option>
@@ -289,12 +297,28 @@ new Com.Select({
         <hr>
 
         <h2>Multiple select:</h2>
-        <select name="select-7" data-element="Com.Select" multiple>
+        <select name="select-8" data-element="Com.Select" multiple>
             <option value="0" selected>Zero</option>
             <option value="1" selected>One</option>
             <option value="2" selected>Two</option>
             <option value="3">Three</option>
             <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7" selected>Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+            <option value="10">Ten</option>
+        </select>
+        <hr>
+
+        <h2>Multiple select with different options:</h2>
+        <select name="select-p" data-element="Com.Select" multiple  placeholder="Placeholder text">
+            <option value="0" selected>Zero</option>
+            <option value="1" selected>One</option>
+            <option value="2" selected>Two</option>
+            <option value="3" disabled>Three</option>
+            <option value="4" hidden>Four</option>
             <option value="5">Five</option>
             <option value="6">Six</option>
             <option value="7" selected>Seven</option>

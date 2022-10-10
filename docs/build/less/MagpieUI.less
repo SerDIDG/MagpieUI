@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.41.2 (2022-09-30 11:37) ************ */
+/*! ************ MagpieUI v3.42.0 (2022-10-10 09:27) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4584,7 +4584,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.41.2';
+@CmVersion: '3.42.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5164,6 +5164,7 @@ span.CodeMirror-selectedtext { background: none; }
 @PtToolbar-XSmall: 76px;
 @PtToolbar-Small: 100px;
 @PtToolbar-Medium: 150px;
+@PtToolbar-Default: 200px;
 @PtToolbar-Large: 250px;
 @PtToolbar-XLarge: 350px;
 
@@ -13366,7 +13367,8 @@ ul.pt__field__hint {
             }
 
             > a,
-            > .inner {
+            > .inner,
+            > .text {
                 //&:extend(.cm__link all);
                 display: block;
                 padding: @PtListingItems-PaddingY @PtListingItems-PaddingX;
@@ -13389,6 +13391,10 @@ ul.pt__field__hint {
                 &:hover {
                     text-decoration: none;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.disabled {
+                    color: @CmColor-Font-Disabled;
                 }
             }
 
@@ -13417,7 +13423,7 @@ ul.pt__field__hint {
                 > a,
                 > .inner {
                     background-color: @CmColor-Secondary-LightHighlight;
-                    color: @CmColor-Font-Placeholder;
+                    color: @CmColor-Font-Disabled;
                 }
             }
 
@@ -13459,6 +13465,16 @@ ul.pt__field__hint {
                 > a,
                 > .inner {
                     cursor: default;
+                }
+            }
+        }
+    }
+
+    &.is-nowrap {
+        ul {
+            li {
+                > a {
+                    .cm__text-nowrap;
                 }
             }
         }
@@ -14193,6 +14209,11 @@ ul.pt__field__hint {
             &.size-medium,
             &.medium {
                 width: @PtToolbar-Medium;
+            }
+
+            &.size-default,
+            &.default {
+                width: @PtToolbar-Default;
             }
 
             &.size-large,

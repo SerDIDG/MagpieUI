@@ -212,7 +212,8 @@
             }
 
             > a,
-            > .inner {
+            > .inner,
+            > .text {
                 //&:extend(.cm__link all);
                 display: block;
                 padding: @PtListingItems-PaddingY @PtListingItems-PaddingX;
@@ -235,6 +236,10 @@
                 &:hover {
                     text-decoration: none;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
+                }
+
+                &.disabled {
+                    color: @CmColor-Font-Disabled;
                 }
             }
 
@@ -263,7 +268,7 @@
                 > a,
                 > .inner {
                     background-color: @CmColor-Secondary-LightHighlight;
-                    color: @CmColor-Font-Placeholder;
+                    color: @CmColor-Font-Disabled;
                 }
             }
 
@@ -305,6 +310,16 @@
                 > a,
                 > .inner {
                     cursor: default;
+                }
+            }
+        }
+    }
+
+    &.is-nowrap {
+        ul {
+            li {
+                > a {
+                    .cm__text-nowrap;
                 }
             }
         }
