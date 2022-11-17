@@ -244,8 +244,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.constructRoute = function(routeItem){
         var that = this,
-            constructor,
-            constructorParams;
+            constructor;
         that.triggerEvent('onChangeStart', routeItem);
         // Export
         that.current = routeItem;
@@ -260,20 +259,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }else{
                 constructor = routeItem.constructor;
             }
-            if(cm.isObject(routeItem.constructorParams)){
-                cm.forEach(routeItem.constructorParams, function(item, key){
-                    if(that.checkRoleAccess(key)){
-                        constructorParams = item;
-                    }
-                });
-            }else{
-                constructorParams = routeItem.constructorParams;
-            }
         }
         if(constructor){
             cm.getConstructor(constructor, function(classConstructor){
                 routeItem.controller = new classConstructor(
-                    cm.merge(constructorParams, {
+                    cm.merge(routeItem.constructorParams, {
                         'container' : that.params.container,
                         'route' : routeItem
                     })

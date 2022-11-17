@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.42.1 (2022-11-14 06:26) ************ */
+/*! ************ MagpieUI v3.42.2 (2022-11-17 03:05) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.42.1',
+        '_version' : '3.42.2',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -23908,8 +23908,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.constructRoute = function(routeItem){
         var that = this,
-            constructor,
-            constructorParams;
+            constructor;
         that.triggerEvent('onChangeStart', routeItem);
         // Export
         that.current = routeItem;
@@ -23924,20 +23923,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }else{
                 constructor = routeItem.constructor;
             }
-            if(cm.isObject(routeItem.constructorParams)){
-                cm.forEach(routeItem.constructorParams, function(item, key){
-                    if(that.checkRoleAccess(key)){
-                        constructorParams = item;
-                    }
-                });
-            }else{
-                constructorParams = routeItem.constructorParams;
-            }
         }
         if(constructor){
             cm.getConstructor(constructor, function(classConstructor){
                 routeItem.controller = new classConstructor(
-                    cm.merge(constructorParams, {
+                    cm.merge(routeItem.constructorParams, {
                         'container' : that.params.container,
                         'route' : routeItem
                     })
