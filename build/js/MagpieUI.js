@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.42.2 (2022-11-17 03:05) ************ */
+/*! ************ MagpieUI v3.42.3 (2022-11-17 03:50) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.42.2',
+        '_version' : '3.42.3',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -24196,6 +24196,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             captures: null,
             assignLocation: false
         }, params);
+        // Get route item
+        var routeItem = that.get(route);
+        if(routeItem && routeItem.type === 'external'){
+            params.assignLocation = true;
+        }
         // Get route url
         var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
         var url = that.getURL(route, hash, urlParams);

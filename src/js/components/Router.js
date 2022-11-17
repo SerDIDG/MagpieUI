@@ -532,6 +532,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             captures: null,
             assignLocation: false
         }, params);
+        // Get route item
+        var routeItem = that.get(route);
+        if(routeItem && routeItem.type === 'external'){
+            params.assignLocation = true;
+        }
         // Get route url
         var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
         var url = that.getURL(route, hash, urlParams);
