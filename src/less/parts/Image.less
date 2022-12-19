@@ -27,6 +27,7 @@
             .cm__image-resizable;
             position: relative;
             z-index: 1;
+            will-change: opacity;
             .mx__transition(opacity, @CmUI-Transition-Duration);
         }
 
@@ -409,6 +410,14 @@
         > .inner {
             > .descr {
                 background-attachment: fixed;
+            }
+        }
+    }
+
+    &.is-normal {
+        > .inner {
+            > .descr {
+                background-attachment: scroll;
             }
         }
     }
