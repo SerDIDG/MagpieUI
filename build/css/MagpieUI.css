@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.42.4 (2022-12-19 11:29) ************ */
+/*! ************ MagpieUI v3.42.4 (2023-01-04 21:18) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -7476,15 +7476,47 @@ button.is-hidden {
 .cm__list-horizontal.pull-right {
   text-align: right;
 }
-.cm__list-horizontal li {
+.cm__list-horizontal > li {
   vertical-align: top;
 }
-.cm__list-horizontal li:after {
+.cm__list-horizontal > li:after {
   margin: 0 4px;
   content: '・';
 }
-.cm__list-horizontal li:last-child:after {
+.cm__list-horizontal > li:last-child:after {
   display: none;
+}
+.cm__list-horizontal--flex {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  align-items: center;
+}
+.cm__list-horizontal--flex > li {
+  margin: 0;
+  padding: 0;
+}
+.cm__list-horizontal--flex.pull-left {
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+.cm__list-horizontal--flex.pull-center {
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+.cm__list-horizontal--flex.pull-right {
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+.cm__list-horizontal--flex > li:not(:last-child)::after {
+  margin: 0 4px;
+  content: '・';
 }
 .cm__list-flat {
   margin: 0;
@@ -14436,14 +14468,14 @@ ul.pt__field__hint li:before {
 .pt__line-filter > ul.pull-right {
   text-align: right;
 }
-.pt__line-filter > ul li {
+.pt__line-filter > ul > li {
   vertical-align: top;
 }
-.pt__line-filter > ul li:after {
+.pt__line-filter > ul > li:after {
   margin: 0 4px;
   content: '・';
 }
-.pt__line-filter > ul li:last-child:after {
+.pt__line-filter > ul > li:last-child:after {
   display: none;
 }
 .pt__line-filter > ul li.active {

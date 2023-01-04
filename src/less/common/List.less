@@ -127,7 +127,7 @@
     .cm__list-clear;
     .cm__list-inline--clear;
 
-    li {
+    > li {
         vertical-align: top;
 
         &:after {
@@ -137,6 +137,18 @@
 
         &:last-child:after {
             display: none;
+        }
+    }
+}
+.cm__list-horizontal--flex {
+    .cm__list-clear;
+    .cm__list-flex;
+    align-items: center;
+
+    > li {
+        &:not(:last-child)::after {
+            margin: 0 @CmIndent-XXXSmall;
+            content: '・';
         }
     }
 }

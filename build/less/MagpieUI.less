@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.42.4 (2022-12-19 11:29) ************ */
+/*! ************ MagpieUI v3.42.4 (2023-01-04 21:18) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -8270,7 +8270,7 @@ button {
     .cm__list-clear;
     .cm__list-inline--clear;
 
-    li {
+    > li {
         vertical-align: top;
 
         &:after {
@@ -8280,6 +8280,18 @@ button {
 
         &:last-child:after {
             display: none;
+        }
+    }
+}
+.cm__list-horizontal--flex {
+    .cm__list-clear;
+    .cm__list-flex;
+    align-items: center;
+
+    > li {
+        &:not(:last-child)::after {
+            margin: 0 @CmIndent-XXXSmall;
+            content: '・';
         }
     }
 }
@@ -8295,6 +8307,7 @@ button {
         }
     }
 }
+
 /* ******* PART: FORM ******* */
 
 .form {
