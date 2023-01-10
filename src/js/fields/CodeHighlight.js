@@ -13,6 +13,7 @@ cm.define('Com.CodeHighlight', {
         'name' : '',
         'language' : 'javascript',
         'lineNumbers' : true,
+        'lineWrapping' : false,
         'customEvents' : true,
         'disabled' : false,
         'title' :''
@@ -52,6 +53,7 @@ function(params){
                 if(path){
                     that.components['codemirror'] = path.fromTextArea(that.params['node'], {
                         'lineNumbers' : that.params['lineNumbers'],
+                        'lineWrapping' : that.params['lineWrapping'],
                         'viewportMargin' : Infinity,
                         'mode' : that.params['language']
                     });
@@ -73,6 +75,15 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.set = function(text){
+        if(that.components['codemirror']){
+            that.components['codemirror'].setValue(text);
+        }else{
+            that.params['node'].value = text;
+        }
+        return that;
+    };
 
     that.redraw = function(){
         that.components['codemirror'] && that.components['codemirror'].refresh();

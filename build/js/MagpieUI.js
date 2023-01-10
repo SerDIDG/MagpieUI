@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.42.4 (2023-01-04 21:18) ************ */
+/*! ************ MagpieUI v3.43.0 (2023-01-10 22:51) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.42.4',
+        '_version' : '3.43.0',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -3279,7 +3279,7 @@ cm.getNodes = function(container, marker){
 
     var process = function(node, attr, obj, processedObj){
         var separators = attr? attr.split(':') : [],
-            arr;
+            childNodes;
         if(separators.length === 1){
             obj[separators[0]] = node;
         }else if(separators.length === 2 || separators.length === 3){
@@ -3287,12 +3287,17 @@ cm.getNodes = function(container, marker){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = [];
                 }
-                arr = {};
+                childNodes = {};
                 if(separators[2]){
-                    arr[separators[2]] = node;
+                    childNodes[separators[2]] = node;
                 }
-                find(node, arr, processedObj);
-                obj[separators[0]].push(arr);
+                find(node, childNodes, processedObj);
+                obj[separators[0]].push(childNodes);
+            }else if(separators[1] === '[&]'){
+                if(!obj[separators[0]]){
+                    obj[separators[0]] = [];
+                }
+                obj[separators[0]].push(node);
             }else if(separators[1] === '{}'){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = {};
@@ -10341,6 +10346,8 @@ cm.define('Com.Form', {
         'onRenderStart',
         'onRender',
         'onValidate',
+        'onRequestError',
+        'onRequestSuccess',
         'onError',
         'onAbort',
         'onSuccess',
@@ -10882,7 +10889,7 @@ function(params){
             if(!cm.isEmpty(errors)){
                 that.callbacks.error(that, config, response);
             }else{
-                that.callbacks.success(that, data);
+                that.callbacks.success(that, data, response);
             }
         }else{
             that.callbacks.error(that, config);
@@ -10899,15 +10906,24 @@ function(params){
             code = cm.reducePath(that.params.responseCodeKey, response);
         }
         that.callbacks.renderError(that, errors, message);
-        that.triggerEvent('onError', {
+
+        var responseData = {
             'response' : response,
             'errors' : errors,
             'message' : message,
             'code' : code
-        });
+        };
+        that.triggerEvent('onError', responseData);
+        that.triggerEvent('onRequestError', responseData);
     };
 
-    that.callbacks.success = function(that, data){
+    that.callbacks.success = function(that, data, response){
+        var message,
+            code;
+        if(!cm.isEmpty(response)){
+            message = cm.reducePath(that.params.responseMessageKey, response);
+            code = cm.reducePath(that.params.responseCodeKey, response);
+        }
         if(that.params.showNotifications && that.params.showSuccessNotification){
             that.callbacks.renderNotification(that, {
                 'label' : that.lang('success_message'),
@@ -10916,6 +10932,12 @@ function(params){
         }
         sendCompleteHelper(data);
         that.triggerEvent('onSuccess', data);
+        that.triggerEvent('onRequestSuccess', {
+            'response' : response,
+            'data' : data,
+            'message' : message,
+            'code' : code
+        });
     };
 
     that.callbacks.abort = function(that, config){
@@ -30640,6 +30662,7 @@ cm.define('Com.CodeHighlight', {
         'name' : '',
         'language' : 'javascript',
         'lineNumbers' : true,
+        'lineWrapping' : false,
         'customEvents' : true,
         'disabled' : false,
         'title' :''
@@ -30679,6 +30702,7 @@ function(params){
                 if(path){
                     that.components['codemirror'] = path.fromTextArea(that.params['node'], {
                         'lineNumbers' : that.params['lineNumbers'],
+                        'lineWrapping' : that.params['lineWrapping'],
                         'viewportMargin' : Infinity,
                         'mode' : that.params['language']
                     });
@@ -30700,6 +30724,15 @@ function(params){
     };
 
     /* ******* PUBLIC ******* */
+
+    that.set = function(text){
+        if(that.components['codemirror']){
+            that.components['codemirror'].setValue(text);
+        }else{
+            that.params['node'].value = text;
+        }
+        return that;
+    };
 
     that.redraw = function(){
         that.components['codemirror'] && that.components['codemirror'].refresh();

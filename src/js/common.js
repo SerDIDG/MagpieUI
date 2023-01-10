@@ -1680,7 +1680,7 @@ cm.getNodes = function(container, marker){
 
     var process = function(node, attr, obj, processedObj){
         var separators = attr? attr.split(':') : [],
-            arr;
+            childNodes;
         if(separators.length === 1){
             obj[separators[0]] = node;
         }else if(separators.length === 2 || separators.length === 3){
@@ -1688,12 +1688,17 @@ cm.getNodes = function(container, marker){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = [];
                 }
-                arr = {};
+                childNodes = {};
                 if(separators[2]){
-                    arr[separators[2]] = node;
+                    childNodes[separators[2]] = node;
                 }
-                find(node, arr, processedObj);
-                obj[separators[0]].push(arr);
+                find(node, childNodes, processedObj);
+                obj[separators[0]].push(childNodes);
+            }else if(separators[1] === '[&]'){
+                if(!obj[separators[0]]){
+                    obj[separators[0]] = [];
+                }
+                obj[separators[0]].push(node);
             }else if(separators[1] === '{}'){
                 if(!obj[separators[0]]){
                     obj[separators[0]] = {};

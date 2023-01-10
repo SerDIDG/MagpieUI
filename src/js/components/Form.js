@@ -14,6 +14,8 @@ cm.define('Com.Form', {
         'onRenderStart',
         'onRender',
         'onValidate',
+        'onRequestError',
+        'onRequestSuccess',
         'onError',
         'onAbort',
         'onSuccess',
@@ -555,7 +557,7 @@ function(params){
             if(!cm.isEmpty(errors)){
                 that.callbacks.error(that, config, response);
             }else{
-                that.callbacks.success(that, data);
+                that.callbacks.success(that, data, response);
             }
         }else{
             that.callbacks.error(that, config);
@@ -572,15 +574,24 @@ function(params){
             code = cm.reducePath(that.params.responseCodeKey, response);
         }
         that.callbacks.renderError(that, errors, message);
-        that.triggerEvent('onError', {
+
+        var responseData = {
             'response' : response,
             'errors' : errors,
             'message' : message,
             'code' : code
-        });
+        };
+        that.triggerEvent('onError', responseData);
+        that.triggerEvent('onRequestError', responseData);
     };
 
-    that.callbacks.success = function(that, data){
+    that.callbacks.success = function(that, data, response){
+        var message,
+            code;
+        if(!cm.isEmpty(response)){
+            message = cm.reducePath(that.params.responseMessageKey, response);
+            code = cm.reducePath(that.params.responseCodeKey, response);
+        }
         if(that.params.showNotifications && that.params.showSuccessNotification){
             that.callbacks.renderNotification(that, {
                 'label' : that.lang('success_message'),
@@ -589,6 +600,12 @@ function(params){
         }
         sendCompleteHelper(data);
         that.triggerEvent('onSuccess', data);
+        that.triggerEvent('onRequestSuccess', {
+            'response' : response,
+            'data' : data,
+            'message' : message,
+            'code' : code
+        });
     };
 
     that.callbacks.abort = function(that, config){
