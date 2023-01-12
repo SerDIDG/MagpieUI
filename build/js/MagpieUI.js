@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.43.0 (2023-01-10 22:51) ************ */
+/*! ************ MagpieUI v3.44.0 (2023-01-12 05:25) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.43.0',
+        '_version' : '3.44.0',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -8981,7 +8981,10 @@ cm.define('Com.AbstractFormField', {
         'required' : 'This field is required.',
         'too_short' : 'Value should be at least %count% characters.',
         'too_long' : 'Value should be less than %count% characters.',
-        'asterisk' : '*'
+        'asterisk' : {
+            'char' : '*',
+            'title' : 'Required'
+        },
     }
 },
 function(params){
@@ -9040,7 +9043,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             && that.params.placeholderAsterisk
             && !cm.isEmpty(that.params.placeholder)
         ){
-            that.params.placeholder = [that.params.placeholder, that.lang('asterisk')].join(' ');
+            that.params.placeholder = [that.params.placeholder, that.msg('asterisk.char')].join(' ');
         }
         // Constructor params
         that.params.constructorParams.id = that.params.id;
@@ -9147,7 +9150,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
         // Required
-        that.nodes.required = cm.node('span', {'class' : 'required'}, that.lang('asterisk'));
+        that.nodes.required = cm.node('span', {'class' : 'required', 'title' : that.msg('asterisk.title')}, that.msg('asterisk.char'));
         if(that.params.required && that.params.requiredAsterisk){
             cm.appendChild(that.nodes.required, that.nodes.label);
         }
@@ -9430,7 +9433,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(cm.isEmpty(data.value)){
             if(data.required){
                 data.valid = false;
-                data.message = that.lang('required');
+                data.message = that.msg('required');
                 return data;
             }else{
                 data.valid = true;
@@ -9439,14 +9442,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if(that.params.minLength && data.value.length < that.params.minLength){
             data.valid = false;
-            data.message = that.lang('too_short', {
+            data.message = that.msg('too_short', {
                 '%count%' : that.params.minLength
             });
             return data;
         }
         if(that.params.maxLength && data.value.length > that.params.maxLength){
             data.valid = false;
-            data.message = that.lang('too_long', {
+            data.message = that.msg('too_long', {
                 '%count%' : that.params.maxLength
             });
             return data;
@@ -10840,11 +10843,13 @@ function(params){
                 'onStart' : function(){
                     that.callbacks.start(that, config);
                 },
-                'onSuccess' : function(response){
-                    that.callbacks.response(that, config, response);
+                'onSuccess' : function(response, event){
+                    event = response instanceof ProgressEvent ? response : event;
+                    that.callbacks.response(that, config, response, event);
                 },
-                'onError' : function(response){
-                    that.callbacks.error(that, config, response);
+                'onError' : function(response, event){
+                    event = response instanceof ProgressEvent ? response : event;
+                    that.callbacks.error(that, config, response, event);
                 },
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
@@ -10880,23 +10885,23 @@ function(params){
         that.triggerEvent('onSendEnd');
     };
 
-    that.callbacks.response = function(that, config, response){
+    that.callbacks.response = function(that, config, response, event){
         var errors,
             data;
         if(!cm.isEmpty(response)){
             errors = cm.reducePath(that.params.responseErrorsKey, response);
             data = cm.reducePath(that.params.responseKey, response);
             if(!cm.isEmpty(errors)){
-                that.callbacks.error(that, config, response);
+                that.callbacks.error(that, config, response, event);
             }else{
-                that.callbacks.success(that, data, response);
+                that.callbacks.success(that, data, response, event);
             }
         }else{
-            that.callbacks.error(that, config);
+            that.callbacks.error(that, config, response, event);
         }
     };
 
-    that.callbacks.error = function(that, config, response){
+    that.callbacks.error = function(that, config, response, event){
         var errors,
             message,
             code;
@@ -10911,13 +10916,14 @@ function(params){
             'response' : response,
             'errors' : errors,
             'message' : message,
-            'code' : code
+            'code' : code,
+            'target': event instanceof ProgressEvent ? event.target : null,
         };
         that.triggerEvent('onError', responseData);
         that.triggerEvent('onRequestError', responseData);
     };
 
-    that.callbacks.success = function(that, data, response){
+    that.callbacks.success = function(that, data, response, event){
         var message,
             code;
         if(!cm.isEmpty(response)){
@@ -10936,7 +10942,8 @@ function(params){
             'response' : response,
             'data' : data,
             'message' : message,
-            'code' : code
+            'code' : code,
+            'target': event instanceof ProgressEvent ? event.target : null,
         });
     };
 
@@ -30732,6 +30739,14 @@ function(params){
             that.params['node'].value = text;
         }
         return that;
+    };
+
+    that.get = function(){
+        if(that.components['codemirror']){
+            return that.components['codemirror'].getValue();
+        }else{
+            return that.params['node'].value;
+        }
     };
 
     that.redraw = function(){

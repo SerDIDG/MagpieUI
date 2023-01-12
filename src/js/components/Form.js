@@ -508,11 +508,13 @@ function(params){
                 'onStart' : function(){
                     that.callbacks.start(that, config);
                 },
-                'onSuccess' : function(response){
-                    that.callbacks.response(that, config, response);
+                'onSuccess' : function(response, event){
+                    event = response instanceof ProgressEvent ? response : event;
+                    that.callbacks.response(that, config, response, event);
                 },
-                'onError' : function(response){
-                    that.callbacks.error(that, config, response);
+                'onError' : function(response, event){
+                    event = response instanceof ProgressEvent ? response : event;
+                    that.callbacks.error(that, config, response, event);
                 },
                 'onAbort' : function(){
                     that.callbacks.abort(that, config);
@@ -548,23 +550,23 @@ function(params){
         that.triggerEvent('onSendEnd');
     };
 
-    that.callbacks.response = function(that, config, response){
+    that.callbacks.response = function(that, config, response, event){
         var errors,
             data;
         if(!cm.isEmpty(response)){
             errors = cm.reducePath(that.params.responseErrorsKey, response);
             data = cm.reducePath(that.params.responseKey, response);
             if(!cm.isEmpty(errors)){
-                that.callbacks.error(that, config, response);
+                that.callbacks.error(that, config, response, event);
             }else{
-                that.callbacks.success(that, data, response);
+                that.callbacks.success(that, data, response, event);
             }
         }else{
-            that.callbacks.error(that, config);
+            that.callbacks.error(that, config, response, event);
         }
     };
 
-    that.callbacks.error = function(that, config, response){
+    that.callbacks.error = function(that, config, response, event){
         var errors,
             message,
             code;
@@ -579,13 +581,14 @@ function(params){
             'response' : response,
             'errors' : errors,
             'message' : message,
-            'code' : code
+            'code' : code,
+            'target': event instanceof ProgressEvent ? event.target : null,
         };
         that.triggerEvent('onError', responseData);
         that.triggerEvent('onRequestError', responseData);
     };
 
-    that.callbacks.success = function(that, data, response){
+    that.callbacks.success = function(that, data, response, event){
         var message,
             code;
         if(!cm.isEmpty(response)){
@@ -604,7 +607,8 @@ function(params){
             'response' : response,
             'data' : data,
             'message' : message,
-            'code' : code
+            'code' : code,
+            'target': event instanceof ProgressEvent ? event.target : null,
         });
     };
 

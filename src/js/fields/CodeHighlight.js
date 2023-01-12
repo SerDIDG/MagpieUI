@@ -85,6 +85,14 @@ function(params){
         return that;
     };
 
+    that.get = function(){
+        if(that.components['codemirror']){
+            return that.components['codemirror'].getValue();
+        }else{
+            return that.params['node'].value;
+        }
+    };
+
     that.redraw = function(){
         that.components['codemirror'] && that.components['codemirror'].refresh();
         return that;
