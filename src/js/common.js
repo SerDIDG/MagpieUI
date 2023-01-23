@@ -1259,29 +1259,37 @@ cm.addScript = function(src, async, callback){
     return item['script'];
 };
 
-cm.loadScript = function(o){
-    o = cm.merge({
-        'path' : '',
-        'src' : '',
-        'async' : true,
-        'callback' : function(){}
-    }, o);
-    var path = cm.objectPath(o['path'], window);
-    if(!cm.isEmpty(path)){
-        o['callback'](path);
-    }else{
-        cm.addScript(o['src'], o['async'], function(){
-            path = cm.objectPath(o['path'], window);
-            if(!cm.isEmpty(path)){
-                o['callback'](path);
-            }else{
-                cm.errorLog({
-                    'type' : 'error',
-                    'name' : 'cm.loadScript',
-                    'message' : [o['path'], 'does not loaded.'].join(' ')
-                });
-                o['callback'](null);
-            }
+cm.loadScript = function(config) {
+    config = cm.merge({
+        path: '',
+        src: '',
+        async: true,
+        callback: function() {},
+    }, config);
+
+    var path = cm.objectPath(config.path, window);
+    if (!cm.isEmpty(path)) {
+        return new Promise(function(resolve, reject) {
+            config.callback(path);
+            resolve(path);
+        });
+    } else {
+        return new Promise(function(resolve, reject) {
+            cm.addScript(config.src, config.async, function(event) {
+                path = cm.objectPath(config.path, window);
+                if (!cm.isEmpty(path)) {
+                    config.callback(path);
+                    resolve(path);
+                } else {
+                    cm.errorLog({
+                        type: 'error',
+                        name: 'cm.loadScript',
+                        message: [config.path, 'was not loaded.'].join(' '),
+                    });
+                    config.callback(null);
+                    reject(event);
+                }
+            });
         });
     }
 };
@@ -1491,7 +1499,7 @@ cm.getTextNodesStr = function(node){
     return str;
 };
 
-cm.remove = function(node){
+cm.remove = cm.removeNode = function(node){
     if(node && node.parentNode){
         node.parentNode.removeChild(node);
     }

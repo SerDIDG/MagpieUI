@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.44.0 (2023-01-12 05:25) ************ */
+/*! ************ MagpieUI v3.44.1 (2023-01-23 12:23) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.44.0',
+        '_version' : '3.44.1',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -2858,29 +2858,37 @@ cm.addScript = function(src, async, callback){
     return item['script'];
 };
 
-cm.loadScript = function(o){
-    o = cm.merge({
-        'path' : '',
-        'src' : '',
-        'async' : true,
-        'callback' : function(){}
-    }, o);
-    var path = cm.objectPath(o['path'], window);
-    if(!cm.isEmpty(path)){
-        o['callback'](path);
-    }else{
-        cm.addScript(o['src'], o['async'], function(){
-            path = cm.objectPath(o['path'], window);
-            if(!cm.isEmpty(path)){
-                o['callback'](path);
-            }else{
-                cm.errorLog({
-                    'type' : 'error',
-                    'name' : 'cm.loadScript',
-                    'message' : [o['path'], 'does not loaded.'].join(' ')
-                });
-                o['callback'](null);
-            }
+cm.loadScript = function(config) {
+    config = cm.merge({
+        path: '',
+        src: '',
+        async: true,
+        callback: function() {},
+    }, config);
+
+    var path = cm.objectPath(config.path, window);
+    if (!cm.isEmpty(path)) {
+        return new Promise(function(resolve, reject) {
+            config.callback(path);
+            resolve(path);
+        });
+    } else {
+        return new Promise(function(resolve, reject) {
+            cm.addScript(config.src, config.async, function(event) {
+                path = cm.objectPath(config.path, window);
+                if (!cm.isEmpty(path)) {
+                    config.callback(path);
+                    resolve(path);
+                } else {
+                    cm.errorLog({
+                        type: 'error',
+                        name: 'cm.loadScript',
+                        message: [config.path, 'was not loaded.'].join(' '),
+                    });
+                    config.callback(null);
+                    reject(event);
+                }
+            });
         });
     }
 };
@@ -3090,7 +3098,7 @@ cm.getTextNodesStr = function(node){
     return str;
 };
 
-cm.remove = function(node){
+cm.remove = cm.removeNode = function(node){
     if(node && node.parentNode){
         node.parentNode.removeChild(node);
     }
@@ -7865,7 +7873,7 @@ cm.define('Com.AbstractContainer', {
         'controllerEvents' : true,
         'constructor' : null,
         'constructorParams' : {},
-        'params' : {},
+        'params' : {},                      // ToDo: deprecated, use constructorParams
         'placeholder' : false,
         'placeholderConstructor' : null,
         'placeholderParams' : {},
@@ -21527,7 +21535,8 @@ cm.define('Com.Notifications', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onAdd',
-        'onRemove'
+        'onRemove',
+        'onClear'
     ],
     'params' : {
         'renderStructure' : true,
@@ -21571,6 +21580,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         while(that.items.length){
             that.remove(that.items[0]);
         }
+        that.triggerEvent('onClear');
         return that;
     };
 
@@ -21644,6 +21654,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         return that.items.length;
     };
 });
+
 cm.define('Com.OldBrowserAlert', {
     'modules' : [
         'Params',

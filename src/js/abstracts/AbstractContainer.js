@@ -23,7 +23,7 @@ cm.define('Com.AbstractContainer', {
         'controllerEvents' : true,
         'constructor' : null,
         'constructorParams' : {},
-        'params' : {},
+        'params' : {},                      // ToDo: deprecated, use constructorParams
         'placeholder' : false,
         'placeholderConstructor' : null,
         'placeholderParams' : {},

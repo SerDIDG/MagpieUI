@@ -2,7 +2,8 @@ cm.define('Com.Notifications', {
     'extend' : 'Com.AbstractController',
     'events' : [
         'onAdd',
-        'onRemove'
+        'onRemove',
+        'onClear'
     ],
     'params' : {
         'renderStructure' : true,
@@ -46,6 +47,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         while(that.items.length){
             that.remove(that.items[0]);
         }
+        that.triggerEvent('onClear');
         return that;
     };
 
