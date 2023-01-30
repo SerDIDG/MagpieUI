@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.44.1 (2023-01-23 12:23) ************ */
+/*! ************ MagpieUI v3.44.2 (2023-01-30 18:12) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4584,7 +4584,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.44.1';
+@CmVersion: '3.44.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -11755,7 +11755,7 @@ ul.pt__field__hint {
         }
     }
 
-    thead {
+    thead, tfoot {
         &.is-hidden {
             visibility: hidden;
 
@@ -11772,12 +11772,6 @@ ul.pt__field__hint {
 
     &.has-background {
         .pt__gridlist__has-background;
-    }
-
-    &.valign-middle {
-        td {
-            vertical-align: middle;
-        }
     }
 
     &.is-editable {
@@ -11801,6 +11795,12 @@ ul.pt__field__hint {
             > .com__columns__chassis {
                 opacity: 1;
             }
+        }
+    }
+
+    &.valign-middle {
+        td {
+            vertical-align: middle;
         }
     }
 }
@@ -11849,84 +11849,88 @@ ul.pt__field__hint {
 // /* ******* PARTS: GRIDLIST: MIXINS ******* */
 
 .pt__gridlist__backgrounds () {
-    th {
-        background-color: @PtGridlist-Title-DefaultBackground;
+    thead, tfoot {
+        th {
+            background-color: @PtGridlist-Title-DefaultBackground;
 
-        &.sort {
-            &:hover {
-                background-color: @PtGridlist-Title-HoverBackground;
-                .mx__transition(background-color, @CmUI-Transition-DurationReverse);
-            }
+            &.sort {
+                &:hover {
+                    background-color: @PtGridlist-Title-HoverBackground;
+                    .mx__transition(background-color, @CmUI-Transition-DurationReverse);
+                }
 
-            &:active {
-                background-color: @PtGridlist-Title-ActiveBackground;
+                &:active {
+                    background-color: @PtGridlist-Title-ActiveBackground;
+                }
             }
         }
     }
 
-    tr {
-        td {
-            background-color: @PtGridlist-Cell-DefaultBackground;
-        }
-
-        &:hover {
-            td {
-                background-color: @PtGridlist-Cell-HoverBackground;
-            }
-        }
-
-        &:active {
-            td {
-                background-color: @PtGridlist-Cell-ActiveBackground;
-            }
-        }
-
-        &.success,
-        &.valid {
-            td {
-                background-color: @PtGridlist-Cell-SuccessBackground;
+    tbody {
+        tr {
+            th, td {
+                background-color: @PtGridlist-Cell-DefaultBackground;
             }
 
             &:hover {
-                td {
-                    background-color: @PtGridlist-Cell-SuccessHoverBackground;
+                th, td {
+                    background-color: @PtGridlist-Cell-HoverBackground;
                 }
             }
-        }
 
-        &.danger,
-        &.invalid {
-            td {
-                background-color: @PtGridlist-Cell-DangerBackground;
-            }
-
-            &:hover {
-                td {
-                    background-color: @PtGridlist-Cell-DangerHoverBackground;
+            &:active {
+                th, td {
+                    background-color: @PtGridlist-Cell-ActiveBackground;
                 }
             }
-        }
 
-        &.warning {
-            td {
-                background-color: @PtGridlist-Cell-WarningBackground;
-            }
+            &.success,
+            &.valid {
+                th, td {
+                    background-color: @PtGridlist-Cell-SuccessBackground;
+                }
 
-            &:hover {
-                td {
-                    background-color: @PtGridlist-Cell-WarningHoverBackground;
+                &:hover {
+                    th, td {
+                        background-color: @PtGridlist-Cell-SuccessHoverBackground;
+                    }
                 }
             }
-        }
 
-        &.active {
-            td {
-                background-color: @PtGridlist-Cell-ActiveBackground;
+            &.danger,
+            &.invalid {
+                th, td {
+                    background-color: @PtGridlist-Cell-DangerBackground;
+                }
+
+                &:hover {
+                    th, td {
+                        background-color: @PtGridlist-Cell-DangerHoverBackground;
+                    }
+                }
             }
 
-            &:hover {
-                td {
-                    background-color: @PtGridlist-Cell-ActiveHoverBackground;
+            &.warning {
+                th, td {
+                    background-color: @PtGridlist-Cell-WarningBackground;
+                }
+
+                &:hover {
+                    th, td {
+                        background-color: @PtGridlist-Cell-WarningHoverBackground;
+                    }
+                }
+            }
+
+            &.active {
+                th, td {
+                    background-color: @PtGridlist-Cell-ActiveBackground;
+                }
+
+                &:hover {
+                    th, td {
+                        background-color: @PtGridlist-Cell-ActiveHoverBackground;
+                    }
                 }
             }
         }
@@ -11936,30 +11940,34 @@ ul.pt__field__hint {
 .pt__gridlist__has-background () {
     .pt__gridlist__backgrounds;
 
-    th {
-        background-color: @PtGridlist-Title-HasBackground-Default;
+    thead, tfoot {
+        th {
+            background-color: @PtGridlist-Title-HasBackground-Default;
 
-        &.sort {
-            &:hover {
-                background-color: @PtGridlist-Title-HasBackground-Hover;
+            &.sort {
+                &:hover {
+                    background-color: @PtGridlist-Title-HasBackground-Hover;
+                }
             }
         }
     }
 
-    tr {
-        td {
-            background-color: @PtGridlist-Cell-HasBackground-Default;
-        }
-
-        &:hover {
+    tbody {
+        tr {
             td {
-                background-color: @PtGridlist-Cell-HasBackground-Hover;
+                background-color: @PtGridlist-Cell-HasBackground-Default;
             }
-        }
 
-        &:active {
-            td {
-                background-color: @PtGridlist-Cell-HasBackground-Active;
+            &:hover {
+                th, td {
+                    background-color: @PtGridlist-Cell-HasBackground-Hover;
+                }
+            }
+
+            &:active {
+                th, td {
+                    background-color: @PtGridlist-Cell-HasBackground-Active;
+                }
             }
         }
     }
@@ -11983,12 +11991,12 @@ ul.pt__field__hint {
         .pt__gridlist.is-adaptive {
             .pt__gridlist__has-background;
 
-            thead:not(.is-hidden) {
+            thead, tbody, tfoot, tr, td {
                 display: block;
-            }
 
-            tbody, tr, td {
-                display: block;
+                &.is-hidden {
+                    display: none;
+                }
             }
 
             thead {
