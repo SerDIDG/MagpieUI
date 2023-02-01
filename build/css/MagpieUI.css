@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.44.2 (2023-01-30 18:12) ************ */
+/*! ************ MagpieUI v3.44.3 (2023-02-01 09:40) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4249,6 +4249,9 @@ span.CodeMirror-selectedtext {
 .svg__circle-help-white {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22circle-help-white.svg%22%20class%3D%22cls-1%22%20d%3D%22M150%2C68a12%2C12%2C0%2C1%2C1-12%2C12A12%2C12%2C0%2C0%2C1%2C150%2C68Zm0%2C2a10%2C10%2C0%2C1%2C1-10%2C10A10%2C10%2C0%2C0%2C1%2C150%2C70Zm-0.856%2C12.16h2.032a1.662%2C1.662%2C0%2C0%2C1%2C.3-0.992%2C6.134%2C6.134%2C0%2C0%2C1%2C.9-0.96%2C10.4%2C10.4%2C0%2C0%2C0%2C.8-0.792%2C3.179%2C3.179%2C0%2C0%2C0%2C.52-0.84%2C2.863%2C2.863%2C0%2C0%2C0%2C.216-1.152%2C2.5%2C2.5%2C0%2C0%2C0-1.064-2.136%2C4.75%2C4.75%2C0%2C0%2C0-2.856-.776%2C6.037%2C6.037%2C0%2C0%2C0-2.56.5%2C4.487%2C4.487%2C0%2C0%2C0-1.776%2C1.448l1.552%2C1.008a3%2C3%2C0%2C0%2C1%2C2.608-1.232%2C2.339%2C2.339%2C0%2C0%2C1%2C1.456.416%2C1.308%2C1.308%2C0%2C0%2C1%2C.544%2C1.088%2C1.4%2C1.4%2C0%2C0%2C1-.28.856%2C6.33%2C6.33%2C0%2C0%2C1-.856.888%2C7.256%2C7.256%2C0%2C0%2C0-1.144%2C1.24%2C2.459%2C2.459%2C0%2C0%2C0-.392%2C1.432h0Zm1.024%2C3.824a1.227%2C1.227%2C0%2C0%2C0%2C.9-0.36%2C1.207%2C1.207%2C0%2C0%2C0%2C.36-0.888%2C1.18%2C1.18%2C0%2C0%2C0-.36-0.88%2C1.243%2C1.243%2C0%2C0%2C0-.9-0.352%2C1.261%2C1.261%2C0%2C0%2C0-.92.352%2C1.18%2C1.18%2C0%2C0%2C0-.36.88%2C1.207%2C1.207%2C0%2C0%2C0%2C.36.888%2C1.245%2C1.245%2C0%2C0%2C0%2C.92.36h0Z%22%20transform%3D%22translate(-138%20-68)%22%2F%3E%3C%2Fsvg%3E");
 }
+.svg__circle-help {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22circle-help.svg%22%20class%3D%22cls-1%22%20d%3D%22M150%2C68a12%2C12%2C0%2C1%2C1-12%2C12A12%2C12%2C0%2C0%2C1%2C150%2C68Zm0%2C2a10%2C10%2C0%2C1%2C1-10%2C10A10%2C10%2C0%2C0%2C1%2C150%2C70Zm-0.856%2C12.16h2.032a1.662%2C1.662%2C0%2C0%2C1%2C.3-0.992%2C6.134%2C6.134%2C0%2C0%2C1%2C.9-0.96%2C10.4%2C10.4%2C0%2C0%2C0%2C.8-0.792%2C3.179%2C3.179%2C0%2C0%2C0%2C.52-0.84%2C2.863%2C2.863%2C0%2C0%2C0%2C.216-1.152%2C2.5%2C2.5%2C0%2C0%2C0-1.064-2.136%2C4.75%2C4.75%2C0%2C0%2C0-2.856-.776%2C6.037%2C6.037%2C0%2C0%2C0-2.56.5%2C4.487%2C4.487%2C0%2C0%2C0-1.776%2C1.448l1.552%2C1.008a3%2C3%2C0%2C0%2C1%2C2.608-1.232%2C2.339%2C2.339%2C0%2C0%2C1%2C1.456.416%2C1.308%2C1.308%2C0%2C0%2C1%2C.544%2C1.088%2C1.4%2C1.4%2C0%2C0%2C1-.28.856%2C6.33%2C6.33%2C0%2C0%2C1-.856.888%2C7.256%2C7.256%2C0%2C0%2C0-1.144%2C1.24%2C2.459%2C2.459%2C0%2C0%2C0-.392%2C1.432h0Zm1.024%2C3.824a1.227%2C1.227%2C0%2C0%2C0%2C.9-0.36%2C1.207%2C1.207%2C0%2C0%2C0%2C.36-0.888%2C1.18%2C1.18%2C0%2C0%2C0-.36-0.88%2C1.243%2C1.243%2C0%2C0%2C0-.9-0.352%2C1.261%2C1.261%2C0%2C0%2C0-.92.352%2C1.18%2C1.18%2C0%2C0%2C0-.36.88%2C1.207%2C1.207%2C0%2C0%2C0%2C.36.888%2C1.245%2C1.245%2C0%2C0%2C0%2C.92.36h0Z%22%20transform%3D%22translate(-138%20-68)%22%2F%3E%3C%2Fsvg%3E");
+}
 .svg__close-white {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23ffffff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M20.485%2C19.071l-1.414%2C1.414L12%2C13.414%2C4.929%2C20.485%2C3.515%2C19.071%2C10.586%2C12%2C3.515%2C4.929%2C4.929%2C3.515%2C12%2C10.586l7.071-7.071%2C1.414%2C1.414L13.414%2C12Z%22%2F%3E%3C%2Fsvg%3E");
 }
@@ -4372,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.44.2');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.44.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.44.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.44.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.44.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.44.3');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.44.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.44.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.44.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.44.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10916,6 +10919,20 @@ button.is-hidden {
 .pt__field.is-text > dt,
 .pt__field.is-text > .field__title {
   padding: 0;
+}
+.pt__field.is-label-flex > dt,
+.pt__field.is-label-flex > .field__title {
+  display: flex;
+  align-items: center;
+}
+.pt__field.is-label-flex .com__help-bubble {
+  display: block;
+}
+.pt__field.is-label-flex .com__help-bubble .com__help-bubble__title {
+  display: block;
+}
+.pt__field.is-label-flex .com__help-bubble .com__help-bubble__title .icon {
+  display: block;
 }
 .pt__field.is-no-label > dt,
 .pt__field.is-no-label > .field__title {
@@ -19683,9 +19700,10 @@ ul.pt__field__hint li:before {
 .com__help-bubble > .icon {
   width: 16px;
   height: 16px;
-  background-image: url("../img/icons/small/help.png");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22circle-help.svg%22%20class%3D%22cls-1%22%20d%3D%22M150%2C68a12%2C12%2C0%2C1%2C1-12%2C12A12%2C12%2C0%2C0%2C1%2C150%2C68Zm0%2C2a10%2C10%2C0%2C1%2C1-10%2C10A10%2C10%2C0%2C0%2C1%2C150%2C70Zm-0.856%2C12.16h2.032a1.662%2C1.662%2C0%2C0%2C1%2C.3-0.992%2C6.134%2C6.134%2C0%2C0%2C1%2C.9-0.96%2C10.4%2C10.4%2C0%2C0%2C0%2C.8-0.792%2C3.179%2C3.179%2C0%2C0%2C0%2C.52-0.84%2C2.863%2C2.863%2C0%2C0%2C0%2C.216-1.152%2C2.5%2C2.5%2C0%2C0%2C0-1.064-2.136%2C4.75%2C4.75%2C0%2C0%2C0-2.856-.776%2C6.037%2C6.037%2C0%2C0%2C0-2.56.5%2C4.487%2C4.487%2C0%2C0%2C0-1.776%2C1.448l1.552%2C1.008a3%2C3%2C0%2C0%2C1%2C2.608-1.232%2C2.339%2C2.339%2C0%2C0%2C1%2C1.456.416%2C1.308%2C1.308%2C0%2C0%2C1%2C.544%2C1.088%2C1.4%2C1.4%2C0%2C0%2C1-.28.856%2C6.33%2C6.33%2C0%2C0%2C1-.856.888%2C7.256%2C7.256%2C0%2C0%2C0-1.144%2C1.24%2C2.459%2C2.459%2C0%2C0%2C0-.392%2C1.432h0Zm1.024%2C3.824a1.227%2C1.227%2C0%2C0%2C0%2C.9-0.36%2C1.207%2C1.207%2C0%2C0%2C0%2C.36-0.888%2C1.18%2C1.18%2C0%2C0%2C0-.36-0.88%2C1.243%2C1.243%2C0%2C0%2C0-.9-0.352%2C1.261%2C1.261%2C0%2C0%2C0-.92.352%2C1.18%2C1.18%2C0%2C0%2C0-.36.88%2C1.207%2C1.207%2C0%2C0%2C0%2C.36.888%2C1.245%2C1.245%2C0%2C0%2C0%2C.92.36h0Z%22%20transform%3D%22translate(-138%20-68)%22%2F%3E%3C%2Fsvg%3E");
   display: inline-block;
   vertical-align: text-bottom;
+  background-size: contain;
 }
 .com__help-bubble .com__help-bubble__title {
   display: inline-block;
@@ -19694,9 +19712,10 @@ ul.pt__field__hint li:before {
 .com__help-bubble .com__help-bubble__title .icon {
   width: 16px;
   height: 16px;
-  background-image: url("../img/icons/small/help.png");
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22circle-help.svg%22%20class%3D%22cls-1%22%20d%3D%22M150%2C68a12%2C12%2C0%2C1%2C1-12%2C12A12%2C12%2C0%2C0%2C1%2C150%2C68Zm0%2C2a10%2C10%2C0%2C1%2C1-10%2C10A10%2C10%2C0%2C0%2C1%2C150%2C70Zm-0.856%2C12.16h2.032a1.662%2C1.662%2C0%2C0%2C1%2C.3-0.992%2C6.134%2C6.134%2C0%2C0%2C1%2C.9-0.96%2C10.4%2C10.4%2C0%2C0%2C0%2C.8-0.792%2C3.179%2C3.179%2C0%2C0%2C0%2C.52-0.84%2C2.863%2C2.863%2C0%2C0%2C0%2C.216-1.152%2C2.5%2C2.5%2C0%2C0%2C0-1.064-2.136%2C4.75%2C4.75%2C0%2C0%2C0-2.856-.776%2C6.037%2C6.037%2C0%2C0%2C0-2.56.5%2C4.487%2C4.487%2C0%2C0%2C0-1.776%2C1.448l1.552%2C1.008a3%2C3%2C0%2C0%2C1%2C2.608-1.232%2C2.339%2C2.339%2C0%2C0%2C1%2C1.456.416%2C1.308%2C1.308%2C0%2C0%2C1%2C.544%2C1.088%2C1.4%2C1.4%2C0%2C0%2C1-.28.856%2C6.33%2C6.33%2C0%2C0%2C1-.856.888%2C7.256%2C7.256%2C0%2C0%2C0-1.144%2C1.24%2C2.459%2C2.459%2C0%2C0%2C0-.392%2C1.432h0Zm1.024%2C3.824a1.227%2C1.227%2C0%2C0%2C0%2C.9-0.36%2C1.207%2C1.207%2C0%2C0%2C0%2C.36-0.888%2C1.18%2C1.18%2C0%2C0%2C0-.36-0.88%2C1.243%2C1.243%2C0%2C0%2C0-.9-0.352%2C1.261%2C1.261%2C0%2C0%2C0-.92.352%2C1.18%2C1.18%2C0%2C0%2C0-.36.88%2C1.207%2C1.207%2C0%2C0%2C0%2C.36.888%2C1.245%2C1.245%2C0%2C0%2C0%2C.92.36h0Z%22%20transform%3D%22translate(-138%20-68)%22%2F%3E%3C%2Fsvg%3E");
   display: inline-block;
   vertical-align: middle;
+  background-size: contain;
 }
 .com__help-bubble .com__help-bubble__title .label {
   margin: 0 0 0 12px;
