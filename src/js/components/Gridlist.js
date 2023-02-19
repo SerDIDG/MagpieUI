@@ -18,8 +18,9 @@ cm.define('Com.Gridlist', {
         'onRenderStart',
         'onRenderEnd',
         'onLoadStart',
-        'onLoadEnd',
+        'onLoadSuccess',
         'onLoadError',
+        'onLoadEnd',
         'onPageRenderStart',
         'onPageRenderEnd',
         'onRenderTitleItem',
@@ -336,9 +337,7 @@ function(params){
                             that.triggerEvent('onLoadStart');
                         },
                         'onPageRenderError' : function(pagination, page){
-                            that.triggerEvent('onLoadError', {
-                                'page' : page
-                            });
+                            that.triggerEvent('onLoadError', {'page' : page});
                             that.triggerEvent('onLoadEnd');
                         },
                         'onPageRender' : function(pagination, page){
@@ -346,6 +345,7 @@ function(params){
                         },
                         'onPageRenderEnd' : function(pagination, page){
                             that.redraw();
+                            that.triggerEvent('onLoadSuccess', {'page' : page});
                             that.triggerEvent('onLoadEnd', {'page' : page});
                         },
                         'onSetCount' : function(pagination, count){

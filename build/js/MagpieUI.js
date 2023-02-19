@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.44.3 (2023-02-01 09:40) ************ */
+/*! ************ MagpieUI v3.45.0 (2023-02-19 09:55) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.44.3',
+        '_version' : '3.45.0',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -6642,21 +6642,22 @@ Mod['Langs'] = {
         objStr = str === '*' ? undefined : str;
         langStr = cm.reducePath(objStr, that.params.langs);
         // Try to get string from current controller strings array
-        if(
-            cm.isUndefined(langStr) ||
-            (cm.isObject(langStr) && cm.isEmpty(langStr))
-        ){
-            langStr = cm.reducePath(objStr, that.strings);
+        if(cm.isUndefined(langStr) || cm.isObject(langStr)){
+            var controllerLangStr = cm.reducePath(objStr, that.strings);
+            if(cm.isObject(langStr)) {
+                langStr = cm.merge(controllerLangStr, langStr);
+            }else{
+                langStr = controllerLangStr;
+            }
         }
         // Try to get string from parent controller
-        if(
-            that._inherit &&
-            (
-                cm.isUndefined(langStr) ||
-                (cm.isObject(langStr) && cm.isEmpty(langStr))
-            )
-        ){
-            langStr = that._inherit.prototype.getMsg(str);
+        if(that._inherit && (cm.isUndefined(langStr) || cm.isObject(langStr))){
+            var inheritLangStr = that._inherit.prototype.getLang(str);
+            if(cm.isObject(langStr)){
+                langStr = cm.merge(inheritLangStr, langStr);
+            }else{
+                langStr = inheritLangStr;
+            }
         }
         return langStr;
     },
@@ -11248,6 +11249,9 @@ function(params){
             cm.forEach(that.fields, function(field){
                 field.controller.enable();
             });
+            cm.forEach(that.buttons, function(button){
+                cm.removeClass(button.node, 'button-disabled');
+            });
             that.triggerEvent('onEnable');
         }
         return that;
@@ -11258,6 +11262,9 @@ function(params){
             that.isEnabled = false;
             cm.forEach(that.fields, function(field){
                 field.controller.disable();
+            });
+            cm.forEach(that.buttons, function(button){
+                cm.addClass(button.node, 'button-disabled');
             });
             that.triggerEvent('onDisable');
         }
@@ -18930,8 +18937,9 @@ cm.define('Com.Gridlist', {
         'onRenderStart',
         'onRenderEnd',
         'onLoadStart',
-        'onLoadEnd',
+        'onLoadSuccess',
         'onLoadError',
+        'onLoadEnd',
         'onPageRenderStart',
         'onPageRenderEnd',
         'onRenderTitleItem',
@@ -19248,9 +19256,7 @@ function(params){
                             that.triggerEvent('onLoadStart');
                         },
                         'onPageRenderError' : function(pagination, page){
-                            that.triggerEvent('onLoadError', {
-                                'page' : page
-                            });
+                            that.triggerEvent('onLoadError', {'page' : page});
                             that.triggerEvent('onLoadEnd');
                         },
                         'onPageRender' : function(pagination, page){
@@ -19258,6 +19264,7 @@ function(params){
                         },
                         'onPageRenderEnd' : function(pagination, page){
                             that.redraw();
+                            that.triggerEvent('onLoadSuccess', {'page' : page});
                             that.triggerEvent('onLoadEnd', {'page' : page});
                         },
                         'onSetCount' : function(pagination, count){
@@ -21570,7 +21577,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.renderView = function(){
         var that = this;
-        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications'},
+        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications is-hidden'},
             that.nodes['list'] = cm.node('ul')
         );
     };
@@ -21635,6 +21642,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         });
         // Embed
         cm.appendChild(item['nodes']['container'], that.nodes['list']);
+        cm.removeClass(that.nodes['container'], 'is-hidden');
         // Push
         that.items.push(item);
         that.triggerEvent('onAdd', item);
@@ -21645,6 +21653,9 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         var that = this;
         cm.remove(item['nodes']['container']);
         cm.arrayRemove(that.items, item);
+        if(that.items.length === 0){
+            cm.addClass(that.nodes['container'], 'is-hidden');
+        }
         that.triggerEvent('onRemove', item);
         return that;
     };

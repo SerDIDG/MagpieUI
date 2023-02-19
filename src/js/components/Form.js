@@ -905,6 +905,9 @@ function(params){
             cm.forEach(that.fields, function(field){
                 field.controller.enable();
             });
+            cm.forEach(that.buttons, function(button){
+                cm.removeClass(button.node, 'button-disabled');
+            });
             that.triggerEvent('onEnable');
         }
         return that;
@@ -915,6 +918,9 @@ function(params){
             that.isEnabled = false;
             cm.forEach(that.fields, function(field){
                 field.controller.disable();
+            });
+            cm.forEach(that.buttons, function(button){
+                cm.addClass(button.node, 'button-disabled');
             });
             that.triggerEvent('onDisable');
         }

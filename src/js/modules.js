@@ -440,21 +440,22 @@ Mod['Langs'] = {
         objStr = str === '*' ? undefined : str;
         langStr = cm.reducePath(objStr, that.params.langs);
         // Try to get string from current controller strings array
-        if(
-            cm.isUndefined(langStr) ||
-            (cm.isObject(langStr) && cm.isEmpty(langStr))
-        ){
-            langStr = cm.reducePath(objStr, that.strings);
+        if(cm.isUndefined(langStr) || cm.isObject(langStr)){
+            var controllerLangStr = cm.reducePath(objStr, that.strings);
+            if(cm.isObject(langStr)) {
+                langStr = cm.merge(controllerLangStr, langStr);
+            }else{
+                langStr = controllerLangStr;
+            }
         }
         // Try to get string from parent controller
-        if(
-            that._inherit &&
-            (
-                cm.isUndefined(langStr) ||
-                (cm.isObject(langStr) && cm.isEmpty(langStr))
-            )
-        ){
-            langStr = that._inherit.prototype.getMsg(str);
+        if(that._inherit && (cm.isUndefined(langStr) || cm.isObject(langStr))){
+            var inheritLangStr = that._inherit.prototype.getLang(str);
+            if(cm.isObject(langStr)){
+                langStr = cm.merge(inheritLangStr, langStr);
+            }else{
+                langStr = inheritLangStr;
+            }
         }
         return langStr;
     },

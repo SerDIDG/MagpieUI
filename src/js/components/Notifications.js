@@ -37,7 +37,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.renderView = function(){
         var that = this;
-        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications'},
+        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications is-hidden'},
             that.nodes['list'] = cm.node('ul')
         );
     };
@@ -102,6 +102,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         });
         // Embed
         cm.appendChild(item['nodes']['container'], that.nodes['list']);
+        cm.removeClass(that.nodes['container'], 'is-hidden');
         // Push
         that.items.push(item);
         that.triggerEvent('onAdd', item);
@@ -112,6 +113,9 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         var that = this;
         cm.remove(item['nodes']['container']);
         cm.arrayRemove(that.items, item);
+        if(that.items.length === 0){
+            cm.addClass(that.nodes['container'], 'is-hidden');
+        }
         that.triggerEvent('onRemove', item);
         return that;
     };
