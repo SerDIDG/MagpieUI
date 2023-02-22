@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.45.0 (2023-02-19 09:55) ************ */
+/*! ************ MagpieUI v3.45.1 (2023-02-22 11:54) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.45.0',
+        '_version' : '3.45.1',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -18986,6 +18986,7 @@ cm.define('Com.Gridlist', {
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
+        'responseCodeKey' : 'code',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
         'responseCountKey' : 'count',                               // Response data count response key
@@ -19081,14 +19082,22 @@ function(params){
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
+            var paginationParams = [
+                'autoSend',
+                'showLoader',
+                'responseKey',
+                'responseCodeKey',
+                'responseCountKey',
+                'responseMessageKey',
+                'responseErrorsKey',
+                'ajax',
+            ];
+            cm.forEach(paginationParams, function(item){
+                if(typeof that.params[item] !== 'undefined'){
+                    that.params['paginationParams'][item] = that.params[item];
+                }
+            });
             that.params['pagination'] = true;
-            that.params['paginationParams']['autoSend'] = that.params['autoSend'];
-            that.params['paginationParams']['ajax'] = that.params['ajax'];
-            that.params['paginationParams']['showLoader'] = that.params['showLoader'];
-            that.params['paginationParams']['responseKey'] = that.params['responseKey'];
-            that.params['paginationParams']['responseCountKey'] = that.params['responseCountKey'];
-            that.params['paginationParams']['responseMessageKey'] = that.params['responseMessageKey'];
-            that.params['paginationParams']['responseErrorsKey'] = that.params['responseErrorsKey'];
         }else{
             that.params['paginationParams']['count'] = that.params['data'].length;
         }
@@ -19257,7 +19266,7 @@ function(params){
                         },
                         'onPageRenderError' : function(pagination, page){
                             that.triggerEvent('onLoadError', {'page' : page});
-                            that.triggerEvent('onLoadEnd');
+                            that.triggerEvent('onLoadEnd', {'page' : page});
                         },
                         'onPageRender' : function(pagination, page){
                             that.callbacks.renderPage(that, page);
@@ -22105,6 +22114,7 @@ cm.define('Com.Pagination', {
         },
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseCodeKey' : 'code',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
         'responseHTML' : false,                                     // If true, html will append automatically
@@ -22331,29 +22341,32 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return data;
     };
 
-    classProto.callbacks.response = function(that, config, response, errors, message){
+    classProto.callbacks.response = function(that, config, response, errors, message, code){
         // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        that.callbacks.render(that, response, errors, message);
+        that.callbacks.render(that, response, errors, message, code);
     };
 
     classProto.callbacks.error = function(that, config, response){
-        var errors,
+        var code,
+            errors,
             message;
         if(!cm.isEmpty(response)){
+            code = cm.reducePath(that.params.responseCodeKey, response);
             errors = cm.reducePath(that.params.responseErrorsKey, response);
             message = cm.reducePath(that.params.responseMessageKey, response);
         }
         that.triggerEvent('onError', {
             'response' : response,
+            'code' : code,
             'errors' : errors,
             'message' : message
         });
-        that.callbacks.response(that, config, null, errors, message);
+        that.callbacks.response(that, config, null, errors, message, code);
     };
 
     classProto.callbacks.abort = function(that, config){
@@ -22398,7 +22411,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    classProto.callbacks.render = function(that, data, errors, message){
+    classProto.callbacks.render = function(that, data, errors, message, code){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -22406,6 +22419,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'pages' : that.nodes['pages'],
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
+            'code' : code,
             'errors' : errors,
             'message' : message,
             'total' : that.getCount(),

@@ -41,6 +41,7 @@ cm.define('Com.Pagination', {
         },
         'responseCountKey' : 'count',                               // Take items count from response
         'responseKey' : 'data',                                     // Instead of using filter callback, you can provide response array key
+        'responseCodeKey' : 'code',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
         'responseHTML' : false,                                     // If true, html will append automatically
@@ -267,29 +268,32 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return data;
     };
 
-    classProto.callbacks.response = function(that, config, response, errors, message){
+    classProto.callbacks.response = function(that, config, response, errors, message, code){
         // Set next page
         that.setPage();
         // Response
         if(response){
             response = that.callbacks.filter(that, config, response);
         }
-        that.callbacks.render(that, response, errors, message);
+        that.callbacks.render(that, response, errors, message, code);
     };
 
     classProto.callbacks.error = function(that, config, response){
-        var errors,
+        var code,
+            errors,
             message;
         if(!cm.isEmpty(response)){
+            code = cm.reducePath(that.params.responseCodeKey, response);
             errors = cm.reducePath(that.params.responseErrorsKey, response);
             message = cm.reducePath(that.params.responseMessageKey, response);
         }
         that.triggerEvent('onError', {
             'response' : response,
+            'code' : code,
             'errors' : errors,
             'message' : message
         });
-        that.callbacks.response(that, config, null, errors, message);
+        that.callbacks.response(that, config, null, errors, message, code);
     };
 
     classProto.callbacks.abort = function(that, config){
@@ -334,7 +338,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         return cm.node(that.params['pageTag'], that.params['pageAttributes']);
     };
 
-    classProto.callbacks.render = function(that, data, errors, message){
+    classProto.callbacks.render = function(that, data, errors, message, code){
         that.isRendering = true;
         var page = {
             'page' : that.page,
@@ -342,6 +346,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'pages' : that.nodes['pages'],
             'container' : cm.node(that.params['pageTag']),
             'data' : data,
+            'code' : code,
             'errors' : errors,
             'message' : message,
             'total' : that.getCount(),

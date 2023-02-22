@@ -67,6 +67,7 @@ cm.define('Com.Gridlist', {
         'pagination' : true,
         'perPage' : 25,
         'responseKey' : 'data',                                     // Response data response key
+        'responseCodeKey' : 'code',
         'responseErrorsKey' : 'errors',
         'responseMessageKey' : 'message',
         'responseCountKey' : 'count',                               // Response data count response key
@@ -162,14 +163,22 @@ function(params){
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
+            var paginationParams = [
+                'autoSend',
+                'showLoader',
+                'responseKey',
+                'responseCodeKey',
+                'responseCountKey',
+                'responseMessageKey',
+                'responseErrorsKey',
+                'ajax',
+            ];
+            cm.forEach(paginationParams, function(item){
+                if(typeof that.params[item] !== 'undefined'){
+                    that.params['paginationParams'][item] = that.params[item];
+                }
+            });
             that.params['pagination'] = true;
-            that.params['paginationParams']['autoSend'] = that.params['autoSend'];
-            that.params['paginationParams']['ajax'] = that.params['ajax'];
-            that.params['paginationParams']['showLoader'] = that.params['showLoader'];
-            that.params['paginationParams']['responseKey'] = that.params['responseKey'];
-            that.params['paginationParams']['responseCountKey'] = that.params['responseCountKey'];
-            that.params['paginationParams']['responseMessageKey'] = that.params['responseMessageKey'];
-            that.params['paginationParams']['responseErrorsKey'] = that.params['responseErrorsKey'];
         }else{
             that.params['paginationParams']['count'] = that.params['data'].length;
         }
@@ -338,7 +347,7 @@ function(params){
                         },
                         'onPageRenderError' : function(pagination, page){
                             that.triggerEvent('onLoadError', {'page' : page});
-                            that.triggerEvent('onLoadEnd');
+                            that.triggerEvent('onLoadEnd', {'page' : page});
                         },
                         'onPageRender' : function(pagination, page){
                             that.callbacks.renderPage(that, page);
