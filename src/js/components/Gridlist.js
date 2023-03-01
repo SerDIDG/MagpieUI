@@ -156,10 +156,6 @@ function(params){
     var validateParams = function(){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
-        // Data
-        if(!cm.isEmpty(that.params['data']) && cm.isArray(that.params['data'])){
-            that.params['data'] = that.callbacks.filter(that, that.params['data']);
-        }
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -195,6 +191,9 @@ function(params){
         that.nodes['container'] = cm.node('div', {'class' : 'com__gridlist'});
         // Add css class
         cm.addClass(that.nodes['container'], that.params['className']);
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['container'], 'is-adaptive');
+        }
         // Append
         that.embedStructure(that.nodes['container']);
         // Render bulk actions
@@ -216,9 +215,19 @@ function(params){
             renderTableHeader(that.nodes['container']);
         }
         if(that.isAjax){
-            // Render dynamic pagination
             renderPagination();
-        }else if(!cm.isEmpty(that.params['data'])){
+        }else{
+            renderStatic(that.params['data']);
+        }
+    };
+
+    var renderStatic = function(data){
+        if(!cm.isEmpty(data) && cm.isArray(data)){
+            that.params['data'] = that.callbacks.filter(that, data);
+            that.params['paginationParams']['count'] = that.params['data'].length;
+        }
+        if(!cm.isEmpty(that.params['data'])){
+            removeEmptiness(that.nodes['container']);
             // Sort data array for first time
             that.params['sort'] && arraySort();
             // Counter
@@ -378,11 +387,15 @@ function(params){
 
     var renderEmptiness = function(container, errors){
         errors = !cm.isEmpty(errors) ? errors : that.lang('empty');
+        removeEmptiness(container);
+        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
+        cm.appendChild(that.nodes['empty'], container);
+    };
+
+    var removeEmptiness = function(container){
         if(that.nodes['empty'] && cm.isParent(container, that.nodes['empty'])){
             cm.remove(that.nodes['empty']);
         }
-        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
-        cm.appendChild(that.nodes['empty'], container);
     };
 
     var renderTableHeader = function(container){
@@ -823,16 +836,19 @@ function(params){
     var renderCellURL = function(config, row, item){
         item['text'] = cm.decode(item['text']);
         item['href'] = config['urlKey'] && row['data'][config['urlKey']]? cm.decode(row['data'][config['urlKey']]) : item['text'];
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']}, !cm.isEmpty(config['altText'])? config['altText'] : item['text'])
-        );
+        item['label'] = !cm.isEmpty(config['altText'])? config['altText'] : item['text'];
+        if(!cm.isEmpty(item['href'])){
+            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']}, item['label']);
+            item['nodes']['inner'].appendChild(item['nodes']['node']);
+        }else{
+            cm.addClass(item['nodes']['container'], 'is-empty');
+        }
     };
 
     var renderCellCheckbox = function(config, row, item){
         cm.addClass(item['nodes']['container'], 'control');
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('input', {'type' : 'checkbox'})
-        );
+        item['nodes']['node'] = cm.node('input', {'type' : 'checkbox'})
+        item['nodes']['inner'].appendChild(item['nodes']['node']);
         row['nodes']['checkbox'] = item['nodes']['node'];
         if(row['data']['_checked']){
             checkRow(row, false);
@@ -1140,6 +1156,11 @@ function(params){
 
     that.redraw = function(){
         that.components['helper'] && that.components['helper'].redraw();
+        return that;
+    };
+
+    that.setData = function(data){
+        renderStatic(data);
         return that;
     };
 

@@ -6,6 +6,7 @@
     .selects {
         .display-flex;
         height: @CmForm-FieldHeight;
+        margin-bottom: @CmIndent-XXSmall;
 
         .months {
             width: 60%;
@@ -24,7 +25,6 @@
         border: none;
         border-collapse: collapse;
         table-layout: fixed;
-        margin-top: 8px;
 
         th {
             padding-bottom: 2px;
@@ -37,73 +37,93 @@
         td {
             padding: 1px;
 
-            div {
+            .day {
                 height: @ComCalendar-CellHeight;
                 background-color: @ComCalendar-Outer-Background;
                 border: @ComCalendar-Outer-BorderSize solid @ComCalendar-Outer-Border;
                 border-radius: @ComCalendar-CellBorderRadius;
-                text-align: center;
-                line-height: @ComCalendar-CellHeight - (@ComCalendar-Outer-BorderSize * 2);
-                font-size: @CmFont-UI-SizeSmall;
                 cursor: pointer;
-                .mx__box-sizing(border-box);
                 .mx__transition(all, @CmUI-Transition-Duration);
 
-                &:hover {
+                &:is(:hover, :focus-visible, :active) {
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
             }
 
-            &.in div {
-                background-color: @ComCalendar-Inner-Background;
-                border-width: @ComCalendar-Inner-BorderSize;
-                border-color: @ComCalendar-Inner-Border;
-                line-height: @ComCalendar-CellHeight - (@ComCalendar-Inner-BorderSize * 2);
+            .label {
+                text-align: center;
+                line-height: @ComCalendar-CellHeight - (@ComCalendar-Outer-BorderSize * 2);
+                font-size: @CmFont-UI-SizeSmall;
+            }
 
-                &:hover {
-                    background-color: @ComCalendar-Inner-BackgroundHover;
-                    border-color: @ComCalendar-Inner-BorderHover;
+            &.in {
+                .day {
+                    background-color: @ComCalendar-Inner-Background;
+                    border-width: @ComCalendar-Inner-BorderSize;
+                    border-color: @ComCalendar-Inner-Border;
+
+                    &:is(:hover, :focus-visible, :active) {
+                        background-color: @ComCalendar-Inner-BackgroundHover;
+                        border-color: @ComCalendar-Inner-BorderHover;
+                    }
+                }
+
+                .label {
+                    line-height: @ComCalendar-CellHeight - (@ComCalendar-Inner-BorderSize * 2);
+                }
+
+                &.weekend {
+                    .day {
+                        background-color: @ComCalendar-Weekend-Background;
+                        border-width: @ComCalendar-Weekend-BorderSize;
+                        border-color: @ComCalendar-Weekend-Border;
+
+                        &:is(:hover, :focus-visible, :active) {
+                            background-color: @ComCalendar-Weekend-BackgroundHover;
+                            border-color: @ComCalendar-Weekend-BorderHover;
+                        }
+                    }
                 }
             }
 
-            &.weekend div {
-                background-color: @ComCalendar-Weekend-Background;
-                border-width: @ComCalendar-Weekend-BorderSize;
-                border-color: @ComCalendar-Weekend-Border;
-                line-height: @ComCalendar-CellHeight - (@ComCalendar-Weekend-BorderSize * 2);
+            &.today {
+                .day {
+                    background-color: @ComCalendar-Today-Background;
+                    border-color: @ComCalendar-Today-Border;
 
-                &:hover {
-                    background-color: @ComCalendar-Weekend-BackgroundHover;
-                    border-color: @ComCalendar-Weekend-BorderHover;
+                    &:is(:hover, :focus-visible, :active) {
+                        background-color: @ComCalendar-Today-BackgroundHover;
+                        border-color: @ComCalendar-Today-BorderHover;
+                    }
                 }
             }
 
-            &.today div {
-                background-color: @ComCalendar-Today-Background;
-                border-color: @ComCalendar-Today-Border;
+            &.active,
+            &.selected {
+                .day {
+                    background-color: @ComCalendar-Active-Background;
+                    border-width: @ComCalendar-Active-BorderSize;
+                    border-color: @ComCalendar-Active-Border;
 
-                &:hover {
-                    background-color: @ComCalendar-Today-BackgroundHover;
-                    border-color: @ComCalendar-Today-BorderHover;
+                    &:is(:hover, :focus-visible, :active) {
+                        background-color: @ComCalendar-Active-BackgroundHover;
+                        border-color: @ComCalendar-Active-BorderHover;
+                    }
+                }
+
+                .label {
+                    line-height: @ComCalendar-CellHeight - (@ComCalendar-Active-BorderSize * 2);
                 }
             }
 
-            &.active div,
-            &.selected div {
-                background-color: @ComCalendar-Active-Background;
-                border-width: @ComCalendar-Active-BorderSize;
-                border-color: @ComCalendar-Active-Border;
-                line-height: @ComCalendar-CellHeight - (@ComCalendar-Active-BorderSize * 2);
-
-                &:hover {
-                    background-color: @ComCalendar-Active-BackgroundHover;
-                    border-color: @ComCalendar-Active-BorderHover;
+            &.today {
+                .day {
+                    border-width: @ComCalendar-Today-BorderSize;
                 }
-            }
 
-            &.today div {
-                border-width: @ComCalendar-Today-BorderSize;
-                line-height: @ComCalendar-CellHeight - (@ComCalendar-Today-BorderSize * 2);
+                .label {
+                    line-height: @ComCalendar-CellHeight - (@ComCalendar-Today-BorderSize * 2);
+                }
             }
         }
     }

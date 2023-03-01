@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.45.1 (2023-02-22 11:54) ************ */
+/*! ************ MagpieUI v3.46.0 (2023-03-01 16:21) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.45.1',
+        '_version' : '3.46.0',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -1691,6 +1691,7 @@ var cm = {
             },
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'daysShort' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S']
         }
     },
@@ -3732,7 +3733,7 @@ cm.strReplace = function(str, map){
 cm.fillVariables = function(value, data, skipEmpty){
     var tests;
     skipEmpty = !cm.isUndefined(skipEmpty) ? skipEmpty : false;
-    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+    return value.replace(/[{%](\w.+?)[%}]/g, function(math, p1){
         tests = [
             cm.reducePath(p1, data),
             cm.reducePath('%' + p1 + '%', data),
@@ -7751,12 +7752,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.renderViewModel();
         // Append
         if(that.params['embedStructureOnRender']){
-            that.embedStructure(that.nodes['container']);
-            if(that.params['redrawOnRender'] === true){
-                that.redraw();
-            }else if(cm.isString(that.params['redrawOnRender'])){
-                that.redraw(that.params['redrawOnRender'])
-            }
+            that.appendView();
         }
         return that;
     };
@@ -7774,6 +7770,16 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onRenderViewModel');
         return that;
+    };
+
+    classProto.appendView = function(){
+        var that = this;
+        that.embedStructure(that.nodes['container']);
+        if(that.params['redrawOnRender'] === true){
+            that.redraw();
+        }else if(cm.isString(that.params['redrawOnRender'])){
+            that.redraw(that.params['redrawOnRender'])
+        }
     };
 
     classProto.setAttributes = function(){
@@ -12806,13 +12812,15 @@ cm.define('Com.Calendar', {
         'Events',
         'Langs',
         'DataConfig',
-        'Stack'
+        'Stack',
+        'Structure'
     ],
     'events' : [
         'onRender',
         'onDayOver',
         'onDayOut',
         'onDayClick',
+        'onDayRender',
         'onMonthRender'
     ],
     'params' : {
@@ -12823,7 +12831,9 @@ cm.define('Com.Calendar', {
         'endYear' : 'current + 10',                                         // number | current
         'renderMonthOnInit' : true,
         'startWeekDay' : 0,
-        'renderSelectsInBody' : true
+        'renderSelects' : true,
+        'renderSelectsInBody' : true,
+        'changeMonthOnClick' : true,
     },
     'strings' : {
         'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
@@ -12870,10 +12880,6 @@ function(params){
         var weekday;
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__calendar'},
-            cm.node('div', {'class' : 'selects'},
-                nodes['months'] = cm.node('select', {'class' : 'select months'}),
-                nodes['years'] = cm.node('select', {'class' : 'select years'})
-            ),
             cm.node('table',
                 cm.node('thead',
                     nodes['days'] = cm.node('tr')
@@ -12883,6 +12889,14 @@ function(params){
         );
         // Add css class
         !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
+        // Render selects
+        nodes['selects'] = cm.node('div', {'class' : 'selects'},
+            nodes['months'] = cm.node('select', {'class' : 'select months'}),
+            nodes['years'] = cm.node('select', {'class' : 'select years'})
+        );
+        if(that.params['renderSelects']){
+            cm.insertFirst(nodes['selects'], nodes['container']);
+        }
         // Render days
         cm.forEach(7, function(i){
             weekday = i + that.params['startWeekDay'];
@@ -12902,8 +12916,8 @@ function(params){
                 cm.node('option', {'value' : i}, i)
             );
         }
-        // Insert into DOM
-        that.params['node'].appendChild(nodes['container']);
+        // Append
+        that.embedStructure(nodes['container']);
     };
 
     var setMiscEvents = function(){
@@ -12961,60 +12975,80 @@ function(params){
         });
     };
 
-    var renderCell = function(tr, day){
-        var td, div, params;
-        tr.appendChild(
-            td = cm.node('td')
-        );
+    var renderCell = function(row, day){
+        var item = {
+            row: row,
+            day: day,
+            month: current['month'],
+            year: current['year'],
+            date: new Date(current['year'], current['month'], day),
+            nodes: {},
+            isWeekend: false,
+            isToday: false
+        };
+
+        // Structure
+        item.container = item.nodes.container = cm.node('td');
+
         // Render day
         if(day <= 0){
-            td.appendChild(
-                div = cm.node('div', (previous['dayCount'] + day))
-            );
-            cm.addClass(td, 'out');
-            cm.addEvent(div, 'click', that.prevMonth);
+            cm.addClass(item.container, 'out');
+            item.node = item.nodes.holder = renderDay(previous['dayCount'] + day);
+            if(that.params['changeMonthOnClick']){
+                cm.addEvent(item.node, 'click', that.prevMonth.bind(that));
+            }
         }else if(day > current['dayCount']){
-            td.appendChild(
-                div = cm.node('div', (day - current['dayCount']))
-            );
-            cm.addClass(td, 'out');
-            cm.addEvent(div, 'click', that.nextMonth);
+            cm.addClass(item.container, 'out');
+            item.node = item.nodes.holder = renderDay(day - current['dayCount']);
+            if(that.params['changeMonthOnClick']){
+                cm.addEvent(item.node, 'click', that.nextMonth.bind(that));
+            }
         }else{
-            td.appendChild(
-                div = cm.node('div', day)
-            );
-            cm.addClass(td, 'in');
-            params = {
-                'container' : td,
-                'node' : div,
-                'day' : day,
-                'month' : current['month'],
-                'year' : current['year'],
-                'date' : new Date(current['year'], current['month'], day),
-                'isWeekend' : false,
-                'isToday' : false
-            };
-            if(today.getFullYear() == current['year'] && today.getMonth() == current['month'] && day == today.getDate()){
-                params['isToday'] = true;
-                cm.addClass(td, 'today');
+            cm.addClass(item.container, 'in');
+            item.node = item.nodes.holder = renderDay(day);
+
+            // Today mark
+            if(
+                today.getFullYear() === current['year'] &&
+                today.getMonth() === current['month'] &&
+                today.getDate() === day
+            ){
+                item.isToday = true;
+                cm.addClass(item.container, 'today');
             }
-            if(/0|6/.test(new Date(current['year'], current['month'], day).getDay())){
-                params['isWeekend'] = true;
-                cm.addClass(td, 'weekend');
-            }
+
             // Add events
-            cm.addEvent(div, 'mouseover', function(){
-                that.triggerEvent('onDayOver', params);
+            cm.addEvent(item.node, 'mouseover', function(){
+                that.triggerEvent('onDayOver', item);
             });
-            cm.addEvent(div, 'mouseout', function(){
-                that.triggerEvent('onDayOut', params);
+            cm.addEvent(item.node, 'mouseout', function(){
+                that.triggerEvent('onDayOut', item);
             });
-            cm.addEvent(div, 'click', function(){
-                that.triggerEvent('onDayClick', params);
+            cm.addEvent(item.node, 'click', function(){
+                that.triggerEvent('onDayClick', item);
             });
+
             // Add to array
-            current['days'][day] = params;
+            current['days'][day] = item;
+            that.triggerEvent('onDayRender', item);
         }
+
+        // Weekend mark
+        if(/0|6/.test(item.date.getDay())){
+            item.isWeekend = true;
+            cm.addClass(item.container, 'weekend');
+        }
+
+        // Append
+        item.container.appendChild(item.node);
+        item.row.appendChild(item.container);
+        return item;
+    };
+
+    var renderDay = function(day){
+        return cm.node('div', {'class' : 'day'},
+            cm.node('div', {'class' : 'label'}, day)
+        );
     };
 
     var getMonthData = function(date){
@@ -19075,10 +19109,6 @@ function(params){
     var validateParams = function(){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
-        // Data
-        if(!cm.isEmpty(that.params['data']) && cm.isArray(that.params['data'])){
-            that.params['data'] = that.callbacks.filter(that, that.params['data']);
-        }
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -19114,6 +19144,9 @@ function(params){
         that.nodes['container'] = cm.node('div', {'class' : 'com__gridlist'});
         // Add css class
         cm.addClass(that.nodes['container'], that.params['className']);
+        if(that.params['adaptive']){
+            cm.addClass(that.nodes['container'], 'is-adaptive');
+        }
         // Append
         that.embedStructure(that.nodes['container']);
         // Render bulk actions
@@ -19135,9 +19168,19 @@ function(params){
             renderTableHeader(that.nodes['container']);
         }
         if(that.isAjax){
-            // Render dynamic pagination
             renderPagination();
-        }else if(!cm.isEmpty(that.params['data'])){
+        }else{
+            renderStatic(that.params['data']);
+        }
+    };
+
+    var renderStatic = function(data){
+        if(!cm.isEmpty(data) && cm.isArray(data)){
+            that.params['data'] = that.callbacks.filter(that, data);
+            that.params['paginationParams']['count'] = that.params['data'].length;
+        }
+        if(!cm.isEmpty(that.params['data'])){
+            removeEmptiness(that.nodes['container']);
             // Sort data array for first time
             that.params['sort'] && arraySort();
             // Counter
@@ -19297,11 +19340,15 @@ function(params){
 
     var renderEmptiness = function(container, errors){
         errors = !cm.isEmpty(errors) ? errors : that.lang('empty');
+        removeEmptiness(container);
+        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
+        cm.appendChild(that.nodes['empty'], container);
+    };
+
+    var removeEmptiness = function(container){
         if(that.nodes['empty'] && cm.isParent(container, that.nodes['empty'])){
             cm.remove(that.nodes['empty']);
         }
-        that.nodes['empty'] = cm.node('div', {'class' : 'cm__empty'}, errors);
-        cm.appendChild(that.nodes['empty'], container);
     };
 
     var renderTableHeader = function(container){
@@ -19742,16 +19789,19 @@ function(params){
     var renderCellURL = function(config, row, item){
         item['text'] = cm.decode(item['text']);
         item['href'] = config['urlKey'] && row['data'][config['urlKey']]? cm.decode(row['data'][config['urlKey']]) : item['text'];
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']}, !cm.isEmpty(config['altText'])? config['altText'] : item['text'])
-        );
+        item['label'] = !cm.isEmpty(config['altText'])? config['altText'] : item['text'];
+        if(!cm.isEmpty(item['href'])){
+            item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']}, item['label']);
+            item['nodes']['inner'].appendChild(item['nodes']['node']);
+        }else{
+            cm.addClass(item['nodes']['container'], 'is-empty');
+        }
     };
 
     var renderCellCheckbox = function(config, row, item){
         cm.addClass(item['nodes']['container'], 'control');
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('input', {'type' : 'checkbox'})
-        );
+        item['nodes']['node'] = cm.node('input', {'type' : 'checkbox'})
+        item['nodes']['inner'].appendChild(item['nodes']['node']);
         row['nodes']['checkbox'] = item['nodes']['node'];
         if(row['data']['_checked']){
             checkRow(row, false);
@@ -20059,6 +20109,11 @@ function(params){
 
     that.redraw = function(){
         that.components['helper'] && that.components['helper'].redraw();
+        return that;
+    };
+
+    that.setData = function(data){
+        renderStatic(data);
         return that;
     };
 
@@ -26983,7 +27038,9 @@ cm.define('Com.Toolbar', {
         'name' : '',
         'embedStructure' : 'append',
         'adaptive' : true,
-        'className' : null
+        'flex' : false,
+        'className' : null,
+        'positions': ['left', 'right']
     }
 },
 function(params){
@@ -27010,18 +27067,27 @@ function(params){
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar is-hidden'},
             that.nodes['toolbar'] = cm.node('div', {'class' : 'pt__toolbar'},
-                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                    that.nodes['left'] = cm.node('div', {'class' : 'left'}),
-                    that.nodes['right'] = cm.node('div', {'class' : 'right'})
-                )
+                that.nodes['inner'] = cm.node('div', {'class' : 'inner'})
             )
         );
+
+        // Positions
+        cm.forEach(that.params['positions'], function(position){
+            that.nodes[position] = cm.node('div', {'class' : position});
+            cm.appendChild(that.nodes[position], that.nodes['inner']);
+        });
+
+        // Classes
         if(that.params['adaptive']){
             cm.addClass(that.nodes['toolbar'], 'is-adaptive');
         }else{
             cm.addClass(that.nodes['toolbar'], 'is-not-adaptive');
         }
+        if(that.params['flex']){
+            cm.addClass(that.nodes['toolbar'], 'is-flex');
+        }
         that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className']);
+
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -27055,7 +27121,7 @@ function(params){
             item['flex'] && cm.addClass(item['container'], 'is-flex');
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Position
-            if(/left|right/.test(item['position'])){
+            if(/left|center|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
             }else if(item['position'] === 'justify'){
                 cm.appendChild(item['container'], that.nodes['inner']);

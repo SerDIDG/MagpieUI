@@ -224,12 +224,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.renderViewModel();
         // Append
         if(that.params['embedStructureOnRender']){
-            that.embedStructure(that.nodes['container']);
-            if(that.params['redrawOnRender'] === true){
-                that.redraw();
-            }else if(cm.isString(that.params['redrawOnRender'])){
-                that.redraw(that.params['redrawOnRender'])
-            }
+            that.appendView();
         }
         return that;
     };
@@ -247,6 +242,16 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onRenderViewModel');
         return that;
+    };
+
+    classProto.appendView = function(){
+        var that = this;
+        that.embedStructure(that.nodes['container']);
+        if(that.params['redrawOnRender'] === true){
+            that.redraw();
+        }else if(cm.isString(that.params['redrawOnRender'])){
+            that.redraw(that.params['redrawOnRender'])
+        }
     };
 
     classProto.setAttributes = function(){

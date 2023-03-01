@@ -92,6 +92,7 @@ var cm = {
             },
             'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'daysShort' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S']
         }
     },
@@ -2133,7 +2134,7 @@ cm.strReplace = function(str, map){
 cm.fillVariables = function(value, data, skipEmpty){
     var tests;
     skipEmpty = !cm.isUndefined(skipEmpty) ? skipEmpty : false;
-    return value.replace(/[{%](\w+)[%}]/g, function(math, p1){
+    return value.replace(/[{%](\w.+?)[%}]/g, function(math, p1){
         tests = [
             cm.reducePath(p1, data),
             cm.reducePath('%' + p1 + '%', data),

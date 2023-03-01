@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.45.1 (2023-02-22 11:54) ************ */
+/*! ************ MagpieUI v3.46.0 (2023-03-01 16:21) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.45.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.45.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.45.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.45.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.45.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.46.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.46.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.46.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.46.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.46.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12182,91 +12182,7 @@ ul.pt__field__hint li:before {
     min-width: 100%;
     max-width: none;
   }
-  html.is-adaptive .pt__gridlist.is-adaptive thead th,
-  html.is-adaptive .pt__gridlist.is-adaptive tfoot th {
-    background-color: transparent;
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive thead th.sort:hover,
-  html.is-adaptive .pt__gridlist.is-adaptive tfoot th.sort:hover {
-    background-color: hsl(210, 70%, 95%);
-    -webkit-transition: background-color 100ms ease-in-out 0ms;
-    transition: background-color 100ms ease-in-out 0ms;
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive thead th.sort:active,
-  html.is-adaptive .pt__gridlist.is-adaptive tfoot th.sort:active {
-    background-color: hsl(210, 70%, 91%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr td {
-    background-color: transparent;
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:hover td {
-    background-color: hsl(210, 70%, 95%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:active th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:active td {
-    background-color: hsl(210, 70%, 91%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.success th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.valid th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.success td,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.valid td {
-    background-color: hsl(120, 60%, 91%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.success:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.valid:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.success:hover td,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.valid:hover td {
-    background-color: hsl(120, 60%, 86%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.danger th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.invalid th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.danger td,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.invalid td {
-    background-color: hsl(0, 65%, 91%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.danger:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.invalid:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.danger:hover td,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.invalid:hover td {
-    background-color: hsl(0, 65%, 86%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.warning th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.warning td {
-    background-color: hsl(38, 70%, 91%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.warning:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.warning:hover td {
-    background-color: hsl(38, 70%, 86%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.active th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.active td {
-    background-color: hsl(210, 70%, 91%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.active:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr.active:hover td {
-    background-color: hsl(210, 70%, 86%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive thead th,
-  html.is-adaptive .pt__gridlist.is-adaptive tfoot th {
-    background-color: hsl(0, 0%, 98%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive thead th.sort:hover,
-  html.is-adaptive .pt__gridlist.is-adaptive tfoot th.sort:hover {
-    background-color: hsl(0, 0%, 95%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr td {
-    background-color: hsl(0, 0%, 98%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:hover th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:hover td {
-    background-color: hsl(0, 0%, 95%);
-  }
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:active th,
-  html.is-adaptive .pt__gridlist.is-adaptive tbody tr:active td {
-    background-color: hsl(0, 0%, 91%);
-  }
+  html.is-adaptive .pt__gridlist.is-adaptive table,
   html.is-adaptive .pt__gridlist.is-adaptive thead,
   html.is-adaptive .pt__gridlist.is-adaptive tbody,
   html.is-adaptive .pt__gridlist.is-adaptive tfoot,
@@ -12274,6 +12190,7 @@ ul.pt__field__hint li:before {
   html.is-adaptive .pt__gridlist.is-adaptive td {
     display: block;
   }
+  html.is-adaptive .pt__gridlist.is-adaptive table.is-hidden,
   html.is-adaptive .pt__gridlist.is-adaptive thead.is-hidden,
   html.is-adaptive .pt__gridlist.is-adaptive tbody.is-hidden,
   html.is-adaptive .pt__gridlist.is-adaptive tfoot.is-hidden,
@@ -17547,6 +17464,7 @@ ul.pt__field__hint li:before {
   display: flex;
   -ms-flex-pack: center;
   height: 32px;
+  margin-bottom: 8px;
 }
 .com__calendar .selects .months {
   width: 60%;
@@ -17566,7 +17484,6 @@ ul.pt__field__hint li:before {
   border: none;
   border-collapse: collapse;
   table-layout: fixed;
-  margin-top: 8px;
 }
 .com__calendar table th {
   padding-bottom: 2px;
@@ -17578,66 +17495,72 @@ ul.pt__field__hint li:before {
 .com__calendar table td {
   padding: 1px;
 }
-.com__calendar table td div {
+.com__calendar table td .day {
   height: 21px;
   background-color: transparent;
   border: 0 solid transparent;
   border-radius: 2px;
-  text-align: center;
-  line-height: 21px;
-  font-size: 12px;
   cursor: pointer;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
   -webkit-transition: all 250ms ease-in-out 0ms;
   transition: all 250ms ease-in-out 0ms;
 }
-.com__calendar table td div:hover {
+.com__calendar table td .day:is(:hover, :focus-visible, :active) {
   -webkit-transition: all 100ms ease-in-out 0ms;
   transition: all 100ms ease-in-out 0ms;
 }
-.com__calendar table td.in div {
+.com__calendar table td .label {
+  text-align: center;
+  line-height: 21px;
+  font-size: 12px;
+}
+.com__calendar table td.in .day {
   background-color: hsl(0, 0%, 98%);
   border-width: 1px;
   border-color: hsl(0, 0%, 91%);
-  line-height: 19px;
 }
-.com__calendar table td.in div:hover {
+.com__calendar table td.in .day:is(:hover, :focus-visible, :active) {
   background-color: hsl(0, 0%, 95%);
   border-color: hsl(0, 0%, 86%);
 }
-.com__calendar table td.weekend div {
+.com__calendar table td.in .label {
+  line-height: 19px;
+}
+.com__calendar table td.in.weekend .day {
   background-color: hsl(0, 0%, 91%);
   border-width: 1px;
   border-color: hsl(0, 0%, 91%);
-  line-height: 19px;
 }
-.com__calendar table td.weekend div:hover {
+.com__calendar table td.in.weekend .day:is(:hover, :focus-visible, :active) {
   background-color: hsl(0, 0%, 86%);
   border-color: hsl(0, 0%, 86%);
 }
-.com__calendar table td.today div {
+.com__calendar table td.today .day {
   background-color: transparent;
   border-color: hsl(210, 75%, 52%);
 }
-.com__calendar table td.today div:hover {
+.com__calendar table td.today .day:is(:hover, :focus-visible, :active) {
   background-color: hsl(210, 70%, 86%);
   border-color: hsl(210, 75%, 45%);
 }
-.com__calendar table td.active div,
-.com__calendar table td.selected div {
+.com__calendar table td.active .day,
+.com__calendar table td.selected .day {
   background-color: hsl(210, 70%, 91%);
   border-width: 1px;
   border-color: hsl(210, 75%, 52%);
-  line-height: 19px;
 }
-.com__calendar table td.active div:hover,
-.com__calendar table td.selected div:hover {
+.com__calendar table td.active .day:is(:hover, :focus-visible, :active),
+.com__calendar table td.selected .day:is(:hover, :focus-visible, :active) {
   background-color: hsl(210, 70%, 86%);
   border-color: hsl(210, 75%, 45%);
 }
-.com__calendar table td.today div {
+.com__calendar table td.active .label,
+.com__calendar table td.selected .label {
+  line-height: 19px;
+}
+.com__calendar table td.today .day {
   border-width: 2px;
+}
+.com__calendar table td.today .label {
   line-height: 17px;
 }
 /* ******* CALENDAR OF EVENTS ******* */

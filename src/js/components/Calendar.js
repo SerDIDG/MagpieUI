@@ -4,13 +4,15 @@ cm.define('Com.Calendar', {
         'Events',
         'Langs',
         'DataConfig',
-        'Stack'
+        'Stack',
+        'Structure'
     ],
     'events' : [
         'onRender',
         'onDayOver',
         'onDayOut',
         'onDayClick',
+        'onDayRender',
         'onMonthRender'
     ],
     'params' : {
@@ -21,7 +23,9 @@ cm.define('Com.Calendar', {
         'endYear' : 'current + 10',                                         // number | current
         'renderMonthOnInit' : true,
         'startWeekDay' : 0,
-        'renderSelectsInBody' : true
+        'renderSelects' : true,
+        'renderSelectsInBody' : true,
+        'changeMonthOnClick' : true,
     },
     'strings' : {
         'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
@@ -68,10 +72,6 @@ function(params){
         var weekday;
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__calendar'},
-            cm.node('div', {'class' : 'selects'},
-                nodes['months'] = cm.node('select', {'class' : 'select months'}),
-                nodes['years'] = cm.node('select', {'class' : 'select years'})
-            ),
             cm.node('table',
                 cm.node('thead',
                     nodes['days'] = cm.node('tr')
@@ -81,6 +81,14 @@ function(params){
         );
         // Add css class
         !cm.isEmpty(that.params['className']) && cm.addClass(nodes['container'], that.params['className']);
+        // Render selects
+        nodes['selects'] = cm.node('div', {'class' : 'selects'},
+            nodes['months'] = cm.node('select', {'class' : 'select months'}),
+            nodes['years'] = cm.node('select', {'class' : 'select years'})
+        );
+        if(that.params['renderSelects']){
+            cm.insertFirst(nodes['selects'], nodes['container']);
+        }
         // Render days
         cm.forEach(7, function(i){
             weekday = i + that.params['startWeekDay'];
@@ -100,8 +108,8 @@ function(params){
                 cm.node('option', {'value' : i}, i)
             );
         }
-        // Insert into DOM
-        that.params['node'].appendChild(nodes['container']);
+        // Append
+        that.embedStructure(nodes['container']);
     };
 
     var setMiscEvents = function(){
@@ -159,60 +167,80 @@ function(params){
         });
     };
 
-    var renderCell = function(tr, day){
-        var td, div, params;
-        tr.appendChild(
-            td = cm.node('td')
-        );
+    var renderCell = function(row, day){
+        var item = {
+            row: row,
+            day: day,
+            month: current['month'],
+            year: current['year'],
+            date: new Date(current['year'], current['month'], day),
+            nodes: {},
+            isWeekend: false,
+            isToday: false
+        };
+
+        // Structure
+        item.container = item.nodes.container = cm.node('td');
+
         // Render day
         if(day <= 0){
-            td.appendChild(
-                div = cm.node('div', (previous['dayCount'] + day))
-            );
-            cm.addClass(td, 'out');
-            cm.addEvent(div, 'click', that.prevMonth);
+            cm.addClass(item.container, 'out');
+            item.node = item.nodes.holder = renderDay(previous['dayCount'] + day);
+            if(that.params['changeMonthOnClick']){
+                cm.addEvent(item.node, 'click', that.prevMonth.bind(that));
+            }
         }else if(day > current['dayCount']){
-            td.appendChild(
-                div = cm.node('div', (day - current['dayCount']))
-            );
-            cm.addClass(td, 'out');
-            cm.addEvent(div, 'click', that.nextMonth);
+            cm.addClass(item.container, 'out');
+            item.node = item.nodes.holder = renderDay(day - current['dayCount']);
+            if(that.params['changeMonthOnClick']){
+                cm.addEvent(item.node, 'click', that.nextMonth.bind(that));
+            }
         }else{
-            td.appendChild(
-                div = cm.node('div', day)
-            );
-            cm.addClass(td, 'in');
-            params = {
-                'container' : td,
-                'node' : div,
-                'day' : day,
-                'month' : current['month'],
-                'year' : current['year'],
-                'date' : new Date(current['year'], current['month'], day),
-                'isWeekend' : false,
-                'isToday' : false
-            };
-            if(today.getFullYear() == current['year'] && today.getMonth() == current['month'] && day == today.getDate()){
-                params['isToday'] = true;
-                cm.addClass(td, 'today');
+            cm.addClass(item.container, 'in');
+            item.node = item.nodes.holder = renderDay(day);
+
+            // Today mark
+            if(
+                today.getFullYear() === current['year'] &&
+                today.getMonth() === current['month'] &&
+                today.getDate() === day
+            ){
+                item.isToday = true;
+                cm.addClass(item.container, 'today');
             }
-            if(/0|6/.test(new Date(current['year'], current['month'], day).getDay())){
-                params['isWeekend'] = true;
-                cm.addClass(td, 'weekend');
-            }
+
             // Add events
-            cm.addEvent(div, 'mouseover', function(){
-                that.triggerEvent('onDayOver', params);
+            cm.addEvent(item.node, 'mouseover', function(){
+                that.triggerEvent('onDayOver', item);
             });
-            cm.addEvent(div, 'mouseout', function(){
-                that.triggerEvent('onDayOut', params);
+            cm.addEvent(item.node, 'mouseout', function(){
+                that.triggerEvent('onDayOut', item);
             });
-            cm.addEvent(div, 'click', function(){
-                that.triggerEvent('onDayClick', params);
+            cm.addEvent(item.node, 'click', function(){
+                that.triggerEvent('onDayClick', item);
             });
+
             // Add to array
-            current['days'][day] = params;
+            current['days'][day] = item;
+            that.triggerEvent('onDayRender', item);
         }
+
+        // Weekend mark
+        if(/0|6/.test(item.date.getDay())){
+            item.isWeekend = true;
+            cm.addClass(item.container, 'weekend');
+        }
+
+        // Append
+        item.container.appendChild(item.node);
+        item.row.appendChild(item.container);
+        return item;
+    };
+
+    var renderDay = function(day){
+        return cm.node('div', {'class' : 'day'},
+            cm.node('div', {'class' : 'label'}, day)
+        );
     };
 
     var getMonthData = function(date){

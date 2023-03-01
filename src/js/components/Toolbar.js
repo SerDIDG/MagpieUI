@@ -19,7 +19,9 @@ cm.define('Com.Toolbar', {
         'name' : '',
         'embedStructure' : 'append',
         'adaptive' : true,
-        'className' : null
+        'flex' : false,
+        'className' : null,
+        'positions': ['left', 'right']
     }
 },
 function(params){
@@ -46,18 +48,27 @@ function(params){
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__toolbar is-hidden'},
             that.nodes['toolbar'] = cm.node('div', {'class' : 'pt__toolbar'},
-                that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                    that.nodes['left'] = cm.node('div', {'class' : 'left'}),
-                    that.nodes['right'] = cm.node('div', {'class' : 'right'})
-                )
+                that.nodes['inner'] = cm.node('div', {'class' : 'inner'})
             )
         );
+
+        // Positions
+        cm.forEach(that.params['positions'], function(position){
+            that.nodes[position] = cm.node('div', {'class' : position});
+            cm.appendChild(that.nodes[position], that.nodes['inner']);
+        });
+
+        // Classes
         if(that.params['adaptive']){
             cm.addClass(that.nodes['toolbar'], 'is-adaptive');
         }else{
             cm.addClass(that.nodes['toolbar'], 'is-not-adaptive');
         }
+        if(that.params['flex']){
+            cm.addClass(that.nodes['toolbar'], 'is-flex');
+        }
         that.params['className'] && cm.addClass(that.nodes['toolbar'], that.params['className']);
+
         // Append
         that.embedStructure(that.nodes['container']);
     };
@@ -91,7 +102,7 @@ function(params){
             item['flex'] && cm.addClass(item['container'], 'is-flex');
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Position
-            if(/left|right/.test(item['position'])){
+            if(/left|center|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
             }else if(item['position'] === 'justify'){
                 cm.appendChild(item['container'], that.nodes['inner']);
