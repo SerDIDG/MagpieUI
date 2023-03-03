@@ -13,7 +13,9 @@ cm.define('Com.Calendar', {
         'onDayOut',
         'onDayClick',
         'onDayRender',
-        'onMonthRender'
+        'onPrevMonthRequest',
+        'onNextMonthRequest',
+        'onMonthRender',
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -26,11 +28,14 @@ cm.define('Com.Calendar', {
         'renderSelects' : true,
         'renderSelectsInBody' : true,
         'changeMonthOnClick' : true,
+        'renderMonthOnRequest' : true,
     },
     'strings' : {
         'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
         'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        'prev' : 'Previous month',
+        'next' : 'Next month',
     }
 },
 function(params){
@@ -187,12 +192,14 @@ function(params){
             cm.addClass(item.container, 'out');
             item.node = item.nodes.holder = renderDay(previous['dayCount'] + day);
             if(that.params['changeMonthOnClick']){
+                item.node.title = that.msg('prev');
                 cm.addEvent(item.node, 'click', that.prevMonth.bind(that));
             }
         }else if(day > current['dayCount']){
             cm.addClass(item.container, 'out');
             item.node = item.nodes.holder = renderDay(day - current['dayCount']);
             if(that.params['changeMonthOnClick']){
+                item.node.title = that.msg('next');
                 cm.addEvent(item.node, 'click', that.nextMonth.bind(that));
             }
         }else{
@@ -295,20 +302,26 @@ function(params){
         return current;
     };
 
-    that.nextMonth = function(){
-        if(next['year'] <= that.params['endYear']){
-            selects['years'].set(next['year'], false);
-            selects['months'].set(next['month'], false);
-            renderView();
-        }
-        return that;
-    };
-
     that.prevMonth = function(){
         if(previous['year'] >= that.params['startYear']){
             selects['years'].set(previous['year'], false);
             selects['months'].set(previous['month'], false);
-            renderView();
+            if(that.params.renderMonthOnRequest) {
+                renderView();
+            }
+            that.triggerEvent('onPrevMonthRequest');
+        }
+        return that;
+    };
+
+    that.nextMonth = function(){
+        if(next['year'] <= that.params['endYear']){
+            selects['years'].set(next['year'], false);
+            selects['months'].set(next['month'], false);
+            if(that.params.renderMonthOnRequest){
+                renderView();
+            }
+            that.triggerEvent('onNextMonthRequest');
         }
         return that;
     };
