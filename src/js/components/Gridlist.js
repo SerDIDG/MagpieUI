@@ -531,13 +531,13 @@ function(params){
             'filterKey' : null,
             'classes' : [],                 // Cell css class
             'class' : '',		                // Item css class
-            'target' : '_blank',            // Link target, for type="url"
-            'rel' : '',                     // Link rel, for type="url"
+            'target' : '_blank',            // Link target, for type="url|icon"
+            'rel' : '',                     // Link rel, for type="url|icon"
             'textOverflow' : null,          // Overflow long text to single line
             'showTitle' : null,             // Show title on hover
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text
             'altText' : '',                 // Alternative column text
-            'urlKey' : false,               // Alternative link href, for type="url"
+            'urlKey' : false,               // Alternative link href, for type="url|icon"
             'links' : [],                   // Render links menu, for type="links"
             'actions' : [],                 // Render actions menu, for type="actions"
             'preventDefault' : true,
@@ -827,10 +827,16 @@ function(params){
     };
 
     var renderCellIcon = function(config, row, item){
-        item['nodes']['inner'].appendChild(
-            item['nodes']['node'] = cm.node('div', {'class' : config['class']})
-        );
+        item['text'] = cm.decode(item['text']);
+        item['href'] = config['urlKey'] && row['data'][config['urlKey']]? cm.decode(row['data'][config['urlKey']]) : item['text'];
+        item['label'] = !cm.isEmpty(config['altText'])? config['altText'] : item['text'];
+        if(!cm.isEmpty(item['href'])){
+            item['nodes']['node'] = cm.node('a', {'class' : config['class'], 'title' : item['label'], 'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']});
+        }else{
+            item['nodes']['node'] = cm.node('div', {'class' : config['class'], 'title' : item['label']})
+        }
         cm.addClass(item['nodes']['node'], 'icon linked inline');
+        item['nodes']['inner'].appendChild(item['nodes']['node']);
     };
 
     var renderCellURL = function(config, row, item){
