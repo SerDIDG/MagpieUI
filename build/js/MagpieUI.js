@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.0 (2023-03-06 19:39) ************ */
+/*! ************ MagpieUI v3.47.1 (2023-03-22 04:15) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.47.0',
+        '_version' : '3.47.1',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -10387,27 +10387,33 @@ cm.define('Com.Form', {
         'renderStructure' : true,
         'embedStructure' : 'append',
         'removeOnDestruct' : true,
+
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
         'buttonsAlign' : 'right',
         'buttonsClasses' : null,
         'renderNames' : false,                                      // Render visual input name attribute
+
+        'validate' : false,
+        'validateOnChange' : false,
+        'validateOnInput' : false,
         'showNotifications' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
         'showValidationMessages' : true,
+        'Com.Notifications' : {},
+
+        'data' : {},
+        'mergeData': false,
+        'autoSend' : false,
+        'sendOnChange' : false,
+        'sendEmptyForm' : true,
+        'sendEmptyFields' : false,
+        'sendOnlyChangedFields' : false,
         'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
         'responseCodeKey' : 'code',
-        'validate' : false,
-        'validateOnChange' : false,
-        'validateOnInput' : false,
-        'autoSend' : false,
-        'sendEmptyForm' : true,
-        'sendEmptyFields' : false,
-        'sendOnlyChangedFields' : false,
-        'data' : {},
         'ajax' : {
             'type' : 'json',
             'method' : 'post',
@@ -10415,7 +10421,7 @@ cm.define('Com.Form', {
             'url' : '',                                             // Request URL. Variables: %baseUrl%, %callback% for JSONP.
             'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
-        'Com.Notifications' : {},
+
         'showLoader' : true,
         'loaderCoverage' : 'fields',                                // fields, all
         'overlayConstructor' : 'Com.Overlay',
@@ -10579,39 +10585,57 @@ function(params){
         cm.getConstructor(params.fieldConstructor, function(classConstructor){
             params.fieldController = params.controller = new classConstructor(params);
             params.inputController = params.constructorController = cm.isFunction(params.fieldController.getController) && params.fieldController.getController();
+
             // Events
             params.fieldController.addEvent('onBlur', function(field){
-                if(
-                    that.params.validate && that.params.validateOnChange
-                    && (field.params.required || field.params.validate)
-                ){
-                    params.fieldController.validate();
-                }
+                fieldBlurEvent(field, params);
             });
             params.fieldController.addEvent('onChange', function(field){
-                if(
-                    that.params.validate && that.params.validateOnChange
-                    && (field.params.required || field.params.validate)
-                ){
-                    params.fieldController.validate();
-                }
-                that.triggerEvent('onChange');
+                fieldChangeEvent(field, params);
             });
             params.fieldController.addEvent('onInput', function(field){
-                if(
-                    that.params.validate && that.params.validateOnInput
-                    && (field.params.required || field.params.validate)
-                ){
-                    params.fieldController.validate();
-                }
-                that.triggerEvent('onInput');
+                fieldInputEvent(field, params);
             });
+
             // Save processed origin data to compare before send
             // Use clone to prevent linking
             params.originValue = cm.clone(params.fieldController.get());
+
             // Save
             that.fields[params.name] = params;
         });
+    };
+
+    var fieldBlurEvent = function(field, params){
+        if(
+            that.params.validate && that.params.validateOnChange
+            && (field.params.required || field.params.validate)
+        ){
+            params.fieldController.validate();
+        }
+    };
+
+    var fieldChangeEvent = function(field, params){
+        if(
+            that.params.validate && that.params.validateOnChange
+            && (field.params.required || field.params.validate)
+        ){
+            params.fieldController.validate();
+        }
+        if(that.params.sendOnChange){
+            that.send();
+        }
+        that.triggerEvent('onChange');
+    };
+
+    var fieldInputEvent = function(field, params){
+        if(
+            that.params.validate && that.params.validateOnInput
+            && (field.params.required || field.params.validate)
+        ){
+            params.fieldController.validate();
+        }
+        that.triggerEvent('onInput');
     };
 
     var renderButton = function(params){
@@ -10830,9 +10854,13 @@ function(params){
         config.params = cm.objectReplace(config.params, {
             '%baseUrl%' : cm._baseUrl
         });
-        config.params = cm.merge(config.params, that.get('sendPath'));
+        config.params = cm.merge(config.params, that.get('sendPath', that.params.mergeData));
         config = that.callbacks.afterPrepare(that, config);
         return config;
+    };
+
+    that.callbacks.filterData = function(that, data){
+        return data;
     };
 
     that.callbacks.beforePrepare = function(that, config){
@@ -11148,11 +11176,11 @@ function(params){
         return that;
     };
 
-    that.get = function(type, merged){
+    that.get = function(type, mergeData){
         var data = {};
         // Validate
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
-        merged = cm.isUndefined(merged) ? false : merged;
+        mergeData = cm.isUndefined(mergeData) ? that.params.mergeData : mergeData;
         // Get
         cm.forEach(that.fields, function(field, name){
             switch(type){
@@ -11181,10 +11209,12 @@ function(params){
                     break;
             }
         });
-        // TODO: check is this is ever needed
-        if(merged){
+        // Merge data with origin
+        if(mergeData){
             data = cm.merge(that.params.data, data);
         }
+        // Filter data
+        data = that.callbacks.filterData(that, data);
         return data;
     };
 
