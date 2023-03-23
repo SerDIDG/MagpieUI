@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.1 (2023-03-22 04:15) ************ */
+/*! ************ MagpieUI v3.47.2 (2023-03-23 04:02) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.47.1',
+        '_version' : '3.47.2',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -18840,103 +18840,128 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
     };
 });
 cm.define('Com.Geolocation', {
-    'extend' : 'Com.AbstractController',
-    'events' : [
+    extend: 'Com.AbstractController',
+    events: [
         'onComplete',
         'onRequest',
         'onSuccess',
-        'onError'
+        'onError',
     ],
-    'params' : {
-        'controllerEvents' : true,
-        'renderStructure' : false,
-        'embedStructureOnRender' : false,
-        'autoRequest' : true,
-        'apiKey' : '',
-        'apiLink' : 'https://maps.googleapis.com/maps/api/js?key=%key%',
-        'useGeocoder' : false,
-        'geocodeConstructor' : 'Com.Geocoder',
-        'geocoderParams' : {},
-        'default' : {},
-        'options' : {
-            'enableHighAccuracy' : false,
-            'maximumAge' : 30000,
-            'timeout' : 27000
-        }
-    }
+    params: {
+        controllerEvents: true,
+        renderStructure: false,
+        embedStructureOnRender: false,
+
+        useDefault: true,
+        default: {},
+        autoRequest: true,
+
+        apiKey: '',
+        apiLink: 'https://maps.googleapis.com/maps/api/js?key=%key%',
+        useGeocoder: false,
+        geocodeConstructor: 'Com.Geocoder',
+        geocoderParams: {},
+
+        options: {
+            enableHighAccuracy: false,
+            maximumAge: 30000,
+            timeout: 27000,
+        },
+    },
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
+function() {
+    Com.AbstractController.apply(this, arguments);
 });
 
-cm.getConstructor('Com.Geolocation', function(classConstructor, className, classProto, classInherit){
-    classProto.onValidateParams = function(){
+cm.getConstructor('Com.Geolocation', function(classConstructor, className, classProto, classInherit) {
+    classProto.onValidateParams = function() {
         var that = this;
-        that.params['geocoderParams']['apiLink'] = that.params['apiLink'];
-        that.params['geocoderParams']['apiKey'] = that.params['apiKey'];
+        that.params.geocoderParams.apiLink = that.params.apiLink;
+        that.params.geocoderParams.apiKey = that.params.apiKey;
     };
 
-    classProto.renderViewModel = function(){
+    classProto.renderViewModel = function() {
         var that = this;
-        // Call parent method - renderViewModel
+
+        // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Init geocoder
-        if(that.params['useGeocoder']){
-            cm.getConstructor(that.params['geocodeConstructor'], function(classConstructor){
-                that.components['geocoder'] = new classConstructor(that.params['geocoderParams']);
+        if (that.params.useGeocoder) {
+            cm.getConstructor(that.params.geocodeConstructor, function(classConstructor) {
+                that.components.geocoder = new classConstructor(that.params.geocoderParams);
             });
         }
-        // Get use location
-        that.params['autoRequest'] && that.request();
-        return that;
-    };
 
-    classProto.request = function(){
-        var that = this,
-            location;
-        that.triggerEvent('onRequest');
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(function(data){
-                location = {
-                    'lat' : data.coords.latitude,
-                    'lng' : data.coords.longitude
-                };
-                that.process(location, 'success');
-            }, function(){
-                that.process(that.params['default'], 'error');
-            }, that.params['options']);
-        }else{
-            that.process(that.params['default'], 'error');
+        // Get user location
+        if (that.params.autoRequest) {
+            that.request();
         }
     };
 
-    classProto.process = function(location, status){
+    classProto.request = function() {
         var that = this;
-        if(that.params['useGeocoder']){
-            that.geocodeLocation(location);
-        }else{
-            that.triggerEvent('onComplete', location, null, status);
-            if(status === 'success'){
-                that.triggerEvent('onSuccess', location);
-            }else{
+
+        that.triggerEvent('onRequest');
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(data) {
+                    var location = {
+                        lat: data.coords.latitude,
+                        lng: data.coords.longitude,
+                    };
+                    that.process(location, 'success');
+                },
+                function() {
+                    that.process(that.params.default, 'error');
+                },
+                that.params.options
+            );
+        } else {
+            that.process(that.params.default, 'error');
+        }
+    };
+
+    classProto.process = function(location, status) {
+        var that = this;
+
+        // Request location data from the geocoder
+        if (
+            that.params.useGeocoder &&
+            (that.params.useDefault || status === 'success')
+        ) {
+            that.requestGeocoder(location);
+            return;
+        }
+
+        that.triggerEvent('onComplete', location, null, status);
+        if (status === 'success') {
+            that.triggerEvent('onSuccess', location);
+        } else {
+            that.triggerEvent('onError', location);
+        }
+    };
+
+    classProto.requestGeocoder = function(location) {
+        var that = this;
+        var options = {
+            location: location,
+        };
+        that.components.geocoder.get(
+            options,
+            function(data) {
+                that.triggerEvent('onComplete', location, data, 'success');
+                that.triggerEvent('onSuccess', location, data);
+            },
+            function() {
+                that.triggerEvent('onComplete', location, null, 'error');
                 that.triggerEvent('onError', location);
             }
-        }
-    };
-
-    classProto.geocodeLocation = function(location){
-        var that = this;
-        that.components['geocoder'].get({'location' : location}, function(data){
-            that.triggerEvent('onComplete', location, data, 'success');
-            that.triggerEvent('onSuccess', location, data);
-        }, function(){
-            that.triggerEvent('onComplete', location, null, 'error');
-            that.triggerEvent('onError', location);
-        });
+        );
     };
 });
+
 cm.define('Com.Glossary', {
     'modules' : [
         'Params',
@@ -32770,6 +32795,7 @@ cm.define('Com.Input', {
     'extend' : 'Com.AbstractInput',
     'events' : [
         'onEnterPress',
+        'onIconClick',
         'onFocus',
         'onBlur'
     ],
@@ -32779,6 +32805,7 @@ cm.define('Com.Input', {
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
         'icon' : null,
+        'iconTitle' : null,
         'autoResize' : false,
         'enterPressBehavior' : false,
     }
@@ -32863,7 +32890,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             );
             // Icon
             if(that.params['icon']){
-                nodes['icon'] = cm.node('div', {'class' : that.params['icon']});
+                nodes['icon'] = cm.node('div', {'class' : that.params['icon'], 'title' : that.params['iconTitle']});
                 cm.appendChild(nodes['icon'], nodes['inner']);
             }
         }
@@ -32973,6 +33000,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.preventDefault(e);
         that.nodes['content']['input'].setSelectionRange(0, value.length);
         that.focus();
+        that.triggerEvent('onIconClick');
     };
 
     /*** CONSTRAINT ***/

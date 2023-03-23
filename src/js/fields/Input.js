@@ -2,6 +2,7 @@ cm.define('Com.Input', {
     'extend' : 'Com.AbstractInput',
     'events' : [
         'onEnterPress',
+        'onIconClick',
         'onFocus',
         'onBlur'
     ],
@@ -11,6 +12,7 @@ cm.define('Com.Input', {
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
         'icon' : null,
+        'iconTitle' : null,
         'autoResize' : false,
         'enterPressBehavior' : false,
     }
@@ -95,7 +97,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             );
             // Icon
             if(that.params['icon']){
-                nodes['icon'] = cm.node('div', {'class' : that.params['icon']});
+                nodes['icon'] = cm.node('div', {'class' : that.params['icon'], 'title' : that.params['iconTitle']});
                 cm.appendChild(nodes['icon'], nodes['inner']);
             }
         }
@@ -205,6 +207,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.preventDefault(e);
         that.nodes['content']['input'].setSelectionRange(0, value.length);
         that.focus();
+        that.triggerEvent('onIconClick');
     };
 
     /*** CONSTRAINT ***/
