@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.2 (2023-03-23 04:02) ************ */
+/*! ************ MagpieUI v3.47.3 (2023-03-23 11:54) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4585,7 +4585,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.47.2';
+@CmVersion: '3.47.3';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6465,8 +6465,16 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 .cm__color__secondary {
-     color: @CmColor-Secondary-DarkDefault;
- }
+    color: @CmColor-Secondary-DarkDefault;
+}
+
+.cm__color__placeholder {
+    color: @CmColor-Font-Placeholder;
+}
+
+.cm__color__hint {
+    color: @CmColor-Font-Hint;
+}
 
 .cm__color__success {
     color: @CmColor-Success-DarkDefault;
@@ -6501,6 +6509,7 @@ span.CodeMirror-selectedtext { background: none; }
 .cm__background__danger {
     background: @CmColor-Danger-DarkDefault;
 }
+
 /* ******* COMMON: ASPECT RATIO ******* */
 
 .cm__aspect-1x1 {
@@ -11083,7 +11092,48 @@ button {
     line-height: @CmFont-Base-LineHeight;
 }
 
+.pt__field-container {
+    position: relative;
+
+    .pt__field-status {
+        position: absolute;
+        inset: 0 0 auto auto;
+    }
+}
+
 /* *** FIELD HINT *** */
+
+.pt__field-status {
+    transition: all @CmUI-Transition-DurationLong ease-in-out;
+
+    &.placeholder {
+        .cm__color__placeholder;
+    }
+
+    &.hint {
+        .cm__color__hint;
+    }
+
+    &.success {
+        .cm__color__success;
+    }
+
+    &.warning {
+        .cm__color__warning;
+    }
+
+    &.danger {
+        .cm__color__danger;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.is-transparent {
+        opacity: 0;
+    }
+}
 
 .pt__field__hint {
     &:extend(.cm__inherit all);

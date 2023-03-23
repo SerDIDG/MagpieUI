@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.47.2 (2023-03-23 04:02) ************ */
+/*! ************ MagpieUI v3.47.3 (2023-03-23 11:54) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.47.2');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.47.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.47.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.47.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.47.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.47.3');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.47.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.47.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.47.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.47.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -4942,6 +4942,12 @@ span.CodeMirror-selectedtext {
 }
 .cm__color__secondary {
   color: hsl(0, 0%, 52%);
+}
+.cm__color__placeholder {
+  color: #b7b7b7;
+}
+.cm__color__hint {
+  color: #999999;
 }
 .cm__color__success {
   color: hsl(120, 65%, 42%);
@@ -11089,7 +11095,38 @@ button.is-hidden {
   padding: 7px 0;
   line-height: 18px;
 }
+.pt__field-container {
+  position: relative;
+}
+.pt__field-container .pt__field-status {
+  position: absolute;
+  inset: 0 0 auto auto;
+}
 /* *** FIELD HINT *** */
+.pt__field-status {
+  transition: all 500ms ease-in-out;
+}
+.pt__field-status.placeholder {
+  color: #b7b7b7;
+}
+.pt__field-status.hint {
+  color: #999999;
+}
+.pt__field-status.success {
+  color: hsl(120, 65%, 42%);
+}
+.pt__field-status.warning {
+  color: hsl(38, 75%, 52%);
+}
+.pt__field-status.danger {
+  color: hsl(0, 65%, 52%);
+}
+.pt__field-status.is-hidden {
+  display: none;
+}
+.pt__field-status.is-transparent {
+  opacity: 0;
+}
 .pt__field__hint {
   font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;

@@ -250,7 +250,48 @@
     line-height: @CmFont-Base-LineHeight;
 }
 
+.pt__field-container {
+    position: relative;
+
+    .pt__field-status {
+        position: absolute;
+        inset: 0 0 auto auto;
+    }
+}
+
 /* *** FIELD HINT *** */
+
+.pt__field-status {
+    transition: all @CmUI-Transition-DurationLong ease-in-out;
+
+    &.placeholder {
+        .cm__color__placeholder;
+    }
+
+    &.hint {
+        .cm__color__hint;
+    }
+
+    &.success {
+        .cm__color__success;
+    }
+
+    &.warning {
+        .cm__color__warning;
+    }
+
+    &.danger {
+        .cm__color__danger;
+    }
+
+    &.is-hidden {
+        display: none;
+    }
+
+    &.is-transparent {
+        opacity: 0;
+    }
+}
 
 .pt__field__hint {
     &:extend(.cm__inherit all);
