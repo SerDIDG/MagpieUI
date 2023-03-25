@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.47.3 (2023-03-23 11:54) ************ */
+/*! ************ MagpieUI v3.47.4 (2023-03-25 09:01) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.47.3');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.47.3') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.47.3') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.47.3') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.47.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.47.4');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.47.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.47.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.47.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.47.4#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -15823,6 +15823,15 @@ ul.pt__field__hint li:before {
   -ms-flex: none;
   flex: none;
 }
+.pt__toolbar .group.is-flex.pull-left {
+  justify-content: flex-start;
+}
+.pt__toolbar .group.is-flex.pull-center {
+  justify-content: center;
+}
+.pt__toolbar .group.is-flex.pull-right {
+  justify-content: flex-end;
+}
 .pt__toolbar .group.is-merged > li {
   margin: 0 0 0 -1px;
 }
@@ -15881,6 +15890,7 @@ ul.pt__field__hint li:before {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
+  min-width: 0;
   -webkit-flex: 1 1 0;
   -ms-flex: 1 1 0;
   flex: 1 1 0;
@@ -15894,6 +15904,7 @@ ul.pt__field__hint li:before {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
+  min-width: 0;
   -webkit-flex: 0 1 auto;
   -ms-flex: 0 1 auto;
   flex: 0 1 auto;
@@ -15905,6 +15916,7 @@ ul.pt__field__hint li:before {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
+  min-width: 0;
   -webkit-flex: 1 1 0;
   -ms-flex: 1 1 0;
   flex: 1 1 0;
@@ -15915,6 +15927,12 @@ ul.pt__field__hint li:before {
 }
 .pt__toolbar.is-flex .group {
   display: block;
+}
+.pt__toolbar.is-flex .group.is-flex {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
 }
 .pt__toolbar .group > li {
   margin-right: 4px;

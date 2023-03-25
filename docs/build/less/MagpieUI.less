@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.3 (2023-03-23 11:54) ************ */
+/*! ************ MagpieUI v3.47.4 (2023-03-25 09:01) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4585,7 +4585,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.47.3';
+@CmVersion: '3.47.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -14356,6 +14356,18 @@ ul.pt__field__hint {
                     .mx__flex(none);
                 }
             }
+
+            &.pull-left {
+                justify-content: flex-start;
+            }
+
+            &.pull-center {
+                justify-content: center;
+            }
+
+            &.pull-right {
+                justify-content: flex-end;
+            }
         }
 
         &.is-merged {
@@ -14407,6 +14419,7 @@ ul.pt__field__hint {
         > .inner {
             > .left {
                 .display-flex;
+                min-width: 0;
                 .mx__flex(1 1 0);
                 .mx__justify-content(flex-start);
                 .mx__align-items(center);
@@ -14414,12 +14427,14 @@ ul.pt__field__hint {
 
             > .center {
                 .display-flex;
+                min-width: 0;
                 .mx__flex(0 1 auto);
                 .mx__align-items(center);
             }
 
             > .right {
                 .display-flex;
+                min-width: 0;
                 .mx__flex(1 1 0);
                 .mx__justify-content(flex-end);
                 .mx__align-items(center);
@@ -14428,6 +14443,10 @@ ul.pt__field__hint {
 
         .group {
             display: block;
+
+            &.is-flex {
+                .display-flex;
+            }
         }
     }
 

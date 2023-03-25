@@ -92,6 +92,8 @@ function(params){
             'node' : null,
             'adaptive' : true,
             'flex' : false,
+            'justify': null,
+            'title': null,
             'items' : {}
         }, item);
         if(!that.groups[item['name']]){
@@ -101,6 +103,11 @@ function(params){
             item['adaptive'] && cm.addClass(item['container'], 'is-adaptive');
             item['flex'] && cm.addClass(item['container'], 'is-flex');
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
+            item['justify'] && cm.addClass(item['container'], ['pull', item.justify].join('-'));
+            // Label
+            if(!cm.isEmpty(item['title'])){
+                item['container'].setAttribute('aria-label', item['title']);
+            }
             // Position
             if(/left|center|right/.test(item['position'])){
                 cm.appendChild(item['container'], that.nodes[item['position']]);
@@ -241,6 +248,7 @@ function(params){
             'access' : true,
             'disabled' : false,
             'hidden' : false,
+            'tagName': 'a',
             'className' : '',
             'attr' : {},
             'preventDefault' : true,
@@ -256,7 +264,7 @@ function(params){
         // Render
         if(item['access'] && group && !group.items[item['name']]){
             // Structure
-            item['node'] = cm.node('a', item['attr']);
+            item['node'] = cm.node(item['tagName'], item['attr']);
             // Styles
             cm.addClass(item['node'], 'button');
             cm.addClass(item['node'], ['button', item['type']].join('-'));
@@ -265,7 +273,8 @@ function(params){
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
             // Label and title
             item['node'].innerHTML = item['label'];
-            item['node'].title = item['title'];
+            item['node'].setAttribute('title', item['title']);
+            item['node'].setAttribute('aria-label', item['title']);
             // Callbacks
             if(item['constructor']){
                 cm.getConstructor(item['constructor'], function(classConstructor){

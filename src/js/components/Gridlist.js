@@ -532,7 +532,7 @@ function(params){
             'classes' : [],                 // Cell css class
             'class' : '',		                // Item css class
             'target' : '_blank',            // Link target, for type="url|icon"
-            'rel' : '',                     // Link rel, for type="url|icon"
+            'rel' : null,                     // Link rel, for type="url|icon"
             'textOverflow' : null,          // Overflow long text to single line
             'showTitle' : null,             // Show title on hover
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text
