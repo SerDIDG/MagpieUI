@@ -3273,38 +3273,42 @@ cm.getCSSRule = function(ruleName){
 };
 
 cm.addCSSRule = function(sheet, selector, rules, index){
-    if(document.styleSheets){
-        sheet = cm.isUndefined(sheet) || !sheet ? document.styleSheets[0] : sheet;
-        rules = cm.isUndefined(rules) || !rules ? '' : rules;
-        index = cm.isUndefined(index) || !index ? -1 : index;
-        if('insertRule' in sheet){
-            sheet.insertRule(selector + '{' + rules + '}', index);
-        }else if('addRule' in sheet){
-            sheet.addRule(selector, rules, index);
-        }
+    if(!document.styleSheets){
+        return;
+    }
+    sheet = cm.isUndefined(sheet) ? document.styleSheets[0] : sheet;
+    rules = cm.isUndefined(rules) ? [] : rules;
+    if(cm.isArray(rules)){
+        rules = rules.join(';');
+    }
+    if('insertRule' in sheet){
+        sheet.insertRule(selector + '{' + rules + '}', index);
+    }else if('addRule' in sheet){
+        sheet.addRule(selector, rules, index);
     }
 };
 
 cm.removeCSSRule = function(ruleName){
     var cssRules;
-    if(document.styleSheets){
-        cm.forEach(document.styleSheets, function(styleSheet){
-            if(styleSheet.cssRules){
-                cssRules = styleSheet.cssRules;
-            }else{
-                cssRules = styleSheet.rules;
-            }
-            cm.forEachReverse(cssRules, function(cssRule, i){
-                if(cssRule.selectorText === ruleName){
-                    if(styleSheet.cssRules){
-                        styleSheet.deleteRule(i);
-                    }else{
-                        styleSheet.removeRule(i);
-                    }
-                }
-            });
-        });
+    if(!document.styleSheets){
+        return;
     }
+    cm.forEach(document.styleSheets, function(styleSheet){
+        if(styleSheet.cssRules){
+            cssRules = styleSheet.cssRules;
+        }else{
+            cssRules = styleSheet.rules;
+        }
+        cm.forEachReverse(cssRules, function(cssRule, i){
+            if(cssRule.selectorText === ruleName){
+                if(styleSheet.cssRules){
+                    styleSheet.deleteRule(i);
+                }else{
+                    styleSheet.removeRule(i);
+                }
+            }
+        });
+    });
 };
 
 cm.setCSSTranslate = (function(){
