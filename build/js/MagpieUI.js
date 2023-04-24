@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.5 (2023-04-05 18:50) ************ */
+/*! ************ MagpieUI v3.47.6 (2023-04-24 17:55) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.47.5',
+        '_version' : '3.47.6',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -5557,7 +5557,7 @@ cm.ajax = function(o){
     };
 
     var processParams = function(data){
-        if(cm.isObject(data)){
+        if(cm.isObject(data) || cm.isArray(data)){
             data = cm.objectReplace(data, variables);
             data = cm.objectFillVariables(data, config['variables'], true);
             if(config['paramsType'] === 'json'){
@@ -8116,12 +8116,17 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.triggerEvent('onRenderPlaceholderViewStart');
         // Structure
         that.nodes['placeholder'] = {};
-        that.nodes['placeholder']['title'] = cm.textNode(that.lang('title'));
+        that.nodes['placeholder']['title'] = that.renderPlaceholderTitle();
         that.nodes['placeholder']['content'] = cm.node('div', {'class' : 'com__container__content'});
         that.nodes['placeholder']['help'] = that.lang('help');
         // Events
         that.triggerEvent('onRenderPlaceholderViewProcess');
         that.triggerEvent('onRenderPlaceholderViewEnd');
+    };
+
+    classProto.renderPlaceholderTitle = function(){
+        var that = this;
+        return cm.textNode(that.lang('title'));
     };
 
     classProto.renderPlaceholderButtons = function(){
@@ -15335,6 +15340,12 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
     classProto.getButton = function(name){
         var that = this;
         return that.buttons[name];
+    };
+
+    classProto.setTitle = function(title){
+        var that = this;
+        that.params['params']['title'] = title;
+        that.components['controller'] && cm.isFunction(that.components['controller'].setTitle) && that.components['controller'].setTitle(title);
     };
 });
 

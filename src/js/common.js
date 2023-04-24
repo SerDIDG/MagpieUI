@@ -3958,7 +3958,7 @@ cm.ajax = function(o){
     };
 
     var processParams = function(data){
-        if(cm.isObject(data)){
+        if(cm.isObject(data) || cm.isArray(data)){
             data = cm.objectReplace(data, variables);
             data = cm.objectFillVariables(data, config['variables'], true);
             if(config['paramsType'] === 'json'){

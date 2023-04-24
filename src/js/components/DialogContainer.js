@@ -161,4 +161,10 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         var that = this;
         return that.buttons[name];
     };
+
+    classProto.setTitle = function(title){
+        var that = this;
+        that.params['params']['title'] = title;
+        that.components['controller'] && cm.isFunction(that.components['controller'].setTitle) && that.components['controller'].setTitle(title);
+    };
 });

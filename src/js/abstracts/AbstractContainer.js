@@ -255,12 +255,17 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.triggerEvent('onRenderPlaceholderViewStart');
         // Structure
         that.nodes['placeholder'] = {};
-        that.nodes['placeholder']['title'] = cm.textNode(that.lang('title'));
+        that.nodes['placeholder']['title'] = that.renderPlaceholderTitle();
         that.nodes['placeholder']['content'] = cm.node('div', {'class' : 'com__container__content'});
         that.nodes['placeholder']['help'] = that.lang('help');
         // Events
         that.triggerEvent('onRenderPlaceholderViewProcess');
         that.triggerEvent('onRenderPlaceholderViewEnd');
+    };
+
+    classProto.renderPlaceholderTitle = function(){
+        var that = this;
+        return cm.textNode(that.lang('title'));
     };
 
     classProto.renderPlaceholderButtons = function(){
