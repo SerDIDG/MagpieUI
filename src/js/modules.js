@@ -470,7 +470,11 @@ Mod['Langs'] = {
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
-        return cm.isObject(o) || cm.isArray(o) ? o : {};
+        if (cm.isFunction(o)) {
+            return o(str);
+        } else {
+            return cm.isObject(o) || cm.isArray(o) ? o : {};
+        }
     },
     'messageObject' : function(){
         var that = this;

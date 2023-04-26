@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.6 (2023-04-24 17:55) ************ */
+/*! ************ MagpieUI v3.47.7 (2023-04-26 19:42) ************ */
 // TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -1631,7 +1631,7 @@ if(!Date.now){
  ******* */
 
 var cm = {
-        '_version' : '3.47.6',
+        '_version' : '3.47.7',
         '_lang': 'en',
         '_locale' : 'en-IN',
         '_loadTime' : Date.now(),
@@ -6677,7 +6677,11 @@ Mod['Langs'] = {
     'langObject' : function(str){
         var that = this,
             o = that.lang(str);
-        return cm.isObject(o) || cm.isArray(o) ? o : {};
+        if (cm.isFunction(o)) {
+            return o(str);
+        } else {
+            return cm.isObject(o) || cm.isArray(o) ? o : {};
+        }
     },
     'messageObject' : function(){
         var that = this;
