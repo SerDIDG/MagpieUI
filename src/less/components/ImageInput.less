@@ -27,6 +27,15 @@
         }
     }
 
+    &.size-full-aspect {
+        .com__image-input--size(100%, 100%, contain);
+        max-width: none;
+
+        .com__image-input__content {
+            .com__image-input__content--full;
+        }
+    }
+
     &.size-custom {
         .com__image-input__content {
             .com__image-input__content--default;
@@ -63,9 +72,7 @@
             }
         }
 
-        &:hover,
-        &:focus,
-        &:active {
+        &:is(:hover, :active, :focus-visible) {
             .input__cover {
                 visibility: visible;
                 opacity: 1;

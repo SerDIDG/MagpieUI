@@ -24,10 +24,8 @@ cm.define('Com.FileDropzone', {
         'drop_multiple' : 'drop files here'
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
+function(){
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.FileDropzone', function(classConstructor, className, classProto, classInherit){
@@ -55,9 +53,11 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
 
     classProto.validateParams = function(){
         var that = this;
+        that.isMultiple = !that.params['max'] || that.params['max'] > 1;
+
         // Validate Language Strings
-        that.setLangs({
-            'drop' : !that.params['max'] || that.params['max'] > 1 ? that.lang('drop_multiple') : that.lang('drop_single')
+        that.setMessages({
+            'drop' : that.isMultiple? that.lang('drop_multiple') : that.lang('drop_single')
         });
     };
 

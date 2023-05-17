@@ -9,6 +9,8 @@ cm.define('Com.ImageInput', {
             'video' : /video\/(mp4|webm|ogg|avi)/,
             'embed' : /application\/pdf/
         },
+        'showLabel' : true,
+        'showLink' : true,
         'preview' : true,
         'previewConstructor' : 'Com.ImagePreviewContainer',
         'previewParams' : {}
@@ -137,13 +139,15 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         }else{
             // Label
             cm.clearNode(that.nodes['content']['label']);
-            if(that.params['showLink']){
-                that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
-            }else{
-                that.nodes['content']['link'] = cm.textNode(that.value['name']);
+            if(that.params['showLabel']){
+                if(that.params['showLink']){
+                    that.nodes['content']['link'] = cm.node('a', {'target' : '_blank', 'href' : that.value['url'], 'title' : that.lang('open')}, that.value['name']);
+                }else{
+                    that.nodes['content']['link'] = cm.textNode(that.value['name']);
+                }
+                cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
+                cm.removeClass(that.nodes['content']['label'], 'is-hidden');
             }
-            cm.appendChild(that.nodes['content']['link'], that.nodes['content']['label']);
-            cm.removeClass(that.nodes['content']['label'], 'is-hidden');
             // Remove button
             cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
         }
