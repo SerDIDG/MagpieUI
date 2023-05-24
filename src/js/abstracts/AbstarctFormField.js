@@ -640,19 +640,24 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     /******* MESSAGES *******/
 
     classProto.renderHint = function(message, params){
-        var that = this,
-            messageNode;
+        var that = this;
         params = cm.merge({
             'className' : null
         },params);
 
         that.clearHint();
-        that.nodes.hints = cm.node('ul', {'class' : 'pt__field__hint'},
-            messageNode = cm.node('li', {'innerHTML' : message})
-        );
-        if(!cm.isEmpty(params.className)){
-            cm.addClass(messageNode, params.className);
+
+        // Structure
+        that.nodes.hints = cm.node('ul', {'class' : 'pt__field__hint'});
+        if(cm.isArray(message)){
+            cm.forEach(message, function(messageItem){
+                that.renderHintMessage(messageItem, params);
+            });
+        }else{
+            that.renderHintMessage(message, params);
         }
+
+        // Append
         if(that.params.renderError && that.nodes.errors && cm.inDOM(that.nodes.errors)){
             cm.insertBefore(that.nodes.hints, that.nodes.errors);
         }else{
@@ -660,6 +665,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
 
         return that;
+    };
+
+    classProto.renderHintMessage = function(message, params) {
+        var that = this;
+        var node = cm.node('li', {innerHTML: message, classes: params.className});
+        cm.appendChild(node, that.nodes.hints);
     };
 
     classProto.clearHint = function(){
