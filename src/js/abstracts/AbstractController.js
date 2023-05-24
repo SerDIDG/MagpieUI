@@ -250,7 +250,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         if(that.params['redrawOnRender'] === true){
             that.redraw();
         }else if(cm.isString(that.params['redrawOnRender'])){
-            that.redraw(that.params['redrawOnRender'])
+            that.redraw(that.params['redrawOnRender']);
         }
     };
 

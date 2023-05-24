@@ -162,6 +162,7 @@
     &:hover {
         > .overlay.on-hover {
             opacity: 1;
+            transition-duration: @CmUI-Transition-DurationReverse;
         }
     }
 
@@ -192,6 +193,7 @@
         .pt__buttons {
             transform: translateY(0);
             transition-delay: 0ms;
+            transition-duration: @CmUI-Transition-DurationReverse;
         }
     }
 
@@ -210,21 +212,35 @@
         border-radius: @CmBorder-Radius;
         background-color: @CmUI-Overlay-Light;
         z-index: 4;
+        .mx__transition(all, @CmUI-Transition-Duration, ease-in-out, @CmUI-Transition-Delay-Hide);
 
         &.top-right {
-            .mx__position(@CmIndent-XXXSmall, @CmIndent-XXXSmall, auto, auto);
+            .mx__position(@PtImage-ToolsMargin, @PtImage-ToolsMargin, auto, auto);
         }
 
         &.top-left {
-            .mx__position(@CmIndent-XXXSmall, auto, auto, @CmIndent-XXXSmall);
+            .mx__position(@PtImage-ToolsMargin, auto, auto, @PtImage-ToolsMargin);
         }
 
         &.bottom-right {
-            .mx__position(auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall, auto);
+            .mx__position(auto, @PtImage-ToolsMargin, @PtImage-ToolsMargin, auto);
         }
 
         &.bottom-left {
-            .mx__position(auto, auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall);
+            .mx__position(auto, auto, @PtImage-ToolsMargin, @PtImage-ToolsMargin);
+        }
+
+        &.middle-center {
+            .mx__position(50%, auto, auto, 50%);
+            .mx__transform(translate(-50%, -50%));
+        }
+
+        &.no-padding {
+            padding: 0;
+
+            .icon {
+                padding: @PtImage-Padding;
+            }
         }
 
         input[type="checkbox"],
@@ -234,7 +250,7 @@
 
         .icon {
             float: left;
-            margin: 0 0 0 @CmIndent-XXSmall;
+            margin: 0 0 0 @PtImage-ToolsGap;
 
             &:first-child {
                 margin: 0;
@@ -269,7 +285,7 @@
             > .inner {
                 > .descr {
                     opacity: @CmUI-Opacity-Hover;
-                    .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+                    transition-duration: @CmUI-Transition-DurationReverse;
                 }
             }
         }
@@ -295,13 +311,14 @@
     &.is-tools-hover {
         > .pull {
             opacity: 0;
-            .mx__transition(opacity, @CmUI-Transition-Duration);
+            .mx__transition(all, @CmUI-Transition-Duration, ease-in-out, @CmUI-Transition-Delay-Hide);
         }
 
-        &:hover {
+        &:is(:hover, :active, :focus-within) {
             > .pull {
                 opacity: 1;
-                .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+                transition-delay: 0ms;
+                transition-duration: @CmUI-Transition-DurationReverse;
             }
         }
     }

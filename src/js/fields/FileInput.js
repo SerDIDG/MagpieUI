@@ -268,7 +268,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             value;
         if(that.params['outputValueType'] === 'file'){
-            value = that.value['file'] || that.value['value'] || that.value['value']   || '';
+            value = that.value['file'] || that.value['value'] || that.value || '';
         }else{
             value = that.value  || '';
         }

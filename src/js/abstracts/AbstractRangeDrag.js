@@ -128,12 +128,12 @@ cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className,
             case 'horizontal':
                 yn = dimensions['limiter']['absoluteWidth'];
                 zn = (xn / yn) * data['left'];
-                value = Math.round(zn) + that.params['min'];
+                value = cm.toFixed(zn + that.params['min'], that.params['precision'], true);
                 break;
             case 'vertical':
                 yn = dimensions['limiter']['absoluteHeight'];
                 zn = (xn / yn) * data['top'];
-                value = Math.round(zn) + that.params['min'];
+                value = cm.toFixed(zn + that.params['min'], that.params['precision'], true);
                 break;
         }
         return value;
@@ -154,12 +154,12 @@ cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className,
             case 'horizontal':
                 yn = dimensions['limiter']['absoluteWidth'];
                 zn = (yn / xn) * dv;
-                position['left'] = Math.round(zn);
+                position['left'] = cm.toFixed(zn, that.params['precision'], true);
                 break;
             case 'vertical':
                 yn = dimensions['limiter']['absoluteHeight'];
                 zn = (yn / xn) * dv;
-                position['top'] = Math.round(zn);
+                position['top'] = cm.toFixed(zn, that.params['precision'], true);
                 break;
         }
         that.components['draggable'].setPosition(position, false);

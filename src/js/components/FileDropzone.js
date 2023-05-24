@@ -53,6 +53,11 @@ cm.getConstructor('Com.FileDropzone', function(classConstructor, className, clas
 
     classProto.validateParams = function(){
         var that = this;
+
+        // Call parent method
+        classInherit.prototype.validateParams.apply(that, arguments);
+
+        // Validate max items length
         that.isMultiple = !that.params['max'] || that.params['max'] > 1;
 
         // Validate Language Strings

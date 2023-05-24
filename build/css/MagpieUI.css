@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.47.10 (2023-05-18 01:46) ************ */
+/*! ************ MagpieUI v3.48.0 (2023-05-24 04:06) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.47.10');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.47.10') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.47.10') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.47.10') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.47.10#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.48.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.48.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.48.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.48.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.48.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -8718,6 +8718,13 @@ button.is-hidden {
   -moz-user-select: none;
   user-select: none;
 }
+.cm__cursor--move,
+.cm__cursor--move * {
+  cursor: move !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
 /* ******* PART: ANIMATE ******* */
 .cm-animate {
   visibility: hidden;
@@ -12427,6 +12434,7 @@ ul.pt__field__hint li:before {
 }
 .pt__image:hover > .overlay.on-hover {
   opacity: 1;
+  transition-duration: 100ms;
 }
 .pt__image .pt__buttons {
   margin: 0;
@@ -12469,6 +12477,7 @@ ul.pt__field__hint li:before {
 .pt__image:is(:hover, :active, :focus-within) .pt__buttons {
   transform: translateY(0);
   transition-delay: 0ms;
+  transition-duration: 100ms;
 }
 .pt__image > label {
   position: absolute;
@@ -12485,6 +12494,8 @@ ul.pt__field__hint li:before {
   border-radius: 3px;
   background-color: rgba(255, 255, 255, 0.7);
   z-index: 4;
+  -webkit-transition: all 250ms ease-in-out 300ms;
+  transition: all 250ms ease-in-out 300ms;
 }
 .pt__image > .pull.top-right {
   top: 4px;
@@ -12509,6 +12520,21 @@ ul.pt__field__hint li:before {
   right: auto;
   bottom: 4px;
   left: 4px;
+}
+.pt__image > .pull.middle-center {
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.pt__image > .pull.no-padding {
+  padding: 0;
+}
+.pt__image > .pull.no-padding .icon {
+  padding: 8px;
 }
 .pt__image > .pull input[type="checkbox"],
 .pt__image > .pull input[type="radio"] {
@@ -12545,8 +12571,7 @@ ul.pt__field__hint li:before {
 .pt__image.is-hover:hover > .inner > .descr,
 .pt__image.is-zoom:hover > .inner > .descr {
   opacity: 0.7;
-  -webkit-transition: opacity 100ms ease-in-out 0ms;
-  transition: opacity 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
 }
 .pt__image.is-zoom {
   cursor: zoom-in;
@@ -12563,13 +12588,13 @@ ul.pt__field__hint li:before {
 }
 .pt__image.is-tools-hover > .pull {
   opacity: 0;
-  -webkit-transition: opacity 250ms ease-in-out 0ms;
-  transition: opacity 250ms ease-in-out 0ms;
+  -webkit-transition: all 250ms ease-in-out 300ms;
+  transition: all 250ms ease-in-out 300ms;
 }
-.pt__image.is-tools-hover:hover > .pull {
+.pt__image.is-tools-hover:is(:hover, :active, :focus-within) > .pull {
   opacity: 1;
-  -webkit-transition: opacity 100ms ease-in-out 0ms;
-  transition: opacity 100ms ease-in-out 0ms;
+  transition-delay: 0ms;
+  transition-duration: 100ms;
 }
 .pt__image.is-checkable {
   cursor: pointer;
@@ -17401,6 +17426,27 @@ ul.pt__field__hint li:before {
   -ms-transform: scale(1);
   transform: scale(1);
 }
+.com__tooltip.animate--drop-bottom-right {
+  -webkit-transition: -webkit-transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transition: -webkit-transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms, -ms-transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms, transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  transform-origin: left top;
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+.com__tooltip.animate--drop-bottom-right.is-hide {
+  -webkit-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+.com__tooltip.animate--drop-bottom-right.is-show {
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
 .com__tooltip.theme-default > .inner {
   padding: 4px;
@@ -21241,6 +21287,7 @@ html.ie9 .com__palette .b-range {
   color: #999999;
   position: absolute;
   top: -8px;
+  user-select: none;
 }
 .com__range__field .min {
   left: 0;

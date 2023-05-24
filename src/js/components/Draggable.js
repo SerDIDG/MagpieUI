@@ -19,6 +19,7 @@ cm.define('Com.Draggable', {
         'limiter' : false,                  // Node, for limit draggable in it
         'minY' : false,
         'direction' : 'both',               // both | vertical | horizontal
+        'alignTarget' : true,
         'alignNode' : false
     }
 },
@@ -52,15 +53,7 @@ function(params){
     };
 
     var render = function(){
-        // Calculate dimensions and position
-        that.getDimensions();
-        // Add drag start event
-        cm.addEvent(that.params['target'], 'touchstart', function(e){
-            start(e);
-        });
-        cm.addEvent(that.params['target'], 'mousedown', function(e){
-            start(e);
-        });
+        that.setTarget(that.params['target']);
     };
 
     var start = function(e){
@@ -138,12 +131,12 @@ function(params){
             'left' : 0,
             'top' : 0
         }, position);
-        if(that.params['node'] === that.params['target']){
-            position['left'] += that.nodeStartX - that.startX;
-            position['top'] += that.nodeStartY - that.startY;
-        }else{
+        if(that.params['alignTarget'] && that.params['node'] !== that.params['target']){
             position['left'] -= that.dimensions['target']['absoluteX1'];
             position['top'] -= that.dimensions['target']['absoluteY1'];
+        }else{
+            position['left'] += that.nodeStartX - that.startX;
+            position['top'] += that.nodeStartY - that.startY;
         }
         position['left'] = Math.round(position['left']);
         position['top'] = Math.round(position['top']);
@@ -200,6 +193,40 @@ function(params){
     };
 
     /* ******* MAIN ******* */
+
+    that.setTarget = function(node){
+        // Clear old target node
+        that.removeTarget();
+        // Set new target node
+        that.params['target'] = node;
+        // Calculate dimensions and position
+        that.getDimensions();
+        // Add drag start event
+        cm.addEvent(that.params['target'], 'touchstart', start);
+        cm.addEvent(that.params['target'], 'mousedown', start);
+    };
+
+    that.removeTarget = function() {
+        if(cm.isNode(that.params['target'])){
+            cm.removeEvent(that.params['target'], 'touchstart', start);
+            cm.removeEvent(that.params['target'], 'mousedown', start);
+            that.params['target'] = null;
+        }
+    };
+
+    that.setNode = function(node){
+        if(that.params['node'] === that.params['target']){
+            that.removeTarget(that.params['target']);
+        }
+        // Set new node
+        that.params['node'] = node;
+        if(!that.params['target']){
+            that.setTarget(that.params['node']);
+        }else{
+            // Calculate dimensions and position
+            that.getDimensions();
+        }
+    };
 
     that.getDimensions = function(){
         that.dimensions['target'] = cm.getFullRect(that.params['target']);

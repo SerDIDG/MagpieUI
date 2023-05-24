@@ -1200,6 +1200,15 @@ cm.dataURItoBlob = function(dataURI){
     return new Blob([ab], {'type': mimeString});
 };
 
+cm.dataURItoFile = function(dataURI, data) {
+    data = cm.merge({
+        name: cm.quid('$$$$$$$'),
+        type: 'image/jpeg',
+    }, data);
+    var blob = cm.dataURItoBlob(dataURI);
+    return new File([blob], data.name, data);
+};
+
 cm.bufferToHEX = function(arrayBuffer){
     var byteArray = new Uint8Array(arrayBuffer),
         hexParts = [];
@@ -2032,8 +2041,12 @@ cm.constraintsCallback = function(callback, message){
 
 /* ******* STRINGS ******* */
 
-cm.toFixed = function(n, x){
-    return parseFloat(n).toFixed(x);
+cm.toFixed = function(n, x, toNumber){
+    if(!x || x === 0){
+        return Math.round(n);
+    }
+    var value = Number.parseFloat(n).toFixed(x);
+    return toNumber ? Number(value) : value;
 };
 
 cm.toNumber = function(str){

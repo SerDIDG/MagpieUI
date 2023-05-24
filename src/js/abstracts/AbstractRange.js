@@ -10,6 +10,7 @@ cm.define('Com.AbstractRange', {
         'min' : 0,
         'max' : 100,
         'value' : 0,
+        'precision': 0,
         'range' : false,
         'direction' : 'horizontal',
         'showCounter' : true,
@@ -47,6 +48,8 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         that.params['draggableParams']['targetDraggable'] = that.targetDraggable;
         that.params['draggableParams']['min'] = that.params['min'];
         that.params['draggableParams']['max'] = that.params['max'];
+        that.params['draggableParams']['precision'] = that.params['precision'];
+        that.params['draggableParams']['showCounter'] = that.params['showCounter'];
     };
 
     /*** VIEW MODEL ***/

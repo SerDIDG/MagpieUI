@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.47.10 (2023-05-18 01:46) ************ */
+/*! ************ MagpieUI v3.48.0 (2023-05-24 04:06) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4585,7 +4585,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.47.10';
+@CmVersion: '3.48.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5109,6 +5109,8 @@ span.CodeMirror-selectedtext { background: none; }
 @PtImage-Padding: @CmIndent-XXSmall;
 @PtImage-TitlePaddingTop: @CmIndent-XXXSmall;
 @PtImage-ButtonsIndent: @PtImage-Padding;
+@PtImage-ToolsMargin:  @CmIndent-XXXSmall;
+@PtImage-ToolsGap: @CmIndent-XXSmall;
 
 // /* ******* RANGE ******* */
 
@@ -9348,6 +9350,12 @@ button {
     cursor: col-resize !important;
     .mx__user-select(none);
 }
+
+.cm__cursor--move,
+.cm__cursor--move * {
+    cursor: move !important;
+    .mx__user-select(none);
+}
 /* ******* PART: ANIMATE ******* */
 
 .cm-animate {
@@ -12267,6 +12275,7 @@ ul.pt__field__hint {
     &:hover {
         > .overlay.on-hover {
             opacity: 1;
+            transition-duration: @CmUI-Transition-DurationReverse;
         }
     }
 
@@ -12297,6 +12306,7 @@ ul.pt__field__hint {
         .pt__buttons {
             transform: translateY(0);
             transition-delay: 0ms;
+            transition-duration: @CmUI-Transition-DurationReverse;
         }
     }
 
@@ -12315,21 +12325,35 @@ ul.pt__field__hint {
         border-radius: @CmBorder-Radius;
         background-color: @CmUI-Overlay-Light;
         z-index: 4;
+        .mx__transition(all, @CmUI-Transition-Duration, ease-in-out, @CmUI-Transition-Delay-Hide);
 
         &.top-right {
-            .mx__position(@CmIndent-XXXSmall, @CmIndent-XXXSmall, auto, auto);
+            .mx__position(@PtImage-ToolsMargin, @PtImage-ToolsMargin, auto, auto);
         }
 
         &.top-left {
-            .mx__position(@CmIndent-XXXSmall, auto, auto, @CmIndent-XXXSmall);
+            .mx__position(@PtImage-ToolsMargin, auto, auto, @PtImage-ToolsMargin);
         }
 
         &.bottom-right {
-            .mx__position(auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall, auto);
+            .mx__position(auto, @PtImage-ToolsMargin, @PtImage-ToolsMargin, auto);
         }
 
         &.bottom-left {
-            .mx__position(auto, auto, @CmIndent-XXXSmall, @CmIndent-XXXSmall);
+            .mx__position(auto, auto, @PtImage-ToolsMargin, @PtImage-ToolsMargin);
+        }
+
+        &.middle-center {
+            .mx__position(50%, auto, auto, 50%);
+            .mx__transform(translate(-50%, -50%));
+        }
+
+        &.no-padding {
+            padding: 0;
+
+            .icon {
+                padding: @PtImage-Padding;
+            }
         }
 
         input[type="checkbox"],
@@ -12339,7 +12363,7 @@ ul.pt__field__hint {
 
         .icon {
             float: left;
-            margin: 0 0 0 @CmIndent-XXSmall;
+            margin: 0 0 0 @PtImage-ToolsGap;
 
             &:first-child {
                 margin: 0;
@@ -12374,7 +12398,7 @@ ul.pt__field__hint {
             > .inner {
                 > .descr {
                     opacity: @CmUI-Opacity-Hover;
-                    .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+                    transition-duration: @CmUI-Transition-DurationReverse;
                 }
             }
         }
@@ -12400,13 +12424,14 @@ ul.pt__field__hint {
     &.is-tools-hover {
         > .pull {
             opacity: 0;
-            .mx__transition(opacity, @CmUI-Transition-Duration);
+            .mx__transition(all, @CmUI-Transition-Duration, ease-in-out, @CmUI-Transition-Delay-Hide);
         }
 
-        &:hover {
+        &:is(:hover, :active, :focus-within) {
             > .pull {
                 opacity: 1;
-                .mx__transition(opacity, @CmUI-Transition-DurationReverse);
+                transition-delay: 0ms;
+                transition-duration: @CmUI-Transition-DurationReverse;
             }
         }
     }
@@ -15805,6 +15830,20 @@ ul.pt__field__hint {
             .mx__transform(scale(1));
         }
     }
+
+    &.animate--drop-bottom-right {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(left top);
+        .mx__transform(scale(0));
+
+        &.is-hide {
+            .mx__transform(scale(0));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
 }
 
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
@@ -18854,6 +18893,7 @@ ul.pt__field__hint {
         .cm__font--hint;
         position: absolute;
         top: -@CmSize-XXSmall;
+        user-select: none;
     }
 
     .min {

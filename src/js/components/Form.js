@@ -48,6 +48,7 @@ cm.define('Com.Form', {
         'validateOnChange' : false,
         'validateOnInput' : false,
         'showNotifications' : true,
+        'showNotificationsMessages' : true,
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
         'showValidationMessages' : true,
@@ -662,30 +663,23 @@ function(params){
         // Clear old errors messages
         that.callbacks.clearError(that);
         // Render new errors messages
+        var data = {
+            'type' : 'danger'
+        };
         if(cm.isArray(errors) || cm.isObject(errors)){
             messages = that.callbacks.renderErrorMessages(that, errors);
-            if(that.params.showNotifications){
-                that.callbacks.renderNotification(that, {
-                    'label' : label,
-                    'type' : 'danger',
-                    'messages' : messages,
-                    'collapsed' : true
-                });
+            data.label = label;
+            if(that.params.showNotificationsMessages) {
+                data.messages = messages;
+                data.collapsed = true;
             }
         }else if(hasMessage){
-            if(that.params.showNotifications){
-                that.callbacks.renderNotification(that, {
-                    'label' : label,
-                    'type' : 'danger'
-                });
-            }
+            data.label = label;
         }else{
-            if(that.params.showNotifications){
-                that.callbacks.renderNotification(that, {
-                    'label' : that.lang('server_error'),
-                    'type' : 'danger'
-                });
-            }
+            data.label = that.lang('server_error');
+        }
+        if(that.params.showNotifications){
+            that.callbacks.renderNotification(that, data);
         }
     };
 
