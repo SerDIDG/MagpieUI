@@ -21,7 +21,10 @@ cm.define('Com.FileReader', {
     'params' : {
         'file' : null,
         'readOnRender' : true,
-        'readValueType' : 'base64'         // base64 | binary | text | hex
+        'readValueType' : 'base64',         // base64 | binary | text | hex
+        'types': {
+            'image': /image\/.*/,
+        },
     }
 },
 function(params){
@@ -56,89 +59,85 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
     };
 
     classProto.readAsBase64 = function(file, callback){
-        var that = this,
-            item,
-            reader;
+        var that = this;
         that.triggerEvent('onReadStart', file);
-        // Config
-        item = that.validate(file);
-        that.triggerEvent('onReadProcess', item);
-        // Read File
-        reader = new FileReader();
-        cm.addEvent(reader, 'load', function(e){
-            that.afterSuccess(e.target.result, item, callback);
+        // Validate and read
+        that.process(file, function(item){
+            that.triggerEvent('onReadProcess', item);
+            // Read File
+            var reader = new FileReader();
+            cm.addEvent(reader, 'load', function(e){
+                that.afterSuccess(e.target.result, item, callback);
+            });
+            cm.addEvent(reader, 'error', function(e){
+                that.afterError(e, item, callback);
+            });
+            reader.readAsDataURL(file);
         });
-        cm.addEvent(reader, 'error', function(e){
-            that.afterError(e, item, callback);
-        });
-        reader.readAsDataURL(file);
         return that;
     };
 
     classProto.readAsBinary = function(file, callback){
-        var that = this,
-            item,
-            reader;
+        var that = this;
         that.triggerEvent('onReadStart', file);
-        // Config
-        item = that.validate(file);
-        that.triggerEvent('onReadProcess', item);
-        // Read File
-        reader = new FileReader();
-        cm.addEvent(reader, 'load', function(e){
-            that.afterSuccess(e.target.result, item, callback);
+        // Validate and read
+        that.process(file, function(item){
+            that.triggerEvent('onReadProcess', item);
+            // Read File
+            var reader = new FileReader();
+            cm.addEvent(reader, 'load', function(e){
+                that.afterSuccess(e.target.result, item, callback);
+            });
+            cm.addEvent(reader, 'error', function(e){
+                that.afterError(e, item, callback);
+            });
+            reader.readAsBinaryString(file);
         });
-        cm.addEvent(reader, 'error', function(e){
-            that.afterError(e, item, callback);
-        });
-        reader.readAsBinaryString(file);
         return that;
     };
 
     classProto.readAsHEX = function(file, callback){
-        var that = this,
-            value,
-            item,
-            reader;
+        var that = this;
         that.triggerEvent('onReadStart', file);
-        // Config
-        item = that.validate(file);
-        that.triggerEvent('onReadProcess', item);
-        // Read File
-        reader = new FileReader();
-        cm.addEvent(reader, 'load', function(e){
-            try{
-                value = cm.bufferToHEX(e.target.result);
-            }catch(e){
+        // Validate and read
+        that.process(file, function(item){
+            that.triggerEvent('onReadProcess', item);
+            // Read File
+            var reader = new FileReader();
+            cm.addEvent(reader, 'load', function(e){
+                var value;
+                try{
+                    value = cm.bufferToHEX(e.target.result);
+                }catch(e){
+                    that.afterError(e, item, callback);
+                }finally{
+                    that.afterSuccess(value, item, callback);
+                }
+            });
+            cm.addEvent(reader, 'error', function(e){
                 that.afterError(e, item, callback);
-            }finally{
-                that.afterSuccess(value, item, callback);
-            }
+            });
+            reader.readAsArrayBuffer(file);
         });
-        cm.addEvent(reader, 'error', function(e){
-            that.afterError(e, item, callback);
-        });
-        reader.readAsArrayBuffer(file);
         return that;
     };
 
     classProto.readAsText = function(file, callback){
-        var that = this,
-            item,
-            reader;
+        var that = this;
         that.triggerEvent('onReadStart', file);
-        // Config
-        item = that.validate(file);
-        that.triggerEvent('onReadProcess', item);
-        // Read File
-        reader = new FileReader();
-        cm.addEvent(reader, 'load', function(e){
-            that.afterSuccess(e.target.result, item, callback);
+        // Validate and read
+        that.process(file, function(item){
+            that.triggerEvent('onReadProcess', item);
+            // Read File
+            var reader = new FileReader();
+            cm.addEvent(reader, 'load', function(e){
+                that.afterSuccess(e.target.result, item, callback);
+            });
+            cm.addEvent(reader, 'error', function(e){
+                that.afterError(e, item, callback);
+            });
+            reader.readAsText(file);
         });
-        cm.addEvent(reader, 'error', function(e){
-            that.afterError(e, item, callback);
-        });
-        reader.readAsText(file);
         return that;
     };
 
@@ -188,11 +187,33 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
         return that;
     };
 
+    classProto.process = function(file, callback){
+        var that = this,
+            item = that.validate(file);
+        if(that.params.types.image.test(item['type']) && !cm.isEmpty(item['url'])){
+            cm.onImageLoad(
+                item['url'],
+                function(node){
+                    item._isLoaded = true;
+                    item.width = node.naturalWidth || 0;
+                    item.height = node.naturalHeight || 0;
+                    callback(item);
+                },
+                function(){
+                    callback(item);
+                }
+            );
+        }else{
+            callback(item);
+        }
+    };
+
     classProto.validate = function(o){
         var that = this,
             item = {
                 '_type' : 'file',
                 '_isFile' : false,
+                '_isLoaded' : false,
                 'value' : null,
                 'error' : null,
                 'name' : '',
@@ -217,9 +238,7 @@ cm.getConstructor('Com.FileReader', function(classConstructor, className, classP
             if(cm.isObject(parsed)){
                 item = that.validate(parsed);
             }else{
-                item = that.validate({
-                    'value' : o
-                })
+                item = that.validate({'value': o});
             }
         }
         return item;

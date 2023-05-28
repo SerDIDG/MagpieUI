@@ -1110,32 +1110,23 @@ cm.onScrollEnd = function(node, handler){
     };
 };
 
-cm.onImageLoad = function(src, handler, delay){
-    delay = delay || 0;
+cm.onImageLoad = function(src, success, error){
     var nodes = [],
         isMany = cm.isArray(src),
         images = isMany ? src : [src],
         imagesLength = images.length,
-        isLoad = 0,
-        timeStart = Date.now(),
-        timePassed = 0;
+        isLoad = 0;
 
     images.forEach(function(item, i){
         nodes[i] = cm.node('img', {'alt' : ''});
         nodes[i].onload = function(){
             isLoad++;
             if(isLoad === imagesLength){
-                timePassed = Date.now() - timeStart;
-                delay = timePassed < delay ? delay - timePassed : 0;
-
-                if(delay){
-                    setTimeout(function(){
-                        handler(isMany ? nodes : nodes[0]);
-                    }, delay);
-                }else{
-                    handler(isMany ? nodes : nodes[0]);
-                }
+                success(isMany ? nodes : nodes[0]);
             }
+        };
+        nodes[i].onerror = function(event){
+            error(isMany ? nodes : nodes[0], event);
         };
         nodes[i].src = item;
     });

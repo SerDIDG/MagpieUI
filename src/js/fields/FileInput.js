@@ -3,16 +3,17 @@ cm.define('Com.FileInput', {
     'params' : {
         'controllerEvents' : true,
         'embedStructure' : 'replace',
+        'hiddenType' : 'textarea',
+
         'className' : 'com__file-input',
         'size' : 'full',                     // default, full, custom
-        'hiddenType' : 'textarea',
-        'file' : null,
         'showLink' : true,
         'showFilename' : true,
         'showClearButton' : true,
         'autoOpen' : false,
         'placeholder' : null,
 
+        'defaultValue' : '',
         'accept' : [],                      // empty - accept all, example: ['image/png', 'image/jpeg']
         'readValueType' : 'base64',         // base64 | binary
         'outputValueType' : 'object',       // file | object
@@ -50,7 +51,10 @@ cm.define('Com.FileInput', {
         'browse_local' : 'Browse Local',
         'browse_filemanager' : 'Browse File Manager',
         'remove' : 'Remove',
-        'open' : 'Open'
+        'open' : 'Open',
+        'errors': {
+            'accept': 'This file type is not accepted'
+        }
     }
 },
 function(params){
@@ -250,16 +254,24 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.isAcceptableFileFormat = function(item){
-        var that = this;
-        if(
-            !cm.isEmpty(item) &&
-            !cm.isEmpty(item.type) &&
-            !cm.isEmpty(that.params.accept) &&
-            cm.isArray(that.params.accept)
-        ){
-            return cm.inArray(that.params.accept, item.type);
+        var that = this,
+            isValid = true;
+        if (
+            cm.isEmpty(that.params.accept) || !cm.isArray(that.params.accept)
+            || cm.isEmpty(item) || cm.isEmpty(item.file)
+        ) {
+            isValid = true;
+        } else {
+            isValid = cm.inArray(that.params.accept, item.type);
         }
-        return true;
+        if (that.params.formField) {
+            if (!isValid) {
+                that.params.formField.renderError(that.msg('errors.accept'));
+            } else {
+                that.params.formField.clearError();
+            }
+        }
+        return isValid;
     };
 
     /* *** DATA *** */
@@ -277,11 +289,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
     classProto.validateValue = function(value){
         var that = this,
-            item = that.components['validator'].validate(value);
-        return (
-            that.isAcceptableFileFormat(item) &&
-            (!cm.isEmpty(item['value']) || !cm.isEmpty(item['file']))
-        ) ? item : '';
+            item = that.components.validator.validate(value);
+        if (
+            (cm.isEmpty(item.value) && cm.isEmpty(item.file))
+            || !that.isAcceptableFileFormat(item)
+        ) {
+            return that.params.defaultValue;
+        }
+        return item;
     };
 
     classProto.setData = function(){
@@ -337,6 +352,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
 Com.FormFields.add('file', {
     'node' : cm.node('input', {'type' : 'text'}),
+    'value' : '',
+    'defaultValue' : '',
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.FileInput'
 });

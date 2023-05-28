@@ -177,7 +177,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             value;
         if(cm.isNode(that.params['node'])){
             dataValue = that.params['node'].getAttribute('data-value');
-            // First try to take original value, than real time js value
+            // First try to take original value, then real time js value
             value = that.params['node'].getAttribute('value');
             if(cm.isEmpty(value)){
                 value = that.params['node'].value;

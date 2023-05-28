@@ -2,21 +2,33 @@ cm.define('Com.ImageInput', {
     extend: 'Com.FileInput',
     params: {
         hiddenType: 'textarea',
+
         className: 'com__image-input',
-        size: 'default',                                  // default, full, custom
-        aspect: false,                                    // 1x1, 3x2, etc
+        size: 'default',                                    // default, full, custom
+        aspect: false,                                      // 1x1, 3x2, etc
         types: {
+            image: /image\/.*/,
             video: /video\/(mp4|webm|ogg|avi)/,
             embed: /application\/pdf/
         },
         showLabel: true,
         showLink: true,
+
+        accept: [],                                         // empty - accept all, example: ['image/png', 'image/jpeg']
+        dimensions: {                                       // image dimensions, example: {minWidth: 0, minHeight: 0}
+            minWidth: 0,
+            minHeight: 0,
+        },
+
         preview: true,
         previewConstructor: 'Com.ImagePreviewContainer',
         previewParams: {}
     },
     strings: {
-        preview: 'Preview'
+        preview: 'Preview',
+        errors: {
+            dimensions: 'Image dimensions do not meet requirements'
+        }
     }
 },
 function() {
@@ -137,6 +149,45 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         }
     };
 
+    /* *** PROCESS FILES *** */
+
+    classProto.isAcceptableImageDimensions = function(item) {
+        var that = this,
+            isValid = true;
+        if (
+            cm.isEmpty(that.params.dimensions)
+            || cm.isEmpty(item) || cm.isEmpty(item.file) || !item._isLoaded
+            || !that.params.types.image.test(item.type) || item.type === 'image/svg+xml'
+        ) {
+            isValid = true;
+        } else {
+            isValid = item.width >= that.params.dimensions.minWidth && item.height >= that.params.dimensions.minHeight;
+        }
+        if (that.params.formField) {
+            if (!isValid) {
+                that.params.formField.renderError(that.msg('errors.dimensions'));
+            } else {
+                that.params.formField.clearError();
+            }
+        }
+        return isValid;
+    };
+
+    /* *** DATA *** */
+
+    classProto.validateValue = function(value){
+        var that = this,
+            item = that.components.validator.validate(value);
+        if (
+            (cm.isEmpty(item.value) && cm.isEmpty(item.file))
+            || !that.isAcceptableFileFormat(item)
+            || !that.isAcceptableImageDimensions(item)
+        ) {
+            return that.params.defaultValue;
+        }
+        return item;
+    };
+
     classProto.setData = function() {
         var that = this;
         if (cm.isEmpty(that.value)) {
@@ -206,6 +257,8 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
 
 Com.FormFields.add('image', {
     node: cm.node('input', {type: 'text'}),
+    value: '',
+    defaultValue: '',
     fieldConstructor: 'Com.AbstractFormField',
     constructor: 'Com.ImageInput'
 });
