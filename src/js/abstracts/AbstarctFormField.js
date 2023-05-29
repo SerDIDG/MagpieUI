@@ -736,6 +736,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
+    classProto.toggleVisibility = function(value, triggerEvent){
+        var that = this;
+        if(value){
+            that.show(triggerEvent);
+        }else{
+            that.hide(triggerEvent);
+        }
+        return that;
+    };
+
     classProto.enable = function(){
         var that = this;
         that.components.controller && cm.isFunction(that.components.controller.enable) && that.components.controller.enable();
@@ -764,7 +774,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         that.params.required = true;
         if(that.params.requiredAsterisk){
-            cm.appendChild(that.nodes.required, that.nodes.label);
+            if(that.nodes.labelText){
+                cm.insertAfter(that.nodes.required, that.nodes.labelText);
+            }else{
+                cm.appendChild(that.nodes.required, that.nodes.label);
+            }
         }
         return that;
     };
@@ -773,6 +787,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         that.params.required = false;
         cm.remove(that.nodes.required);
+        return that;
+    };
+
+    classProto.toggleRequired = function(value){
+        var that = this;
+        if(value){
+            that.setRequired();
+        }else{
+            that.unsetRequired();
+        }
         return that;
     };
 
