@@ -40,6 +40,7 @@ cm.define('Com.AbstractInput', {
         'required' : false,
         'minLength' : 0,
         'maxLength' : 0,                // 0 - infinity
+        'limitMaxLength' : true,
         'min' : 0,
         'max' : 0,
         'setHiddenInput' : true,
@@ -294,7 +295,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         if(!cm.isEmpty(that.params['minLength']) && that.params['minLength'] > 0){
             that.nodes['hidden'].minlength = that.params['minLength']
         }
-        if(!cm.isEmpty(that.params['maxLength']) && that.params['maxLength'] > 0){
+        if(that.params['limitMaxLength'] && !cm.isEmpty(that.params['maxLength']) && that.params['maxLength'] > 0){
             that.nodes['hidden'].maxlength = that.params['maxLength'];
         }
         if(!cm.isEmpty(that.params['min']) && that.params['min'] > 0){

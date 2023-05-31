@@ -1969,7 +1969,8 @@ cm.getSelectValue = function(node){
     return selected;
 };
 
-cm.setInputMaxLength = function(input, maxLength, max){
+cm.setInputMaxLength = function(input, maxLength, max, limit){
+    limit = cm.isUndefined(limit) ? true : limit;
     if(cm.isNode(input)){
         var value = 0;
         if(input.type === 'number'){
@@ -1979,7 +1980,7 @@ cm.setInputMaxLength = function(input, maxLength, max){
             }
         }else{
             value = maxLength || max;
-            if(value){
+            if(limit && value){
                 input.maxLength = value;
             }
         }

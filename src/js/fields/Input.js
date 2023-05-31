@@ -109,7 +109,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.nodes['content']['input'].required = that.params['required'];
         // Min / Max length
         cm.setInputMinLength(that.nodes['content']['input'], that.params['minLength'], that.params['min']);
-        cm.setInputMaxLength(that.nodes['content']['input'], that.params['maxLength'], that.params['max']);
+        cm.setInputMaxLength(that.nodes['content']['input'], that.params['maxLength'], that.params['max'], that.params['limitMaxLength']);
         // Placeholder / Title
         if(!cm.isEmpty(that.params['id'])){
             that.nodes['content']['input'].setAttribute('id', that.params['id']);
