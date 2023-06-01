@@ -2530,12 +2530,7 @@ cm.hasClass = cm.isClass = function(node, cssClass){
     if(!cm.isNode(node)){
         return false;
     }
-    if(node.classList){
-        return node.classList.contains(cssClass);
-    }else{
-        classes = node.className ? node.className.split(/\s+/) : [];
-        return cm.inArray(classes, cssClass);
-    }
+    return node.classList.contains(cssClass);
 };
 
 cm.getPageSize = function(key){
@@ -2917,14 +2912,8 @@ cm.getCurrentStyle = function(obj, name, dimension){
             return obj['offset' + Name];
 
         case 'opacity':
-            if(cm.is('ie') && cm.isVersion() < 9){
-                var reg = /alpha\(opacity=(.*)\)/;
-                var res = reg.exec(obj.style.filter || cm.getCSSStyle(obj, 'filter'));
-                return (res) ? res[1] / 100 : 1;
-            }else{
-                var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
-                return (!isNaN(val)) ? val : 1;
-            }
+            var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
+            return (!isNaN(val)) ? val : 1;
 
         case 'color':
         case 'backgroundColor':

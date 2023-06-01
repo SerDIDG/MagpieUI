@@ -68,8 +68,8 @@ function(params){
         that.convertEvents(that.params['events']);
 
         if(that.params['container']){
-            // Check Graceful Degradation, and turn it to mobile and old ie.
-            if(that.params['useGracefulDegradation'] && ((cm.is('IE') && cm.isVersion() < 9) || cm.isMobile())){
+            // Check Graceful Degradation, and enable it on the mobile
+            if(that.params['useGracefulDegradation'] && cm.isMobile()){
                 isGracefulDegradation = true;
             }
             // Init misc
