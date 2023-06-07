@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.49.0 (2023-06-01 10:12) ************ */
+/*! ************ MagpieUI v3.49.1 (2023-06-07 09:17) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.49.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.49.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.49.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.49.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.49.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.49.1');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.49.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.49.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.49.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.49.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -6461,29 +6461,19 @@ button:hover {
   text-decoration: none;
   transition: background 100ms ease-in-out 0ms, color 100ms ease-in-out 0ms, box-shadow 100ms ease-in-out 0ms, border-color 100ms ease-in-out 0ms;
 }
-.button:hover,
-.button.hover,
-input[type="button"]:hover,
-input[type="button"].hover,
-input[type="submit"]:hover,
-input[type="submit"].hover,
-input[type="reset"]:hover,
-input[type="reset"].hover,
-button:hover,
-button.hover {
+.button:is(:hover, .hover),
+input[type="button"]:is(:hover, .hover),
+input[type="submit"]:is(:hover, .hover),
+input[type="reset"]:is(:hover, .hover),
+button:is(:hover, .hover) {
   background-color: hsl(210, 75%, 45%);
   color: #ffffff;
 }
-.button:active,
-.button.active,
-input[type="button"]:active,
-input[type="button"].active,
-input[type="submit"]:active,
-input[type="submit"].active,
-input[type="reset"]:active,
-input[type="reset"].active,
-button:active,
-button.active {
+.button:is(:active, .active),
+input[type="button"]:is(:active, .active),
+input[type="submit"]:is(:active, .active),
+input[type="reset"]:is(:active, .active),
+button:is(:active, .active) {
   background-color: hsl(210, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6496,29 +6486,19 @@ button.button-primary {
   background-color: hsl(210, 75%, 52%);
   color: #ffffff;
 }
-.button.button-primary:hover,
-.button.button-primary.hover,
-input[type="button"].button-primary:hover,
-input[type="button"].button-primary.hover,
-input[type="submit"].button-primary:hover,
-input[type="submit"].button-primary.hover,
-input[type="reset"].button-primary:hover,
-input[type="reset"].button-primary.hover,
-button.button-primary:hover,
-button.button-primary.hover {
+.button.button-primary:is(:hover, .hover),
+input[type="button"].button-primary:is(:hover, .hover),
+input[type="submit"].button-primary:is(:hover, .hover),
+input[type="reset"].button-primary:is(:hover, .hover),
+button.button-primary:is(:hover, .hover) {
   background-color: hsl(210, 75%, 45%);
   color: #ffffff;
 }
-.button.button-primary:active,
-.button.button-primary.active,
-input[type="button"].button-primary:active,
-input[type="button"].button-primary.active,
-input[type="submit"].button-primary:active,
-input[type="submit"].button-primary.active,
-input[type="reset"].button-primary:active,
-input[type="reset"].button-primary.active,
-button.button-primary:active,
-button.button-primary.active {
+.button.button-primary:is(:active, .active),
+input[type="button"].button-primary:is(:active, .active),
+input[type="submit"].button-primary:is(:active, .active),
+input[type="reset"].button-primary:is(:active, .active),
+button.button-primary:is(:active, .active) {
   background-color: hsl(210, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6548,29 +6528,19 @@ button.button-middle {
   background-color: hsl(210, 75%, 80%);
   color: hsl(210, 75%, 52%);
 }
-.button.button-middle:hover,
-.button.button-middle.hover,
-input[type="button"].button-middle:hover,
-input[type="button"].button-middle.hover,
-input[type="submit"].button-middle:hover,
-input[type="submit"].button-middle.hover,
-input[type="reset"].button-middle:hover,
-input[type="reset"].button-middle.hover,
-button.button-middle:hover,
-button.button-middle.hover {
+.button.button-middle:is(:hover, .hover),
+input[type="button"].button-middle:is(:hover, .hover),
+input[type="submit"].button-middle:is(:hover, .hover),
+input[type="reset"].button-middle:is(:hover, .hover),
+button.button-middle:is(:hover, .hover) {
   background-color: hsl(210, 75%, 75%);
   color: hsl(210, 75%, 52%);
 }
-.button.button-middle:active,
-.button.button-middle.active,
-input[type="button"].button-middle:active,
-input[type="button"].button-middle.active,
-input[type="submit"].button-middle:active,
-input[type="submit"].button-middle.active,
-input[type="reset"].button-middle:active,
-input[type="reset"].button-middle.active,
-button.button-middle:active,
-button.button-middle.active {
+.button.button-middle:is(:active, .active),
+input[type="button"].button-middle:is(:active, .active),
+input[type="submit"].button-middle:is(:active, .active),
+input[type="reset"].button-middle:is(:active, .active),
+button.button-middle:is(:active, .active) {
   background-color: hsl(210, 75%, 70%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6600,29 +6570,19 @@ button.button-secondary {
   background-color: hsl(0, 0%, 98%);
   color: hsl(210, 75%, 52%);
 }
-.button.button-secondary:hover,
-.button.button-secondary.hover,
-input[type="button"].button-secondary:hover,
-input[type="button"].button-secondary.hover,
-input[type="submit"].button-secondary:hover,
-input[type="submit"].button-secondary.hover,
-input[type="reset"].button-secondary:hover,
-input[type="reset"].button-secondary.hover,
-button.button-secondary:hover,
-button.button-secondary.hover {
+.button.button-secondary:is(:hover, .hover),
+input[type="button"].button-secondary:is(:hover, .hover),
+input[type="submit"].button-secondary:is(:hover, .hover),
+input[type="reset"].button-secondary:is(:hover, .hover),
+button.button-secondary:is(:hover, .hover) {
   background-color: hsl(0, 0%, 91%);
   color: hsl(210, 75%, 52%);
 }
-.button.button-secondary:active,
-.button.button-secondary.active,
-input[type="button"].button-secondary:active,
-input[type="button"].button-secondary.active,
-input[type="submit"].button-secondary:active,
-input[type="submit"].button-secondary.active,
-input[type="reset"].button-secondary:active,
-input[type="reset"].button-secondary.active,
-button.button-secondary:active,
-button.button-secondary.active {
+.button.button-secondary:is(:active, .active),
+input[type="button"].button-secondary:is(:active, .active),
+input[type="submit"].button-secondary:is(:active, .active),
+input[type="reset"].button-secondary:is(:active, .active),
+button.button-secondary:is(:active, .active) {
   background-color: hsl(0, 0%, 86%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6652,29 +6612,19 @@ button.button-success {
   background-color: hsl(120, 65%, 42%);
   color: #ffffff;
 }
-.button.button-success:hover,
-.button.button-success.hover,
-input[type="button"].button-success:hover,
-input[type="button"].button-success.hover,
-input[type="submit"].button-success:hover,
-input[type="submit"].button-success.hover,
-input[type="reset"].button-success:hover,
-input[type="reset"].button-success.hover,
-button.button-success:hover,
-button.button-success.hover {
+.button.button-success:is(:hover, .hover),
+input[type="button"].button-success:is(:hover, .hover),
+input[type="submit"].button-success:is(:hover, .hover),
+input[type="reset"].button-success:is(:hover, .hover),
+button.button-success:is(:hover, .hover) {
   background-color: hsl(120, 65%, 35%);
   color: #ffffff;
 }
-.button.button-success:active,
-.button.button-success.active,
-input[type="button"].button-success:active,
-input[type="button"].button-success.active,
-input[type="submit"].button-success:active,
-input[type="submit"].button-success.active,
-input[type="reset"].button-success:active,
-input[type="reset"].button-success.active,
-button.button-success:active,
-button.button-success.active {
+.button.button-success:is(:active, .active),
+input[type="button"].button-success:is(:active, .active),
+input[type="submit"].button-success:is(:active, .active),
+input[type="reset"].button-success:is(:active, .active),
+button.button-success:is(:active, .active) {
   background-color: hsl(120, 65%, 25%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6704,29 +6654,19 @@ button.button-danger {
   background-color: hsl(0, 65%, 52%);
   color: #ffffff;
 }
-.button.button-danger:hover,
-.button.button-danger.hover,
-input[type="button"].button-danger:hover,
-input[type="button"].button-danger.hover,
-input[type="submit"].button-danger:hover,
-input[type="submit"].button-danger.hover,
-input[type="reset"].button-danger:hover,
-input[type="reset"].button-danger.hover,
-button.button-danger:hover,
-button.button-danger.hover {
+.button.button-danger:is(:hover, .hover),
+input[type="button"].button-danger:is(:hover, .hover),
+input[type="submit"].button-danger:is(:hover, .hover),
+input[type="reset"].button-danger:is(:hover, .hover),
+button.button-danger:is(:hover, .hover) {
   background-color: hsl(0, 65%, 45%);
   color: #ffffff;
 }
-.button.button-danger:active,
-.button.button-danger.active,
-input[type="button"].button-danger:active,
-input[type="button"].button-danger.active,
-input[type="submit"].button-danger:active,
-input[type="submit"].button-danger.active,
-input[type="reset"].button-danger:active,
-input[type="reset"].button-danger.active,
-button.button-danger:active,
-button.button-danger.active {
+.button.button-danger:is(:active, .active),
+input[type="button"].button-danger:is(:active, .active),
+input[type="submit"].button-danger:is(:active, .active),
+input[type="reset"].button-danger:is(:active, .active),
+button.button-danger:is(:active, .active) {
   background-color: hsl(0, 65%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6756,29 +6696,19 @@ button.button-warning {
   background-color: hsl(38, 75%, 52%);
   color: #ffffff;
 }
-.button.button-warning:hover,
-.button.button-warning.hover,
-input[type="button"].button-warning:hover,
-input[type="button"].button-warning.hover,
-input[type="submit"].button-warning:hover,
-input[type="submit"].button-warning.hover,
-input[type="reset"].button-warning:hover,
-input[type="reset"].button-warning.hover,
-button.button-warning:hover,
-button.button-warning.hover {
+.button.button-warning:is(:hover, .hover),
+input[type="button"].button-warning:is(:hover, .hover),
+input[type="submit"].button-warning:is(:hover, .hover),
+input[type="reset"].button-warning:is(:hover, .hover),
+button.button-warning:is(:hover, .hover) {
   background-color: hsl(38, 75%, 45%);
   color: #ffffff;
 }
-.button.button-warning:active,
-.button.button-warning.active,
-input[type="button"].button-warning:active,
-input[type="button"].button-warning.active,
-input[type="submit"].button-warning:active,
-input[type="submit"].button-warning.active,
-input[type="reset"].button-warning:active,
-input[type="reset"].button-warning.active,
-button.button-warning:active,
-button.button-warning.active {
+.button.button-warning:is(:active, .active),
+input[type="button"].button-warning:is(:active, .active),
+input[type="submit"].button-warning:is(:active, .active),
+input[type="reset"].button-warning:is(:active, .active),
+button.button-warning:is(:active, .active) {
   background-color: hsl(38, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6816,49 +6746,29 @@ button.transparent {
   box-shadow: none;
   border: none;
 }
-.button.button-transparent:hover,
-.button.transparent:hover,
-.button.button-transparent.hover,
-.button.transparent.hover,
-input[type="button"].button-transparent:hover,
-input[type="button"].transparent:hover,
-input[type="button"].button-transparent.hover,
-input[type="button"].transparent.hover,
-input[type="submit"].button-transparent:hover,
-input[type="submit"].transparent:hover,
-input[type="submit"].button-transparent.hover,
-input[type="submit"].transparent.hover,
-input[type="reset"].button-transparent:hover,
-input[type="reset"].transparent:hover,
-input[type="reset"].button-transparent.hover,
-input[type="reset"].transparent.hover,
-button.button-transparent:hover,
-button.transparent:hover,
-button.button-transparent.hover,
-button.transparent.hover {
+.button.button-transparent:is(:hover, .hover),
+.button.transparent:is(:hover, .hover),
+input[type="button"].button-transparent:is(:hover, .hover),
+input[type="button"].transparent:is(:hover, .hover),
+input[type="submit"].button-transparent:is(:hover, .hover),
+input[type="submit"].transparent:is(:hover, .hover),
+input[type="reset"].button-transparent:is(:hover, .hover),
+input[type="reset"].transparent:is(:hover, .hover),
+button.button-transparent:is(:hover, .hover),
+button.transparent:is(:hover, .hover) {
   background-color: hsl(0, 0%, 95%);
   color: hsl(210, 75%, 52%);
 }
-.button.button-transparent:active,
-.button.transparent:active,
-.button.button-transparent.active,
-.button.transparent.active,
-input[type="button"].button-transparent:active,
-input[type="button"].transparent:active,
-input[type="button"].button-transparent.active,
-input[type="button"].transparent.active,
-input[type="submit"].button-transparent:active,
-input[type="submit"].transparent:active,
-input[type="submit"].button-transparent.active,
-input[type="submit"].transparent.active,
-input[type="reset"].button-transparent:active,
-input[type="reset"].transparent:active,
-input[type="reset"].button-transparent.active,
-input[type="reset"].transparent.active,
-button.button-transparent:active,
-button.transparent:active,
-button.button-transparent.active,
-button.transparent.active {
+.button.button-transparent:is(:active, .active),
+.button.transparent:is(:active, .active),
+input[type="button"].button-transparent:is(:active, .active),
+input[type="button"].transparent:is(:active, .active),
+input[type="submit"].button-transparent:is(:active, .active),
+input[type="submit"].transparent:is(:active, .active),
+input[type="reset"].button-transparent:is(:active, .active),
+input[type="reset"].transparent:is(:active, .active),
+button.button-transparent:is(:active, .active),
+button.transparent:is(:active, .active) {
   background-color: hsl(0, 0%, 91%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6888,29 +6798,19 @@ button.button-white {
   background-color: #ffffff;
   color: hsl(210, 75%, 52%);
 }
-.button.button-white:hover,
-.button.button-white.hover,
-input[type="button"].button-white:hover,
-input[type="button"].button-white.hover,
-input[type="submit"].button-white:hover,
-input[type="submit"].button-white.hover,
-input[type="reset"].button-white:hover,
-input[type="reset"].button-white.hover,
-button.button-white:hover,
-button.button-white.hover {
+.button.button-white:is(:hover, .hover),
+input[type="button"].button-white:is(:hover, .hover),
+input[type="submit"].button-white:is(:hover, .hover),
+input[type="reset"].button-white:is(:hover, .hover),
+button.button-white:is(:hover, .hover) {
   background-color: hsl(210, 70%, 95%);
   color: hsl(210, 75%, 52%);
 }
-.button.button-white:active,
-.button.button-white.active,
-input[type="button"].button-white:active,
-input[type="button"].button-white.active,
-input[type="submit"].button-white:active,
-input[type="submit"].button-white.active,
-input[type="reset"].button-white:active,
-input[type="reset"].button-white.active,
-button.button-white:active,
-button.button-white.active {
+.button.button-white:is(:active, .active),
+input[type="button"].button-white:is(:active, .active),
+input[type="submit"].button-white:is(:active, .active),
+input[type="reset"].button-white:is(:active, .active),
+button.button-white:is(:active, .active) {
   background-color: hsl(210, 70%, 91%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -6941,41 +6841,26 @@ button.button-disabled {
   color: #999999;
   cursor: default;
 }
-.button.button-disabled:focus,
-.button.button-disabled.focus,
-input[type="button"].button-disabled:focus,
-input[type="button"].button-disabled.focus,
-input[type="submit"].button-disabled:focus,
-input[type="submit"].button-disabled.focus,
-input[type="reset"].button-disabled:focus,
-input[type="reset"].button-disabled.focus,
-button.button-disabled:focus,
-button.button-disabled.focus {
+.button.button-disabled:is(:focus-visible, .focus),
+input[type="button"].button-disabled:is(:focus-visible, .focus),
+input[type="submit"].button-disabled:is(:focus-visible, .focus),
+input[type="reset"].button-disabled:is(:focus-visible, .focus),
+button.button-disabled:is(:focus-visible, .focus) {
   outline: none;
 }
-.button.button-disabled:hover,
-.button.button-disabled.hover,
-input[type="button"].button-disabled:hover,
-input[type="button"].button-disabled.hover,
-input[type="submit"].button-disabled:hover,
-input[type="submit"].button-disabled.hover,
-input[type="reset"].button-disabled:hover,
-input[type="reset"].button-disabled.hover,
-button.button-disabled:hover,
-button.button-disabled.hover {
+.button.button-disabled:is(:hover, .hover),
+input[type="button"].button-disabled:is(:hover, .hover),
+input[type="submit"].button-disabled:is(:hover, .hover),
+input[type="reset"].button-disabled:is(:hover, .hover),
+button.button-disabled:is(:hover, .hover) {
   background-color: hsl(0, 0%, 91%);
   color: #999999;
 }
-.button.button-disabled:active,
-.button.button-disabled.active,
-input[type="button"].button-disabled:active,
-input[type="button"].button-disabled.active,
-input[type="submit"].button-disabled:active,
-input[type="submit"].button-disabled.active,
-input[type="reset"].button-disabled:active,
-input[type="reset"].button-disabled.active,
-button.button-disabled:active,
-button.button-disabled.active {
+.button.button-disabled:is(:active, .active),
+input[type="button"].button-disabled:is(:active, .active),
+input[type="submit"].button-disabled:is(:active, .active),
+input[type="reset"].button-disabled:is(:active, .active),
+button.button-disabled:is(:active, .active) {
   background-color: hsl(0, 0%, 91%);
   color: #999999;
 }
@@ -20184,13 +20069,11 @@ ul.pt__field__hint li:before {
   text-decoration: none;
   transition: background 100ms ease-in-out 0ms, color 100ms ease-in-out 0ms, box-shadow 100ms ease-in-out 0ms, border-color 100ms ease-in-out 0ms;
 }
-.com__pagination__bar ul li a:hover,
-.com__pagination__bar ul li a.hover {
+.com__pagination__bar ul li a:is(:hover, .hover) {
   background-color: hsl(210, 75%, 45%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a:active,
-.com__pagination__bar ul li a.active {
+.com__pagination__bar ul li a:is(:active, .active) {
   background-color: hsl(210, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20199,13 +20082,11 @@ ul.pt__field__hint li:before {
   background-color: hsl(210, 75%, 52%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-primary:hover,
-.com__pagination__bar ul li a.button-primary.hover {
+.com__pagination__bar ul li a.button-primary:is(:hover, .hover) {
   background-color: hsl(210, 75%, 45%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-primary:active,
-.com__pagination__bar ul li a.button-primary.active {
+.com__pagination__bar ul li a.button-primary:is(:active, .active) {
   background-color: hsl(210, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20223,13 +20104,11 @@ ul.pt__field__hint li:before {
   background-color: hsl(210, 75%, 80%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-middle:hover,
-.com__pagination__bar ul li a.button-middle.hover {
+.com__pagination__bar ul li a.button-middle:is(:hover, .hover) {
   background-color: hsl(210, 75%, 75%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-middle:active,
-.com__pagination__bar ul li a.button-middle.active {
+.com__pagination__bar ul li a.button-middle:is(:active, .active) {
   background-color: hsl(210, 75%, 70%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20247,13 +20126,11 @@ ul.pt__field__hint li:before {
   background-color: hsl(0, 0%, 98%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-secondary:hover,
-.com__pagination__bar ul li a.button-secondary.hover {
+.com__pagination__bar ul li a.button-secondary:is(:hover, .hover) {
   background-color: hsl(0, 0%, 91%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-secondary:active,
-.com__pagination__bar ul li a.button-secondary.active {
+.com__pagination__bar ul li a.button-secondary:is(:active, .active) {
   background-color: hsl(0, 0%, 86%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20271,13 +20148,11 @@ ul.pt__field__hint li:before {
   background-color: hsl(120, 65%, 42%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-success:hover,
-.com__pagination__bar ul li a.button-success.hover {
+.com__pagination__bar ul li a.button-success:is(:hover, .hover) {
   background-color: hsl(120, 65%, 35%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-success:active,
-.com__pagination__bar ul li a.button-success.active {
+.com__pagination__bar ul li a.button-success:is(:active, .active) {
   background-color: hsl(120, 65%, 25%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20295,13 +20170,11 @@ ul.pt__field__hint li:before {
   background-color: hsl(0, 65%, 52%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-danger:hover,
-.com__pagination__bar ul li a.button-danger.hover {
+.com__pagination__bar ul li a.button-danger:is(:hover, .hover) {
   background-color: hsl(0, 65%, 45%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-danger:active,
-.com__pagination__bar ul li a.button-danger.active {
+.com__pagination__bar ul li a.button-danger:is(:active, .active) {
   background-color: hsl(0, 65%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20319,13 +20192,11 @@ ul.pt__field__hint li:before {
   background-color: hsl(38, 75%, 52%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-warning:hover,
-.com__pagination__bar ul li a.button-warning.hover {
+.com__pagination__bar ul li a.button-warning:is(:hover, .hover) {
   background-color: hsl(38, 75%, 45%);
   color: #ffffff;
 }
-.com__pagination__bar ul li a.button-warning:active,
-.com__pagination__bar ul li a.button-warning.active {
+.com__pagination__bar ul li a.button-warning:is(:active, .active) {
   background-color: hsl(38, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20347,17 +20218,13 @@ ul.pt__field__hint li:before {
   box-shadow: none;
   border: none;
 }
-.com__pagination__bar ul li a.button-transparent:hover,
-.com__pagination__bar ul li a.transparent:hover,
-.com__pagination__bar ul li a.button-transparent.hover,
-.com__pagination__bar ul li a.transparent.hover {
+.com__pagination__bar ul li a.button-transparent:is(:hover, .hover),
+.com__pagination__bar ul li a.transparent:is(:hover, .hover) {
   background-color: hsl(0, 0%, 95%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-transparent:active,
-.com__pagination__bar ul li a.transparent:active,
-.com__pagination__bar ul li a.button-transparent.active,
-.com__pagination__bar ul li a.transparent.active {
+.com__pagination__bar ul li a.button-transparent:is(:active, .active),
+.com__pagination__bar ul li a.transparent:is(:active, .active) {
   background-color: hsl(0, 0%, 91%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20375,13 +20242,11 @@ ul.pt__field__hint li:before {
   background-color: #ffffff;
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-white:hover,
-.com__pagination__bar ul li a.button-white.hover {
+.com__pagination__bar ul li a.button-white:is(:hover, .hover) {
   background-color: hsl(210, 70%, 95%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a.button-white:active,
-.com__pagination__bar ul li a.button-white.active {
+.com__pagination__bar ul li a.button-white:is(:active, .active) {
   background-color: hsl(210, 70%, 91%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20400,17 +20265,14 @@ ul.pt__field__hint li:before {
   color: #999999;
   cursor: default;
 }
-.com__pagination__bar ul li a.button-disabled:focus,
-.com__pagination__bar ul li a.button-disabled.focus {
+.com__pagination__bar ul li a.button-disabled:is(:focus-visible, .focus) {
   outline: none;
 }
-.com__pagination__bar ul li a.button-disabled:hover,
-.com__pagination__bar ul li a.button-disabled.hover {
+.com__pagination__bar ul li a.button-disabled:is(:hover, .hover) {
   background-color: hsl(0, 0%, 91%);
   color: #999999;
 }
-.com__pagination__bar ul li a.button-disabled:active,
-.com__pagination__bar ul li a.button-disabled.active {
+.com__pagination__bar ul li a.button-disabled:is(:active, .active) {
   background-color: hsl(0, 0%, 91%);
   color: #999999;
 }
@@ -20531,13 +20393,11 @@ ul.pt__field__hint li:before {
 .com__pagination__bar ul li a.is-static.focus {
   outline: none;
 }
-.com__pagination__bar ul li a:hover,
-.com__pagination__bar ul li a.hover {
+.com__pagination__bar ul li a:is(:hover, .hover) {
   background-color: hsl(0, 0%, 91%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li a:active,
-.com__pagination__bar ul li a.active {
+.com__pagination__bar ul li a:is(:active, .active) {
   background-color: hsl(0, 0%, 86%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20548,13 +20408,11 @@ ul.pt__field__hint li:before {
   padding-left: 6px;
   padding-right: 6px;
 }
-.com__pagination__bar ul li.active a:hover,
-.com__pagination__bar ul li.active a.hover {
+.com__pagination__bar ul li.active a:is(:hover, .hover) {
   background-color: hsl(210, 75%, 45%);
   color: #ffffff;
 }
-.com__pagination__bar ul li.active a:active,
-.com__pagination__bar ul li.active a.active {
+.com__pagination__bar ul li.active a:is(:active, .active) {
   background-color: hsl(210, 75%, 35%);
   color: #ffffff;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;
@@ -20570,17 +20428,13 @@ ul.pt__field__hint li:before {
   padding-right: 6px;
   font-weight: 600;
 }
-.com__pagination__bar ul li.prev a:hover,
-.com__pagination__bar ul li.next a:hover,
-.com__pagination__bar ul li.prev a.hover,
-.com__pagination__bar ul li.next a.hover {
+.com__pagination__bar ul li.prev a:is(:hover, .hover),
+.com__pagination__bar ul li.next a:is(:hover, .hover) {
   background-color: hsl(0, 0%, 95%);
   color: hsl(210, 75%, 52%);
 }
-.com__pagination__bar ul li.prev a:active,
-.com__pagination__bar ul li.next a:active,
-.com__pagination__bar ul li.prev a.active,
-.com__pagination__bar ul li.next a.active {
+.com__pagination__bar ul li.prev a:is(:active, .active),
+.com__pagination__bar ul li.next a:is(:active, .active) {
   background-color: hsl(0, 0%, 91%);
   color: hsl(210, 75%, 52%);
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4) inset;

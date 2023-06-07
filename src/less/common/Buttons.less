@@ -38,18 +38,15 @@
     &.button-primary {
         .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-primary--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-primary--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-primary--active;
         }
     }
@@ -71,18 +68,15 @@
     &.button-middle {
         .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-middle--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-middle--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-middle--active;
         }
     }
@@ -104,18 +98,15 @@
     &.button-secondary {
         .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-secondary--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-secondary--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-secondary--active;
         }
     }
@@ -137,18 +128,15 @@
     &.button-success {
         .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-success--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-success--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-success--active;
         }
     }
@@ -170,18 +158,15 @@
     &.button-danger {
         .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-danger--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-danger--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-danger--active;
         }
     }
@@ -203,18 +188,15 @@
     &.button-warning {
         .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-warning--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-warning--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-warning--active;
         }
     }
@@ -240,18 +222,15 @@
         box-shadow: none;
         border: none;
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-transparent--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-transparent--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-transparent--active;
         }
     }
@@ -273,18 +252,15 @@
     &.button-white {
         .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-white--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-white--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-white--active;
         }
     }
@@ -307,18 +283,15 @@
         .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         cursor: default;
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             outline: none;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         }
     }

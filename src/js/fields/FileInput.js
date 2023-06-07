@@ -44,7 +44,9 @@ cm.define('Com.FileInput', {
         },
 
         'fileReaderConstructor' : 'Com.FileReader',
-        'fileReaderParams' : {}
+        'fileReaderParams' : {
+            'readOnRender': false
+        }
     },
     'strings' : {
         'browse' : 'Browse',

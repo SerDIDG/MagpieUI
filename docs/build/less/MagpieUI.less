@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.49.0 (2023-06-01 10:12) ************ */
+/*! ************ MagpieUI v3.49.1 (2023-06-07 09:17) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4585,7 +4585,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.49.0';
+@CmVersion: '3.49.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7582,18 +7582,15 @@ select {
     &.button-primary {
         .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-primary--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-primary--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-primary--active;
         }
     }
@@ -7615,18 +7612,15 @@ select {
     &.button-middle {
         .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-middle--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-middle--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-middle--active;
         }
     }
@@ -7648,18 +7642,15 @@ select {
     &.button-secondary {
         .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-secondary--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-secondary--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-secondary--active;
         }
     }
@@ -7681,18 +7672,15 @@ select {
     &.button-success {
         .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-success--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-success--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-success--active;
         }
     }
@@ -7714,18 +7702,15 @@ select {
     &.button-danger {
         .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-danger--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-danger--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-danger--active;
         }
     }
@@ -7747,18 +7732,15 @@ select {
     &.button-warning {
         .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-warning--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-warning--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-warning--active;
         }
     }
@@ -7784,18 +7766,15 @@ select {
         box-shadow: none;
         border: none;
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-transparent--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-transparent--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-transparent--active;
         }
     }
@@ -7817,18 +7796,15 @@ select {
     &.button-white {
         .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             .button.button-white--focus;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .button.button-white--hover;
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .button.button-white--active;
         }
     }
@@ -7851,18 +7827,15 @@ select {
         .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         cursor: default;
 
-        &:focus,
-        &.focus {
+        &:is(:focus-visible, .focus) {
             outline: none;
         }
 
-        &:hover,
-        &.hover {
+        &:is(:hover, .hover) {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         }
 
-        &:active,
-        &.active {
+        &:is(:active, .active) {
             .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         }
     }
