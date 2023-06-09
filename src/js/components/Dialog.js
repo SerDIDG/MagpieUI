@@ -161,26 +161,26 @@ function(params){
         }
         // Render close button
         if(that.params['closeButtonOutside']){
-            nodes['bg'].appendChild(
-                nodes['closeOutside'] = cm.node('div', {
-                    'class' : that.params['icons']['closeOutside'],
-                    'title' : that.lang('closeTitle'),
-                    'role' : 'button'
-                }, that.lang('close'))
-            );
-            cm.addEvent(nodes['closeOutside'], 'click', close);
+            nodes['closeOutside'] = cm.node('div', {
+                'class' : that.params['icons']['closeOutside'],
+                'title' : that.lang('closeTitle'),
+                'role' : 'button',
+                'tabindex' : 0,
+            }, that.lang('close'));
+            cm.appendChild(nodes['closeOutside'], nodes['bg']);
+            cm.click(nodes['closeOutside'], close);
         }
         if(that.params['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
             cm.addClass(nodes['window'], 'has-close-inside');
-            nodes['window'].appendChild(
-                nodes['closeInside'] = cm.node('div', {
-                    'class' : that.params['icons']['closeInside'],
-                    'title' : that.lang('closeTitle'),
-                    'role' : 'button'
-                }, that.lang('close'))
-            );
-            cm.addEvent(nodes['closeInside'], 'click', close);
+            nodes['closeInside'] = cm.node('div', {
+                'class' : that.params['icons']['closeInside'],
+                'title' : that.lang('closeTitle'),
+                'role' : 'button',
+                'tabindex' : 0,
+            }, that.lang('close'));
+            cm.insertFirst(nodes['closeInside'], nodes['window']);
+            cm.click(nodes['closeInside'], close);
         }
         if(that.params['closeOnBackground']){
             cm.addClass(nodes['container'], 'has-close-background');

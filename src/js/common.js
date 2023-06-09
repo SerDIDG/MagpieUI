@@ -837,6 +837,20 @@ cm.triggerEvent = function(el, type){
     return el;
 };
 
+cm.click = function(node, callback) {
+    if (typeof callback !== 'function') {
+        return;
+    }
+
+    cm.addEvent(node, 'click', callback);
+    cm.addEvent(node, 'keypress', function(event) {
+        if (event && cm.isNotToggleKey(event)) {
+            return;
+        }
+        callback(event);
+    });
+};
+
 cm.customEvent = (function(){
     var _stack = {};
 
@@ -3458,6 +3472,10 @@ cm.handleKey = function(e, rules, callback){
     if(!cm.isInputFocused() && cm.isKey(e, rules)){
         callback && callback(e);
     }
+};
+
+cm.isNotToggleKey = function(event) {
+    return event.type === 'keypress' && !['Enter', 'Space'].includes(event.code);
 };
 
 cm.isLinkClick = function(e){
