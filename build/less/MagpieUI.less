@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.50.0 (2023-06-09 17:40) ************ */
+/*! ************ MagpieUI v3.50.1 (2023-06-13 03:16) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4578,6 +4578,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* ANIMATED ******* */
 
 @CmIconIA-Spinner-BorderSize: 3px;
+@CmIconIA-Spinner-BorderSizeLarge: 6px;
 @CmIconIA-Spinner-DefaultBackground: @CmColor-Secondary-LightActive;
 @CmIconIA-Spinner-ActiveBackground: @CmColor-Primary-DarkDefault;
 
@@ -4585,7 +4586,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.50.0';
+@CmVersion: '3.50.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -13783,6 +13784,11 @@ ul.pt__field__hint {
         .cm-ia__spinner;
         width: @PtOverlay-Spinner-Size;
         height: @PtOverlay-Spinner-Size;
+
+        &.size--xx-large {
+            .cm__size__xx-large;
+            border-width: @CmIconIA-Spinner-BorderSizeLarge;
+        }
     }
 
     .overlay__content {

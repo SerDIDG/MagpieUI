@@ -25,6 +25,7 @@ cm.define('Com.Overlay', {
         'delay' : 'cm._config.lazyDelay',
         'content' : null,
         'showSpinner' : true,
+        'spinnerSize' : 'default',
         'showContent' : true,
         'autoOpen' : true,
         'autoClose' : false,                // ToDo: implement
@@ -73,8 +74,8 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__overlay pt__overlay'},
-            that.nodes['spinner'] = cm.node('div', {'class' : 'overlay__spinner'}),
+        that.nodes['container'] = cm.node('div', {'class' : 'com__overlay pt__overlay', 'aria-busy' : 'false', 'aria-live' : 'assertive'},
+            that.nodes['spinner'] = cm.node('div', {'class' : ['overlay__spinner', ['size', that.params['spinnerSize']].join('--')]}),
             that.nodes['content'] = cm.node('div', {'class' : 'overlay__content'})
         );
         // CSS Class
@@ -116,6 +117,7 @@ function(params){
             cm[that.params['appendMode']](that.nodes['container'], that.params['container']);
         }
         that.triggerEvent('onOpenStart');
+        that.nodes['container'].ariaBusy = 'true';
         cm.addClass(that.nodes['container'], 'is-open', true);
         // Remove immediately animation hack
         that.openInterval && clearTimeout(that.openInterval);
@@ -141,6 +143,7 @@ function(params){
             cm.addClass(that.nodes['container'], 'is-immediately');
         }
         that.triggerEvent('onCloseStart');
+        that.nodes['container'].ariaBusy = 'false';
         cm.removeClass(that.nodes['container'], 'is-open');
         // Remove immediately animation hack
         that.openInterval && clearTimeout(that.openInterval);

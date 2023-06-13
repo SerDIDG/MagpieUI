@@ -1,6 +1,7 @@
 cm.define('Com.Input', {
     'extend' : 'Com.AbstractInput',
     'events' : [
+        'onInputStart',
         'onEnterPress',
         'onIconClick',
         'onFocus',
@@ -154,6 +155,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         var that = this;
         that.selectionStartInitial = that.nodes['content']['input'].selectionStart;
         that.selectionEndInitial = that.nodes['content']['input'].selectionStart;
+        that.triggerEvent('onInputStart', that.value);
     };
 
     classProto.inputKeyPress = function(e){
