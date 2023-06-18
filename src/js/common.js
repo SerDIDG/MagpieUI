@@ -3140,32 +3140,31 @@ cm.scrollTo = function(node, parent, params, callback){
     // If parent not specified - scroll window
     parent = !cm.isUndefined(parent) ? parent : window;
     // Variables
-    var scrollHeight = cm.getScrollHeight(parent),
-        scrollOffsetHeight = cm.getScrollOffsetHeight(parent),
-        scrollMax = cm.getScrollTopMax(parent),
-        scrollAnimation,
-        scrollAnimationStyle = {},
-        nodeOffsetTop;
+    var parentNode = cm.isWindow(parent) ? cm.getDocumentHtml() : parent,
+        scrollHeight = cm.getScrollHeight(parentNode),
+        scrollOffsetHeight = cm.getScrollOffsetHeight(parentNode),
+        scrollMax = cm.getScrollTopMax(parentNode);
     // Do not process when parent scroll's height match parent's offset height
     if(scrollHeight === scrollOffsetHeight){
         return node;
     }
     // Validate
-    callback = cm.isFunction(callback) ? callback : function(){};
     params = cm.merge({
         'type' : 'auto',
         'behavior' : 'smooth',
         'block' : 'start',
         'top' : 'auto',
-        'duration' : cm._config.animDuration
+        'duration' : cm._config.animDuration,
+        'callback' : cm.isFunction(callback) ? callback : function(){},
     }, params);
     // Check type
     if(params['type'] === 'auto'){
         params['type'] = (cm.isWindow(parent) || parent === document.body) ? 'docScrollTop' : 'scrollTop';
     }
-    nodeOffsetTop = (params['type'] === 'docScrollTop') ? cm.getY(node) : node.offsetTop;
     // Calculate top value
     if(params['top'] === 'auto'){
+        var scrollPadding = cm.getStyle(parentNode, 'scroll-padding-top', true) || 0;
+        var nodeOffsetTop = (params['type'] === 'docScrollTop' ? cm.getY(node) : node.offsetTop) - scrollPadding;
         switch(params['block']){
             case 'end':
                 params['top'] = Math.max(Math.min(nodeOffsetTop + scrollOffsetHeight, scrollMax), 0);
@@ -3181,18 +3180,19 @@ cm.scrollTo = function(node, parent, params, callback){
                 break;
         }
     }
-    scrollAnimationStyle[params['type']] = params['top'];
     // Animate
     if(params['behavior'] === 'instant'){
         cm.setScrollTop(parent, params['top']);
-        callback();
+        params['callback']();
     }else{
-        scrollAnimation = new cm.Animation(parent);
+        var scrollAnimation = new cm.Animation(parent);
         scrollAnimation.go({
             'anim' : params['behavior'],
             'duration' : params['duration'],
-            'onStop' : callback,
-            'style' : scrollAnimationStyle
+            'onStop' : params['callback'],
+            'style' : {
+                [params['type']]: params['top']
+            },
         });
     }
     return node;
