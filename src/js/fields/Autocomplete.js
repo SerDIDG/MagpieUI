@@ -719,7 +719,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /*** LIST ***/
 
     classProto.callbacks.renderList = function(that, params){
-        cm.triggerEvent('onRenderListStart');
+        that.triggerEvent('onRenderListStart');
         // Render structure
         var nodes = that.callbacks.renderListStructure(that, params);
         // Render list's items
@@ -728,7 +728,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         });
         // Embed nodes to tooltip
         that.callbacks.embed(that, nodes['container']);
-        cm.triggerEvent('onRenderListEnd');
+        that.triggerEvent('onRenderListEnd');
     };
 
     classProto.callbacks.renderListStructure = function(that, params){

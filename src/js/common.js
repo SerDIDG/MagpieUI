@@ -819,36 +819,31 @@ cm.removeEvent = function(el, type, handler, useCapture){
     return el;
 };
 
-cm.triggerEvent = function(el, type){
-    var event;
-    if(document.createEvent){
-        event = document.createEvent('Event');
-        event.initEvent(type, true, true);
-    }else if(document.createEventObject){
-        event = document.createEventObject();
-        event.eventType = type;
-    }
-    event.eventName = type;
-    if(el.dispatchEvent){
+cm.triggerEvent = function(el, type, options){
+    if(el){
+        options = cm.merge({
+            bubbles: true,
+            cancelable: true
+        }, options);
+        var event = new Event(type, options);
         el.dispatchEvent(event);
-    }else if(el.fireEvent){
-        el.fireEvent('on' + event.eventType, event);
     }
     return el;
 };
 
-cm.click = function(node, callback) {
+cm.click = function(el, callback) {
     if (typeof callback !== 'function') {
-        return;
+        return el;
     }
 
-    cm.addEvent(node, 'click', callback);
-    cm.addEvent(node, 'keypress', function(event) {
+    cm.addEvent(el, 'click', callback);
+    cm.addEvent(el, 'keypress', function(event) {
         if (event && cm.isNotToggleKey(event)) {
             return;
         }
         callback(event);
     });
+    return el;
 };
 
 cm.customEvent = (function(){
@@ -3126,6 +3121,16 @@ cm.getBodyScrollHeight = function(){
 
 cm.getBodyScrollMaxTop = function(){
     return cm.getBodyScrollHeight() - cm._pageSize['winHeight'];
+};
+
+cm.showBodyScroll = function(){
+    cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+};
+
+cm.hideBodyScroll = function(){
+    var scrollTop = cm.getBodyScrollTop();
+    cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
+    cm.setBodyScrollTop(scrollTop);
 };
 
 cm.scrollTo = function(node, parent, params, callback){

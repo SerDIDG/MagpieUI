@@ -369,7 +369,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
 
     classProto.aborted = function(){
         var that = this;
-        cm.triggerEvent('onAbort');
+        that.triggerEvent('onAbort');
         return that;
     };
 

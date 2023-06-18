@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.50.1 (2023-06-13 03:16) ************ */
+/*! ************ MagpieUI v3.50.2 (2023-06-18 04:35) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4586,7 +4586,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.50.1';
+@CmVersion: '3.50.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7462,6 +7462,10 @@ tbody, thead, td, th, tr {
     min-height: @CmForm-FieldHeight;
     padding: @padding;
     resize: vertical;
+
+    &.has-min-height {
+        min-height: @CmTextarea-Height;
+    }
 }
 
 .select {
@@ -7896,10 +7900,6 @@ select {
             vertical-align: top;
         }
 
-        .image {
-
-        }
-
         .label {
             display: inline-block;
             vertical-align: top;
@@ -7980,12 +7980,12 @@ select {
 
     // /* *** FLAGS *** */
 
-    &.is-wrap {
-        .cm__text-wrap;
-    }
-
     &.is-hidden {
         display: none;
+    }
+
+    &.is-wrap {
+        .cm__text-wrap;
     }
 
     &.is-wide,
@@ -8003,6 +8003,12 @@ select {
         &.focus {
             outline: none;
         }
+    }
+
+    &.is-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -18663,7 +18669,7 @@ ul.pt__field__hint {
 
     .b-preview-color {
         .b-title {
-            .cm__font;
+            .cm__font--small;
             text-align: center;
         }
 
@@ -18703,21 +18709,21 @@ ul.pt__field__hint {
     .b-range,
     .b-stuff {
         > .inner {
-            height: @ComColorPalette-Size;
+            height: @value;
 
             .pt__range.is-vertical > .inner {
-                height: @ComColorPalette-Size;
+                height: @value;
             }
 
             .pt__range.is-horizontal > .inner {
-                width: @ComColorPalette-Size;
+                width: @value;
             }
         }
     }
 
     .b-palette {
         > .inner {
-            width: @ComColorPalette-Size;
+            width: @value;
         }
     }
 }

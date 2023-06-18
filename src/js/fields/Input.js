@@ -10,6 +10,7 @@ cm.define('Com.Input', {
     'params' : {
         'controllerEvents' : true,
         'type' : 'text',
+        'inputClasses' : [],
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
         'icon' : null,
@@ -89,16 +90,16 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         var that = this,
             nodes = {};
         if(that.params['type'] === 'textarea'){
-            nodes['container'] = nodes['input'] = cm.node('textarea');
+            nodes['container'] = nodes['input'] = cm.node('textarea', {classes: that.params['inputClasses']});
         }else{
-            nodes['container'] = cm.node('div', {'class' : 'pt__input'},
-                nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                    nodes['input'] = cm.node('input', {'type' : that.params['type']})
+            nodes['container'] = cm.node('div', {classes: 'pt__input'},
+                nodes['inner'] = cm.node('div', {classes: 'inner'},
+                    nodes['input'] = cm.node('input', {classes: that.params['inputClasses'], 'type' : that.params['type']})
                 )
             );
             // Icon
             if(that.params['icon']){
-                nodes['icon'] = cm.node('div', {'class' : that.params['icon'], 'title' : that.params['iconTitle']});
+                nodes['icon'] = cm.node('div', {classes: that.params['icon'], 'title' : that.params['iconTitle']});
                 cm.appendChild(nodes['icon'], nodes['inner']);
             }
         }

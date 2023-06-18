@@ -87,7 +87,7 @@
 
     .b-preview-color {
         .b-title {
-            .cm__font;
+            .cm__font--small;
             text-align: center;
         }
 
@@ -127,21 +127,21 @@
     .b-range,
     .b-stuff {
         > .inner {
-            height: @ComColorPalette-Size;
+            height: @value;
 
             .pt__range.is-vertical > .inner {
-                height: @ComColorPalette-Size;
+                height: @value;
             }
 
             .pt__range.is-horizontal > .inner {
-                width: @ComColorPalette-Size;
+                width: @value;
             }
         }
     }
 
     .b-palette {
         > .inner {
-            width: @ComColorPalette-Size;
+            width: @value;
         }
     }
 }

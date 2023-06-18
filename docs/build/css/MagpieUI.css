@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.50.1 (2023-06-13 03:16) ************ */
+/*! ************ MagpieUI v3.50.2 (2023-06-18 04:35) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.50.1');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.50.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.50.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.50.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.50.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.50.2');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.50.2') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.50.2') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.50.2') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.50.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -6357,6 +6357,10 @@ textarea {
   padding: 6px;
   resize: vertical;
 }
+.textarea.has-min-height,
+textarea.has-min-height {
+  min-height: 100px;
+}
 .select[multiple],
 select[multiple] {
   height: 128px;
@@ -7051,6 +7055,13 @@ button.button-spinner .icon {
   bottom: 0;
   left: 0;
 }
+.button.is-hidden,
+input[type="button"].is-hidden,
+input[type="submit"].is-hidden,
+input[type="reset"].is-hidden,
+button.is-hidden {
+  display: none;
+}
 .button.is-wrap,
 input[type="button"].is-wrap,
 input[type="submit"].is-wrap,
@@ -7059,13 +7070,6 @@ button.is-wrap {
   overflow: visible;
   white-space: normal;
   text-overflow: clip;
-}
-.button.is-hidden,
-input[type="button"].is-hidden,
-input[type="submit"].is-hidden,
-input[type="reset"].is-hidden,
-button.is-hidden {
-  display: none;
 }
 .button.is-wide,
 .button.is-box,
@@ -7104,6 +7108,15 @@ input[type="reset"].is-static.focus,
 button.is-static:focus,
 button.is-static.focus {
   outline: none;
+}
+.button.is-flex,
+input[type="button"].is-flex,
+input[type="submit"].is-flex,
+input[type="reset"].is-flex,
+button.is-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 /* *** MIXINS *** */
 /* *** APPLY *** */
@@ -20378,13 +20391,13 @@ ul.pt__field__hint li:before {
   bottom: 0;
   left: 0;
 }
+.com__pagination__bar ul li a.is-hidden {
+  display: none;
+}
 .com__pagination__bar ul li a.is-wrap {
   overflow: visible;
   white-space: normal;
   text-overflow: clip;
-}
-.com__pagination__bar ul li a.is-hidden {
-  display: none;
 }
 .com__pagination__bar ul li a.is-wide,
 .com__pagination__bar ul li a.is-box,
@@ -20399,6 +20412,11 @@ ul.pt__field__hint li:before {
 .com__pagination__bar ul li a.is-static:focus,
 .com__pagination__bar ul li a.is-static.focus {
   outline: none;
+}
+.com__pagination__bar ul li a.is-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .com__pagination__bar ul li a:is(:hover, .hover) {
   background-color: hsl(0, 0%, 91%);
@@ -20548,7 +20566,7 @@ html.ie9 .com__palette .b-range {
   left: 0;
 }
 .com__palette .b-preview-color .b-title {
-  font: 400 14px/18px "Open+Sans", arial, helvetica, sans-serif;
+  font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #666666;
   text-align: center;
 }

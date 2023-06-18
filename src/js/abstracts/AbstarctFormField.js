@@ -149,6 +149,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         ){
             that.params.placeholder = [that.params.placeholder, that.msg('asterisk.char')].join(' ');
         }
+        // Validate options
+        if(!cm.isEmpty(that.params.options)){
+            that.params.options = that.callbacks.convert(that, that.params.options);
+        }
         // Constructor params
         that.params.constructorParams.id = that.params.id;
         that.params.constructorParams.name = that.params.name;

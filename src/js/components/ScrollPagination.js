@@ -649,13 +649,13 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 if(!page['isVisible']){
                     page['isVisible'] = true;
                     cm.removeClass(page['container'], 'is-hidden');
-                    cm.triggerEvent('onPageShow', page);
+                    that.triggerEvent('onPageShow', page);
                 }
             }else{
                 if(page['isVisible']){
                     page['isVisible'] = false;
                     cm.addClass(page['container'], 'is-hidden');
-                    cm.triggerEvent('onPageHide', page);
+                    that.triggerEvent('onPageHide', page);
                 }
             }
             return page['isVisible'];

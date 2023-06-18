@@ -351,10 +351,6 @@
             vertical-align: top;
         }
 
-        .image {
-
-        }
-
         .label {
             display: inline-block;
             vertical-align: top;
@@ -435,12 +431,12 @@
 
     // /* *** FLAGS *** */
 
-    &.is-wrap {
-        .cm__text-wrap;
-    }
-
     &.is-hidden {
         display: none;
+    }
+
+    &.is-wrap {
+        .cm__text-wrap;
     }
 
     &.is-wide,
@@ -458,6 +454,12 @@
         &.focus {
             outline: none;
         }
+    }
+
+    &.is-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 

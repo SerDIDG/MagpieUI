@@ -32,7 +32,7 @@ cm.define('Com.Select', {
         'name' : '',
         'embedStructure' : 'replace',
         'customEvents' : true,
-        'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendrered in component container.
+        'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
@@ -331,7 +331,7 @@ function(params){
         var nodes = that.params['node'].childNodes,
             nodeTagName,
             options;
-        cm.forEach(nodes, function(node, i){
+        cm.forEach(nodes, function(node){
             if(cm.isElementNode(node)){
                 nodeTagName = node.tagName.toLowerCase();
                 if(nodeTagName === 'optgroup'){

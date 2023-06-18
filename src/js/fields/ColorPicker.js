@@ -277,3 +277,13 @@ function(params){
 
     init();
 });
+
+/****** FORM FIELD COMPONENT *******/
+
+Com.FormFields.add('color-picker', {
+    node: cm.node('input', {type: 'text'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.ColorPicker',
+});

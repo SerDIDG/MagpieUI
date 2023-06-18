@@ -430,7 +430,7 @@ function(params){
             resizeHelper();
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
-                cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
+                cm.hideBodyScroll();
             }
             // Add close event on Esc press
             cm.addEvent(window, 'keydown', windowClickEvent);
@@ -468,7 +468,7 @@ function(params){
                 clearResizeInterval();
                 // Show / Hide Document Scroll
                 if(!that.params['documentScroll']){
-                    cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+                    cm.showBodyScroll();
                 }
                 // Remove Window
                 nodes['container'].style.display = 'none';
