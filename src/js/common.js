@@ -2527,6 +2527,16 @@ cm.removeClass = function(node, classes, useHack){
     return node;
 };
 
+cm.toggleClass = function(node, classes, value) {
+    if(!cm.isNode(node)){
+        return null;
+    }
+    if(value){
+        return cm.addClass(node, classes);
+    }
+    return cm.removeClass(node, classes);
+};
+
 cm.replaceClass = function(node, oldClass, newClass, useHack){
     if(!cm.isNode(node)){
         return null;

@@ -43,7 +43,8 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
             // Convert option values
             cm.forEach(that.params.options, function(item) {
-                if (!cm.isEmpty(item.value) && (item.checked || item.selected)) {
+                item.checked = item.checked || item.selected;
+                if (!cm.isEmpty(item.value) && item.checked) {
                     if (cm.isEmpty(that.params.value)) {
                         that.params.value = [];
                     } else if (cm.isString(that.params.value) || cm.isNumber(that.params.value)) {
@@ -184,9 +185,9 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             });
         } else {
             inputContainer = that.renderInput({
-                'text': that.params.placeholder,
-                'value': that.params.value,
-                'values': that.params.values,
+                text: that.params.placeholder,
+                value: that.params.value,
+                values: that.params.values,
             });
             cm.appendChild(inputContainer, nodes.container);
         }
@@ -197,8 +198,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
     };
 
     classProto.renderInput = function(item) {
-        var that = this,
-            nodes = {};
+        var that = this;
         item = cm.merge({
             nodes: {},
             value: null,
@@ -221,7 +221,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Structure
         item.nodes.container = cm.node('label',
-            item.nodes.input = cm.node('input', {'type': that.params.type}),
+            item.nodes.input = cm.node('input', {type: that.params.type}),
             item.nodes.label = cm.node('span', {
                 classes: 'label',
                 innerHTML: item.text,
@@ -230,7 +230,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         item.input = item.nodes.input;
 
         // Events
-        cm.addEvent(item.nodes.input, 'click', function(e) {
+        cm.addEvent(item.nodes.input, 'click', function() {
             that.setValue(item, true);
         });
 
