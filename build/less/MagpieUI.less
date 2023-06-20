@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.50.4 (2023-06-19 04:44) ************ */
+/*! ************ MagpieUI v3.50.5 (2023-06-20 08:26) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4586,7 +4586,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.50.4';
+@CmVersion: '3.50.5';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5394,6 +5394,12 @@ span.CodeMirror-selectedtext { background: none; }
 
 @ComScaleTools-Item-Size: 38px;
 @ComScaleTools-Item-Indent: @CmIndent-XXXSmall;
+
+// /* ******* RANGE ******* */
+
+@ComRange-Bar-Height: @CmSize-XXSmall;
+@ComRange-Bar-Color: @CmColor-Secondary-LightActive;
+@ComRange-Range-Color: @CmColor-Primary-LightActiveHover;
 
 // /* ******* DATEPICKER ******* */
 
@@ -18822,17 +18828,17 @@ ul.pt__field__hint {
 
 .com__range__field {
     .bar {
-        height: @CmSize-XXSmall;
+        height: @ComRange-Bar-Height;
         margin: auto;
         position: absolute;
         border-radius: @CmBorder-Radius;
-        background: @CmColor-Secondary-LightActive;
+        background: @ComRange-Bar-Color;
         .mx__position(0, 0, 0, 0);
 
         .range {
             position: absolute;
             border-radius: @CmBorder-Radius;
-            background: @CmColor-Primary-LightActiveHover;
+            background: @ComRange-Range-Color;
             .mx__position(0, auto, 0, auto);
         }
     }

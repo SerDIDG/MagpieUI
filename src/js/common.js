@@ -483,7 +483,6 @@ cm.arrayFilter = function(a, items){
     });
 };
 
-// TODO: check is this ever needed
 cm.arraySort = function(a, key, dir, clone){
     var newA;
     if(!cm.isArray(a)){
