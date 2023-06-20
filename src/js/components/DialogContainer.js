@@ -4,10 +4,11 @@ cm.define('Com.DialogContainer', {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
         'destructOnClose' : false,
-        'renderButtons' : false,
-        'renderButtonsPositions' : false,
         'renderTitle' : true,
         'renderHelp' : false,
+        'renderButtons' : false,
+        'renderButtonsPositions' : false,
+        'buttonsAdaptive': true,
         'justifyButtons' : 'right',
         'params' : {
             'destructOnRemove' : false,
@@ -74,9 +75,16 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
     classProto.renderButtonsView = function(){
         var that = this;
         // Structure
-        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons is-adaptive'},
+        that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
             that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
         );
+        if(that.params['buttonsAdaptive']){
+            if(that.params['buttonsAdaptive'] === 'reverse'){
+                cm.addClass(that.nodes['buttons'], 'is-adaptive-reverse');
+            }else{
+                cm.addClass(that.nodes['buttons'], 'is-adaptive');
+            }
+        }
         if(that.params['renderButtonsPositions']){
             that.nodes['buttonsHolderLeft'] = cm.node('div', {'class' : 'left'});
             that.nodes['buttonsHolderRight'] = cm.node('div', {'class' : 'right'});

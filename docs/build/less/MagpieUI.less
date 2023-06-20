@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.50.5 (2023-06-20 08:26) ************ */
+/*! ************ MagpieUI v3.50.6 (2023-06-21 01:40) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4586,7 +4586,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.50.5';
+@CmVersion: '3.50.6';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -9932,6 +9932,10 @@ button {
     &.is-box {
         .pt__buttons--box;
     }
+
+    &.is-box-reverse {
+        .pt__buttons--box-reverse;
+    }
 }
 
 .pt__buttons--box {
@@ -9961,6 +9965,29 @@ button {
     }
 }
 
+.pt__buttons--box-reverse {
+    > .inner {
+        display: flex;
+        flex-direction: column-reverse;
+        margin: 0;
+        gap: @CmForm-FieldIndent;
+
+        > .left,
+        > .right {
+            width: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            margin: 0;
+            gap: @CmForm-FieldIndent;
+        }
+    }
+
+    .button-alike {
+        width: 100%;
+        margin: 0;
+    }
+}
+
 /* ******* PARTS: BUTTONS: ADAPTIVE ******* */
 
 @media only screen and (max-width : @CmUI-AdaptiveFrom) {
@@ -9969,6 +9996,10 @@ button {
         .pt__buttons {
             &.is-adaptive {
                 .pt__buttons--box;
+            }
+
+            &.is-adaptive-reverse {
+                .pt__buttons--box-reverse;
             }
         }
     }

@@ -91,6 +91,10 @@
     &.is-box {
         .pt__buttons--box;
     }
+
+    &.is-box-reverse {
+        .pt__buttons--box-reverse;
+    }
 }
 
 .pt__buttons--box {
@@ -120,6 +124,29 @@
     }
 }
 
+.pt__buttons--box-reverse {
+    > .inner {
+        display: flex;
+        flex-direction: column-reverse;
+        margin: 0;
+        gap: @CmForm-FieldIndent;
+
+        > .left,
+        > .right {
+            width: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            margin: 0;
+            gap: @CmForm-FieldIndent;
+        }
+    }
+
+    .button-alike {
+        width: 100%;
+        margin: 0;
+    }
+}
+
 /* ******* PARTS: BUTTONS: ADAPTIVE ******* */
 
 @media only screen and (max-width : @CmUI-AdaptiveFrom) {
@@ -128,6 +155,10 @@
         .pt__buttons {
             &.is-adaptive {
                 .pt__buttons--box;
+            }
+
+            &.is-adaptive-reverse {
+                .pt__buttons--box-reverse;
             }
         }
     }

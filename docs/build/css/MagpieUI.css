@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.50.5 (2023-06-20 08:26) ************ */
+/*! ************ MagpieUI v3.50.6 (2023-06-21 01:40) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4375,8 +4375,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.50.5');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.50.5') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.50.5') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.50.5') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.50.5#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.50.6');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.50.6') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.50.6') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.50.6') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.50.6#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9305,6 +9305,33 @@ button.is-hidden {
 .pt__buttons.is-box button:first-child {
   margin: 0;
 }
+.pt__buttons.is-box-reverse > .inner {
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 0;
+  gap: 16px;
+}
+.pt__buttons.is-box-reverse > .inner > .left,
+.pt__buttons.is-box-reverse > .inner > .right {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 0;
+  gap: 16px;
+}
+.pt__buttons.is-box-reverse .button-alike,
+.pt__buttons.is-box-reverse .button,
+.pt__buttons.is-box-reverse .browse-button,
+.pt__buttons.is-box-reverse .cm__button-wrapper,
+.pt__buttons.is-box-reverse .com__menu,
+.pt__buttons.is-box-reverse .com__pagination__bar ul li a,
+.pt__buttons.is-box-reverse input[type="button"],
+.pt__buttons.is-box-reverse input[type="submit"],
+.pt__buttons.is-box-reverse input[type="reset"],
+.pt__buttons.is-box-reverse button {
+  width: 100%;
+  margin: 0;
+}
 .pt__buttons--box > .inner {
   display: block;
   margin: 0;
@@ -9342,6 +9369,33 @@ button.is-hidden {
 .pt__buttons--box input[type="submit"]:first-child,
 .pt__buttons--box input[type="reset"]:first-child,
 .pt__buttons--box button:first-child {
+  margin: 0;
+}
+.pt__buttons--box-reverse > .inner {
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 0;
+  gap: 16px;
+}
+.pt__buttons--box-reverse > .inner > .left,
+.pt__buttons--box-reverse > .inner > .right {
+  width: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  margin: 0;
+  gap: 16px;
+}
+.pt__buttons--box-reverse .button-alike,
+.pt__buttons--box-reverse .button,
+.pt__buttons--box-reverse .browse-button,
+.pt__buttons--box-reverse .cm__button-wrapper,
+.pt__buttons--box-reverse .com__menu,
+.pt__buttons--box-reverse .com__pagination__bar ul li a,
+.pt__buttons--box-reverse input[type="button"],
+.pt__buttons--box-reverse input[type="submit"],
+.pt__buttons--box-reverse input[type="reset"],
+.pt__buttons--box-reverse button {
+  width: 100%;
   margin: 0;
 }
 /* ******* PARTS: BUTTONS: ADAPTIVE ******* */
@@ -9383,6 +9437,33 @@ button.is-hidden {
   html.is-adaptive .pt__buttons.is-adaptive input[type="submit"]:first-child,
   html.is-adaptive .pt__buttons.is-adaptive input[type="reset"]:first-child,
   html.is-adaptive .pt__buttons.is-adaptive button:first-child {
+    margin: 0;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive-reverse > .inner {
+    display: flex;
+    flex-direction: column-reverse;
+    margin: 0;
+    gap: 16px;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive-reverse > .inner > .left,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse > .inner > .right {
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    margin: 0;
+    gap: 16px;
+  }
+  html.is-adaptive .pt__buttons.is-adaptive-reverse .button-alike,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse .button,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse .browse-button,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse .cm__button-wrapper,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse .com__menu,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse .com__pagination__bar ul li a,
+  html.is-adaptive .pt__buttons.is-adaptive-reverse input[type="button"],
+  html.is-adaptive .pt__buttons.is-adaptive-reverse input[type="submit"],
+  html.is-adaptive .pt__buttons.is-adaptive-reverse input[type="reset"],
+  html.is-adaptive .pt__buttons.is-adaptive-reverse button {
+    width: 100%;
     margin: 0;
   }
 }
