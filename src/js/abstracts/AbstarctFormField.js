@@ -912,7 +912,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     /*** EVENTS ***/
 
     classProto.callbacks.success = function(that, response){
-        that.params.options = response;
+        that.params.options = cm.merge(that.params.options, response);
+        that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
         that.renderOptions(response);
         that.triggerEvent('onRequestSuccess', response);
     };

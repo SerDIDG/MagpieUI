@@ -238,6 +238,10 @@
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
 
+                &.placeholder {
+                    color: @CmColor-Font-Placeholder;
+                }
+
                 &.disabled {
                     color: @CmColor-Font-Disabled;
                 }
@@ -261,6 +265,13 @@
                 > a,
                 > .inner {
                     background-color: @CmColor-Primary-LightActive;
+                }
+            }
+
+            &.placeholder {
+                > a,
+                > .inner {
+                    color: @CmColor-Font-Disabled;
                 }
             }
 

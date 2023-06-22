@@ -500,7 +500,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     /* ******* PUBLIC ******* */
 
-    classProto.rebuild = function(params){
+    classProto.rebuild = classProto.request = function(params){
         var that = this;
         // Cleanup
         if(that.isProcess){

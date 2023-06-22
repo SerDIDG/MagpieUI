@@ -142,7 +142,7 @@ function(params){
             value;
         if(cm.isNode(that.params['node'])){
             dataValue = that.params['node'].getAttribute('data-value');
-            // First try to take original value, than real time js value
+            // First try to take original value, then real time js value
             value = cm.getSelectValue(that.params['node']);
             // Parse JSON
             if(!cm.isEmpty(dataValue)){
@@ -442,13 +442,14 @@ function(params){
 
         // Structure
         item['node'] = cm.node('li', {'classes' : item['classes'], 'style' : item['style']},
-            cm.node('a', {'innerHTML' : item['text'], 'title' : item['text']})
+            item['link'] = cm.node('a', {'innerHTML' : item['text'], 'title' : item['text']})
         );
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
 
-        // Hidden / Disabled attributes
+        // States styles
         item['hidden'] && cm.addClass(item['node'], 'hidden');
         item['disabled'] && cm.addClass(item['node'], 'disabled');
+        cm.isEmpty(item['value']) && cm.addClass(item['node'], 'placeholder');
 
         // Append
         if(item['groupItem']){
@@ -460,7 +461,7 @@ function(params){
         }
 
         // Label click event
-        cm.addEvent(item['node'], 'click', function(){
+        cm.addEvent(item['link'], 'click', function(){
             if(!item['disabled'] && !that.disabled){
                 set(item, true);
             }
