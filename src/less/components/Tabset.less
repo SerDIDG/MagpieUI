@@ -153,6 +153,8 @@
 
     &.is-animated {
         > ul {
+            .mx__transition(height, @ComTabset-Duration);
+
             > li {
                 position: absolute;
                 z-index: 1;

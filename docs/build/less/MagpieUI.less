@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.50.7 (2023-06-22 07:30) ************ */
+/*! ************ MagpieUI v3.50.8 (2023-06-27 00:41) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4586,7 +4586,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.50.7';
+@CmVersion: '3.50.8';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -19812,6 +19812,8 @@ ul.pt__field__hint {
 
     &.is-animated {
         > ul {
+            .mx__transition(height, @ComTabset-Duration);
+
             > li {
                 position: absolute;
                 z-index: 1;

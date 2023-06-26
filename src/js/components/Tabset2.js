@@ -271,8 +271,16 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         that.hideMenu();
     };
 
-    classProto.onTabShowProcess = function(that, item){
+    classProto.onTabShowStart = function(that, item){
         clearTimeout(item['switchInt']);
+        if(that.params['animateSwitch']){
+            var previous = that.current;
+            var previousItem = that.items[previous];
+            if(previousItem){
+                that.nodes['contentUL'].style.overflow = 'hidden';
+                that.nodes['contentUL'].style.height = previousItem['tab']['container'].offsetHeight + 'px';
+            }
+        }
         that.nodes['headerTitleText'].innerHTML = item['title'];
         item['tab']['container'].style.display = 'block';
     };
@@ -280,10 +288,13 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
     classProto.onTabShowEnd = function(that, item){
         var previous = that.previous;
         var previousItem = that.items[previous];
-        if(previous && previous !== item){
+        if(previousItem && previousItem.id !== item.id){
             if(that.params['animateSwitch']){
+                that.nodes['contentUL'].style.height = item['tab']['container'].offsetHeight + 'px';
                 previousItem['switchInt'] = setTimeout(function(){
                     previousItem['tab']['container'].style.display = 'none';
+                    that.nodes['contentUL'].style.overflow = '';
+                    that.nodes['contentUL'].style.height = '';
                 }, that.params['animateDuration']);
             }else{
                 previousItem['tab']['container'].style.display = 'none';

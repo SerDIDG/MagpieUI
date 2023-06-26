@@ -145,8 +145,6 @@ function(params){
                 cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
             }
         }
-        // Init Animation
-        that.anim['contentUL'] = new cm.Animation(that.nodes['contentUL']);
         /* *** RENDER TABS *** */
         cm.forEach(that.nodes['tabs'], function(item){
             renderTab(
@@ -415,14 +413,17 @@ function(params){
         // Animate
         that.nodes['contentUL'].style.overflow = 'hidden';
         that.nodes['contentUL'].style.height = [previousHeight, 'px'].join('');
-        that.anim['contentUL'].go({'style' : {'height' : [currentHeight, 'px'].join('')}, 'duration' : that.params['animateDuration'], 'anim' : 'smooth', 'onStop' : function(){
-            if(that.previous){
-                that.tabs[that.previous]['content'].style.display = 'none';
-            }
-            that.nodes['contentUL'].style.overflow = 'visible';
-            that.nodes['contentUL'].style.height = 'auto';
-            showActiveTab();
-        }});
+        cm.onSchedule(function(){
+            that.nodes['contentUL'].style.height = [currentHeight, 'px'].join('');
+            setTimeout(function(){
+                if(that.previous){
+                    that.tabs[that.previous]['content'].style.display = 'none';
+                }
+                that.nodes['contentUL'].style.overflow = 'visible';
+                that.nodes['contentUL'].style.height = 'auto';
+                showActiveTab();
+            }, that.params['animateDuration']);
+        });
     };
 
     var hashHandler = function(){

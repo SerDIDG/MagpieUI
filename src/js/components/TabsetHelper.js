@@ -1,6 +1,7 @@
 cm.define('Com.TabsetHelper', {
     'extend' : 'Com.AbstractController',
     'events' : [
+        'onTabChange',
         'onTabShowStart',
         'onTabShow',
         'onTabShowProcess',
@@ -354,8 +355,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                 });
             }
         }else if(
-            item.isAjax
-            && (!item['cache'] || (item['cache'] && !item.isCached))
+            item.isAjax &&
+            (!item['cache'] || (item['cache'] && !item.isCached))
         ){
             that.ajaxHandler = classProto.callbacks.request(that, {
                 'config' : cm.merge(that.params['ajax'], item['ajax'])
@@ -426,6 +427,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             });
             that.triggerEvent('onTabShow', item, params);
             that.triggerEvent('onTabShowEnd', item, params);
+            if (that.current !== that.previous) {
+                that.triggerEvent('onTabChange', item, params);
+            }
         }
     };
 
