@@ -1514,6 +1514,19 @@ cm.remove = cm.removeNode = function(node){
     }
 };
 
+cm.removeNodes = function(nodes){
+    if(cm.isEmpty(nodes)){
+        return;
+    }
+    if(cm.isNode(nodes)){
+        cm.remove(nodes)
+    }else{
+        while(nodes.length){
+            cm.remove(nodes[0]);
+        }
+    }
+};
+
 cm.clearNode = function(node){
     if(cm.isNode(node)){
         while(node.childNodes.length){
