@@ -2265,9 +2265,10 @@ cm.isEven = function(number){
     return !(number % 2);
 };
 
-cm.addLeadZero = function(x){
+cm.addLeadZero = function(x, count){
     x = parseInt(x, 10);
-    return x < 10 ? '0' + x : x;
+    count = !cm.isUndefined(count) ? count : 1;
+    return x < Math.pow(10, count) ? '0'.repeat(count) + x : x;
 };
 
 cm.plural = cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
@@ -2383,7 +2384,10 @@ cm.dateFormat = function(date, format, langs, formatCase){
             },
             '%s' : function(){
                 return date ? cm.addLeadZero(date.getSeconds()) : '00';
-            }
+            },
+            '%v' : function(){
+                return date ? cm.addLeadZero(date.getMilliseconds(), 2) : '000';
+            },
         };
     };
     format = cm.strReplace(format, convertFormats);
