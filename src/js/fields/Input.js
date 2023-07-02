@@ -10,6 +10,7 @@ cm.define('Com.Input', {
     'params' : {
         'controllerEvents' : true,
         'type' : 'text',
+        'trimValue' : true,
         'inputClasses' : [],
         'lazy' : false,
         'delay' : 'cm._config.requestDelay',
@@ -276,6 +277,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.setValue = function(triggerEvents){
         var that = this,
             value = that.nodes['content']['input'].value;
+        if(that.params.trimValue){
+            value = value.trim();
+        }
         triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         that.set(value, triggerEvents);
         return that;
@@ -284,6 +288,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.selectValue = function(triggerEvents){
         var that = this,
             value = that.nodes['content']['input'].value;
+        if(that.params.trimValue){
+            value = value.trim();
+        }
         triggerEvents = cm.isUndefined(triggerEvents)? true : triggerEvents;
         that.selectAction(value, triggerEvents);
         return that;
