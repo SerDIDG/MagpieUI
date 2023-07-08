@@ -46,7 +46,7 @@ cm.define('Com.Gridlist', {
         'sort' : true,
         'sortBy' : 'id',                                            // Default sort by key in array
         'orderBy' : 'ASC',
-        'childsBy' : false,                                         // Render child rows after parent, (WIP - doesn't work checking / uncheking rows and statuses for now)
+        'groupBy' : false,                                          // Render child rows after parent, (WIP - doesn't work checking / uncheking rows and statuses for now)
 
         // Visibility
         'adaptive' : false,
@@ -156,6 +156,8 @@ function(params){
     var validateParams = function(){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
+        // ToDo: remove deprecated parameter name
+        that.params['groupBy'] = !cm.isEmpty(that.params['childBy']) ? that.params['childsBy'] : that.params['groupBy'];
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -539,7 +541,13 @@ function(params){
             'altText' : '',                 // Alternative column text
             'urlKey' : false,               // Alternative link href, for type="url|icon"
             'links' : [],                   // Render links menu, for type="links"
+            'linksParams' : {
+                'align': 'left',
+            },
             'actions' : [],                 // Render actions menu, for type="actions"
+            'actionsParams' : {
+                'align': 'right',
+            },
             'preventDefault' : true,
             'onClick' : false,              // Cell click handler
             'onRender' : false              // Cell onRender handler
@@ -676,31 +684,47 @@ function(params){
             'i' : i,
             'index' : data[that.params['uniqueKey']],
             'data' : data,
-            'childs' : [],
+            'children' : [],
+            'childrenData' : [],
             'isChecked' : false,
+            'isParent' : false,
+            'isFirstLevel' : true,
             'status' : data['_status'] || false,
+            'classes' : [],
             'nodes' : {
                 'cols' : []
             },
             'cells' : []
         };
+
+        // Validate
+        item.isFirstLevel = that.rows === parentRow;
+        if(that.params['groupBy']){
+            item.childrenData = item.data[that.params['groupBy']];
+            item.isParent = !cm.isEmpty(item.childrenData);
+        }
+        item.classes.push(item.isFirstLevel ? 'is-first-level' : 'is-child-level');
+
         // Structure
         that.nodes['content'].appendChild(
-            item['nodes']['container'] = cm.node('tr')
+            item['nodes']['container'] = cm.node('tr', {'classes' : item.classes})
         );
+
         // Render cells
         cm.forEach(that.params['cols'], function(config){
             item['cells'].push(
                 renderCell(config, item)
             );
         });
-        // Render childs
-        if(that.params['childsBy']){
-            cm.forEach(data[that.params['childsBy']], function(child, childI){
-                renderRow(item['childs'], child, childI);
+
+        // Group children
+        if(that.params['groupBy']){
+            cm.forEach(item.childrenData, function(childData, childI){
+                renderRow(item.children, childData, childI);
             });
         }
-        // Push to rows array
+
+        // Push
         parentRow.push(item);
     };
 
@@ -718,11 +742,15 @@ function(params){
         item['data'] = cm.objectPath(config['key'], row['data']);
         item['text'] = cm.isEmpty(item['data'])? '' : item['data'];
         item['title']= cm.isEmpty(config['titleText'])? item['text'] : config['titleText'];
+        if(cm.isString(config['classes'])){
+            config['classes'] = [config['classes']];
+        }
 
         // Structure
         row['nodes']['container'].appendChild(
             item['nodes']['container'] = cm.node('td', {'classes' : config['classes']})
         );
+
         // Text overflow
         if(config['textOverflow']){
             item['nodes']['inner'] = cm.node('div', {'class' : 'inner'});
@@ -730,6 +758,7 @@ function(params){
         }else{
             item['nodes']['inner'] = item['nodes']['container'];
         }
+
         // Insert value by type
         switch(config['type']){
             case 'number' :
@@ -767,10 +796,12 @@ function(params){
                 renderCellDefault(config, row, item);
                 break;
         }
+
         // Statuses
         if(row['status']){
             setRowStatus(row, row['status']);
         }
+
         // onHover Title
         if(config['showTitle']){
             if(item['nodes']['node']){
@@ -779,6 +810,7 @@ function(params){
                 item['nodes']['inner'].title = item['title'];
             }
         }
+
         // onClick handler
         if(cm.isFunction(config['onClick'])){
             cm.addEvent(item['nodes']['node'] || item['nodes']['inner'], 'click', function(e){
@@ -792,6 +824,7 @@ function(params){
                 });
             });
         }
+
         // onCellRender handler
         if(cm.isFunction(config['onRender'])){
             config['onRender'](that, {
@@ -801,6 +834,13 @@ function(params){
                 'cell' : item
             });
         }
+
+        // Empty
+        if(!item['nodes']['inner'].hasChildNodes()){
+            cm.addClass(item['nodes']['container'], 'is-empty');
+        }
+
+        // Push
         return item;
     };
 
@@ -846,8 +886,6 @@ function(params){
         if(!cm.isEmpty(item['href'])){
             item['nodes']['node'] = cm.node('a', {'target' : config['target'], 'rel' : config['rel'], 'href' : item['href']}, item['label']);
             item['nodes']['inner'].appendChild(item['nodes']['node']);
-        }else{
-            cm.addClass(item['nodes']['container'], 'is-empty');
         }
     };
 
@@ -869,9 +907,11 @@ function(params){
     };
 
     var renderCellLinks = function(config, row, item){
+        // Config
+        item['classes'] = ['pt__links', ['pull', config['linksParams']['align']].join('-'), config['class']];
         // Structure
         item['nodes']['items'] = item['nodes']['links'] = [];
-        item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', config['class']].join(' ')},
+        item['nodes']['node'] = cm.node('div', {'class' : item['classes']},
             item['nodes']['itemsList'] = item['nodes']['linksList'] = cm.node('ul')
         )
         // Items
@@ -883,9 +923,11 @@ function(params){
     };
 
     var renderCellActions = function(config, row, item){
+        // Config
+        item['classes'] = ['pt__links', ['pull', config['actionsParams']['align']].join('-'), config['class']];
         // Structure
         item['nodes']['items'] = item['nodes']['actions'] = [];
-        item['nodes']['node'] = cm.node('div', {'class' : ['pt__links', 'pull-right', config['class']].join(' ')},
+        item['nodes']['node'] = cm.node('div', {'class' : item['classes']},
             cm.node('ul',
                 item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
                     cm.node('a', {'class' : 'label'}, that.lang('actions')),
