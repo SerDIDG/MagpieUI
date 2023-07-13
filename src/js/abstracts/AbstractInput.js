@@ -47,10 +47,8 @@ cm.define('Com.AbstractInput', {
         'setContentInput' : true
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
+function(){
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.AbstractInput', function(classConstructor, className, classProto, classInherit){
@@ -104,6 +102,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
     classProto.getRaw = function(){
         var that = this;
         return that.rawValue;
+    };
+
+    classProto.getValueOption = function(){
+        var that = this;
+        return that.valueOption;
     };
 
     classProto.reset = classProto.clear = function(triggerEvents){
@@ -347,8 +350,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         that.rawValue = that.tempRawValue;
         that.previousValue = cm.clone(that.value);
         if(that.params['isValueOption']){
-            that.value = value['value'];
-            that.valueText = value['text'];
+            that.value = !cm.isEmpty(value) ? value['value'] : null;
+            that.valueText = !cm.isEmpty(value) ? value['text'] : null;
             that.valueOption = value;
         }else{
             that.value = value;

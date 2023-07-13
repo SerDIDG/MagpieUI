@@ -409,6 +409,7 @@ function(params){
             'select' : false,       // Choose option after adding
             'selected' : false,     // For select with multiple options to choose
             'disabled' : false,
+            'placeholder' : false,
             'value' : '',
             'text' : '',
             'classes': [],
@@ -416,6 +417,7 @@ function(params){
         }, item);
 
         // Validate
+        item['placeholder'] = cm.isEmpty(item['value']) ? true : item['placeholder'];
         if(!cm.isEmpty(item['className'])){
             if(cm.isArray(item['classes'])){
                 item['classes'].push(item['className']);
@@ -449,7 +451,7 @@ function(params){
         // States styles
         item['hidden'] && cm.addClass(item['node'], 'hidden');
         item['disabled'] && cm.addClass(item['node'], 'disabled');
-        cm.isEmpty(item['value']) && cm.addClass(item['node'], 'placeholder');
+        item['placeholder'] && cm.addClass(item['node'], 'placeholder');
 
         // Append
         if(item['groupItem']){
@@ -471,7 +473,8 @@ function(params){
         });
 
         // Push
-        optionsList.push(options[item['value']] = item);
+        options[item['value']] = item;
+        optionsList.push(item);
         optionsLength = optionsList.length;
 
         // Select
@@ -493,8 +496,15 @@ function(params){
         }
     };
 
-    var removeOption = function(option){
+    var removeOption = function(option, params){
+        // Validate params
+        params = cm.merge({
+            setDefault: true,
+        }, params);
+
+        // Validate value
         var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
+
         // Remove option from list and array
         cm.remove(option['node']);
         cm.remove(option['option']);
@@ -503,7 +513,8 @@ function(params){
         });
         optionsLength = optionsList.length;
         delete options[option['value']];
-        // Set new active option, if current active is nominated for remove
+
+        // Set new active option
         if(that.params['multiple']){
             if(cm.isArray(active)){
                 active = active.filter(function(item){
@@ -512,7 +523,7 @@ function(params){
             }
         }else{
             if(value === active){
-                if(optionsLength){
+                if(params.setDefault && optionsLength){
                     set(optionsList[0], true);
                 }else{
                     active = null;
@@ -612,6 +623,17 @@ function(params){
 
     var scrollToItem = function(option){
         nodes['menu']['content'].scrollTop = option['node'].offsetTop - nodes['menu']['content'].offsetTop;
+    };
+
+    var toggleMenuState = function(){
+        if(!components['menu'] || that.params['multiple']){
+            return;
+        }
+        if(!that.disabled && optionsLength > 0){
+            components['menu'].enable();
+        }else{
+            components['menu'].disable();
+        }
     };
 
     /* *** HELPERS *** */
@@ -714,10 +736,7 @@ function(params){
                 'text' : text
             });
         }
-        // Enable / Disable Menu
-        if(!that.params['multiple'] && !that.disabled && optionsLength){
-            components['menu'].enable();
-        }
+        toggleMenuState();
         return that;
     };
 
@@ -725,6 +744,7 @@ function(params){
         cm.forEach(arr, function(item){
             renderOption(item);
         });
+        toggleMenuState();
         return that;
     };
 
@@ -738,18 +758,16 @@ function(params){
     that.removeOption = function(value){
         if(!cm.isUndefined(value) && options[value]){
             removeOption(options[value]);
-        }
-        // Enable / Disable Menu
-        if(!that.params['multiple'] && !optionsList){
-            components['menu'].disable();
+            toggleMenuState();
         }
         return that;
     };
 
     that.removeOptions = that.removeOptionsAll = function(){
         cm.forEach(options, function(item){
-            removeOption(item);
+            removeOption(item, {setDefault: false});
         });
+        toggleMenuState();
         return that;
     };
 
@@ -800,7 +818,7 @@ function(params){
         cm.addClass(nodes['target'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = true;
-            components['menu'].disable();
+            components['menu'] && components['menu'].disable();
         }
         return that;
     };
@@ -812,9 +830,26 @@ function(params){
         cm.removeClass(nodes['target'], 'disabled');
         if(!that.params['multiple']){
             nodes['text'].disabled = false;
-            if(optionsLength){
-                components['menu'].enable();
+            if(optionsLength > 0){
+                components['menu'] && components['menu'].enable();
             }
+        }
+        return that;
+    };
+
+    that.toggleVisibility = function(value){
+        cm.toggleClass(nodes['container'], 'is-hidden', !value);
+        return that;
+    };
+
+    that.toggleMenu = function(value){
+        if(that.disabled || !components['menu']){
+            return that;
+        }
+        if(value){
+            components['menu'].show();
+        }else{
+            components['menu'].hide();
         }
         return that;
     };

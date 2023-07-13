@@ -35,7 +35,7 @@
     > dd,
     > .field__descr {
         display: block;
-        margin: 0 0 0 calc(var(--pt-field--title-width) + @CmForm-FieldIndent);
+        margin: 0 0 0 calc(var(--pt-field--title-width) + var(--pt-field--title-indent));
         padding: 0;
         position: relative;
 
@@ -158,9 +158,9 @@
 
         > dd,
         > .field__descr {
-            min-width: 0; // overflow fix
+            min-width: 0;
             flex: auto;
-            margin-left: @CmForm-FieldIndent;
+            margin-left: var(--pt-field--title-indent);
         }
     }
 
@@ -239,6 +239,10 @@
             text-align: center;
         }
     }
+}
+
+.pt__field-title {
+
 }
 
 .pt__field-label {

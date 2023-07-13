@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.50.13 (2023-07-08 07:52) ************ */
+/*! ************ MagpieUI v3.51.0 (2023-07-13 20:52) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4372,11 +4372,12 @@ span.CodeMirror-selectedtext {
 :root {
   --pt-buttons--indent: 12px;
   --pt-field--title-width: 156px;
+  --pt-field--title-indent: 16px;
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.50.13');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.50.13') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.50.13') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.50.13') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.50.13#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.51.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.51.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.51.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.51.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.51.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -5088,10 +5089,10 @@ span.CodeMirror-selectedtext {
   cursor: pointer;
   transition: all 250ms ease-in-out 0ms;
 }
-.cm__icon.linked:hover,
-.icon.linked:hover,
-[class^="svg__"].linked:hover,
-[class*=" svg__"].linked:hover {
+.cm__icon.linked:is(:hover, :focus-visible),
+.icon.linked:is(:hover, :focus-visible),
+[class^="svg__"].linked:is(:hover, :focus-visible),
+[class*=" svg__"].linked:is(:hover, :focus-visible) {
   opacity: 0.7;
   transition: all 100ms ease-in-out 0ms;
 }
@@ -10703,7 +10704,7 @@ button.is-hidden {
 .pt__field > dd,
 .pt__field > .field__descr {
   display: block;
-  margin: 0 0 0 calc(var(--pt-field--title-width) + 16px);
+  margin: 0 0 0 calc(var(--pt-field--title-width) + var(--pt-field--title-indent));
   padding: 0;
   position: relative;
 }
@@ -10836,7 +10837,7 @@ button.is-hidden {
 .pt__field.is-flex > .field__descr {
   min-width: 0;
   flex: auto;
-  margin-left: 16px;
+  margin-left: var(--pt-field--title-indent);
 }
 .pt__field.is-box,
 .pt__field.is-form-box {
@@ -17238,16 +17239,13 @@ ul.pt__field__hint li:before {
   user-select: none;
 }
 .com__calendar .selects {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-pack: center;
   height: 32px;
   margin-bottom: 8px;
+  gap: 4px;
 }
 .com__calendar .selects .months {
   width: 60%;
-  margin-right: 4px;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
 }
@@ -17255,6 +17253,9 @@ ul.pt__field__hint li:before {
   width: 40%;
   -ms-flex: 1 1 auto;
   flex: 1 1 auto;
+}
+.com__calendar .selects .arrow {
+  flex: none;
 }
 .com__calendar table {
   width: 100%;
@@ -21069,6 +21070,9 @@ html.ie9 .com__palette .b-range {
 .com__select:focus .pt__input .icon.default,
 .com__select.active .pt__input .icon.default {
   transform: rotate(180deg);
+}
+.com__select.is-hidden {
+  display: none;
 }
 /* Tooltip */
 .com__tooltip.com__select__tooltip {

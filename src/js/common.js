@@ -2266,9 +2266,8 @@ cm.isEven = function(number){
 };
 
 cm.addLeadZero = function(x, count){
-    x = parseInt(x, 10);
     count = !cm.isUndefined(count) ? count : 1;
-    return x < Math.pow(10, count) ? '0'.repeat(count) + x : x;
+    return x.toString().padStart(++count, '0');
 };
 
 cm.plural = cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){

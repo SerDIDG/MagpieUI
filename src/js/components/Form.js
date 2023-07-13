@@ -254,6 +254,7 @@ function(params){
 
             // Save
             that.fields[params.name] = params;
+            params.fieldController.triggerEvent('onFieldConstructed');
         });
     };
 

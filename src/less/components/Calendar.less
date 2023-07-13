@@ -4,19 +4,23 @@
     .mx__user-select(none);
 
     .selects {
-        .display-flex;
+        display: flex;
         height: @CmForm-FieldHeight;
         margin-bottom: @CmIndent-XXSmall;
+        gap: @CmIndent-XXXSmall;
 
         .months {
             width: 60%;
-            margin-right: @CmIndent-XXXSmall;
             .mx__flex(1 1 auto);
         }
 
         .years {
             width: 40%;
             .mx__flex(1 1 auto);
+        }
+
+        .arrow {
+            flex: none;
         }
     }
 

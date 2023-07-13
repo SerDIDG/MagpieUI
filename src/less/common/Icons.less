@@ -52,7 +52,7 @@
         cursor: pointer;
         .mx__transition(all, @CmUI-Transition-Duration);
 
-        &:hover {
+        &:is(:hover, :focus-visible) {
             opacity: @CmUI-Opacity-Hover;
             .mx__transition(all, @CmUI-Transition-DurationReverse);
         }

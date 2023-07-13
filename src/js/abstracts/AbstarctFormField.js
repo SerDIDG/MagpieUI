@@ -14,7 +14,8 @@ cm.define('Com.AbstractFormField', {
         'onRequestEnd',
         'onRequestSuccess',
         'onRequestError',
-        'onRequestAbort'
+        'onRequestAbort',
+        'onFieldConstructed',
     ],
     'params' : {
         'renderStructure' : true,
@@ -26,13 +27,13 @@ cm.define('Com.AbstractFormField', {
         'renderError' : true,
         'renderErrorMessage' : true,
         'form' : false,
-        'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text'
+        'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text' | 'option'
         'inputValueType' : 'auto',       // 'auto' | 'unset'
         'value' : null,
         'values': null,
         'defaultValue' : null,
         'dataValue' : null,
-        'isOptionValue' : false,
+        'isValueOption' : false,
         'setHiddenValue' : true,
         'minLength' : 0,
         'maxLength' : 0,
@@ -142,10 +143,10 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.attributeName = that.params.formName + '[' + that.params.name + ']';
         // Validate
         if(
-            that.params.required
-            && that.params.requiredAsterisk
-            && that.params.placeholderAsterisk
-            && !cm.isEmpty(that.params.placeholder)
+            that.params.required &&
+            that.params.requiredAsterisk &&
+            that.params.placeholderAsterisk &&
+            !cm.isEmpty(that.params.placeholder)
         ){
             that.params.placeholder = [that.params.placeholder, that.msg('asterisk.char')].join(' ');
         }
@@ -193,7 +194,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.value = that.validateParamsValueHelper(that.params.value);
         that.params.defaultValue = that.validateParamsValueHelper(that.params.defaultValue);
         that.params.value = !cm.isEmpty(that.params.value) ? that.params.value : that.params.defaultValue;
-        that.params.dataValue = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.isOptionValue ? that.params.value : null;
+        that.params.dataValue = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.isValueOption ? that.params.value : null;
     };
 
     classProto.validateParamsValueHelper = function(value){
@@ -237,34 +238,47 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderFiled = function(){
         var that = this;
+        // Structure
         that.nodes.container = cm.node('dl', {'class' : 'pt__field'},
             that.nodes.label = cm.node('dt'),
             that.nodes.value = cm.node('dd')
         );
-        if(!that.nodes.messages){
-            switch(that.params.messagePosition){
-                case 'label':
-                    that.nodes.messages = that.nodes.label;
-                    break;
-                case 'content':
-                case 'value':
-                    that.nodes.messages = that.nodes.value;
-                    break;
-            }
+        switch(that.params.messagePosition){
+            case 'label':
+                that.nodes.messages = that.nodes.label;
+                break;
+            case 'content':
+            case 'value':
+                that.nodes.messages = that.nodes.value;
+                break;
         }
         // Label
+        that.renderFiledLabel();
+        // Hints
+        if(!cm.isEmpty(that.params.hint)){
+            that.renderHint(that.params.hint);
+        }
+    };
+
+    classProto.renderFiledLabel = function(){
+        var that = this;
+        // Label
         if(!cm.isEmpty(that.params.label)){
-            that.nodes.labelText = cm.node('label', {'for' : that.attributeName, 'innerHTML' : that.params.label});
+            that.nodes.labelText = cm.node('label');
+            if(that.params.renderName){
+                that.nodes.labelText.setAttribute('for', that.attributeName)
+            }
+            if(cm.isNode(that.params.label)){
+                cm.appendChild(that.params.label, that.nodes.labelText);
+            }else{
+                that.nodes.labelText.innerHTML = that.params.label;
+            }
             cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
         // Required
         that.nodes.required = cm.node('span', {'class' : 'required', 'title' : that.msg('asterisk.title')}, that.msg('asterisk.char'));
         if(that.params.required && that.params.requiredAsterisk){
             cm.appendChild(that.nodes.required, that.nodes.label);
-        }
-        // Hints
-        if(!cm.isEmpty(that.params.hint)){
-            that.renderHint(that.params.hint);
         }
     };
 
@@ -282,7 +296,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 nodes.input,
                 nodes.icon = cm.node('div', {'class' : that.params.icon})
             );
-            cm.addEvent(nodes.icon, 'click', that.focusHandler);
+            cm.click(nodes.icon, that.focusHandler);
             cm.appendChild(nodes.field, nodes.container);
         }
         // Placeholder
@@ -331,7 +345,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.nodes.content.input.setAttribute('name', that.params.name);
         }
         if(!cm.isEmpty(that.params.value) && that.params.inputValueType !== 'unset'){
-            if(that.params.isOptionValue){
+            if(that.params.isValueOption){
                 value = that.params.value.value;
             }else if(cm.isObject(that.params.value) || cm.isArray(that.params.value)){
                 value = cm.stringifyJSON(that.params.value);
@@ -389,7 +403,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
         // Options
-        if(!cm.isEmpty(that.params.options)){
+        if(!cm.isEmpty(that.params.options) && that.params.inputValueType !== 'unset'){
             that.renderOptions(that.params.options);
         }
         // Help Bubble
@@ -500,6 +514,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 return that.getRaw();
             case 'text':
                 return that.getText();
+            case 'option':
+                return that.getValueOption();
             default:
                 return that.components.controller && cm.isFunction(that.components.controller.get) ? that.components.controller.get() : null;
         }
@@ -507,12 +523,17 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.getRaw = function(){
         var that = this;
-        return that.components.controller && cm.isFunction(that.components.controller.getRaw) ? that.components.controller.getRaw() : that.get();
+        return that.components.controller && cm.isFunction(that.components.controller.getRaw) ? that.components.controller.getRaw() : that.get('auto');
     };
 
     classProto.getText = function(){
         var that = this;
-        return that.components.controller && cm.isFunction(that.components.controller.getText) ? that.components.controller.getText() : that.get();
+        return that.components.controller && cm.isFunction(that.components.controller.getText) ? that.components.controller.getText() : that.get('auto');
+    };
+
+    classProto.getValueOption = function(){
+        var that = this;
+        return that.components.controller && cm.isFunction(that.components.controller.getRaw) ? that.components.controller.getValueOption() : that.get('auto');
     };
 
     classProto.reset = function(){

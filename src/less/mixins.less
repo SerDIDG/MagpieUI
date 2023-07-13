@@ -151,6 +151,26 @@
     margin: 0 0 0 auto;
 }
 
+.mx__box (@value) {
+    &:not(:last-child) {
+        margin-bottom: @value;
+    }
+
+    &.is-last {
+        margin-bottom: 0;
+    }
+}
+
+.mx__box-reverse (@value) {
+    &:not(:first-child) {
+        margin-top: @value;
+    }
+
+    &.is-first {
+        margin-top: 0;
+    }
+}
+
 // /* ******* VENDORS ******* */
 
 // /* *** FOREACH ***/
