@@ -204,6 +204,10 @@
         margin-bottom: @CmForm-FieldIndent;
     }
 
+    &.is-no-indent {
+        margin: 0;
+    }
+
     &.field-indent,
     &.field-inner-indent {
         .cm__box;
@@ -225,19 +229,15 @@
         margin-top: @CmForm-FieldIndent;
     }
 
-    &.is-no-indent {
-        margin: 0;
-    }
-
-    &.is-hidden {
-        display: none;
-    }
-
     &.align-center {
         > dt,
         > .field__title {
             text-align: center;
         }
+    }
+
+    &.is-hidden {
+        display: none;
     }
 }
 

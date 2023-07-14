@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.51.0 (2023-07-13 20:52) ************ */
+/*! ************ MagpieUI v3.51.1 (2023-07-14 23:40) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.51.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.51.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.51.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.51.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.51.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.51.1');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.51.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.51.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.51.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.51.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10892,6 +10892,9 @@ button.is-hidden {
 .pt__field.is-form-box:last-child {
   margin-bottom: 0;
 }
+.pt__field.is-no-indent {
+  margin: 0;
+}
 .pt__field.field-indent,
 .pt__field.field-inner-indent {
   margin-bottom: 24px;
@@ -10928,15 +10931,12 @@ button.is-hidden {
 .pt__field.field-outer-indent-reverse:first-child {
   margin-top: 0;
 }
-.pt__field.is-no-indent {
-  margin: 0;
-}
-.pt__field.is-hidden {
-  display: none;
-}
 .pt__field.align-center > dt,
 .pt__field.align-center > .field__title {
   text-align: center;
+}
+.pt__field.is-hidden {
+  display: none;
 }
 .pt__field-label {
   display: block;
