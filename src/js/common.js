@@ -830,20 +830,58 @@ cm.triggerEvent = function(el, type, options){
     return el;
 };
 
-cm.click = function(el, callback) {
-    if (typeof callback !== 'function') {
-        return el;
-    }
+cm.click =  (function() {
+    var stack = new Map();
 
-    cm.addEvent(el, 'click', callback);
-    cm.addEvent(el, 'keypress', function(event) {
-        if (event && cm.isNotToggleKey(event)) {
-            return;
-        }
-        callback(event);
-    });
-    return el;
-};
+    return {
+        add: function(el, callback) {
+            if (!el || !cm.isFunction(callback)) {
+                return el;
+            }
+
+            function helper(event) {
+                if (event && cm.isNotToggleKey(event) || /button|input/i.test(el.tagName)) {
+                    return;
+                }
+                callback(event);
+            }
+
+            var item = stack.get(el);
+            if (!item) {
+                item = new Map();
+                stack.set(el, item);
+            }
+            item.set(callback, helper);
+
+            cm.addEvent(el, 'click', callback);
+            cm.addEvent(el, 'keypress', helper);
+            return el;
+        },
+        remove: function(el, callback) {
+            if (!el || !cm.isFunction(callback)) {
+                return el;
+            }
+
+            var item = stack.get(el);
+            if (!item) {
+                return el;
+            }
+
+            var helper = item.get(callback);
+            if (!helper) {
+                return el;
+            }
+            item.delete(callback);
+
+            cm.removeEvent(el, 'click', callback);
+            cm.removeEvent(el, 'keypress', helper);
+            return el;
+        },
+        list: function() {
+            return stack;
+        },
+    };
+})();
 
 cm.customEvent = (function(){
     var _stack = {};

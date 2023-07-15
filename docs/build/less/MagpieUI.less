@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.51.1 (2023-07-14 23:40) ************ */
+/*! ************ MagpieUI v3.51.2 (2023-07-15 10:10) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.51.1';
+@CmVersion: '3.51.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7551,6 +7551,7 @@ input[type="checkbox"] {
 input[type="text"],
 input[type="search"],
 input[type="email"],
+input[type="tel"],
 input[type="number"],
 input[type="time"],
 input[type="password"],
@@ -7617,7 +7618,7 @@ select {
     // /* *** PRIMARY *** */
 
     &.button-primary {
-        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-primary--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-primary--focus;
@@ -7630,6 +7631,10 @@ select {
         &:is(:active, .active) {
             .button.button-primary--active;
         }
+    }
+
+    &.button-primary--default {
+        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-primary--focus {
@@ -7647,7 +7652,7 @@ select {
     // /* *** MIDDLE *** */
 
     &.button-middle {
-        .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        .button.button-middle--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-middle--focus;
@@ -7660,6 +7665,10 @@ select {
         &:is(:active, .active) {
             .button.button-middle--active;
         }
+    }
+
+    &.button-middle--default {
+        .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-middle--focus {
@@ -7677,7 +7686,7 @@ select {
     // /* *** SECONDARY *** */
 
     &.button-secondary {
-        .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        .button.button-secondary--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-secondary--focus;
@@ -7690,6 +7699,10 @@ select {
         &:is(:active, .active) {
             .button.button-secondary--active;
         }
+    }
+
+    &.button-secondary--default {
+        .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-secondary--focus {
@@ -7707,7 +7720,7 @@ select {
     // /* *** SUCCESS *** */
 
     &.button-success {
-        .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-success--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-success--focus;
@@ -7720,6 +7733,10 @@ select {
         &:is(:active, .active) {
             .button.button-success--active;
         }
+    }
+
+    &.button-success--default {
+        .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-success--focus {
@@ -7737,7 +7754,7 @@ select {
     // /* *** DANGER *** */
 
     &.button-danger {
-        .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-danger--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-danger--focus;
@@ -7750,6 +7767,10 @@ select {
         &:is(:active, .active) {
             .button.button-danger--active;
         }
+    }
+
+    &.button-danger--default {
+        .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-danger--focus {
@@ -7767,7 +7788,7 @@ select {
     // /* *** WARNING *** */
 
     &.button-warning {
-        .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-warning--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-warning--focus;
@@ -7780,6 +7801,10 @@ select {
         &:is(:active, .active) {
             .button.button-warning--active;
         }
+    }
+
+    &.button-warning--default {
+        .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-warning--focus {
@@ -7798,10 +7823,7 @@ select {
 
     &.button-transparent,
     &.transparent {
-        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
-        background-image: none;
-        box-shadow: none;
-        border: none;
+        .button.button-transparent--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-transparent--focus;
@@ -7814,6 +7836,13 @@ select {
         &:is(:active, .active) {
             .button.button-transparent--active;
         }
+    }
+
+    &.button-transparent--default {
+        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        background-image: none;
+        box-shadow: none;
+        border: none;
     }
 
     &.button-transparent--focus {
@@ -7831,7 +7860,7 @@ select {
     // /* *** WHITE *** */
 
     &.button-white {
-        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        .button.button-white--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-white--focus;
@@ -7844,6 +7873,10 @@ select {
         &:is(:active, .active) {
             .button.button-white--active;
         }
+    }
+
+    &.button-white--default {
+        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-white--focus {
@@ -16725,6 +16758,10 @@ ul.pt__field__hint {
                         overflow: visible;
                     }
                 }
+
+                &.is-animate {
+                    .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
+                }
             }
         }
 
@@ -16745,12 +16782,12 @@ ul.pt__field__hint {
 
     &.is-animate {
         opacity: 0;
-        .mx__transform(scale(0.9)); // TODO: Not working position fixed inside this block
+        .mx__transform(scale(0.9)); // FixMe: Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
         &.is-open {
             opacity: 1;
-            .mx__transform(scale(1)); // TODO: Not working position fixed inside this block
+            .mx__transform(scale(1)); // FixMe: Not working position fixed inside this block
             .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
         }
     }

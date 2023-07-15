@@ -967,7 +967,7 @@ function(params){
                 'preventDefault' : null,
                 'constructor' : false,
                 'constructorParams' : {},
-                'callback' : function(){}
+                'callback' : null,
             }, actionItem);
             // Validate
             actionItem['preventDefault'] = cm.isBoolean(actionItem['preventDefault']) ? actionItem['preventDefault'] : config['preventDefault'];
@@ -997,6 +997,10 @@ function(params){
                 actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
             )
         );
+        if(actionItem['constructor'] || cm.isFunction(actionItem['callback'])){
+            actionItem['node'].setAttribute('role', 'button');
+            actionItem['node'].setAttribute('tabindex', 0);
+        }
         if(actionItem['constructor']){
             cm.getConstructor(actionItem['constructor'], function(classConstructor){
                 actionItem['_constructorParams'] = cm.merge(actionItem['constructorParams'], {
@@ -1015,7 +1019,7 @@ function(params){
             cm.addEvent(actionItem['node'], 'click', function(e){
                 actionItem['preventDefault'] && cm.preventDefault(e);
                 item['component'].hide(false);
-                actionItem['callback'](e, actionItem, row);
+                cm.isFunction(actionItem['callback']) && actionItem['callback'](e, actionItem, row);
             });
         }
         item['nodes']['items'].push(actionItem['node']);

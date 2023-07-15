@@ -28,6 +28,7 @@ cm.define('Com.Dialog', {
         'indentY' : 24,
         'indentX' : 24,
         'animate' : false,
+        'animateHeight' : false,
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
         'className' : '',               // custom css class name
         'content' : cm.node('div'),
@@ -42,6 +43,20 @@ cm.define('Com.Dialog', {
         'closeOnBackground' : true,
         'closeOnEsc' : true,
         'buttons' : false,
+        'openTime' : null,
+        'duration' : 'cm._config.animDuration',
+        'autoOpen' : true,
+        'appendOnRender' : false,
+        'removeOnClose' : true,
+        'destructOnRemove' : false,
+        'documentScroll' : false,
+        'icons' : {
+            'closeInside' : 'icon default linked',
+            'closeOutside' : 'icon default linked',
+            'helpInside' : 'icon help linked',
+            'helpOutside' : 'icon help linked'
+        },
+
         'showHelp' : false,
         'help' : '',
         'helpConstructor' : 'Com.Tooltip',
@@ -57,19 +72,6 @@ cm.define('Com.Dialog', {
             'position' : 'absolute',
             'duration' : 'cm._config.animDuration'
         },
-        'openTime' : null,
-        'duration' : 'cm._config.animDuration',
-        'autoOpen' : true,
-        'appendOnRender' : false,
-        'removeOnClose' : true,
-        'destructOnRemove' : false,
-        'documentScroll' : false,
-        'icons' : {
-            'closeInside' : 'icon default linked',
-            'closeOutside' : 'icon default linked',
-            'helpInside' : 'icon help linked',
-            'helpOutside' : 'icon help linked'
-        }
     },
     'strings' : {
         'closeTitle' : 'Close',
@@ -168,7 +170,7 @@ function(params){
                 'tabindex' : 0,
             }, that.lang('close'));
             cm.appendChild(nodes['closeOutside'], nodes['bg']);
-            cm.click(nodes['closeOutside'], close);
+            cm.click.add(nodes['closeOutside'], close);
         }
         if(that.params['closeButton']){
             cm.addClass(nodes['container'], 'has-close-inside');
@@ -180,7 +182,7 @@ function(params){
                 'tabindex' : 0,
             }, that.lang('close'));
             cm.insertFirst(nodes['closeInside'], nodes['window']);
-            cm.click(nodes['closeInside'], close);
+            cm.click.add(nodes['closeInside'], close);
         }
         if(that.params['closeOnBackground']){
             cm.addClass(nodes['container'], 'has-close-background');
@@ -441,6 +443,10 @@ function(params){
             that.openInterval && clearTimeout(that.openInterval);
             that.openInterval = setTimeout(function(){
                 params['onEnd']();
+                // Start height animation
+                if(that.params['animateHeight']){
+                    cm.addClass(nodes['scroll'], 'is-animate');
+                }
                 // Open Event
                 that.triggerEvent('onOpen');
                 that.triggerEvent('onOpenEnd');
@@ -460,6 +466,10 @@ function(params){
             // Remove close event on Esc press
             cm.removeEvent(window, 'keydown', windowClickEvent);
             cm.removeEvent(window, 'resize', windowResizeEvent);
+            // Stop height animation
+            if(that.params['animateHeight']){
+                cm.removeClass(nodes['scroll'], 'is-animate');
+            }
             // Animate
             cm.removeClass(nodes['container'], 'is-open', true);
             cm.removeClass(nodes['window'], 'is-open', true);

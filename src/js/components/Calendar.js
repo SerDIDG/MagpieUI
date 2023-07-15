@@ -34,6 +34,7 @@ cm.define('Com.Calendar', {
         'renderSelectsInBody': true,
         'changeMonthOnClick': true,
         'renderMonthOnRequest': true,
+        'dayButtonRole': 'radio',
     },
     'strings': {
         'daysAbbr': ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
@@ -108,10 +109,10 @@ function(params) {
         // Render arrows
         if (that.params.renderArrows) {
             nodes.prev = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('prev')}, '<');
-            cm.click(nodes.prev, that.prevMonth.bind(that));
+            cm.click.add(nodes.prev, that.prevMonth.bind(that));
             cm.insertFirst(nodes.prev, nodes.selects);
             nodes.next = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('next')}, '>');
-            cm.click(nodes.next, that.nextMonth.bind(that));
+            cm.click.add(nodes.next, that.nextMonth.bind(that));
             cm.insertLast(nodes.next, nodes.selects);
         }
         
@@ -262,6 +263,9 @@ function(params) {
         } else {
             cm.addClass(item.container, 'in');
             item.node = item.nodes.holder = renderDay(day);
+            item.node.setAttribute('role', that.params.dayButtonRole);
+            item.node.setAttribute('tabindex', 0);
+            item.node.setAttribute('aria-checked', false);
 
             // Today mark
             if (
@@ -389,14 +393,16 @@ function(params) {
     that.selectDay = function(date) {
         if (date && current.year === date.getFullYear() && current.month === date.getMonth()) {
             var day = current.days[date.getDate()];
-            cm.addClass(day.container, 'selected');
+            cm.addClass(day.nodes.container, 'selected');
+            day.nodes.holder('aria-checked', true);
         }
     };
 
     that.unSelectDay = function(date) {
         if (date && current.year === date.getFullYear() && current.month === date.getMonth()) {
             var day = current.days[date.getDate()];
-            cm.removeClass(day.container, 'selected');
+            cm.removeClass(day.nodes.container, 'selected');
+            day.nodes.holder('aria-checked', false);
         }
     };
 

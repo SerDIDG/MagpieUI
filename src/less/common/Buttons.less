@@ -36,7 +36,7 @@
     // /* *** PRIMARY *** */
 
     &.button-primary {
-        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-primary--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-primary--focus;
@@ -49,6 +49,10 @@
         &:is(:active, .active) {
             .button.button-primary--active;
         }
+    }
+
+    &.button-primary--default {
+        .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-primary--focus {
@@ -66,7 +70,7 @@
     // /* *** MIDDLE *** */
 
     &.button-middle {
-        .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        .button.button-middle--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-middle--focus;
@@ -79,6 +83,10 @@
         &:is(:active, .active) {
             .button.button-middle--active;
         }
+    }
+
+    &.button-middle--default {
+        .mx__background__color(@CmColor-Primary-MiddleDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-middle--focus {
@@ -96,7 +104,7 @@
     // /* *** SECONDARY *** */
 
     &.button-secondary {
-        .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        .button.button-secondary--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-secondary--focus;
@@ -109,6 +117,10 @@
         &:is(:active, .active) {
             .button.button-secondary--active;
         }
+    }
+
+    &.button-secondary--default {
+        .mx__background__color(@CmColor-Secondary-LightHighlight, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-secondary--focus {
@@ -126,7 +138,7 @@
     // /* *** SUCCESS *** */
 
     &.button-success {
-        .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-success--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-success--focus;
@@ -139,6 +151,10 @@
         &:is(:active, .active) {
             .button.button-success--active;
         }
+    }
+
+    &.button-success--default {
+        .mx__background__color(@CmColor-Success-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-success--focus {
@@ -156,7 +172,7 @@
     // /* *** DANGER *** */
 
     &.button-danger {
-        .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-danger--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-danger--focus;
@@ -169,6 +185,10 @@
         &:is(:active, .active) {
             .button.button-danger--active;
         }
+    }
+
+    &.button-danger--default {
+        .mx__background__color(@CmColor-Danger-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-danger--focus {
@@ -186,7 +206,7 @@
     // /* *** WARNING *** */
 
     &.button-warning {
-        .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+        .button.button-warning--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-warning--focus;
@@ -199,6 +219,10 @@
         &:is(:active, .active) {
             .button.button-warning--active;
         }
+    }
+
+    &.button-warning--default {
+        .mx__background__color(@CmColor-Warning-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-warning--focus {
@@ -217,10 +241,7 @@
 
     &.button-transparent,
     &.transparent {
-        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
-        background-image: none;
-        box-shadow: none;
-        border: none;
+        .button.button-transparent--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-transparent--focus;
@@ -233,6 +254,13 @@
         &:is(:active, .active) {
             .button.button-transparent--active;
         }
+    }
+
+    &.button-transparent--default {
+        .mx__background__color(@CmColor-Secondary-LightDefault, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        background-image: none;
+        box-shadow: none;
+        border: none;
     }
 
     &.button-transparent--focus {
@@ -250,7 +278,7 @@
     // /* *** WHITE *** */
 
     &.button-white {
-        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
+        .button.button-white--default;
 
         &:is(:focus-visible, .focus) {
             .button.button-white--focus;
@@ -263,6 +291,10 @@
         &:is(:active, .active) {
             .button.button-white--active;
         }
+    }
+
+    &.button-white--default {
+        .mx__background__color(#ffffff, @CmColor-Primary-DarkDefault, @CmFont-Base-ColorOpposite);
     }
 
     &.button-white--focus {

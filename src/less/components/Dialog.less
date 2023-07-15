@@ -93,6 +93,10 @@
                         overflow: visible;
                     }
                 }
+
+                &.is-animate {
+                    .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
+                }
             }
         }
 
@@ -113,12 +117,12 @@
 
     &.is-animate {
         opacity: 0;
-        .mx__transform(scale(0.9)); // TODO: Not working position fixed inside this block
+        .mx__transform(scale(0.9)); // FixMe: Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
         &.is-open {
             opacity: 1;
-            .mx__transform(scale(1)); // TODO: Not working position fixed inside this block
+            .mx__transform(scale(1)); // FixMe: Not working position fixed inside this block
             .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
         }
     }

@@ -127,12 +127,12 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.setTarget = function(node){
         var that = this;
         if(that.targetNode){
-            cm.removeEvent(that.targetNode, 'click', that.openHandler);
+            cm.click.remove(that.targetNode, that.openHandler);
             that.targetNode = null;
         }
         if(cm.isNode(node)){
             that.targetNode = node;
-            cm.addEvent(node, 'click', that.openHandler);
+            cm.click.add(node, that.openHandler);
         }
         return that;
     };

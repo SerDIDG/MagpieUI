@@ -296,7 +296,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 nodes.input,
                 nodes.icon = cm.node('div', {'class' : that.params.icon})
             );
-            cm.click(nodes.icon, that.focusHandler);
+            cm.click.add(nodes.icon, that.focusHandler);
             cm.appendChild(nodes.field, nodes.container);
         }
         // Placeholder

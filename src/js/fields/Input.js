@@ -364,13 +364,13 @@ Com.FormFields.add('email', {
 });
 
 Com.FormFields.add('phone', {
-    'node' : cm.node('input', {'type' : 'phone'}),
+    'node' : cm.node('input', {'type' : 'tel'}),
     'value' : '',
     'defaultValue' : '',
     'fieldConstructor' : 'Com.AbstractFormField',
     'constructor' : 'Com.Input',
     'constructorParams' : {
-        'type' : 'phone'
+        'type' : 'tel'
     }
 });
 
