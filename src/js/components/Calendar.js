@@ -34,6 +34,7 @@ cm.define('Com.Calendar', {
         'renderSelectsInBody': true,
         'changeMonthOnClick': true,
         'renderMonthOnRequest': true,
+        'dayClasses': [],
         'dayButtonRole': 'radio',
     },
     'strings': {
@@ -243,7 +244,7 @@ function(params) {
         };
 
         // Structure
-        item.container = item.nodes.container = cm.node('td');
+        item.container = item.nodes.container = cm.node('td', {classes: that.params.dayClasses});
 
         // Render day
         if (day <= 0) {

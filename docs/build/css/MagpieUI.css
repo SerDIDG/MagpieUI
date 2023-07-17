@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.51.2 (2023-07-15 10:10) ************ */
+/*! ************ MagpieUI v3.51.3 (2023-07-17 09:49) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.51.2');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.51.2') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.51.2') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.51.2') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.51.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.51.3');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.51.3') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.51.3') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.51.3') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.51.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11028,6 +11028,57 @@ button.is-hidden {
   text-align: center;
 }
 .pt__field.is-hidden {
+  display: none;
+}
+.pt__field-title {
+  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+.pt__field-title.bottom,
+.pt__field-title.is-last,
+.pt__field-title:last-child {
+  margin-bottom: 0;
+}
+.pt__field-title.is-no-indent {
+  margin: 0;
+}
+.pt__field-title.field-indent,
+.pt__field-title.field-inner-indent {
+  margin-bottom: 24px;
+  margin-bottom: 8px;
+}
+.pt__field-title.field-indent.bottom,
+.pt__field-title.field-inner-indent.bottom,
+.pt__field-title.field-indent.is-last,
+.pt__field-title.field-inner-indent.is-last,
+.pt__field-title.field-indent:last-child,
+.pt__field-title.field-inner-indent:last-child {
+  margin-bottom: 0;
+}
+.pt__field-title.field-inner-indent-reverse {
+  margin-top: 24px;
+  margin-top: 8px;
+}
+.pt__field-title.field-inner-indent-reverse:first-child {
+  margin-top: 0;
+}
+.pt__field-title.field-outer-indent {
+  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+.pt__field-title.field-outer-indent.bottom,
+.pt__field-title.field-outer-indent.is-last,
+.pt__field-title.field-outer-indent:last-child {
+  margin-bottom: 0;
+}
+.pt__field-title.field-outer-indent-reverse {
+  margin-top: 24px;
+  margin-top: 16px;
+}
+.pt__field-title.field-outer-indent-reverse:first-child {
+  margin-top: 0;
+}
+.pt__field-title.is-hidden {
   display: none;
 }
 .pt__field-label {

@@ -104,7 +104,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onConstructStart = function(){
         var that = this;
         // Variables
-        that.attributeName = null;
+        that.fieldName = null;
         that.isVisible = null;
         that.isAjax = false;
         that.isProcess = false;
@@ -140,8 +140,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
-        that.attributeName = that.params.formName + '[' + that.params.name + ']';
         // Validate
+        that.nodeTagName = that.params.node.tagName.toLowerCase();
+        that.fieldName = that.params.formName + '[' + that.params.name + ']';
         if(
             that.params.required &&
             that.params.requiredAsterisk &&
@@ -157,6 +158,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Constructor params
         that.params.constructorParams.id = that.params.id;
         that.params.constructorParams.name = that.params.name;
+        that.params.constructorParams.fieldName = that.fieldName;
         that.params.constructorParams.visibleName = that.params.visibleName;
         that.params.constructorParams.renderName = that.params.renderName;
         that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
@@ -182,7 +184,6 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.helpParams.name = that.params.name;
         that.params.helpParams.type = that.params.helpType;
         that.components.form = that.params.form;
-        that.nodeTagName = that.params.node.tagName.toLowerCase();
         // Ajax
         if(that.params.preload && !cm.isEmpty(that.params.ajax) && !cm.isEmpty(that.params.ajax.url)){
             that.isAjax = true;
@@ -224,13 +225,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Render custom structure
         if(that.params.renderStructureContent){
-            that.nodes.contentContainer = that.renderContent();
+            that.nodes.content = that.renderContent();
+            that.nodes.contentContainer = that.nodes.content.container;
+            that.nodes.contentInput = that.nodes.content.input;
         }
-        // Embed
+        // Append
         if(that.params.renderStructureField){
             cm.insertFirst(that.nodes.contentContainer, that.nodes.value);
         }else if(that.params.renderStructureContent){
             that.nodes.container = that.nodes.contentContainer;
+        }else{
+            that.nodes.contentContainer = that.nodes.container = that.params.node;
+            that.nodes.contentInput = that.params.node;
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
@@ -266,7 +272,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(!cm.isEmpty(that.params.label)){
             that.nodes.labelText = cm.node('label');
             if(that.params.renderName){
-                that.nodes.labelText.setAttribute('for', that.attributeName)
+                that.nodes.labelText.setAttribute('for', that.fieldName)
             }
             if(cm.isNode(that.params.label)){
                 cm.appendChild(that.params.label, that.nodes.labelText);
@@ -283,13 +289,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     };
 
     classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes.content = nodes;
+        var that = this;
         // Structure
-        nodes.container = cm.node('div', {'class' : 'pt__field__content'},
-            nodes.input = that.params.node
-        );
+        var nodes = {
+            input: that.params.node,
+        };
+        nodes.container = cm.node('div', {'class' : 'pt__field__content'}, nodes.input);
         // Icon
         if(that.params.icon){
             nodes.field = cm.node('div', {'class' : 'pt__input'},
@@ -301,14 +306,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         // Placeholder
         if(that.params.showPlaceholderAbove && !cm.isEmpty(that.params.placeholder)){
-            nodes.placeholder = cm.node('label', {'class' : 'placeholder', 'for' : that.attributeName},
+            nodes.placeholder = cm.node('label', {'class' : 'placeholder', 'for' : that.fieldName},
                 cm.node('span', {'innerHTML' : that.params.placeholder})
             );
             cm.appendChild(nodes.placeholder, nodes.container);
             cm.addClass(nodes.container, 'is-placeholder-above');
         }
         // Export
-        return nodes.container;
+        return nodes;
     };
 
     classProto.renderOptions = function(options){
@@ -325,67 +330,20 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                     });
                     option.hidden = item.hidden;
                     option.disabled = item.disabled;
-                    cm.appendChild(option, that.nodes.content.input);
+                    cm.appendChild(option, that.nodes.contentInput);
                 });
-                cm.setSelect(that.nodes.content.input, that.params.value);
+                cm.setSelect(that.nodes.contentInput, that.params.value);
                 break;
         }
     };
 
     classProto.setAttributes = function(){
-        var that = this,
-            value;
+        var that = this;
         // Call parent method
         classInherit.prototype.setAttributes.apply(that, arguments);
         // Attributes
-        if(!cm.isEmpty(that.attributeName)){
-            that.nodes.content.input.setAttribute('id', that.attributeName);
-        }
-        if(!cm.isEmpty(that.params.name)){
-            that.nodes.content.input.setAttribute('name', that.params.name);
-        }
-        if(!cm.isEmpty(that.params.value) && that.params.inputValueType !== 'unset'){
-            if(that.params.isValueOption){
-                value = that.params.value.value;
-            }else if(cm.isObject(that.params.value) || cm.isArray(that.params.value)){
-                value = cm.stringifyJSON(that.params.value);
-            }else{
-                value = that.params.value;
-            }
-            switch(that.nodeTagName){
-                case 'select':
-                    cm.setSelect(that.nodes.content.input, value);
-                    break;
-                default:
-                    that.nodes.content.input.setAttribute('value', value);
-                    break;
-            }
-        }
-        if(!cm.isEmpty(that.params.dataValue)){
-            if(cm.isObject(that.params.dataValue) || cm.isArray(that.params.dataValue)){
-                value = cm.stringifyJSON(that.params.dataValue);
-            }else{
-                value = that.params.dataValue;
-            }
-            that.nodes.content.input.setAttribute('data-value', value);
-        }
-        if(!cm.isEmpty(that.params.placeholder) && !that.params.showPlaceholderAbove){
-            that.nodes.content.input.setAttribute('placeholder', that.params.placeholder);
-            if(cm.isEmpty(that.params.label) && cm.isEmpty(that.params.title)){
-                that.nodes.content.input.setAttribute('aria-label', that.params.placeholder);
-            }
-        }
-        if(!cm.isEmpty(that.params.autocomplete)){
-            that.nodes.content.input.setAttribute('autocomplete', that.params.autocomplete);
-        }
-        if(!cm.isEmpty(that.params.title)){
-            that.nodes.content.input.setAttribute('title', that.params.title);
-        }
-        if(that.params.disabled){
-            that.nodes.content.input.setAttribute('disabled', 'disabled');
-        }
-        if(that.params.multiple){
-            that.nodes.content.input.setAttribute('multiple', 'multiple');
+        if(that.params.renderStructureContent){
+            that.setInputAttributes();
         }
         // Classes
         if(that.params.adaptive){
@@ -398,16 +356,71 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
     };
 
+    classProto.setInputAttributes = function() {
+        var that = this;
+        if(!cm.isEmpty(that.fieldName)){
+            that.nodes.contentInput.setAttribute('id', that.fieldName);
+        }
+        if(!cm.isEmpty(that.params.name)){
+            that.nodes.contentInput.setAttribute('name', that.params.name);
+        }
+        if(!cm.isEmpty(that.params.value) && that.params.inputValueType !== 'unset'){
+            var value;
+            if(that.params.isValueOption){
+                value = that.params.value.value;
+            }else if(cm.isObject(that.params.value) || cm.isArray(that.params.value)){
+                value = cm.stringifyJSON(that.params.value);
+            }else{
+                value = that.params.value;
+            }
+            switch(that.nodeTagName){
+                case 'select':
+                    cm.setSelect(that.nodes.contentInput, value);
+                    break;
+                default:
+                    that.nodes.contentInput.setAttribute('value', value);
+                    break;
+            }
+        }
+        if(!cm.isEmpty(that.params.dataValue)){
+            var dataValue;
+            if(cm.isObject(that.params.dataValue) || cm.isArray(that.params.dataValue)){
+                dataValue = cm.stringifyJSON(that.params.dataValue);
+            }else{
+                dataValue = that.params.dataValue;
+            }
+            that.nodes.contentInput.setAttribute('data-value', dataValue);
+        }
+        if(!cm.isEmpty(that.params.placeholder) && !that.params.showPlaceholderAbove){
+            that.nodes.contentInput.setAttribute('placeholder', that.params.placeholder);
+            if(cm.isEmpty(that.params.label) && cm.isEmpty(that.params.title)){
+                that.nodes.contentInput.setAttribute('aria-label', that.params.placeholder);
+            }
+        }
+        if(!cm.isEmpty(that.params.autocomplete)){
+            that.nodes.contentInput.setAttribute('autocomplete', that.params.autocomplete);
+        }
+        if(!cm.isEmpty(that.params.title)){
+            that.nodes.contentInput.setAttribute('title', that.params.title);
+        }
+        if(that.params.disabled){
+            that.nodes.contentInput.setAttribute('disabled', 'disabled');
+        }
+        if(that.params.multiple){
+            that.nodes.contentInput.setAttribute('multiple', 'multiple');
+        }
+    };
+
     classProto.renderViewModel = function(){
         var that = this;
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
         // Options
-        if(!cm.isEmpty(that.params.options) && that.params.inputValueType !== 'unset'){
+        if(that.params.renderStructureContent && that.params.inputValueType !== 'unset' && !cm.isEmpty(that.params.options)){
             that.renderOptions(that.params.options);
         }
         // Help Bubble
-        if(!cm.isEmpty(that.params.help)){
+        if(that.params.renderStructureField && !cm.isEmpty(that.params.help)){
             cm.getConstructor(that.params.helpConstructor, function(classConstructor){
                 that.components.help = new classConstructor(
                     cm.merge(that.params.helpParams, {
@@ -428,7 +441,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.getConstructor(that.params.constructor, function(classObject){
                 that.components.controller = new classObject(
                     cm.merge(that.params.constructorParams, {
-                        'node' : that.nodes.content.input,
+                        'node' : that.nodes.contentInput,
                         'form' : that.components.form,
                         'formField' : that
                     })

@@ -218,10 +218,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             cm.appendChild(that.nodes['hiddenContainer'], that.nodes['container']);
         }
         // Component content
-        cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
         if(that.params['renderStructureContent']){
             that.nodes['contentContainer'] = that.renderContent();
             cm.appendChild(that.nodes['contentContainer'], that.nodes['container']);
+        }else{
+            that.nodes['contentContainer'] = that.nodes['container'];
         }
         that.triggerEvent('onRenderViewProcess');
         that.triggerEvent('onRenderViewEnd');
@@ -287,7 +288,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         if(!cm.isEmpty(that.params['justify'])){
             cm.addClass(that.nodes['container'], ['pull', that.params['justify']].join('-'));
         }
-        cm.addClass(that.nodes['content']['container'], that.params['contentClassName']);
+        cm.addClass(that.nodes['contentContainer'], that.params['contentClassName']);
         return that;
     };
 
@@ -333,8 +334,12 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         var that = this;
         if(that.params['isValueOption'] && !cm.isEmpty(value)){
             if(cm.isObject(value)){
-                value['value'] = !cm.isEmpty(value['value']) ? value['value'] : value['text'];
-                value['text'] = !cm.isEmpty(value['text']) ? value['text'] : value['value'];
+                if(cm.isUndefined(value['value'])){
+                    value['value'] = value['text'];
+                }
+                if(cm.isEmpty(value['text'])){
+                    value['text'] = value['value'];
+                }
             }else{
                 value = {
                     'value' : value,

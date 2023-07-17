@@ -2,6 +2,7 @@ cm.define('Com.FieldContent', {
     extend: 'Com.AbstractInput',
     params: {
         controllerEvents: true,
+        renderStructureContent: false,
         renderHiddenContent: false,
         setHiddenInput: false,
     },
@@ -14,15 +15,23 @@ cm.getConstructor('Com.FieldContent', function(classConstructor, className, clas
     classProto.setData = function() {
         var that = this,
             node = that.value;
-        cm.clearNode(that.nodes.content.container);
+        cm.clearNode(that.nodes.contentContainer);
         if (!cm.isNode(node)) {
             node = cm.node('div', {innerHTML: node});
         }
-        if (!cm.isEmpty(that.params.id)) {
-            node.setAttribute('id', that.params.id);
-        }
-        cm.appendChild(node, that.nodes.content.container);
+        cm.appendChild(node, that.nodes.contentContainer);
         return that;
+    };
+
+    classProto.setAttributes = function() {
+        var that = this;
+
+        // Call parent method
+        classInherit.prototype.setAttributes.apply(that, arguments);
+
+        if (!cm.isEmpty(that.params.fieldName)) {
+            that.nodes.container.setAttribute('id', that.params.fieldName);
+        }
     };
 });
 
@@ -33,5 +42,34 @@ Com.FormFields.add('content', {
     value: '',
     defaultValue: '',
     fieldConstructor: 'Com.AbstractFormField',
-    constructor: 'Com.FieldContent'
+    constructor: 'Com.FieldContent',
 });
+
+Com.FormFields.add('title', {
+    node: cm.node('div', {classes: 'pt__field-title'}),
+    value: '',
+    defaultValue: '',
+    inputValueType: 'unset',
+    renderStructureField: false,
+    renderStructureContent: false,
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.FieldContent',
+    constructorParams: {
+        embedStructure: 'append',
+    },
+});
+
+Com.FormFields.add('node', {
+    node: cm.node('div'),
+    value: '',
+    defaultValue: '',
+    inputValueType: 'unset',
+    renderStructureField: false,
+    renderStructureContent: false,
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.FieldContent',
+    constructorParams: {
+        embedStructure: 'append',
+    },
+});
+
