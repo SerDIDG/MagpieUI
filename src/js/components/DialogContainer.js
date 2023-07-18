@@ -91,7 +91,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             cm.appendChild(that.nodes['buttonsHolderLeft'], that.nodes['buttonsHolder']);
             cm.appendChild(that.nodes['buttonsHolderRight'], that.nodes['buttonsHolder']);
         }
-        cm.addClass(that.nodes['buttons'], ['pull', that.params['justifyButtons']].join('-'));
+        that.setButtonsJustify(that.params['justifyButtons']);
         // Render buttons
         cm.forEach(that.buttons, function(item){
             that.renderButton(item);
@@ -101,21 +101,34 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
 
     classProto.addButton = function(item){
         var that = this;
+
         // Config
         item = cm.merge({
             'name' : '',
             'label' : '',
-            'style' : 'button-primary',
+            'classes': [],
+            'style' : 'button-primary', // TODO: Deprecated
             'justify' : 'auto',
+            'visible' : true,
             'embed' : false,
             'callback' : function(){}
         }, item);
+
         // Validate
         item['justify'] = that.params['renderButtonsPositions'] ? item['justify'] : 'auto';
+        item['classes'].unshift('button');
+        if(!cm.isEmpty(item['style'])){
+            item['classes'].push(item['style']);
+        }
+        if(!item['visible']){
+            item['classes'].push('is-hidden');
+        }
+
         // Structure
-        item['node'] = cm.node('button', {'class' : ['button', item['style']].join(' ')}, item['label']);
-        cm.addEvent(item['node'], 'click', item['callback']);
-        // Embed
+        item['node'] = cm.node('button', {'class' : item['classes']}, item['label']);
+        cm.click.add(item['node'], item['callback']);
+
+        // Append
         that.buttons[item['name']] = item;
         that.embedButton(item);
         return item;
@@ -170,9 +183,28 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         return that.buttons[name];
     };
 
+    classProto.toggleButtonVisibility = function(name, value){
+        var that = this;
+        var item = that.getButton(name);
+        if (item) {
+            item['visible'] = value;
+            cm.toggleClass(item['node'], 'is-hidden', !value);
+        }
+        return that;
+    };
+
     classProto.setTitle = function(title){
         var that = this;
         that.params['params']['title'] = title;
         that.components['controller'] && cm.isFunction(that.components['controller'].setTitle) && that.components['controller'].setTitle(title);
+        return that;
+    };
+
+    classProto.setButtonsJustify = function(value) {
+        var that = this;
+        cm.removeClass(that.nodes['buttons'], ['pull', that.params['justifyButtons']].join('-'));
+        cm.addClass(that.nodes['buttons'], ['pull', value].join('-'));
+        that.params['justifyButtons'] = value;
+        return that;
     };
 });

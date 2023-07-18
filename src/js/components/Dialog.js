@@ -93,6 +93,7 @@ function(params){
     that.isMaximize = false;
     that.openInterval = null;
     that.resizeInterval = null;
+    that.blinkingInterval = null;
     that.originalSize = {};
     that.maximizeSize = {
         'width' : '100%',
@@ -505,6 +506,7 @@ function(params){
     };
 
     var windowResizeEvent = function(e){
+        preventBlinking();
         stateHelper();
     };
 
@@ -519,7 +521,14 @@ function(params){
 
     var clearResizeInterval = function(){
         that.resizeInterval && clearTimeout(that.resizeInterval);
-        that.resizeInterval = null;
+    };
+
+    var preventBlinking = function() {
+        cm.addClass(nodes['container'], 'cm__transition-disable');
+        that.blinkingInterval && clearTimeout(that.blinkingInterval);
+        that.blinkingInterval = setTimeout(function() {
+            cm.removeClass(nodes['container'], 'cm__transition-disable');
+        }, 30);
     };
 
     /* ******* MAIN ******* */

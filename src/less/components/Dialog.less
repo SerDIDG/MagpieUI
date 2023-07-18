@@ -126,6 +126,18 @@
             .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
         }
     }
+
+    &.is-fullscreen {
+        > .inner {
+            > .descr {
+                > .scroll {
+                    &.is-animate {
+                        .cm__transition-none;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .com__dialog__inner {

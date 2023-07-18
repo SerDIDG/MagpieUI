@@ -45,22 +45,8 @@ Com.FormFields.add('content', {
     constructor: 'Com.FieldContent',
 });
 
-Com.FormFields.add('title', {
-    node: cm.node('div', {classes: 'pt__field-title'}),
-    value: '',
-    defaultValue: '',
-    inputValueType: 'unset',
-    renderStructureField: false,
-    renderStructureContent: false,
-    fieldConstructor: 'Com.AbstractFormField',
-    constructor: 'Com.FieldContent',
-    constructorParams: {
-        embedStructure: 'append',
-    },
-});
-
 Com.FormFields.add('node', {
-    node: cm.node('div'),
+    node: cm.node('div', {classes: 'pt__field-node'}),
     value: '',
     defaultValue: '',
     inputValueType: 'unset',

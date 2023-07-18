@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.51.3 (2023-07-17 09:49) ************ */
+/*! ************ MagpieUI v3.51.4 (2023-07-18 06:25) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.51.3');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.51.3') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.51.3') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.51.3') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.51.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.51.4');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.51.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.51.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.51.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.51.4#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11030,55 +11030,55 @@ button.is-hidden {
 .pt__field.is-hidden {
   display: none;
 }
-.pt__field-title {
+.pt__field-node {
   margin-bottom: 24px;
   margin-bottom: 16px;
 }
-.pt__field-title.bottom,
-.pt__field-title.is-last,
-.pt__field-title:last-child {
+.pt__field-node.bottom,
+.pt__field-node.is-last,
+.pt__field-node:last-child {
   margin-bottom: 0;
 }
-.pt__field-title.is-no-indent {
+.pt__field-node.is-no-indent {
   margin: 0;
 }
-.pt__field-title.field-indent,
-.pt__field-title.field-inner-indent {
+.pt__field-node.field-indent,
+.pt__field-node.field-inner-indent {
   margin-bottom: 24px;
   margin-bottom: 8px;
 }
-.pt__field-title.field-indent.bottom,
-.pt__field-title.field-inner-indent.bottom,
-.pt__field-title.field-indent.is-last,
-.pt__field-title.field-inner-indent.is-last,
-.pt__field-title.field-indent:last-child,
-.pt__field-title.field-inner-indent:last-child {
+.pt__field-node.field-indent.bottom,
+.pt__field-node.field-inner-indent.bottom,
+.pt__field-node.field-indent.is-last,
+.pt__field-node.field-inner-indent.is-last,
+.pt__field-node.field-indent:last-child,
+.pt__field-node.field-inner-indent:last-child {
   margin-bottom: 0;
 }
-.pt__field-title.field-inner-indent-reverse {
+.pt__field-node.field-inner-indent-reverse {
   margin-top: 24px;
   margin-top: 8px;
 }
-.pt__field-title.field-inner-indent-reverse:first-child {
+.pt__field-node.field-inner-indent-reverse:first-child {
   margin-top: 0;
 }
-.pt__field-title.field-outer-indent {
+.pt__field-node.field-outer-indent {
   margin-bottom: 24px;
   margin-bottom: 16px;
 }
-.pt__field-title.field-outer-indent.bottom,
-.pt__field-title.field-outer-indent.is-last,
-.pt__field-title.field-outer-indent:last-child {
+.pt__field-node.field-outer-indent.bottom,
+.pt__field-node.field-outer-indent.is-last,
+.pt__field-node.field-outer-indent:last-child {
   margin-bottom: 0;
 }
-.pt__field-title.field-outer-indent-reverse {
+.pt__field-node.field-outer-indent-reverse {
   margin-top: 24px;
   margin-top: 16px;
 }
-.pt__field-title.field-outer-indent-reverse:first-child {
+.pt__field-node.field-outer-indent-reverse:first-child {
   margin-top: 0;
 }
-.pt__field-title.is-hidden {
+.pt__field-node.is-hidden {
   display: none;
 }
 .pt__field-label {
@@ -18151,6 +18151,10 @@ ul.pt__field__hint li:before {
   opacity: 1;
   transform: scale(1);
   transition: all 500ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+}
+.com__dialog__window.is-fullscreen > .inner > .descr > .scroll.is-animate {
+  -webkit-transition: none !important;
+  transition: none !important;
 }
 .com__dialog__inner {
   overflow: hidden;
