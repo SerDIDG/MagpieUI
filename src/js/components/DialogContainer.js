@@ -106,8 +106,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         item = cm.merge({
             'name' : '',
             'label' : '',
-            'classes': [],
-            'style' : 'button-primary', // TODO: Deprecated
+            'classes': ['button-primary'],
             'justify' : 'auto',
             'visible' : true,
             'embed' : false,
@@ -116,10 +115,10 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
 
         // Validate
         item['justify'] = that.params['renderButtonsPositions'] ? item['justify'] : 'auto';
-        item['classes'].unshift('button');
-        if(!cm.isEmpty(item['style'])){
-            item['classes'].push(item['style']);
+        if(!cm.isArray(item['classes'])){
+            item['classes'] = [item['classes']];
         }
+        item['classes'].unshift('button');
         if(!item['visible']){
             item['classes'].push('is-hidden');
         }

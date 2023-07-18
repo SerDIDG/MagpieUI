@@ -90,13 +90,13 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         that.components['placeholder'].addButton({
             'name' : 'close',
             'label' : that.lang('close'),
-            'style' : 'button-transparent',
+            'classes' : 'button-transparent',
             'callback' : that.closeHandler
         });
         that.components['placeholder'].addButton({
             'name' : 'save',
             'label' : that.lang('save'),
-            'style' : 'button-primary',
+            'classes' : 'button-primary',
             'callback' : that.completeHandler
         });
         return that;

@@ -273,7 +273,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.components['placeholder'].addButton({
             'name' : 'close',
             'label' : that.lang('close'),
-            'style' : 'button-primary',
+            'classes' : 'button-primary',
             'callback' : that.closeHandler
         });
     };
