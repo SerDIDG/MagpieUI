@@ -694,7 +694,7 @@ function(params){
             // Get field
             fieldName = item && item.field ? item.field : key;
             field = that.getField(fieldName);
-            fieldLabel = field && !cm.isEmpty(field.label)? field.label : fieldName;
+            fieldLabel = that.getFieldLabel(fieldName) || fieldName;
             // Render field messages
             if(cm.isObject(item)){
                 if(cm.isArray(item.message)){
@@ -804,6 +804,19 @@ function(params){
             fields[name] = that.getField(name);
         });
         return fields;
+    };
+
+    that.getFieldLabel = function(name){
+        var field = that.getField(name);
+        if(!field){
+            return;
+        }
+        if(!cm.isEmpty(field.label)){
+            return field.label;
+        }
+        if(!cm.isEmpty(field.placeholder)){
+            return field.placeholder;
+        }
     };
 
     that.setFieldParams = function(name, params){

@@ -149,15 +149,15 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         // Overlay
         if(that.params.responseHTML){
             that.params.overlayParams.container =
-                that.params.overlayParams.container
-                || that.params.overlayContainer
-                || that.nodes.container
-                || document.body;
+                that.params.overlayParams.container ||
+                that.params.overlayContainer ||
+                that.nodes.container ||
+                document.body;
         }else{
             that.params.overlayParams.container =
-                that.params.overlayParams.container
-                || that.params.overlayContainer
-                || document.body;
+                that.params.overlayParams.container ||
+                that.params.overlayContainer ||
+                document.body;
         }
         if(that.params.showLoader){
             cm.getConstructor(that.params.overlayConstructor, function(classConstructor){

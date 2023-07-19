@@ -92,6 +92,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             nodes = {};
         if(that.params['type'] === 'textarea'){
             nodes['container'] = nodes['input'] = cm.node('textarea', {classes: that.params['inputClasses']});
+            cm.addClass(that.nodes['container'], 'com__input--textarea');
         }else{
             nodes['container'] = cm.node('div', {classes: 'pt__input'},
                 nodes['inner'] = cm.node('div', {classes: 'inner'},

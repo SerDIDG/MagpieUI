@@ -198,7 +198,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                 'container' : cm.node('li'),
                 'link' : cm.node('a')
             },
-            'constructor' : false,
+            'callback': null,
+            'constructor' : null,
             'constructorParams' : {},
             'constructorEventName' : 'onLoadEnd',
             'className' : '',
@@ -354,6 +355,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                     );
                 });
             }
+        }else if(cm.isFunction(item['callback'])){
+            item['callback'](item);
+            that.tabShowEnd(item, {});
         }else if(
             item.isAjax &&
             (!item['cache'] || (item['cache'] && !item.isCached))

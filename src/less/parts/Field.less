@@ -394,6 +394,18 @@ ul.pt__field__hint {
         }
     }
 
+    &.is-placeholder-above {
+        .com__input--textarea {
+            &::before {
+                display: block;
+                position: absolute;
+                content: '';
+                border-radius: @CmBorder-Radius @CmBorder-Radius 0 0;
+                background: @CmInput-DefaultBackground;
+            }
+        }
+    }
+
     .pt__field__content--size-helper(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
 }
 
@@ -425,6 +437,13 @@ ul.pt__field__hint {
         .input {
             padding-top: ceil((@inputPadding * 0.75 * 2));
             padding-bottom: ceil((@inputPadding * 0.25 * 2));
+        }
+
+        .com__input--textarea {
+            &::before {
+                height: ((@inputPadding + @borderWidth) * 2);
+                .mx__position(@CmBorder-Width, @CmBorder-Width, auto, @CmBorder-Width);
+            }
         }
     }
 }
