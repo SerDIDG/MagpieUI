@@ -3284,7 +3284,7 @@ cm.getSupportedStyle = (function(){
 })();
 
 cm.getTransitionDurationFromRule = function(rule){
-    var openDurationRule = cm.getCSSRule(rule)[0],
+    var openDurationRule = cm.getCSSRule(null, rule)[0],
         openDurationProperty;
     if(
         openDurationRule
@@ -3328,63 +3328,96 @@ cm.createStyleSheet = function(){
     return style.sheet;
 };
 
-cm.getCSSRule = function(ruleName){
-    var matchedRules = [],
-        cssRules;
-    if(document.styleSheets){
-        cm.forEach(document.styleSheets, function(styleSheet){
-            if(styleSheet.cssRules){
-                cssRules = styleSheet.cssRules;
-            }else{
-                cssRules = styleSheet.rules;
-            }
-            cm.forEach(cssRules, function(cssRule){
-                if(cssRule.selectorText === ruleName){
-                    matchedRules.push(cssRule);
+cm.createCSStyleSheet = function(options, container){
+    var sheet = new CSSStyleSheet(options);
+    if (cm.isNode(container)) {
+        var shadow = container.attachShadow({ mode: 'open' });
+        shadow.adoptedStyleSheets = [sheet];
+    } else {
+        document.adoptedStyleSheets = cm.extend(document.adoptedStyleSheets, [sheet]);
+    }
+    return sheet;
+};
+
+cm.removeCSStyleSheet = function(sheet, container){
+    if(!sheet){
+        return;
+    }
+    cm.replaceCSSRule(sheet);
+    document.adoptedStyleSheets = cm.arrayRemove(document.adoptedStyleSheets, sheet);
+};
+
+cm.getCSSRule = function(sheet, selector){
+    var matchedRules = [];
+    if (cm.isUndefined(sheet)) {
+        cm.forEach(document.styleSheets, function(sheet) {
+            cm.forEach(sheet.cssRules, function(rule) {
+                if(rule.selectorText === selector){
+                    matchedRules.push(rule);
                 }
             });
+        });
+    } else {
+        cm.forEach(sheet.cssRules, function(rule) {
+            if(rule.selectorText === selector){
+                matchedRules.push(rule);
+            }
         });
     }
     return matchedRules;
 };
 
-cm.addCSSRule = function(sheet, selector, rules, index){
-    if(!document.styleSheets){
-        return;
+cm.reduceCSSRule = function(selector, rules) {
+    rules = !cm.isUndefined(rules) ? rules : [];
+    if(cm.isObject(rules)){
+        rules = Object.keys(rules).map(function(key){
+            return [key, rules[key]].join(':');
+        });
     }
-    sheet = cm.isUndefined(sheet) ? document.styleSheets[0] : sheet;
-    rules = cm.isUndefined(rules) ? [] : rules;
     if(cm.isArray(rules)){
         rules = rules.join(';');
     }
-    if('insertRule' in sheet){
-        sheet.insertRule(selector + '{' + rules + '}', index);
-    }else if('addRule' in sheet){
-        sheet.addRule(selector, rules, index);
+    return selector + '{' + rules + '}';
+};
+
+cm.addCSSRule = function(sheet, selector, rules, index){
+    sheet = !cm.isUndefined(sheet) ? sheet : document.styleSheets[0];
+    sheet.insertRule(cm.reduceCSSRule(selector, rules), index);
+};
+
+cm.replaceCSSRule = function(sheet, selector, rules, async){
+    if(!sheet){
+        return;
+    }
+    async = !cm.isUndefined(async) ? async : false;
+    var text = !cm.isEmpty(selector) ? cm.reduceCSSRule(selector, rules) : '';
+    if (async) {
+        return sheet.replace(text);
+    } else {
+        sheet.replaceSync(text);
     }
 };
 
-cm.removeCSSRule = function(ruleName){
-    var cssRules;
-    if(!document.styleSheets){
-        return;
-    }
-    cm.forEach(document.styleSheets, function(styleSheet){
-        if(styleSheet.cssRules){
-            cssRules = styleSheet.cssRules;
-        }else{
-            cssRules = styleSheet.rules;
-        }
-        cm.forEachReverse(cssRules, function(cssRule, i){
-            if(cssRule.selectorText === ruleName){
-                if(styleSheet.cssRules){
-                    styleSheet.deleteRule(i);
-                }else{
-                    styleSheet.removeRule(i);
+cm.removeCSSRule = function(sheet, selector, index){
+    if (!cm.isUndefined(sheet)) {
+        if (!cm.isEmpty(index)) {
+            sheet.deleteRule(index);
+        } else {
+            cm.forEach(sheet.cssRules, function(rule, i) {
+                if (rule.selectorText === selector) {
+                    sheet.deleteRule(i);
                 }
-            }
+            });
+        }
+    } else {
+        cm.forEach(document.styleSheets, function(sheet) {
+            cm.forEach(sheet.cssRules, function(rule, i) {
+                if (rule.selectorText === selector) {
+                    sheet.deleteRule(i);
+                }
+            });
         });
-    });
+    }
 };
 
 cm.setCSSTranslate = (function(){

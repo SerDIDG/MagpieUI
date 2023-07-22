@@ -1,5 +1,3 @@
-/* ******* COMPONENTS: TABSET ******* */
-
 cm.define('Com.Tabset2', {
     'extend' : 'Com.TabsetHelper',
     'params' : {
