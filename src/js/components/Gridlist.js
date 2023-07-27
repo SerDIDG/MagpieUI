@@ -525,16 +525,16 @@ function(params){
             '_component' : null,            // System attribute
             'width' : 'auto',               // number | % | auto
             'access' : true,                // Render column if is accessible
-            'type' : 'text',		            // text | number | url | date | html | icon | checkbox | empty | actions | links
+            'type' : 'text',		        // text | number | url | date | html | icon | checkbox | empty | actions | links
             'key' : '',                     // Data array key
             'title' : '',                   // Table th title
             'sort' : that.params['sort'],   // Sort this column or not
             'sortKey' : '',                 // Sort key
             'filterKey' : null,
             'classes' : [],                 // Cell css class
-            'class' : '',		                // Item css class
+            'class' : '',		            // Item css class
             'target' : '_blank',            // Link target, for type="url|icon"
-            'rel' : null,                     // Link rel, for type="url|icon"
+            'rel' : null,                   // Link rel, for type="url|icon"
             'textOverflow' : null,          // Overflow long text to single line
             'showTitle' : null,             // Show title on hover
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text

@@ -1644,17 +1644,21 @@ cm.replaceNode = function(node, target){
     return node;
 };
 
-cm.appendNodes = function(nodes, target){
-    if(cm.isEmpty(nodes)){
+cm.appendNodes = function(nodes, target) {
+    if (cm.isEmpty(nodes)) {
         return target;
     }
-    if(cm.isNode(nodes)){
+    if (cm.isNode(nodes)) {
         target.appendChild(nodes);
-    }else{
-        while(nodes.length){
-            if(cm.isNode(nodes[0])){
+    } else if(cm.isArray(nodes)) {
+        cm.forEach(nodes, function(node) {
+            target.appendChild(node);
+        });
+    } else {
+        while (nodes.length) {
+            if (cm.isNode(nodes[0])) {
                 target.appendChild(nodes[0]);
-            }else{
+            } else {
                 cm.remove(nodes[0]);
             }
         }
@@ -1700,7 +1704,7 @@ cm.strToHTML = function(str){
     if(!str || cm.isNode(str)){
         return str;
     }
-    var node = cm.Node('div');
+    var node = cm.node('div');
     node.insertAdjacentHTML('beforeend', str);
     return node.childNodes.length === 1? node.firstChild : node.childNodes;
 };
