@@ -1649,15 +1649,15 @@ cm.appendNodes = function(nodes, target) {
         return target;
     }
     if (cm.isNode(nodes)) {
-        target.appendChild(nodes);
+        cm.appendChild(nodes, target);
     } else if(cm.isArray(nodes)) {
         cm.forEach(nodes, function(node) {
-            target.appendChild(node);
+            cm.appendChild(node, target);
         });
     } else {
         while (nodes.length) {
             if (cm.isNode(nodes[0])) {
-                target.appendChild(nodes[0]);
+                cm.appendChild(nodes[0], target);
             } else {
                 cm.remove(nodes[0]);
             }
