@@ -842,20 +842,24 @@ function(params){
         return that;
     };
 
-    that.toggleMenu = function(value){
+    that.toggleMenu = function(value, immediately){
         if(that.disabled || !components['menu']){
             return that;
         }
         if(value){
-            components['menu'].show();
+            components['menu'].show(immediately);
         }else{
-            components['menu'].hide();
+            components['menu'].hide(immediately);
         }
         return that;
     };
 
     that.getNodes = function(key){
         return nodes[key] || nodes;
+    };
+
+    that.getContainer = function(){
+        return nodes.container;
     };
 
     init();
