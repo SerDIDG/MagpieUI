@@ -1168,11 +1168,11 @@ cm.onImageLoad = function(src, success, error){
         nodes[i].onload = function(){
             isLoad++;
             if(isLoad === imagesLength){
-                success(isMany ? nodes : nodes[0]);
+                cm.isFunction(success) && success(isMany ? nodes : nodes[0]);
             }
         };
         nodes[i].onerror = function(event){
-            error(isMany ? nodes : nodes[0], event);
+            cm.isFunction(error) && error(isMany ? nodes : nodes[0], event);
         };
         nodes[i].src = item;
     });

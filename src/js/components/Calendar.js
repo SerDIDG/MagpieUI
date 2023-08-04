@@ -38,9 +38,11 @@ cm.define('Com.Calendar', {
         'dayButtonRole': 'radio',
     },
     'strings': {
-        'daysAbbr': ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-        'days': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        'months': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        'daysAbbr': cm._strings.daysAbbr,
+        'days': cm._strings.days,
+        'months': cm._strings.months,
+        'month': 'Month',
+        'year': 'Year',
         'prev': 'Previous month',
         'next': 'Next month',
     }
@@ -48,13 +50,13 @@ cm.define('Com.Calendar', {
 function(params) {
     var that = this,
         nodes = {
-            'selects' : {}
+            selects: {}
         },
         selects = {},
         today = new Date(),
         current = {
-            'year' : today.getFullYear(),
-            'month' : today.getMonth()
+            year: today.getFullYear(),
+            month: today.getMonth()
         },
         previous = {},
         next = {};
@@ -109,10 +111,10 @@ function(params) {
 
         // Render arrows
         if (that.params.renderArrows) {
-            nodes.prev = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('prev')}, '<');
+            nodes.prev = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('prev'), 'aria-label': that.msg('prev')}, '<');
             cm.click.add(nodes.prev, that.prevMonth.bind(that));
             cm.insertFirst(nodes.prev, nodes.selects);
-            nodes.next = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('next')}, '>');
+            nodes.next = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('next'), 'aria-label': that.msg('next')}, '>');
             cm.click.add(nodes.next, that.nextMonth.bind(that));
             cm.insertLast(nodes.next, nodes.selects);
         }
@@ -146,6 +148,7 @@ function(params) {
     var setMiscEvents = function() {
         selects.years = new Com.Select({
                 node: nodes.years,
+                title: that.msg('year'),
                 renderInBody: that.params.renderSelectsInBody
             })
             .set(current.year)
@@ -153,6 +156,7 @@ function(params) {
 
         selects.months = new Com.Select({
                 node: nodes.months,
+                title: that.msg('month'),
                 renderInBody: that.params.renderSelectsInBody
             })
             .set(current.month)
@@ -252,14 +256,18 @@ function(params) {
             item.node = item.nodes.holder = renderDay(previous.dayCount + day);
             if (that.params.changeMonthOnClick) {
                 item.node.title = that.msg('prev');
-                cm.addEvent(item.node, 'click', that.prevMonth.bind(that));
+                cm.addEvent(item.node, 'click', function() {
+                    that.prevMonth();
+                });
             }
         } else if(day > current.dayCount) {
             cm.addClass(item.container, 'out');
             item.node = item.nodes.holder = renderDay(day - current.dayCount);
             if (that.params.changeMonthOnClick) {
                 item.node.title = that.msg('next');
-                cm.addEvent(item.node, 'click', that.nextMonth.bind(that));
+                cm.addEvent(item.node, 'click', function() {
+                    that.nextMonth();
+                });
             }
         } else {
             cm.addClass(item.container, 'in');
@@ -394,16 +402,16 @@ function(params) {
     that.selectDay = function(date) {
         if (date && current.year === date.getFullYear() && current.month === date.getMonth()) {
             var day = current.days[date.getDate()];
+            day.nodes.holder.setAttribute('aria-checked', true);
             cm.addClass(day.nodes.container, 'selected');
-            day.nodes.holder('aria-checked', true);
         }
     };
 
     that.unSelectDay = function(date) {
         if (date && current.year === date.getFullYear() && current.month === date.getMonth()) {
             var day = current.days[date.getDate()];
+            day.nodes.holder.setAttribute('aria-checked', false);
             cm.removeClass(day.nodes.container, 'selected');
-            day.nodes.holder('aria-checked', false);
         }
     };
 
