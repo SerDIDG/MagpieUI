@@ -185,18 +185,19 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             'index' : that.itemsList.length,
             'id' : '',
             'title' : '',
+            'titleContent': null,
             'content' : null,
             'tab' : {
                 'container' : cm.node('li'),
-                'inner' : cm.node('div')
+                'inner' : cm.node('div'),
             },
             'label' : {
                 'container' : cm.node('li'),
-                'link' : cm.node('a')
+                'link' : cm.node('a'),
             },
             'menu' : {
                 'container' : cm.node('li'),
-                'link' : cm.node('a')
+                'link' : cm.node('a'),
             },
             'callback': null,
             'constructor' : null,

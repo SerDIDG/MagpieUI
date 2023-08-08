@@ -214,9 +214,16 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         // Structure
         nodes['container'] = cm.node('li',
             nodes['link'] = cm.node('a',
-                nodes['title'] = cm.node('div', {'class' : 'title'}, item['title'])
+                nodes['title'] = cm.node('div', {'class' : 'title'})
             )
         );
+        // Title
+        if(cm.isNode(item['title'])){
+            item['title'] = cm.clone(item['title'], true);
+            cm.appendChild(item['title'], nodes['title']);
+        }else{
+            nodes['title'].innerHTML = item['title'];
+        }
         // Image
         if(type === 'label'){
             if(cm.isNode(item['image'])){
@@ -230,7 +237,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
                 cm.insertFirst(nodes['image'], nodes['link']);
             }
             if(that.params['showTabsTitle']){
-                nodes['link'].setAttribute('title', item['title']);
+                nodes['link'].setAttribute('title', cm.cutHTML(item['title']));
             }
         }
         return nodes;

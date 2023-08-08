@@ -241,7 +241,7 @@ function(params){
                 cm.insertFirst(item['image'], item['a']);
             }
             if(that.params['showTabsTitle']){
-                item['a'].setAttribute('title', tab['title']);
+                item['a'].setAttribute('title', cm.cutHTML(tab['title']));
             }
         }
         // Add click event
