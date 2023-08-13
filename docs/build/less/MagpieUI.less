@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.51.12 (2023-08-04 22:05) ************ */
+/*! ************ MagpieUI v3.51.13 (2023-08-13 14:06) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.51.12';
+@CmVersion: '3.51.13';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4667,7 +4667,9 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-TooltipWidth: 320px;
 @CmUI-ColumnIndent: @CmIndent-Medium;
 @CmUI-BoxIndent: @CmIndent-Medium;
+
 @CmUI-GoogleFont: "Open+Sans";
+@CmUI-GoogleFont-Enable: true;
 @CmUI-GoogleFont-Weight: "100,300,400,600,700,800";
 
 // /* ************************************************ */
@@ -5701,6 +5703,10 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* ******* COMMON ******* */
 
+.mx__google-font(@family, @weight, @enable: true) when (@enable = true) {
+    @import (css) url('@{CmProtocol}//fonts.googleapis.com/css?family=@{family}:@{weight}&display=swap');
+}
+
 .mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
     color: @colorDark;
 }
@@ -5770,7 +5776,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: COMMON ******* */
 // /* ************************************************ */
 
-@import (css) url('@{CmProtocol}//fonts.googleapis.com/css?family=@{CmUI-GoogleFont}:@{CmUI-GoogleFont-Weight}&display=swap');
+.mx__google-font(@CmUI-GoogleFont, @CmUI-GoogleFont-Weight, @CmUI-GoogleFont-Enable);
 
 @font-face {
     font-family: @CmIconVars-Family;
@@ -10959,6 +10965,22 @@ button {
         }
     }
 
+    &.warning {
+        > dt,
+        > .field__title {
+            color: @CmColor-Warning-DarkDefault;
+        }
+
+        .pt__field__error {
+            color: @CmColor-Warning-DarkDefault;
+        }
+
+        .input {
+            border: 1px solid @CmColor-Warning-DarkDefault;
+            background-color: @CmColor-Warning-LightHighlight;
+        }
+    }
+
     &.ok,
     &.success {
         > dt,
@@ -11300,6 +11322,59 @@ ul.pt__field__hint {
                 content: '';
                 border-radius: @CmBorder-Radius @CmBorder-Radius 0 0;
                 background: @CmInput-DefaultBackground;
+                pointer-events: none;
+                .mx__transition(background, @CmUI-Transition-Duration);
+            }
+
+            &:is(:hover, .input-hover) {
+                &::before {
+                    background: @CmInput-HoverBackground;
+                }
+            }
+
+            &:is(:focus, .input-focus) {
+                &::before {
+                    background: @CmInput-ActiveBackground;
+                    border-color: @CmInput-ActiveBorder;
+                }
+            }
+
+            &:is([disabled], .input-disabled) {
+                &::before {
+                    background: @CmInput-DisabledBackground;
+                }
+            }
+        }
+
+        &:is(.error, .danger) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmColor-Danger-LightHighlight;
+                }
+            }
+        }
+
+        &:is(.warning) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmColor-Warning-LightHighlight;
+                }
+            }
+        }
+
+        &:is(.ok, .success) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmColor-Success-LightHighlight;
+                }
+            }
+        }
+
+        &:is(.disabled) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmInput-DisabledBackground;
+                }
             }
         }
     }

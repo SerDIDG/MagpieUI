@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.51.12 (2023-08-04 22:05) ************ */
+/*! ************ MagpieUI v3.51.13 (2023-08-13 14:06) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.51.12');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.51.12') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.51.12') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.51.12') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.51.12#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.51.13');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.51.13') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.51.13') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.51.13') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.51.13#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10833,6 +10833,26 @@ button.is-hidden {
   border: 1px solid hsl(0, 65%, 52%);
   background-color: hsl(0, 65%, 98%);
 }
+.pt__field.warning > dt,
+.pt__field.warning > .field__title {
+  color: hsl(38, 75%, 52%);
+}
+.pt__field.warning .pt__field__error {
+  color: hsl(38, 75%, 52%);
+}
+.pt__field.warning .input,
+.pt__field.warning input[type="text"],
+.pt__field.warning input[type="search"],
+.pt__field.warning input[type="email"],
+.pt__field.warning input[type="tel"],
+.pt__field.warning input[type="number"],
+.pt__field.warning input[type="time"],
+.pt__field.warning input[type="password"],
+.pt__field.warning textarea,
+.pt__field.warning select {
+  border: 1px solid hsl(38, 75%, 52%);
+  background-color: hsl(38, 70%, 98%);
+}
 .pt__field.ok > dt,
 .pt__field.success > dt,
 .pt__field.ok > .field__title,
@@ -11184,6 +11204,30 @@ ul.pt__field__hint li:before {
   content: '';
   border-radius: 3px 3px 0 0;
   background: #ffffff;
+  pointer-events: none;
+  transition: background 250ms ease-in-out 0ms;
+}
+.pt__field__content.is-placeholder-above .com__input--textarea:is(:hover, .input-hover)::before {
+  background: #ffffff;
+}
+.pt__field__content.is-placeholder-above .com__input--textarea:is(:focus, .input-focus)::before {
+  background: #ffffff;
+  border-color: hsl(210, 75%, 52%);
+}
+.pt__field__content.is-placeholder-above .com__input--textarea:is([disabled], .input-disabled)::before {
+  background: hsl(0, 0%, 98%);
+}
+.pt__field__content.is-placeholder-above:is(.error, .danger) .com__input--textarea::before {
+  background-color: hsl(0, 65%, 98%);
+}
+.pt__field__content.is-placeholder-above:is(.warning) .com__input--textarea::before {
+  background-color: hsl(38, 70%, 98%);
+}
+.pt__field__content.is-placeholder-above:is(.ok, .success) .com__input--textarea::before {
+  background-color: hsl(120, 60%, 98%);
+}
+.pt__field__content.is-placeholder-above:is(.disabled) .com__input--textarea::before {
+  background-color: hsl(0, 0%, 98%);
 }
 .pt__field__content .placeholder {
   line-height: 32px;

@@ -122,6 +122,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.resetEventHandler = that.resetEvent.bind(that);
     };
 
+    classProto.onAfterRender = function(){
+        var that = this;
+        that.params.disabled && that.disable();
+        return that;
+    };
+
     classProto.onConstructEnd = function(){
         var that = this;
         if(that.isAjax){
@@ -730,6 +736,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
 
         cm.addClass(that.nodes.container, 'error');
+        cm.addClass(that.nodes.contentContainer, 'error');
         if(that.params.renderErrorMessage && !cm.isEmpty(message)){
             that.nodes.errors = cm.node('ul', {'class' : 'pt__field__error pt__field__hint'},
                 messageNode = cm.node('li', {'innerHTML' : message})
@@ -746,6 +753,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.clearError = function(){
         var that = this;
         cm.removeClass(that.nodes.container, 'error');
+        cm.removeClass(that.nodes.contentContainer, 'error');
         cm.remove(that.nodes.errors);
         return that;
     };
@@ -786,12 +794,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.enable = function(){
         var that = this;
+        cm.removeClass(that.nodes.container, 'disabled');
+        cm.removeClass(that.nodes.contentContainer, 'disabled');
         that.components.controller && cm.isFunction(that.components.controller.enable) && that.components.controller.enable();
         return that;
     };
 
     classProto.disable = function(){
         var that = this;
+        cm.addClass(that.nodes.container, 'disabled');
+        cm.addClass(that.nodes.contentContainer, 'disabled');
         that.components.controller && cm.isFunction(that.components.controller.disable) && that.components.controller.disable();
         return that;
     };

@@ -127,6 +127,10 @@
 
 // /* ******* COMMON ******* */
 
+.mx__google-font(@family, @weight, @enable: true) when (@enable = true) {
+    @import (css) url('@{CmProtocol}//fonts.googleapis.com/css?family=@{family}:@{weight}&display=swap');
+}
+
 .mx__only__color (@background, @colorDark, @colorLight) when (alpha(@background) = 1) and (lightness(@background) >= 60%) {
     color: @colorDark;
 }

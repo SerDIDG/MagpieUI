@@ -61,6 +61,22 @@
         }
     }
 
+    &.warning {
+        > dt,
+        > .field__title {
+            color: @CmColor-Warning-DarkDefault;
+        }
+
+        .pt__field__error {
+            color: @CmColor-Warning-DarkDefault;
+        }
+
+        .input {
+            border: 1px solid @CmColor-Warning-DarkDefault;
+            background-color: @CmColor-Warning-LightHighlight;
+        }
+    }
+
     &.ok,
     &.success {
         > dt,
@@ -402,6 +418,59 @@ ul.pt__field__hint {
                 content: '';
                 border-radius: @CmBorder-Radius @CmBorder-Radius 0 0;
                 background: @CmInput-DefaultBackground;
+                pointer-events: none;
+                .mx__transition(background, @CmUI-Transition-Duration);
+            }
+
+            &:is(:hover, .input-hover) {
+                &::before {
+                    background: @CmInput-HoverBackground;
+                }
+            }
+
+            &:is(:focus, .input-focus) {
+                &::before {
+                    background: @CmInput-ActiveBackground;
+                    border-color: @CmInput-ActiveBorder;
+                }
+            }
+
+            &:is([disabled], .input-disabled) {
+                &::before {
+                    background: @CmInput-DisabledBackground;
+                }
+            }
+        }
+
+        &:is(.error, .danger) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmColor-Danger-LightHighlight;
+                }
+            }
+        }
+
+        &:is(.warning) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmColor-Warning-LightHighlight;
+                }
+            }
+        }
+
+        &:is(.ok, .success) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmColor-Success-LightHighlight;
+                }
+            }
+        }
+
+        &:is(.disabled) {
+            .com__input--textarea {
+                &::before {
+                    background-color: @CmInput-DisabledBackground;
+                }
             }
         }
     }
