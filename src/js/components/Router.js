@@ -99,14 +99,12 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.hashchangeEvent = function(e){
         var that = this,
-            hash = null;
-        if(!cm.isEmpty(window.location.hash)){
-            hash = window.location.hash.slice(1);
-        }
+            hash = !cm.isEmpty(window.location.hash) ? window.location.hash.slice(1) : null;
         // Check hash
         that.current.hash = hash;
-        that.current.state.hash = hash;
         that.current.href = !cm.isEmpty(hash) ? [that.current.location, that.current.hash].join('#') : that.current.location;
+        that.current.state = cm.clone(that.current.state);
+        that.current.state.hash = hash;
         that.current.state.href = that.current.href;
         // Restore route state after somebody change hash
         window.history.replaceState(that.current.state, '', that.current.state.href);
@@ -164,26 +162,30 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
     classProto.processRoute = function(state){
         var that = this,
-            matchedRouteData,
-            routeItem;
+            routeItem = cm.clone(state),
+            matchedRouteData;
+
         // Destruct old route
         that.destructRoute(that.current);
+
         // Match route
-        matchedRouteData = that.getStateMatchedRoute(state);
+        matchedRouteData = that.getStateMatchedRoute(routeItem);
         // Is not found matched route
         if(cm.isEmpty(matchedRouteData)){
             matchedRouteData = {
-                'hasAccess' : true,
-                'route' : 'error',
-                'item' : that.get('error')
+                'hasAccess': true,
+                'route': 'error',
+                'item': that.get('error'),
             };
         }
+
         // Process route
-        routeItem = cm.merge(matchedRouteData.item, state);
+        routeItem = cm.merge(matchedRouteData.item, routeItem);
         routeItem.state = state;
         if(matchedRouteData.match){
             routeItem.captures = that.mapCaptures(routeItem.map, matchedRouteData.match);
         }
+
         // Handle route redirect or route
         if(!cm.isEmpty(matchedRouteData.redirect)){
             if(cm.isArray(matchedRouteData.redirect)){
@@ -200,18 +202,16 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
     };
 
-    classProto.getStateMatchedRoute = function(state){
+    classProto.getStateMatchedRoute = function(routeState){
         var that = this,
-            match,
-            routeData,
             matchedRouteData;
         // Match routes
         cm.forEach(that.routes, function(routeItem, route){
-            match = state.route.match(routeItem.regexp);
+            var match = routeState.route.match(routeItem.regexp);
             if(match){
                 routeItem = cm.clone(routeItem);
-                state.match.push(routeItem);
-                routeData = {
+                routeState.match.push(routeItem);
+                var routeData = {
                     'roure': route,
                     'item' : routeItem,
                     'match' : match,

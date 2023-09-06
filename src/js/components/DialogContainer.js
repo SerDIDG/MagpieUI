@@ -69,6 +69,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         var that = this;
         that.components['controller'].addEvent('onOpenStart', that.afterOpenControllerHandler);
         that.components['controller'].addEvent('onOpenEnd', that.afterOpenControllerEndHandler);
+        that.components['controller'].addEvent('onCloseStart', that.afterCloseControllerStartHandler);
         that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
     };
 

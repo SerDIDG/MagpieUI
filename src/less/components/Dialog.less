@@ -239,6 +239,16 @@
 
     &.theme-black {
         &:extend(.com__dialog.theme-default all);
+
+        > .bg {
+            background: @ComDialog-Overlay;
+
+            > .icon {
+                &.default {
+                    .icon.medium.close-white;
+                }
+            }
+        }
     }
 
     // /* *** LIGHT *** */
