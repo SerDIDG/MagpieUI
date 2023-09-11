@@ -953,7 +953,8 @@
 
 @ComSelect-ListCount: 7;
 @ComSelect-MultiListCount: 5;
-@ComSelect-MaxHeight: @ComSelect-MultiListCount * (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2) - @PtListingItems-Indent;
+@ComSelect-MultiListHeight: (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2);
+@ComSelect-MaxHeight: @ComSelect-MultiListCount * @ComSelect-MultiListHeight - @PtListingItems-Indent;
 
 // /* ******* AUTOCOMPLETE ******* */
 
