@@ -292,6 +292,7 @@ function(params){
 
     var renderButton = function(params){
         params = cm.merge({
+            'node' : null,
             'name' : '',
             'label' : '',
             'class' : '',
@@ -303,9 +304,11 @@ function(params){
         }, params);
         // Render
         if(!that.buttons[params.name]){
-            params.node = cm.node('button', {'name' : params.name, 'class' : ['button', params.class].join(' ')},
-                params.labelNode = cm.node('div', {'class' : 'label is-show'}, params.label)
-            );
+            if(!cm.isNode(params.node)){
+                params.node = cm.node('button', {'name' : params.name, 'class' : ['button', params.class].join(' ')},
+                    params.labelNode = cm.node('div', {'class' : 'label is-show'}, params.label)
+                );
+            }
             // Spinner
             if(params.spinner){
                 params.spinnerNode = cm.node('div', {'class' : ['icon', params.spinnerClass].join(' ')});
@@ -317,7 +320,7 @@ function(params){
                 case 'submit':
                     params.node.type = 'submit';
                     cm.addClass(params.node, 'button-primary');
-                    cm.addEvent(params.node, 'click', function(e){
+                    cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
                         if(that.isProcess){
                             that.abort();
@@ -330,7 +333,7 @@ function(params){
                 case 'reset':
                     params.node.type = 'reset';
                     cm.addClass(params.node, 'button-transparent');
-                    cm.addEvent(params.node, 'click', function(e){
+                    cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
                         if(!that.isProcess){
                             that.reset();
@@ -340,7 +343,7 @@ function(params){
 
                 case 'clear':
                     cm.addClass(params.node, 'button-transparent');
-                    cm.addEvent(params.node, 'click', function(e){
+                    cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
                         if(!that.isProcess){
                             that.clear();
@@ -350,7 +353,7 @@ function(params){
 
                 case 'custom':
                 default:
-                    cm.addEvent(params.node, 'click', function(e){
+                    cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
                         cm.isFunction(params.handler) && params.handler(that, params, e);
                     });

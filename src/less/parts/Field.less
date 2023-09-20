@@ -495,7 +495,7 @@ ul.pt__field__hint {
 
 .pt__field__content--size-helper (@height, @paddingX, @borderWidth, @lineHeight) {
     @inputPadding_calc: (@height - @lineHeight - @borderWidth * 2) / 2;
-    @inputPadding: max(ceil((@inputPadding_calc)), @paddingX);
+    @inputPadding: max(round((@inputPadding_calc)), @paddingX);
 
     .placeholder {
         line-height: @height;
@@ -504,8 +504,8 @@ ul.pt__field__hint {
 
     &.is-placeholder-above {
         .input {
-            padding-top: ceil((@inputPadding * 0.75 * 2));
-            padding-bottom: ceil((@inputPadding * 0.25 * 2));
+            padding-top: round((@inputPadding * 0.75 * 2));
+            padding-bottom: round((@inputPadding * 0.25 * 2));
         }
 
         .com__input--textarea {

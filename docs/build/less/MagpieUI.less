@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.51.15 (2023-09-11 21:55) ************ */
+/*! ************ MagpieUI v3.51.16 (2023-09-20 20:48) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.51.15';
+@CmVersion: '3.51.16';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -11400,7 +11400,7 @@ ul.pt__field__hint {
 
 .pt__field__content--size-helper (@height, @paddingX, @borderWidth, @lineHeight) {
     @inputPadding_calc: (@height - @lineHeight - @borderWidth * 2) / 2;
-    @inputPadding: max(ceil((@inputPadding_calc)), @paddingX);
+    @inputPadding: max(round((@inputPadding_calc)), @paddingX);
 
     .placeholder {
         line-height: @height;
@@ -11409,8 +11409,8 @@ ul.pt__field__hint {
 
     &.is-placeholder-above {
         .input {
-            padding-top: ceil((@inputPadding * 0.75 * 2));
-            padding-bottom: ceil((@inputPadding * 0.25 * 2));
+            padding-top: round((@inputPadding * 0.75 * 2));
+            padding-bottom: round((@inputPadding * 0.25 * 2));
         }
 
         .com__input--textarea {
