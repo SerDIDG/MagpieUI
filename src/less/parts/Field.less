@@ -504,8 +504,10 @@ ul.pt__field__hint {
 
     &.is-placeholder-above {
         .input {
-            padding-top: round((@inputPadding * 0.75 * 2));
-            padding-bottom: round((@inputPadding * 0.25 * 2));
+            @paddingTop: round((@inputPadding * 0.75 * 2));
+            @paddingBottom: (@inputPadding * 2) - @paddingTop;
+            padding-top: @paddingTop;
+            padding-bottom: @paddingBottom;
         }
 
         .com__input--textarea {
