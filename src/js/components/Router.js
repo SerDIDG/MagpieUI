@@ -465,14 +465,15 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.getURL = function(route, hash, urlParams, data){
         var that = this,
             item = that.get(route);
+        if(!item){
+            return;
+        }
         // Check route type
-        if(item){
-            if(item.type === 'external'){
-                route = item.href;
-                return that.prepareExternalHref(route, hash, urlParams);
-            }else{
-                route = item.route;
-            }
+        if(item.type === 'external'){
+            route = item.href;
+            return that.prepareExternalHref(route, hash, urlParams);
+        }else{
+            route = item.route;
         }
         // Fill url params
         route = that.fillCaptures(route, urlParams);
