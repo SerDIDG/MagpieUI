@@ -117,12 +117,12 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             href = el.getAttribute('href'),
             preventDefault = el.dataset.preventDefault;
         if(!cm.isEmpty(href) && preventDefault !== 'true'){
-            href = that.prepareRoute(href);
-            that.pushRoute(href[0], href[1]);
+            var route = that.prepareRoute(href);
+            that.pushRoute(route);
         }
     };
 
-    classProto.pushRoute = function(route, hash, params){
+    classProto.pushRoute = function(route, params){
         var that = this,
             state;
         // Validate state
@@ -130,9 +130,10 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             route = that.current.route;
         }
         state = {
-            'route' : route,
-            'hash' : hash,
-            'location' : that.prepareHref(route),
+            'route' : route.route,
+            'hash' : route.hash,
+            'parameters' : route.parameters,
+            'location' : that.prepareHref(route.route, route.parameters),
             'match' : [],
             'params' : cm.merge({
                 'pushState' : true,
@@ -142,6 +143,12 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         };
         // Check hash
         state.href = !cm.isEmpty(state.hash) ? [state.location, state.hash].join('#') : state.location;
+        // Parse parameters
+        try {
+            state.parameters = Object.fromEntries(
+                new URLSearchParams(state.parameters)
+            );
+        } catch (e) {}
         // Check data storage
         state.data = that.getStorageData(state.route, state, state.params.data);
         // Set scroll
@@ -330,17 +337,26 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             route = '/' + route;
         }
         // Split hash
-        var url = route.split('?')[0].split('#')[0];
-        var hash = route.split('#')[1];
-        return [url, hash];
+        var parts = route.split('#');
+        var url = parts[0].split('?');
+        return {
+            route: url[0],
+            parameters: url[1],
+            hash: parts[1],
+        };
     };
 
-    classProto.prepareHref = function(route){
+    classProto.prepareHref = function(route, parameters){
         var that = this,
             baseUrl = that.prepareBaseUrl(true);
         // Remove lead point
         route = route.replace(new RegExp('^\\.'), '');
-        return window.location.protocol + baseUrl + route;
+        // Prepare url
+        var url =  window.location.protocol + baseUrl + route;
+        if (!cm.isEmpty(parameters)) {
+            url = [url,parameters ].join('?')
+        }
+        return url;
     };
 
     classProto.prepareExternalHref = function(route, hash, urlParams){
@@ -553,7 +569,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.setURL = function(url, hash, params){
         var that = this;
         var route = that.prepareRoute(url);
-        that.pushRoute(route[0], hash || route[1], params);
+        that.pushRoute(route, params);
         return that;
     };
 
