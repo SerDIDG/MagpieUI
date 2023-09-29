@@ -40,8 +40,9 @@ cm.define('Com.Form', {
 
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
-        'buttonsAlign' : 'right',
         'buttonsClasses' : null,
+        'buttonsAlign' : 'right',
+        'buttonsAdaptive' : true,
         'renderNames' : false,                                      // Render visual input name attribute
 
         'validate' : false,
@@ -138,12 +139,13 @@ function(params){
             // Buttons
             that.nodes.buttonsSeparator = cm.node('hr');
             that.nodes.buttonsContainer = cm.node('div', {'class' : 'com__form__buttons'},
-                that.nodes.buttons = cm.node('div', {'class' : 'pt__buttons is-adaptive'},
+                that.nodes.buttons = cm.node('div', {'class' : 'pt__buttons'},
                     that.nodes.buttonsHolder = cm.node('div', {'class' : 'inner'})
                 )
             );
             cm.addClass(that.nodes.buttons, ['pull', that.params.buttonsAlign].join('-'));
             cm.addClass(that.nodes.buttons, that.params.buttonsClasses);
+            that.params.buttonsAdaptive && cm.addClass(that.nodes.buttons, 'is-adaptive');
             // Embed
             that.params.renderButtonsSeparator && cm.insertFirst(that.nodes.buttonsSeparator, that.nodes.buttonsContainer);
             that.params.renderButtons && cm.appendChild(that.nodes.buttonsContainer, that.nodes.container);
