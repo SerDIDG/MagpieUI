@@ -302,7 +302,7 @@ function(params){
             'spinnerClass' : '',
             'action' : 'submit',          // submit | reset | clear | custom
             'container' : that.nodes.buttonsHolder,
-            'handler' : function(){}
+            'handler' : null,
         }, params);
         // Render
         if(!that.buttons[params.name]){
@@ -324,6 +324,10 @@ function(params){
                     cm.addClass(params.node, 'button-primary');
                     cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
+                        if(cm.isFunction(params.handler)){
+                            params.handler(that, params, e);
+                            return;
+                        }
                         if(that.isProcess){
                             that.abort();
                         }else{
@@ -337,6 +341,10 @@ function(params){
                     cm.addClass(params.node, 'button-transparent');
                     cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
+                        if(cm.isFunction(params.handler)){
+                            params.handler(that, params, e);
+                            return;
+                        }
                         if(!that.isProcess){
                             that.reset();
                         }
@@ -347,6 +355,10 @@ function(params){
                     cm.addClass(params.node, 'button-transparent');
                     cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
+                        if(cm.isFunction(params.handler)){
+                            params.handler(that, params, e);
+                            return;
+                        }
                         if(!that.isProcess){
                             that.clear();
                         }
@@ -357,7 +369,9 @@ function(params){
                 default:
                     cm.click.add(params.node, function(e){
                         cm.preventDefault(e);
-                        cm.isFunction(params.handler) && params.handler(that, params, e);
+                        if(cm.isFunction(params.handler)){
+                            params.handler(that, params, e);
+                        }
                     });
                     break;
             }
