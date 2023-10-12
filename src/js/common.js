@@ -470,9 +470,22 @@ cm.arrayRemove = function(a, item){
     return a;
 };
 
-cm.arrayAdd = function(a, item){
+cm.arrayAdd = function(a, item, move){
+    if(move){
+        a = cm.arrayRemove(a, item);
+    }
     if(!cm.inArray(a, item)){
         a.push(item);
+    }
+    return a;
+}
+
+cm.arrayPrepend = function(a, item, move){
+    if(move){
+        a = cm.arrayRemove(a, item);
+    }
+    if(!cm.inArray(a, item)){
+        a.unshift(item);
     }
     return a;
 };
