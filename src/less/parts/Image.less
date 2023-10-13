@@ -29,6 +29,11 @@
             z-index: 1;
             will-change: opacity;
             .mx__transition(opacity, @CmUI-Transition-Duration);
+
+            &:is(iframe) {
+                width: 100%;
+                height: 100%;
+            }
         }
 
         > .text {
@@ -49,11 +54,6 @@
             .cm__tags {
                 color: @PtImage-Color;
             }
-        }
-
-        > iframe.descr {
-            width: 100%;
-            height: 100%;
         }
 
         > .icon {
@@ -405,12 +405,12 @@
         > .inner {
             > .descr {
                 background-size: contain;
-            }
 
-            > img.descr {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
+                &:is(img, svg) {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
             }
         }
     }
@@ -419,12 +419,12 @@
         > .inner {
             > .descr {
                 background-size: cover;
-            }
 
-            > img.descr {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+                &:is(img, svg) {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.51.23 (2023-10-12 23:39) ************ */
+/*! ************ MagpieUI v3.51.24 (2023-10-13 22:56) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.51.23';
+@CmVersion: '3.51.24';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -12321,6 +12321,11 @@ ul.pt__field__hint {
             z-index: 1;
             will-change: opacity;
             .mx__transition(opacity, @CmUI-Transition-Duration);
+
+            &:is(iframe) {
+                width: 100%;
+                height: 100%;
+            }
         }
 
         > .text {
@@ -12341,11 +12346,6 @@ ul.pt__field__hint {
             .cm__tags {
                 color: @PtImage-Color;
             }
-        }
-
-        > iframe.descr {
-            width: 100%;
-            height: 100%;
         }
 
         > .icon {
@@ -12697,12 +12697,12 @@ ul.pt__field__hint {
         > .inner {
             > .descr {
                 background-size: contain;
-            }
 
-            > img.descr {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
+                &:is(img, svg) {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
             }
         }
     }
@@ -12711,12 +12711,12 @@ ul.pt__field__hint {
         > .inner {
             > .descr {
                 background-size: cover;
-            }
 
-            > img.descr {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
+                &:is(img, svg) {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
             }
         }
     }
