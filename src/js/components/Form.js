@@ -904,8 +904,13 @@ function(params){
         params = cm.merge({
             triggerEvents: true,
             setFields: true,
-            setOrigin: false
+            setOrigin: false,
+            setData: false,
         }, params);
+        // Set data
+        if(params.setData){
+            that.params.data = data;
+        }
         // Set values
         var value;
         cm.forEach(that.fields, function(field, name){

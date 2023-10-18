@@ -186,12 +186,13 @@ function(params){
         return that;
     };
 
-    that.toggle = function(){
-        if(that.isOpen){
-            that.hide();
+    that.toggle = function(value){
+        if(value){
+            that.open();
         }else{
-            that.show();
+            that.close();
         }
+        return that;
     };
 
     that.remove = function(){

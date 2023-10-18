@@ -27,6 +27,19 @@ function(params){
 });
 
 cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classProto, classInherit){
+    classProto.onValidateParams = function(){
+        var that = this;
+        // Set tooltip align
+        switch (that.params.align) {
+            case 'left':
+                that.params.tooltipParams.left = 0;
+                break;
+            case 'right':
+                that.params.tooltipParams.left = 'targetWidth - selfWidth';
+                break;
+        }
+    };
+    
     classProto.onDestruct = function(){
         var that = this;
         that.components['container'] && cm.isFunction(that.components['container'].destruct) && that.components['container'].destruct();
@@ -40,6 +53,8 @@ cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classP
             that.nodes['button'] = cm.node('a', {'class' : 'com__help-bubble__title'}),
             that.nodes['content'] = cm.node('span', {'class' : 'com__help-bubble__content'})
         );
+        // Align
+        cm.addClass(that.nodes['container'], ['pull', that.params.align].join('-'));
         // Icon
         if(that.params['showIcon']){
             that.nodes['icon'] = cm.node('span', {'class' : 'icon default linked'});
@@ -76,7 +91,7 @@ cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classP
             default:
                 // Render tooltip
                 cm.getConstructor(that.params['tooltipConstructor'], function(classConstructor){
-                    that.components['tooltip'] = new classConstructor(that.params['tooltipParams']);
+                    that.components['tooltip'] = new classConstructor(that.params.tooltipParams);
                     that.components['tooltip']
                         .setTarget(that.nodes['button'])
                         .setContent(that.nodes['content']);

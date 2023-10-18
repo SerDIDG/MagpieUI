@@ -42,8 +42,6 @@ cm.define('Com.AbstractFormField', {
         'multiple' : false,
         'type' : false,
         'label' : '',
-        'help' : null,
-        'helpType' : 'tooltip', // tooltip | container
         'icon' : false,
         'placeholder' : '',
         'placeholderAsterisk' : true,
@@ -76,6 +74,10 @@ cm.define('Com.AbstractFormField', {
             'type' : 'json',
             'method' : 'get'
         },
+
+        'help' : null,
+        'helpType' : 'tooltip', // tooltip | container
+        'helpAlign' : 'left',
         'helpConstructor' : 'Com.HelpBubble',
         'helpParams' : {
             'renderStructure' : true,
@@ -189,6 +191,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.helpParams.content = that.params.help;
         that.params.helpParams.name = that.params.name;
         that.params.helpParams.type = that.params.helpType;
+        that.params.helpParams.align = that.params.helpAlign;
         that.components.form = that.params.form;
         // Ajax
         if(that.params.preload && !cm.isEmpty(that.params.ajax) && !cm.isEmpty(that.params.ajax.url)){
