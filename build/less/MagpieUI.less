@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.52.0 (2023-10-18 11:49) ************ */
+/*! ************ MagpieUI v3.52.1 (2023-10-19 05:20) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.52.0';
+@CmVersion: '3.52.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10906,6 +10906,8 @@ button {
 /* ******* PARTS: FIELD ******* */
 
 .pt__field {
+    @labelPadding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2);
+
     .clearfix;
     margin: 0 0 @CmForm-FieldIndent 0;
     padding: 0;
@@ -10927,7 +10929,7 @@ button {
         width: var( --pt-field--title-width);
         display: block;
         margin: 0;
-        padding: ((@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2) 0;
+        padding: @labelPadding 0;
         float: left;
         line-height: @CmFont-Base-LineHeight;
 
@@ -11122,36 +11124,43 @@ button {
                 padding-top: 0;
             }
         }
+
+        &.is-border-box {
+            padding-bottom: @labelPadding;
+        }
     }
 
     &.is-form-box {
-        .cm__box;
-        margin-bottom: @CmForm-FieldIndent;
+        .mx__box(@CmForm-FieldIndent);
+    }
+
+    &.is-border-box {
+        border: @CmBorder-Default;
+        border-radius: @CmBorder-Radius;
+        padding-right: @labelPadding;
+        padding-left: @labelPadding;
     }
 
     &.is-no-indent {
-        margin: 0;
+        .mx__box(0);
+        .mx__box-reverse(0);
     }
 
     &.field-indent,
     &.field-inner-indent {
-        .cm__box;
-        margin-bottom: @CmForm-FieldInnerIndent;
+        .mx__box(@CmForm-FieldInnerIndent);
     }
 
     &.field-inner-indent-reverse {
-        .cm__box-reverse;
-        margin-top: @CmForm-FieldInnerIndent;
+        .mx__box-reverse(@CmForm-FieldInnerIndent);
     }
 
     &.field-outer-indent {
-        .cm__box;
-        margin-bottom: @CmForm-FieldIndent;
+        .mx__box(@CmForm-FieldIndent);
     }
 
     &.field-outer-indent-reverse {
-        .cm__box-reverse;
-        margin-top: @CmForm-FieldIndent;
+        .mx__box-reverse(@CmForm-FieldIndent);
     }
 
     &.align-center {

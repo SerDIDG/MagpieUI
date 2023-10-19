@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.52.0 (2023-10-18 11:49) ************ */
+/*! ************ MagpieUI v3.52.1 (2023-10-19 05:20) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.52.0');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.52.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.52.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.52.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.52.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.52.1');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.52.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.52.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.52.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.52.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10998,52 +10998,58 @@ button.is-hidden {
 .pt__field.is-form-box.is-first > .field__title {
   padding-top: 0;
 }
-.pt__field.is-form-box {
-  margin-bottom: 24px;
+.pt__field.is-box.is-border-box,
+.pt__field.is-form-box.is-border-box {
+  padding-bottom: 7px;
+}
+.pt__field.is-form-box:not(:last-child) {
   margin-bottom: 16px;
 }
-.pt__field.is-form-box.bottom,
-.pt__field.is-form-box.is-last,
-.pt__field.is-form-box:last-child {
+.pt__field.is-form-box.is-last {
   margin-bottom: 0;
 }
-.pt__field.is-no-indent {
-  margin: 0;
+.pt__field.is-border-box {
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 3px;
+  padding-right: 7px;
+  padding-left: 7px;
 }
-.pt__field.field-indent,
-.pt__field.field-inner-indent {
-  margin-bottom: 24px;
-  margin-bottom: 8px;
-}
-.pt__field.field-indent.bottom,
-.pt__field.field-inner-indent.bottom,
-.pt__field.field-indent.is-last,
-.pt__field.field-inner-indent.is-last,
-.pt__field.field-indent:last-child,
-.pt__field.field-inner-indent:last-child {
+.pt__field.is-no-indent:not(:last-child) {
   margin-bottom: 0;
 }
-.pt__field.field-inner-indent-reverse {
-  margin-top: 24px;
-  margin-top: 8px;
+.pt__field.is-no-indent.is-last {
+  margin-bottom: 0;
 }
-.pt__field.field-inner-indent-reverse:first-child {
+.pt__field.is-no-indent:not(:first-child) {
   margin-top: 0;
 }
-.pt__field.field-outer-indent {
-  margin-bottom: 24px;
-  margin-bottom: 16px;
+.pt__field.is-no-indent.is-first {
+  margin-top: 0;
 }
-.pt__field.field-outer-indent.bottom,
-.pt__field.field-outer-indent.is-last,
-.pt__field.field-outer-indent:last-child {
+.pt__field.field-indent:not(:last-child),
+.pt__field.field-inner-indent:not(:last-child) {
+  margin-bottom: 8px;
+}
+.pt__field.field-indent.is-last,
+.pt__field.field-inner-indent.is-last {
   margin-bottom: 0;
 }
-.pt__field.field-outer-indent-reverse {
-  margin-top: 24px;
+.pt__field.field-inner-indent-reverse:not(:first-child) {
+  margin-top: 8px;
+}
+.pt__field.field-inner-indent-reverse.is-first {
+  margin-top: 0;
+}
+.pt__field.field-outer-indent:not(:last-child) {
+  margin-bottom: 16px;
+}
+.pt__field.field-outer-indent.is-last {
+  margin-bottom: 0;
+}
+.pt__field.field-outer-indent-reverse:not(:first-child) {
   margin-top: 16px;
 }
-.pt__field.field-outer-indent-reverse:first-child {
+.pt__field.field-outer-indent-reverse.is-first {
   margin-top: 0;
 }
 .pt__field.align-center > dt,
