@@ -293,7 +293,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Required
         that.nodes.required = cm.node('span', {'class' : 'required', 'title' : that.msg('asterisk.title')}, that.msg('asterisk.char'));
         if(that.params.required && that.params.requiredAsterisk){
-            cm.appendChild(that.nodes.required, that.nodes.label);
+            cm.appendChild(that.nodes.required, that.nodes.labelText || that.nodes.label);
         }
     };
 
@@ -827,11 +827,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         that.params.required = true;
         if(that.params.requiredAsterisk){
-            if(that.nodes.labelText){
-                cm.insertAfter(that.nodes.required, that.nodes.labelText);
-            }else{
-                cm.appendChild(that.nodes.required, that.nodes.label);
-            }
+            cm.appendChild(that.nodes.required, that.nodes.labelText || that.nodes.label);
         }
         return that;
     };

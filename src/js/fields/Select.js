@@ -43,10 +43,10 @@ cm.define('Com.Select', {
         'value' : null,                         // Option value / array of option values.
         'defaultValue' : null,
         'disabled' : false,
-        'id' : '',
+        'id' : null,
         'className' : '',
         'inputClassName' : '',
-        'tabindex' : 0,
+        'tabindex' : null,
         'icons' : {
             'arrow' : 'icon default linked'
         },
@@ -168,11 +168,11 @@ function(params){
             nodes['container'].title = that.params['title'];
         }
         // Tabindex
-        if(that.params['tabindex']){
+        if(cm.isNumber(that.params['tabindex'])){
             nodes['container'].setAttribute('tabindex', that.params['tabindex']);
         }
         // ID
-        if(that.params['id']){
+        if(!cm.isEmpty(that.params['id'])){
             nodes['container'].id = that.params['id'];
         }
         // Data attributes
@@ -219,6 +219,9 @@ function(params){
             )
         );
         cm.addClass(nodes['target'], that.params['inputClassName']);
+        if(!cm.isEmpty(that.params['id'])){
+            nodes['text'].setAttribute('aria-describedby', that.params['id']);
+        }
     };
 
     var renderMultiple = function(){
