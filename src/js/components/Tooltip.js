@@ -216,6 +216,10 @@ function(params){
                 showHandler();
             }
         }
+        // Reset autohide delay
+        if(that.isShow && !that.isShowProcess){
+            autoHideHandler();
+        }
     };
 
     var showHandler = function(immediately){

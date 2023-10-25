@@ -975,6 +975,15 @@ cm.hook = (function(){
     var _stack = {};
 
     return {
+        'get' : function(type){
+            if(!type){
+                return _stack;
+            }
+            if(!_stack[type]){
+                _stack[type] = [];
+            }
+            return _stack[type];
+        },
         'add' : function(type, handler){
             if(!_stack[type]){
                 _stack[type] = [];
@@ -1017,15 +1026,15 @@ cm.hook = (function(){
     }
 })();
 
-cm.onLoad = function(handler, isMessage){
-    isMessage = cm.isUndefined(isMessage) ? true : isMessage;
+cm.onLoad = function(handler, logMessage){
+    logMessage = cm.isUndefined(logMessage) ? true : logMessage;
     var called = false;
     var execute = function(){
         if(called){
             return;
         }
         called = true;
-        if(isMessage){
+        if(logMessage){
             cm.errorLog({
                 'type' : 'common',
                 'name' : 'cm.onLoad',
@@ -1039,15 +1048,15 @@ cm.onLoad = function(handler, isMessage){
     }catch(e){}
 };
 
-cm.onReady = function(handler, isMessage){
-    isMessage = cm.isUndefined(isMessage) ? true : isMessage;
+cm.onReady = function(handler, logMessage){
+    logMessage = cm.isUndefined(logMessage) ? true : logMessage;
     var called = false;
     var execute = function(){
         if(called){
             return;
         }
         called = true;
-        if(isMessage){
+        if(logMessage){
             cm.errorLog({
                 'type' : 'common',
                 'name' : 'cm.onReady',
