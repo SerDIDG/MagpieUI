@@ -962,6 +962,7 @@ function(params){
             actionItem = cm.merge({
                 'name' : '',
                 'label' : '',
+                'classes' : [],
                 'attr' : {},
                 'events' : {},
                 'preventDefault' : null,
@@ -984,6 +985,8 @@ function(params){
     }
 
     var renderCellActionItem = function(config, row, item, actionItem){
+        // Merge css classes
+        actionItem['attr']['classes'] = cm.merge(actionItem['classes'], actionItem['attr']['classes']);
         // WTF is that? - that is attribute bindings, for example - href
         cm.forEach(row['data'], function(itemValue, itemKey){
             actionItem['attr'] = cm.replaceDeep(
