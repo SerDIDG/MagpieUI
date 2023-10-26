@@ -535,7 +535,8 @@ function(params){
             'class' : '',		            // Item css class
             'target' : '_blank',            // Link target, for type="url|icon"
             'rel' : null,                   // Link rel, for type="url|icon"
-            'textOverflow' : null,          // Overflow long text to single line
+            'wrap' : false,                 // Wrap cell values in div
+            'textOverflow' : false,         // Overflow long text to single line
             'showTitle' : null,             // Show title on hover
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text
             'altText' : '',                 // Alternative column text
@@ -752,9 +753,12 @@ function(params){
         );
 
         // Text overflow
-        if(config['textOverflow']){
-            item['nodes']['inner'] = cm.node('div', {'class' : 'inner'});
+        if(config['wrap'] || config['textOverflow']){
+            item['nodes']['inner'] = cm.node('div', {'class' : 'wrap'});
             item['nodes']['container'].appendChild(item['nodes']['inner']);
+            if(config['textOverflow']) {
+                cm.addClass(item['nodes']['inner'], 'inner')
+            }
         }else{
             item['nodes']['inner'] = item['nodes']['container'];
         }
