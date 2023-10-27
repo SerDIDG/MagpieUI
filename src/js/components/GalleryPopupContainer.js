@@ -12,9 +12,9 @@ function() {
 });
 
 cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, className, classProto, classInherit) {
-    classProto.constructController = function(ClassObject) {
+    classProto.constructController = function(classObject) {
         var that = this;
-        return new ClassObject(
+        return new classObject(
             cm.merge(that.params.params, {
                 data: [that.params.data],
             })

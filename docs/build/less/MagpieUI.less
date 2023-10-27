@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.52.5 (2023-10-26 06:56) ************ */
+/*! ************ MagpieUI v3.53.1 (2023-10-27 20:51) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.52.5';
+@CmVersion: '3.53.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5566,6 +5566,11 @@ span.CodeMirror-selectedtext { background: none; }
 
 @ComGalleryLayout-ArrowWidth: @CmIndent-Medium;
 @ComGalleryLayout-SizesCount: 12;
+
+// /* ******* GALLERY PREVIEW ******* */
+
+@ComGalleryPreview-SidebarWidth: 400px;
+@ComGalleryPreview-SidebarPadding: @CmIndent-Medium;
 
 // /* ******* SLIDER ******* */
 
@@ -17616,6 +17621,26 @@ ul.pt__field__hint {
         width: 100%;
         height: 100%;
     }
+
+    &.has-sidebar {
+        > .inner {
+            display: flex;
+        }
+    }
+
+    &__sidebar {
+        width: 100%;
+        max-width: @ComGalleryPreview-SidebarWidth;
+        position: relative;
+        flex: none;
+        order: 2;
+
+        > .inner {
+            .cm__scroll--y-auto;
+            height: 100%;
+            padding: @ComGalleryPreview-SidebarPadding;
+        }
+    }
 }
 
 /* ******* COMPONENT: GALLERY: BAR ******* */
@@ -18081,8 +18106,6 @@ ul.pt__field__hint {
     }
 }
 
-/* ******* COMPONENT: GALLERY POPUP ******* */
-
 .com__gallery-popup {
     .com__gallery-preview {
         width: 100%;
@@ -18098,7 +18121,7 @@ ul.pt__field__hint {
     }
 }
 
-.com__gallery-popup__title-line {
+.com__gallery-popup__title {
     .cm__text-nowrap;
 
     .counter {

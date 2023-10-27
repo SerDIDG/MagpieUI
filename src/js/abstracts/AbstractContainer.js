@@ -23,6 +23,8 @@ cm.define('Com.AbstractContainer', {
     'params' : {
         'embedStructure' : 'none',
         'controllerEvents' : true,
+        'preventDefault': true,
+        'stopPropagation': false,
         'constructor' : null,
         'constructorParams' : {},
         'params' : {},                      // ToDo: deprecated, use constructorParams
@@ -84,9 +86,12 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.params['params'] = cm.merge(that.params['constructorParams'], that.params['params']);
     };
 
-    classProto.open = function(e){
-        e && cm.preventDefault(e);
+    classProto.open = function(event){
         var that = this;
+        if(event){
+            that.params.preventDefault && cm.preventDefault(event);
+            that.params.stopPropagation && cm.stopPropagation(event);
+        }
         if(that.params['placeholder']){
             that.openPlaceholder();
         }else{
@@ -95,9 +100,12 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         return that;
     };
 
-    classProto.close = function(e){
-        e && cm.preventDefault(e);
+    classProto.close = function(event){
         var that = this;
+        if(event) {
+            that.params.preventDefault && cm.preventDefault(event);
+            that.params.stopPropagation && cm.stopPropagation(event);
+        }
         if(that.params['placeholder']){
             that.closePlaceholder();
         }else{

@@ -80,4 +80,24 @@
         width: 100%;
         height: 100%;
     }
+
+    &.has-sidebar {
+        > .inner {
+            display: flex;
+        }
+    }
+
+    &__sidebar {
+        width: 100%;
+        max-width: @ComGalleryPreview-SidebarWidth;
+        position: relative;
+        flex: none;
+        order: 2;
+
+        > .inner {
+            .cm__scroll--y-auto;
+            height: 100%;
+            padding: @ComGalleryPreview-SidebarPadding;
+        }
+    }
 }

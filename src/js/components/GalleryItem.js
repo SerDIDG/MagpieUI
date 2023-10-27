@@ -10,6 +10,7 @@ cm.define('Com.GalleryItem', {
         renderStructure: true,
         embedStructureOnRender: false,
         controllerEvents: true,
+        removeOnDestruct: false,
 
         index: null,
         type: null,        // image | iframe

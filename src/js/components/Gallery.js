@@ -300,6 +300,7 @@ function(params){
     that.stop = function(){
         that.isProcess = false;
         if(that.temporaryItem){
+            that.temporaryItem.destruct();
             that.temporaryItem.remove();
         }
         removeLoader(that.temporaryItem);
@@ -309,6 +310,7 @@ function(params){
     that.clear = function(){
         that.stop();
         if(that.currentItem){
+            that.currentItem.destruct();
             that.currentItem.remove();
         }
         that.currentItem = null;
@@ -322,7 +324,8 @@ function(params){
         item = cm.merge({
             'link' : cm.node('a'),
             'src' : '',
-            'title' : ''
+            'title' : '',
+            'data' : {},
         }, item);
         processItem(item);
         return that;
