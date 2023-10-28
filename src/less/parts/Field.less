@@ -327,6 +327,15 @@
 .pt__field-status {
     transition: all @CmUI-Transition-DurationLong ease-in-out;
 
+    &.primary,
+    &.accent {
+        .cm__color__primary;
+    }
+
+    &.secondary {
+        .cm__color__secondary;
+    }
+
     &.placeholder {
         .cm__color__placeholder;
     }

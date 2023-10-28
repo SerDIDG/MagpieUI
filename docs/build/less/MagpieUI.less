@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.53.3 (2023-10-28 20:25) ************ */
+/*! ************ MagpieUI v3.53.4 (2023-10-29 01:20) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.53.3';
+@CmVersion: '3.53.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -11236,6 +11236,15 @@ button {
 
 .pt__field-status {
     transition: all @CmUI-Transition-DurationLong ease-in-out;
+
+    &.primary,
+    &.accent {
+        .cm__color__primary;
+    }
+
+    &.secondary {
+        .cm__color__secondary;
+    }
 
     &.placeholder {
         .cm__color__placeholder;

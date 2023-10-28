@@ -49,6 +49,7 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
 
         // Variables
         that.views = {};
+        that.currentItem = null;
 
         // Bind context
         that.openHandler = that.open.bind(that);
@@ -148,8 +149,9 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
 
     classProto.changeEvent = function(galleryItem){
         var that = this;
-        galleryItem.info = that.renderInfoView(galleryItem);
-        that.triggerEvent('onChange', galleryItem);
+        that.currentItem = galleryItem;
+        that.views.info = that.renderInfoView(that.currentItem);
+        that.triggerEvent('onChange', that.currentItem);
     };
 
     classProto.loadEvent = function(galleryItem) {
