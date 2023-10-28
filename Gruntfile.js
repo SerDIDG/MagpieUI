@@ -35,11 +35,12 @@ module.exports = function(grunt) {
                 dist : '<%= components.codemirror.path %>',
                 scripts : [
                     '<%= components.codemirror.dist %>/lib/codemirror.js',
+                    '<%= components.codemirror.dist %>/mode/clike/clike.js',
+                    '<%= components.codemirror.dist %>/mode/htmlmixed/htmlmixed.js',
                     '<%= components.codemirror.dist %>/mode/javascript/javascript.js',
                     '<%= components.codemirror.dist %>/mode/css/css.js',
                     '<%= components.codemirror.dist %>/mode/xml/xml.js',
                     '<%= components.codemirror.dist %>/mode/php/php.js',
-                    '<%= components.codemirror.dist %>/mode/htmlmixed/htmlmixed.js'
                 ],
                 styles : [
                     '<%= components.codemirror.dist %>/lib/codemirror.css'
