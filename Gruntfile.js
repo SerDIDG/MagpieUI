@@ -38,6 +38,7 @@ module.exports = function(grunt) {
                     '<%= components.codemirror.dist %>/mode/javascript/javascript.js',
                     '<%= components.codemirror.dist %>/mode/css/css.js',
                     '<%= components.codemirror.dist %>/mode/xml/xml.js',
+                    '<%= components.codemirror.dist %>/mode/php/php.js',
                     '<%= components.codemirror.dist %>/mode/htmlmixed/htmlmixed.js'
                 ],
                 styles : [
