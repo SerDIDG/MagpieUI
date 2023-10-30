@@ -140,10 +140,12 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         var that = this;
         if(that.targetNode){
             cm.click.remove(that.targetNode, that.openHandler);
+            that.targetNode.removeAttribute('aria-haspopup', 'dialog');
             that.targetNode = null;
         }
         if(cm.isNode(node)){
             that.targetNode = node;
+            that.targetNode.setAttribute('aria-haspopup', 'dialog');
             cm.click.add(node, that.openHandler);
         }
         return that;

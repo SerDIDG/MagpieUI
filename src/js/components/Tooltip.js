@@ -98,7 +98,7 @@ function(params){
 
     var render = function(){
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__tooltip'},
+        that.nodes['container'] = cm.node('div', {'class' : 'com__tooltip', 'role' : 'tooltip'},
             that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
                 that.nodes['content'] = cm.node('div', {'class' : 'scroll'})
             )

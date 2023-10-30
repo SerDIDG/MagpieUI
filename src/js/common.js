@@ -3552,11 +3552,17 @@ cm.setCSSVariable = function(key, value, node){
 };
 
 cm.getCSSVariable = function(key, node){
-    var styleObject;
     node = !cm.isUndefined(node) ? node : document.documentElement;
     if(cm.isNode(node)){
-        styleObject = cm.getStyleObject(node);
+        var styleObject = cm.getStyleObject(node);
         return styleObject.getPropertyValue(key);
+    }
+};
+
+cm.removeCSSVariable = function(key, node){
+    node = !cm.isUndefined(node) ? node : document.documentElement;
+    if(cm.isNode(node)){
+        node.style.removeProperty(key);
     }
 };
 
