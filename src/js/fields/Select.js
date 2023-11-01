@@ -415,8 +415,9 @@ function(params){
             'placeholder' : false,
             'value' : '',
             'text' : '',
+            'textNode': null,
             'classes': [],
-            'style': null
+            'style': null,
         }, item);
 
         // Validate
@@ -446,10 +447,17 @@ function(params){
         }
 
         // Structure
-        item['node'] = cm.node('li', {'classes' : item['classes'], 'style' : item['style']},
-            item['link'] = cm.node('a', {'innerHTML' : item['text'], 'title' : item['text']})
-        );
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
+        item['node'] = cm.node('li', {'classes' : item['classes'], 'style' : item['style']},
+            item['link'] = cm.node('a', {'title' : cm.cutHTML(item['text'])})
+        );
+
+        // Label
+        if (cm.isNode(item['textNode'])) {
+            cm.appendChild(item['textNode'], item['link']);
+        } else {
+            item['link'].innerHTML = item['text'];
+        }
 
         // States styles
         item['hidden'] && cm.addClass(item['node'], 'hidden');
@@ -466,7 +474,7 @@ function(params){
         }
 
         // Label click event
-        cm.addEvent(item['link'], 'click', function(){
+        cm.click.add(item['link'], function(){
             if(!item['disabled'] && !that.disabled){
                 set(item, true);
             }

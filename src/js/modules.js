@@ -275,6 +275,7 @@ Mod['Events'] = {
     },
     'addEvent' : function(event, handler){
         var that = this;
+        // ToDo: investigate this clone and remove it
         that.events = cm.clone(that.events);
         if(that.events[event]){
             if(cm.isFunction(handler)){
@@ -303,6 +304,7 @@ Mod['Events'] = {
     },
     'removeEvent' : function(event, handler){
         var that = this;
+        // ToDo: investigate this clone and remove it
         that.events = cm.clone(that.events);
         if(that.events[event]){
             if(cm.isFunction(handler)){
@@ -326,6 +328,7 @@ Mod['Events'] = {
     },
     'removeAllEvent' : function(event){
         var that = this;
+        // ToDo: investigate this clone and remove it
         that.events = cm.clone(that.events);
         if(that.events[event]){
             that.events = [];
@@ -345,6 +348,7 @@ Mod['Events'] = {
         // Replace event name parameter with context (legacy) in data
         data[0] = that;
         if(that.events[event]){
+            // ToDo: investigate this clone and remove it
             events = cm.clone(that.events[event]);
             cm.forEach(events, function(event){
                 event.apply(that, data);
@@ -587,7 +591,7 @@ Mod['DataNodes'] = {
     },
     'getDataNodesObject' : function(container, dataMarker, className){
         var that = this,
-            sourceNodes = {};
+            sourceNodes;
         container = typeof container === 'undefined'? document.body : container;
         dataMarker = typeof dataMarker === 'undefined'? that.params['nodesDataMarker'] : dataMarker;
         className = typeof className === 'undefined'? that.params['nodesMarker'] : className;
@@ -766,6 +770,7 @@ Mod['Callbacks'] = {
     },
     'callbacksProcess' : function(){
         var that = this;
+        // ToDo: investigate this clone and remove it
         that.callbacks = cm.clone(that.callbacks);
         // Save default callbacks
         cm.forEach(that.callbacks, function(callback, name){
@@ -779,6 +784,7 @@ Mod['Callbacks'] = {
     },
     'callbacksRestore' : function(){
         var that = this;
+        // ToDo: investigate this clone and remove it
         that.callbacks = cm.clone(that.callbacks);
         cm.forEach(that._callbacks, function(callback, name){
             that.callbacks[name] = callback;
