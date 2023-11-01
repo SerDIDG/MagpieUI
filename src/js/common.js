@@ -2276,6 +2276,9 @@ cm.removeSpaces = function(str){
 
 // https://doc.wikimedia.org/mediawiki-core/master/js/source/mediawiki.base.html#mw-html-method-escape
 cm.escapeHTML = function(str){
+    if (!cm.isString(str)) {
+        return;
+    }
     function escapeCallback(str){
         switch(str){
             case '\'':
@@ -2295,6 +2298,9 @@ cm.escapeHTML = function(str){
 };
 
 cm.cutHTML = function(str){
+    if (!cm.isString(str)) {
+        return;
+    }
     return str.replace(/<[^>]*>/g, '');
 };
 
