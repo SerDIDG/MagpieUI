@@ -144,12 +144,6 @@ function(params){
     var setMiscEvents = function(){
         // Init animation
         that.animation = new cm.Animation(that.nodes['container']);
-        // Add target event
-        if(that.params['preventClickEvent']){
-            cm.addEvent(that.params['target'], 'click', function(e){
-                cm.preventDefault(e);
-            });
-        }
         // Hide on self click
         if(that.params['hideOnSelfClick']){
             cm.addEvent(that.nodes['container'], 'click', function(){
@@ -163,7 +157,10 @@ function(params){
         setTargetEvent();
     };
 
-    var targetEvent = function(){
+    var targetEvent = function(event){
+        if(that.params['targetEvent'] === 'click' && that.params['preventClickEvent']) {
+            cm.preventDefault(event);
+        }
         if(!that.disabled){
             if(that.isShow && that.params['targetEvent'] === 'click' && that.params['hideOnReClick']){
                 hide();
@@ -185,7 +182,7 @@ function(params){
                 cm.addEvent(that.params['target'], 'mouseover', that.targetEventHandler, true);
                 break;
             case 'click' :
-                cm.addEvent(that.params['target'], 'click', that.targetEventHandler, true);
+                cm.click.add(that.params['target'], that.targetEventHandler, true);
                 break;
         }
     };
@@ -193,10 +190,10 @@ function(params){
     var removeTargetEvent = function(){
         switch(that.params['targetEvent']){
             case 'hover' :
-                cm.removeEvent(that.params['target'], 'mouseover', that.targetEventHandler);
+                cm.removeEvent(that.params['target'], 'mouseover', that.targetEventHandler, true);
                 break;
             case 'click' :
-                cm.removeEvent(that.params['target'], 'click', that.targetEventHandler);
+                cm.click.remove(that.params['target'], that.targetEventHandler, true);
                 break;
         }
     };

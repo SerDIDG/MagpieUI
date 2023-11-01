@@ -847,7 +847,7 @@ cm.click =  (function() {
     var stack = new Map();
 
     return {
-        add: function(el, callback) {
+        add: function(el, callback, useCapture) {
             if (!el || !cm.isFunction(callback)) {
                 return el;
             }
@@ -866,11 +866,11 @@ cm.click =  (function() {
             }
             item.set(callback, helper);
 
-            cm.addEvent(el, 'click', callback);
-            cm.addEvent(el, 'keypress', helper);
+            cm.addEvent(el, 'click', callback, useCapture);
+            cm.addEvent(el, 'keypress', helper, useCapture);
             return el;
         },
-        remove: function(el, callback) {
+        remove: function(el, callback, useCapture) {
             if (!el || !cm.isFunction(callback)) {
                 return el;
             }
@@ -886,8 +886,8 @@ cm.click =  (function() {
             }
             item.delete(callback);
 
-            cm.removeEvent(el, 'click', callback);
-            cm.removeEvent(el, 'keypress', helper);
+            cm.removeEvent(el, 'click', callback, useCapture);
+            cm.removeEvent(el, 'keypress', helper, useCapture);
             return el;
         },
         list: function() {
