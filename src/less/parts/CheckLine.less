@@ -1,10 +1,13 @@
 .pt__check-line {
+    @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+    @padding: max(floor((@padding_calc)), 0px);
+    @margin_calc: (@CmFont-Base-LineHeight - 13px) / 2;
+    @margin: max(floor((@margin_calc)), 0px);
+
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
 
     label {
-        @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
-        @padding: max(floor((@padding_calc)), 0px);
         margin-right: @CmIndent-Medium;
         padding: @padding 0;
         cursor: pointer;
@@ -23,9 +26,6 @@
 
     input[type="radio"],
     input[type="checkbox"] {
-        @margin_calc: (@CmFont-Base-LineHeight - 13px) / 2;
-        @margin: max(floor((@margin_calc)), 0px);
-
         margin: @margin @CmForm-FieldInnerIndent @margin 0;
         vertical-align: top;
         padding: 0;
@@ -55,6 +55,42 @@
 
     &.pull-center {
         text-align: center;
+    }
+
+    &.has-hover {
+        label {
+            padding: @padding;
+            border-radius: @CmBorder-Radius;
+            .mx__transition(all, @CmUI-Transition-Duration);
+
+            /* Emulate :focus-visible-focus-within. */
+            /* Separate rules because Firefox doesn't support this syntax yet. */
+            &:has(:focus-visible) {
+                background: @CmColor-Primary-LightHover;
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+                &.active {
+                    background: @CmColor-Primary-LightActiveHover;
+                }
+            }
+
+            &:is(:hover, :focus-visible) {
+                background: @CmColor-Primary-LightHover;
+                .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+                &.active {
+                    background: @CmColor-Primary-LightActiveHover;
+                }
+            }
+
+            &.active {
+                background: @CmColor-Primary-LightActive;
+            }
+
+            &:active {
+                background: @CmColor-Primary-LightActiveHover;
+            }
+        }
     }
 
     &.has-fields {

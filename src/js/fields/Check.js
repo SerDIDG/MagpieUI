@@ -325,17 +325,16 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
     classProto.setInputItemValue = function(item, value) {
         var that = this;
 
+        var checked;
         if (!cm.isEmpty(that.params.options)) {
-            if (that.params.multiple) {
-                item.input.checked = cm.inArray(value, item.values.checked);
-            } else {
-                item.input.checked = value === item.values.checked;
-            }
+            checked = that.params.multiple ? cm.inArray(value, item.values.checked) : (value === item.values.checked);
         } else {
-            item.input.checked = that.testInputValue(value, that.params.values.checked, that.params.values.unchecked);
+            checked = that.testInputValue(value, that.params.values.checked, that.params.values.unchecked);
         }
 
+        item.input.checked = checked;
         item.input.value = value;
+        cm.toggleClass(item.nodes.container, 'active', checked);
     };
 
     classProto.testInputValue = function(value, checkedValue, uncheckedValue) {
