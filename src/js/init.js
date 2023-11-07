@@ -83,6 +83,7 @@ cm.init = function(){
             cm._scrollSize = cm.getScrollBarSize();
             if(size !== cm._scrollSize){
                 size = cm._scrollSize;
+                cm.toggleClass(cm.getDocumentHtml(), 'is-scrollbar-visible', (size > 0));
                 cm.hook.trigger('scrollSizeChange', {
                     'scrollSize' : cm._scrollSize
                 });

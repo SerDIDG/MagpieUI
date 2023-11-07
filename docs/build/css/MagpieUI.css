@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.54.4 (2023-11-06 14:45) ************ */
+/*! ************ MagpieUI v3.55.0 (2023-11-07 18:23) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,14 +4376,14 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.54.4');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.54.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.54.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.54.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.54.4#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.55.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.55.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.55.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.55.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.55.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 /* ******* HELPERS ******* */
-.cm__scroll-bar-size-checker {
+.cm__scrollbar-size-checker {
   width: 100px;
   height: 100px;
   overflow: scroll;
@@ -4530,44 +4530,44 @@ span.CodeMirror-selectedtext {
   align-items: flex-start;
 }
 /* *** SCROLLBAR *** */
-.cm__scrollbar {
+html.is-scrollbar-visible .cm__scrollbar {
   scrollbar-width: thin;
 }
-.cm__scrollbar::-webkit-scrollbar {
+html.is-scrollbar-visible .cm__scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-.cm__scrollbar::-webkit-scrollbar-track {
+html.is-scrollbar-visible .cm__scrollbar::-webkit-scrollbar-track {
   background-color: hsla(0, 0%, 98%, 0.5);
   border-radius: 3px;
 }
-.cm__scrollbar::-webkit-scrollbar-thumb {
+html.is-scrollbar-visible .cm__scrollbar::-webkit-scrollbar-thumb {
   background-color: hsl(0, 0%, 86%);
   background-clip: padding-box;
   border: 1px solid transparent;
   border-radius: 3px;
 }
-.cm__scrollbar::-webkit-scrollbar-thumb:hover {
+html.is-scrollbar-visible .cm__scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: hsl(0, 0%, 80%);
 }
-.cm__scrollbar--light {
+html.is-scrollbar-visible .cm__scrollbar--light {
   scrollbar-width: thin;
 }
-.cm__scrollbar--light::-webkit-scrollbar {
+html.is-scrollbar-visible .cm__scrollbar--light::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-.cm__scrollbar--light::-webkit-scrollbar-track {
+html.is-scrollbar-visible .cm__scrollbar--light::-webkit-scrollbar-track {
   background-color: hsla(0, 0%, 98%, 0.5);
   border-radius: 3px;
 }
-.cm__scrollbar--light::-webkit-scrollbar-thumb {
+html.is-scrollbar-visible .cm__scrollbar--light::-webkit-scrollbar-thumb {
   background-color: hsl(210, 70%, 98%);
   background-clip: padding-box;
   border: 1px solid transparent;
   border-radius: 3px;
 }
-.cm__scrollbar--light::-webkit-scrollbar-thumb:hover {
+html.is-scrollbar-visible .cm__scrollbar--light::-webkit-scrollbar-thumb:hover {
   background-color: hsl(210, 70%, 95%);
 }
 /* *** COUNTER *** */
@@ -9160,7 +9160,6 @@ button.is-hidden {
   margin-bottom: 24px;
   -webkit-overflow-scrolling: touch;
   overflow: auto;
-  scrollbar-width: thin;
   min-height: 36px;
   display: block;
   white-space: pre-wrap;
@@ -9175,21 +9174,24 @@ button.is-hidden {
 .pt__box-code:last-child {
   margin-bottom: 0;
 }
-.pt__box-code::-webkit-scrollbar {
+html.is-scrollbar-visible .pt__box-code {
+  scrollbar-width: thin;
+}
+html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-.pt__box-code::-webkit-scrollbar-track {
+html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-track {
   background-color: hsla(0, 0%, 98%, 0.5);
   border-radius: 3px;
 }
-.pt__box-code::-webkit-scrollbar-thumb {
+html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb {
   background-color: hsl(0, 0%, 86%);
   background-clip: padding-box;
   border: 1px solid transparent;
   border-radius: 3px;
 }
-.pt__box-code::-webkit-scrollbar-thumb:hover {
+html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   background-color: hsl(0, 0%, 80%);
 }
 .pt__box-code.is-borderless {
@@ -18198,26 +18200,28 @@ ul.pt__field__hint li:before {
   overflow: hidden;
 }
 .com__dialog__window > .inner > .descr > .scroll.is-scroll {
-  scrollbar-width: thin;
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
 }
-.com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar {
+html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-scroll {
+  scrollbar-width: thin;
+}
+html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-.com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar-track {
+html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar-track {
   background-color: hsla(0, 0%, 98%, 0.5);
   border-radius: 3px;
 }
-.com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar-thumb {
+html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar-thumb {
   background-color: hsl(0, 0%, 86%);
   background-clip: padding-box;
   border: 1px solid transparent;
   border-radius: 3px;
 }
-.com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar-thumb:hover {
+html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-scroll::-webkit-scrollbar-thumb:hover {
   background-color: hsl(0, 0%, 80%);
 }
 .com__dialog__window > .inner > .descr > .scroll.is-no-scroll > .inner {

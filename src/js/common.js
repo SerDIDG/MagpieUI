@@ -2666,7 +2666,7 @@ cm.getScrollBarSize = (function(){
     var node;
     return function(){
         if(!node){
-            node = cm.node('div', {'class' : 'cm__scroll-bar-size-checker'});
+            node = cm.node('div', {'class' : 'cm__scrollbar-size-checker'});
             cm.insertFirst(node, document.body);
         }
         return Math.max(node.offsetWidth - node.clientWidth, 0);
