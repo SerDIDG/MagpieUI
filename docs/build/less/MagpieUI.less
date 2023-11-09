@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.55.0 (2023-11-07 18:23) ************ */
+/*! ************ MagpieUI v3.55.1 (2023-11-09 19:47) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.55.0';
+@CmVersion: '3.55.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10142,48 +10142,63 @@ button {
         }
     }
 
-    &.disabled {
-        label {
-            color: @CmColor-Font-Disabled;
-        }
-    }
-
     &.pull-center {
         text-align: center;
     }
 
+    &.disabled {
+        label {
+            color: @CmColor-Font-Disabled;
+            cursor: default;
+        }
+    }
+
     &.has-hover {
         label {
-            padding: @padding;
+            margin-right: @CmBorder-Width;
+            padding: @padding @CmForm-FieldInnerIndent;
             border-radius: @CmBorder-Radius;
-            .mx__transition(all, @CmUI-Transition-Duration);
+        }
 
-            /* Emulate :focus-visible-focus-within. */
-            /* Separate rules because Firefox doesn't support this syntax yet. */
-            &:has(:focus-visible) {
-                background: @CmColor-Primary-LightHover;
-                .mx__transition(all, @CmUI-Transition-DurationReverse);
+        &:not(.disabled) {
+            label {
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                /* Emulate :focus-visible-focus-within. */
+                /* Separate rules because Firefox doesn't support this syntax yet. */
+                &:has(:focus-visible) {
+                    background: @CmColor-Primary-LightHover;
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+                    &.active {
+                        background: @CmColor-Primary-LightActiveHover;
+                    }
+                }
+
+                &:is(:hover, :focus-visible) {
+                    background: @CmColor-Primary-LightHover;
+                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+                    &.active {
+                        background: @CmColor-Primary-LightActiveHover;
+                    }
+                }
 
                 &.active {
+                    background: @CmColor-Primary-LightActive;
+                }
+
+                &:active {
                     background: @CmColor-Primary-LightActiveHover;
                 }
             }
+        }
 
-            &:is(:hover, :focus-visible) {
-                background: @CmColor-Primary-LightHover;
-                .mx__transition(all, @CmUI-Transition-DurationReverse);
-
+        &.disabled {
+            label {
                 &.active {
-                    background: @CmColor-Primary-LightActiveHover;
+                    background: @CmColor-Secondary-LightHighlight;
                 }
-            }
-
-            &.active {
-                background: @CmColor-Primary-LightActive;
-            }
-
-            &:active {
-                background: @CmColor-Primary-LightActiveHover;
             }
         }
     }

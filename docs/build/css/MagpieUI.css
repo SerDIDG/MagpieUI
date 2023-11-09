@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.55.0 (2023-11-07 18:23) ************ */
+/*! ************ MagpieUI v3.55.1 (2023-11-09 19:47) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.55.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.55.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.55.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.55.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.55.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.55.1');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.55.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.55.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.55.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.55.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9615,38 +9615,45 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__check-line > .fields.unveil {
   display: none;
 }
-.pt__check-line.disabled label {
-  color: #999999;
-}
 .pt__check-line.pull-center {
   text-align: center;
 }
+.pt__check-line.disabled label {
+  color: #999999;
+  cursor: default;
+}
 .pt__check-line.has-hover label {
-  padding: 7px;
+  margin-right: 1px;
+  padding: 7px 8px;
   border-radius: 3px;
+}
+.pt__check-line.has-hover:not(.disabled) label {
   transition: all 250ms ease-in-out 0ms;
   /* Emulate :focus-visible-focus-within. */
   /* Separate rules because Firefox doesn't support this syntax yet. */
 }
-.pt__check-line.has-hover label:has(:focus-visible) {
+.pt__check-line.has-hover:not(.disabled) label:has(:focus-visible) {
   background: hsl(210, 70%, 95%);
   transition: all 100ms ease-in-out 0ms;
 }
-.pt__check-line.has-hover label:has(:focus-visible).active {
+.pt__check-line.has-hover:not(.disabled) label:has(:focus-visible).active {
   background: hsl(210, 70%, 86%);
 }
-.pt__check-line.has-hover label:is(:hover, :focus-visible) {
+.pt__check-line.has-hover:not(.disabled) label:is(:hover, :focus-visible) {
   background: hsl(210, 70%, 95%);
   transition: all 100ms ease-in-out 0ms;
 }
-.pt__check-line.has-hover label:is(:hover, :focus-visible).active {
+.pt__check-line.has-hover:not(.disabled) label:is(:hover, :focus-visible).active {
   background: hsl(210, 70%, 86%);
 }
-.pt__check-line.has-hover label.active {
+.pt__check-line.has-hover:not(.disabled) label.active {
   background: hsl(210, 70%, 91%);
 }
-.pt__check-line.has-hover label:active {
+.pt__check-line.has-hover:not(.disabled) label:active {
   background: hsl(210, 70%, 86%);
+}
+.pt__check-line.has-hover.disabled label.active {
+  background: hsl(0, 0%, 98%);
 }
 .pt__check-line.has-fields {
   display: -webkit-flex;
