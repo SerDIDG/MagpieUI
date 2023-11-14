@@ -262,8 +262,8 @@ function(params){
 
     var fieldBlurEvent = function(field, params){
         if(
-            that.params.validate && that.params.validateOnChange
-            && (field.params.required || field.params.validate)
+            that.isEnabled && that.params.validate && that.params.validateOnChange &&
+            (field.params.required || field.params.validate)
         ){
             params.fieldController.validate();
         }
@@ -271,8 +271,8 @@ function(params){
 
     var fieldChangeEvent = function(field, params){
         if(
-            that.params.validate && that.params.validateOnChange
-            && (field.params.required || field.params.validate)
+            that.isEnabled && that.params.validate && that.params.validateOnChange &&
+            (field.params.required || field.params.validate)
         ){
             params.fieldController.validate();
         }
@@ -284,8 +284,8 @@ function(params){
 
     var fieldInputEvent = function(field, params){
         if(
-            that.params.validate && that.params.validateOnInput
-            && (field.params.required || field.params.validate)
+            that.isEnabled && that.params.validate && that.params.validateOnInput &&
+            (field.params.required || field.params.validate)
         ){
             params.fieldController.validate();
         }
