@@ -294,91 +294,101 @@ function(params){
 
     var renderButton = function(params){
         params = cm.merge({
-            'node' : null,
-            'name' : '',
-            'label' : '',
-            'class' : '',
-            'spinner' : false,
-            'spinnerClass' : '',
-            'action' : 'submit',          // submit | reset | clear | custom
-            'container' : that.nodes.buttonsHolder,
-            'handler' : null,
+            'node': null,
+            'name': '',
+            'label': '',
+            'class': '',                // ToDo: deprecated
+            'classes': [],
+            'spinner': false,
+            'spinnerClass': '',         // ToDo: deprecated
+            'spinnerClasses': [],
+            'action': 'submit',         // submit | reset | clear | custom
+            'container': that.nodes.buttonsHolder,
+            'handler': null,
         }, params);
-        // Render
-        if(!that.buttons[params.name]){
-            if(!cm.isNode(params.node)){
-                params.node = cm.node('button', {'name' : params.name, 'class' : ['button', params.class].join(' ')},
-                    params.labelNode = cm.node('div', {'class' : 'label is-show'}, params.label)
-                );
-            }
-            // Spinner
-            if(params.spinner){
-                params.spinnerNode = cm.node('div', {'class' : ['icon', params.spinnerClass].join(' ')});
-                cm.appendChild(params.spinnerNode, params.node);
-                cm.addClass(params.node, 'button-spinner');
-            }
-            // Actions
-            switch(params.action){
-                case 'submit':
-                    params.node.type = 'submit';
-                    cm.addClass(params.node, 'button-primary');
-                    cm.click.add(params.node, function(e){
-                        cm.preventDefault(e);
-                        if(cm.isFunction(params.handler)){
-                            params.handler(that, params, e);
-                            return;
-                        }
-                        if(that.isProcess){
-                            that.abort();
-                        }else{
-                            that.send();
-                        }
-                    });
-                    break;
 
-                case 'reset':
-                    params.node.type = 'reset';
-                    cm.addClass(params.node, 'button-transparent');
-                    cm.click.add(params.node, function(e){
-                        cm.preventDefault(e);
-                        if(cm.isFunction(params.handler)){
-                            params.handler(that, params, e);
-                            return;
-                        }
-                        if(!that.isProcess){
-                            that.reset();
-                        }
-                    });
-                    break;
-
-                case 'clear':
-                    cm.addClass(params.node, 'button-transparent');
-                    cm.click.add(params.node, function(e){
-                        cm.preventDefault(e);
-                        if(cm.isFunction(params.handler)){
-                            params.handler(that, params, e);
-                            return;
-                        }
-                        if(!that.isProcess){
-                            that.clear();
-                        }
-                    });
-                    break;
-
-                case 'custom':
-                default:
-                    cm.click.add(params.node, function(e){
-                        cm.preventDefault(e);
-                        if(cm.isFunction(params.handler)){
-                            params.handler(that, params, e);
-                        }
-                    });
-                    break;
-            }
-            cm.appendChild(params.node, params.container);
-            // Export
-            that.buttons[params.name] = params;
+        if(that.buttons[params.name]){
+            return;
         }
+
+        // Structure
+        if(!cm.isNode(params.node)){
+            params.classes = cm.merge(['button', params.class], params.classes);
+            params.node = cm.node('button', {name: params.name, classes: params.classes},
+                params.labelNode = cm.node('div', {classes: 'label is-show'}, params.label)
+            );
+        }
+
+        // Spinner
+        if(params.spinner){
+            params.spinnerClasses = cm.merge(['icon', params.spinnerClass], params.spinnerClasses);
+            params.spinnerNode = cm.node('div', {classes: params.spinnerClasses});
+            cm.appendChild(params.spinnerNode, params.node);
+            cm.addClass(params.node, 'button-spinner');
+        }
+
+        // Actions
+        switch(params.action){
+            case 'submit':
+                params.node.type = 'submit';
+                cm.addClass(params.node, 'button-primary');
+                cm.click.add(params.node, function(event){
+                    cm.preventDefault(event);
+                    if(cm.isFunction(params.handler)){
+                        params.handler(that, params, event);
+                        return;
+                    }
+                    if(that.isProcess){
+                        that.abort();
+                    }else{
+                        that.send();
+                    }
+                });
+                break;
+
+            case 'reset':
+                params.node.type = 'reset';
+                cm.addClass(params.node, 'button-transparent');
+                cm.click.add(params.node, function(event){
+                    cm.preventDefault(event);
+                    if(cm.isFunction(params.handler)){
+                        params.handler(that, params, event);
+                        return;
+                    }
+                    if(!that.isProcess){
+                        that.reset();
+                    }
+                });
+                break;
+
+            case 'clear':
+                cm.addClass(params.node, 'button-transparent');
+                cm.click.add(params.node, function(event){
+                    cm.preventDefault(event);
+                    if(cm.isFunction(params.handler)){
+                        params.handler(that, params, event);
+                        return;
+                    }
+                    if(!that.isProcess){
+                        that.clear();
+                    }
+                });
+                break;
+
+            case 'custom':
+            default:
+                cm.click.add(params.node, function(event){
+                    cm.preventDefault(event);
+                    if(cm.isFunction(params.handler)){
+                        params.handler(that, params, event);
+                    }
+                });
+                break;
+        }
+
+        // Append
+        that.buttons[params.name] = params;
+        cm.appendChild(params.node, params.container);
     };
 
     var toggleButtons = function(){
