@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.55.4 (2023-11-14 09:40) ************ */
+/*! ************ MagpieUI v3.56.0 (2023-11-16 22:32) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.55.4';
+@CmVersion: '3.56.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -16966,18 +16966,16 @@ ul.pt__field__hint {
                 position: relative;
                 overflow: hidden;
 
-                > .inner {
-                    overflow: hidden;
-                }
-
                 &.is-scroll {
                     .cm__scrollbar;
                     .cm__scroll-y-a;
+                    overscroll-behavior-block: contain;
                 }
 
                 &.is-no-scroll {
                     > .inner {
                         height: 100%;
+                        overflow: hidden;
                     }
                 }
 
@@ -17039,7 +17037,6 @@ ul.pt__field__hint {
 }
 
 .com__dialog__inner {
-    overflow: hidden;
 }
 
 .com__dialog__iframe {

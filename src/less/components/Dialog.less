@@ -68,18 +68,16 @@
                 position: relative;
                 overflow: hidden;
 
-                > .inner {
-                    overflow: hidden;
-                }
-
                 &.is-scroll {
                     .cm__scrollbar;
                     .cm__scroll-y-a;
+                    overscroll-behavior-block: contain;
                 }
 
                 &.is-no-scroll {
                     > .inner {
                         height: 100%;
+                        overflow: hidden;
                     }
                 }
 
@@ -141,7 +139,6 @@
 }
 
 .com__dialog__inner {
-    overflow: hidden;
 }
 
 .com__dialog__iframe {

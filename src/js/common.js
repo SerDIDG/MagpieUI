@@ -4012,7 +4012,7 @@ cm.ajax = function(o){
             'debug' : true,
             'type' : 'json',                                         // text | document | json | jsonp | blob
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
-            'paramsType' : 'uri',                                    // uri | json | form-data
+            'paramsType' : 'uri',                                    // uri | json | form-data | none
             'uriConfig' : {},                                        // parameters for cm.obj2URI
             'uriParams' : {},
             'data' : {},
@@ -4100,10 +4100,12 @@ cm.ajax = function(o){
         // Process request route
         config['url'] = cm.strReplace(config['url'], variables);
         config['url'] = cm.fillVariables(config['url'], config['variables'], true);
-        if(!cm.isEmpty(config['uriParams'])){
-            config['url'] = [config['url'], config['uriParams']].join('?');
-        }else if(!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
-            config['url'] = [config['url'], config['params']].join('?');
+        if(config['paramsType'] !== 'none') {
+            if (!cm.isEmpty(config['uriParams'])) {
+                config['url'] = [config['url'], config['uriParams']].join('?');
+            } else if (!cm.isEmpty(config['params']) && !cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])) {
+                config['url'] = [config['url'], config['params']].join('?');
+            }
         }
         cm.hook.trigger('ajax.afterPrepare', config);
     };

@@ -62,6 +62,7 @@ cm.define('Com.Form', {
         'sendEmptyForm' : true,
         'sendEmptyFields' : false,
         'sendOnlyChangedFields' : false,
+        'abortPreviousRequest': false,
         'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey' : 'message',
@@ -276,7 +277,7 @@ function(params){
         ){
             params.fieldController.validate();
         }
-        if(that.params.sendOnChange){
+        if(that.params.sendOnChange && !field.params.system){
             that.send();
         }
         that.triggerEvent('onChange');
@@ -1026,6 +1027,9 @@ function(params){
     that.send = function(){
         if(!that.isEnabled){
             return that;
+        }
+        if(that.isProcess && that.params.abortPreviousRequest){
+            that.abort();
         }
 
         var data = {

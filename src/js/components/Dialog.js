@@ -14,7 +14,8 @@ cm.define('Com.Dialog', {
         'onOpenEnd',
         'onCloseStart',
         'onClose',
-        'onCloseEnd'
+        'onCloseEnd',
+        'onScroll'
     ],
     'params' : {
         'container' : 'document.body',
@@ -265,6 +266,9 @@ function(params){
             }else{
                 cm.insertLast(nodes['descr'], nodes['windowInner']);
             }
+            cm.addEvent(nodes['scroll'], 'scroll', function(event){
+                that.triggerEvent('onScroll', event);
+            });
         }
         if(cm.isNode(node)){
             cm.clearNode(nodes['inner']).appendChild(node);

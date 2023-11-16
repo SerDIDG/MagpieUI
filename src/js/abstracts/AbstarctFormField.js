@@ -306,11 +306,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         nodes.container = cm.node('div', {'class' : 'pt__field__content'}, nodes.input);
         // Icon
         if(that.params.icon){
-            nodes.field = cm.node('div', {'class' : 'pt__input'},
-                nodes.input,
-                nodes.icon = cm.node('div', {'class' : that.params.icon})
-            );
+            if(cm.isNode(that.params.icon)){
+                nodes.icon = that.params.icon;
+            }else{
+                nodes.icon = cm.node('div', {'class' : that.params.icon});
+            }
             cm.click.add(nodes.icon, that.focusHandler);
+            nodes.field = cm.node('div', {'class' : 'pt__input'}, nodes.input, nodes.icon);
             cm.appendChild(nodes.field, nodes.container);
         }
         // Placeholder

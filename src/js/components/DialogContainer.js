@@ -1,5 +1,8 @@
 cm.define('Com.DialogContainer', {
     'extend' : 'Com.AbstractContainer',
+    'events' : [
+        'onScroll',
+    ],
     'params' : {
         'constructor' : 'Com.Dialog',
         'container' : 'document.body',
@@ -71,6 +74,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         that.components['controller'].addEvent('onOpenEnd', that.afterOpenControllerEndHandler);
         that.components['controller'].addEvent('onCloseStart', that.afterCloseControllerStartHandler);
         that.components['controller'].addEvent('onCloseEnd', that.afterCloseControllerHandler);
+        that.components['controller'].addEvent('onScroll', that.afterScroll.bind(that));
     };
 
     classProto.renderButtonsView = function(){
@@ -206,5 +210,12 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         cm.addClass(that.nodes['buttons'], ['pull', value].join('-'));
         that.params['justifyButtons'] = value;
         return that;
+    };
+
+    /****** AFTER EVENTS *******/
+
+    classProto.afterScroll = function(controller, event){
+        var that = this;
+        that.triggerEvent('onScroll', event);
     };
 });
