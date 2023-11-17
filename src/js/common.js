@@ -3228,6 +3228,39 @@ cm.hideBodyScroll = function(){
     cm.setBodyScrollTop(scrollTop);
 };
 
+cm.bodyScroll = (function(){
+    var stack = [];
+
+    return {
+        add: function(node) {
+            if (!cm.isNode(node)) {
+                return;
+            }
+            cm.arrayAdd(stack, node);
+            cm.bodyScroll.hide();
+        },
+        remove: function(node) {
+            if (!cm.isNode(node)) {
+                return;
+            }
+            cm.arrayRemove(stack, node);
+            cm.bodyScroll.show();
+        },
+        show: function() {
+            if (!cm.isEmpty(stack)) {
+                return;
+            }
+            cm.showBodyScroll();
+        },
+        hide: function() {
+            if (cm.isEmpty(stack)) {
+                return;
+            }
+            cm.hideBodyScroll();
+        },
+    };
+})();
+
 cm.scrollTo = function(node, parent, params, callback){
     if(!cm.isNode(node)){
         return null;
