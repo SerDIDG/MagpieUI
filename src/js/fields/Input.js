@@ -3,6 +3,9 @@ cm.define('Com.Input', {
     'events' : [
         'onInputStart',
         'onEnterPress',
+        'onKeyPress',
+        'onKeyDown',
+        'onKeyUp',
         'onIconClick',
         'onFocus',
         'onBlur'
@@ -46,6 +49,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.selectValueHandler = that.selectValue.bind(that);
         that.lazyValueHandler = that.lazyValue.bind(that);
         that.inputKeyDownHanlder = that.inputKeyDown.bind(that);
+        that.inputKeyUpHanlder = that.inputKeyUp.bind(that);
         that.inputKeyPressHanlder = that.inputKeyPress.bind(that);
         that.iconEventHanlder = that.iconEvent.bind(that);
         // Call parent method
@@ -157,6 +161,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.addEvent(that.nodes['content']['input'], 'blur', that.blurEventHandler);
         cm.addEvent(that.nodes['content']['input'], 'change', that.setValueHandler);
         cm.addEvent(that.nodes['content']['input'], 'keydown', that.inputKeyDownHanlder);
+        cm.addEvent(that.nodes['content']['input'], 'keyup', that.inputKeyUpHanlder);
         cm.addEvent(that.nodes['content']['input'], 'keypress', that.inputKeyPressHanlder);
         cm.addEvent(that.nodes['content']['icon'], 'click', that.iconEventHanlder);
     };
@@ -165,13 +170,22 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     classProto.inputKeyDown = function(e){
         var that = this;
+        that.triggerEvent('onKeyDown', that.value, e);
         that.selectionStartInitial = that.nodes['content']['input'].selectionStart;
         that.selectionEndInitial = that.nodes['content']['input'].selectionStart;
         that.triggerEvent('onInputStart', that.value);
     };
 
+    classProto.inputKeyUp = function(e){
+        var that = this;
+        that.triggerEvent('onKeyUp', that.value, e);
+    };
+
     classProto.inputKeyPress = function(e){
         var that = this;
+        that.triggerEvent('onKeyPress', that.value, e);
+
+        // For input
         if(that.params['type'] !== 'textarea' && cm.isKeyCode(e.keyCode, 'enter')){
             cm.preventDefault(e);
             that.setValue();
@@ -179,7 +193,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             that.triggerEvent('onEnterPress', that.value);
         }
 
-        // Special behavior: press Enter without Shift key for triggering onEnterPress event
+        // Special behavior for textarea: press Enter without Shift key for triggering onEnterPress event
         if(
             that.params['type'] === 'textarea' && that.params.enterPressBehavior &&
             cm.isKeyCode(e.keyCode, 'enter') && !e.shiftKey
