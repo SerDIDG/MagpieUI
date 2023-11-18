@@ -85,17 +85,8 @@
 }
 
 .textarea {
-    @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2;
-    @padding: max(ceil((@padding_calc)), @CmInput-Padding);
-
-    height: @CmTextarea-Height;
-    min-height: @CmForm-FieldHeight;
-    padding: @padding;
     resize: vertical;
-
-    &.has-min-height {
-        min-height: @CmTextarea-Height;
-    }
+    .textarea--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
 }
 
 .select {
@@ -106,6 +97,31 @@
 }
 
 /* *** MIXINS *** */
+
+.textarea--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    .textarea--size-helper(@height, @padding, @border, @lineHeight);
+
+    &.is-borderless {
+        .textarea--size-helper(@height, @padding, 0px, @lineHeight);
+    }
+}
+
+.textarea--size-helper (@height, @padding, @border, @lineHeight) {
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+
+    min-height: @height;
+    height: @CmTextarea-Height;
+    padding: max(ceil((@padding_calc)), @padding);
+    border-width: @border;
+
+    &.cm-autoresize {
+        height: 0;
+    }
+
+    &.has-min-height {
+        min-height: @CmTextarea-Height;
+    }
+}
 
 .input--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     .input--size-helper(@height, @padding, @border, @lineHeight);

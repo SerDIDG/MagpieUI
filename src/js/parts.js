@@ -118,6 +118,7 @@ Part['Autoresize'] = (function(){
         }
         if(cm.isNode(node) && node.tagName.toLowerCase() === 'textarea'){
             cm.addEvent(node, 'input', handle);
+            cm.addEvent(node, 'change', handle);
             cm.addEvent(node, 'focus', handle);
             cm.addEvent(node, 'blur', handle);
         }

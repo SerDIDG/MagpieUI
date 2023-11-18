@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.56.1 (2023-11-17 17:14) ************ */
+/*! ************ MagpieUI v3.56.2 (2023-11-18 14:14) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.56.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.56.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.56.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.56.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.56.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.56.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.56.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.56.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.56.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.56.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -6376,13 +6376,33 @@ select.input--xxlarge.is-borderless {
 }
 .textarea,
 textarea {
-  height: 100px;
-  min-height: 32px;
-  padding: 6px;
   resize: vertical;
+  min-height: 32px;
+  height: 100px;
+  padding: 6px;
+  border-width: 1px;
+}
+.textarea.cm-autoresize,
+textarea.cm-autoresize {
+  height: 0;
 }
 .textarea.has-min-height,
 textarea.has-min-height {
+  min-height: 100px;
+}
+.textarea.is-borderless,
+textarea.is-borderless {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.textarea.is-borderless.cm-autoresize,
+textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.textarea.is-borderless.has-min-height,
+textarea.is-borderless.has-min-height {
   min-height: 100px;
 }
 .select[multiple],
@@ -11253,35 +11273,36 @@ ul.pt__field__hint li:before {
 .pt__field__content .placeholder.pull-top span {
   transform: scale(0.75) translateY(-6px);
 }
-.pt__field__content.is-placeholder-above .com__input--textarea::before {
+.pt__field__content.is-placeholder-above .pt__input--textarea::before {
   display: block;
   position: absolute;
+  z-index: 2;
   content: '';
   border-radius: 3px 3px 0 0;
   background: #ffffff;
   pointer-events: none;
   transition: background 250ms ease-in-out 0ms;
 }
-.pt__field__content.is-placeholder-above .com__input--textarea:is(:hover, .input-hover)::before {
+.pt__field__content.is-placeholder-above .pt__input--textarea:is(:hover, .input-hover)::before {
   background: #ffffff;
 }
-.pt__field__content.is-placeholder-above .com__input--textarea:is(:focus, .input-focus)::before {
+.pt__field__content.is-placeholder-above .pt__input--textarea:is(:focus, .input-focus)::before {
   background: #ffffff;
   border-color: hsl(210, 75%, 52%);
 }
-.pt__field__content.is-placeholder-above .com__input--textarea:is([disabled], .input-disabled)::before {
+.pt__field__content.is-placeholder-above .pt__input--textarea:is([disabled], .input-disabled)::before {
   background: hsl(0, 0%, 98%);
 }
-.pt__field__content.is-placeholder-above:is(.error, .danger) .com__input--textarea::before {
+.pt__field__content.is-placeholder-above:is(.error, .danger) .pt__input--textarea::before {
   background-color: hsl(0, 65%, 98%);
 }
-.pt__field__content.is-placeholder-above:is(.warning) .com__input--textarea::before {
+.pt__field__content.is-placeholder-above:is(.warning) .pt__input--textarea::before {
   background-color: hsl(38, 70%, 98%);
 }
-.pt__field__content.is-placeholder-above:is(.ok, .success) .com__input--textarea::before {
+.pt__field__content.is-placeholder-above:is(.ok, .success) .pt__input--textarea::before {
   background-color: hsl(120, 60%, 98%);
 }
-.pt__field__content.is-placeholder-above:is(.disabled) .com__input--textarea::before {
+.pt__field__content.is-placeholder-above:is(.disabled) .pt__input--textarea::before {
   background-color: hsl(0, 0%, 98%);
 }
 .pt__field__content .placeholder {
@@ -11301,7 +11322,7 @@ ul.pt__field__hint li:before {
   padding-top: 9px;
   padding-bottom: 3px;
 }
-.pt__field__content.is-placeholder-above .com__input--textarea::before {
+.pt__field__content.is-placeholder-above .pt__input--textarea::before {
   height: 14px;
   top: 1px;
   right: 1px;
@@ -12815,7 +12836,7 @@ ul.pt__field__hint li:before {
 /* ******* PARTS: INPUT ******* */
 .pt__input {
   position: relative;
-  height: 32px;
+  min-height: 32px;
 }
 .pt__input .icon {
   background-color: transparent;
@@ -12906,6 +12927,36 @@ ul.pt__field__hint li:before {
 .pt__input textarea:not(:last-child),
 .pt__input select:not(:last-child) {
   padding-right: 36px;
+}
+.pt__input .textarea,
+.pt__input textarea {
+  min-height: 32px;
+  height: 100px;
+  padding: 6px;
+  border-width: 1px;
+}
+.pt__input .textarea.cm-autoresize,
+.pt__input textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input .textarea.has-min-height,
+.pt__input textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input .textarea.is-borderless,
+.pt__input textarea.is-borderless {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.pt__input .textarea.is-borderless.cm-autoresize,
+.pt__input textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input .textarea.is-borderless.has-min-height,
+.pt__input textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input .icon {
   height: 30px;
@@ -13049,7 +13100,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.is-borderless {
-  height: 32px;
+  min-height: 32px;
 }
 .pt__input.is-borderless .input,
 .pt__input.is-borderless input[type="text"],
@@ -13102,6 +13153,36 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless textarea:not(:last-child),
 .pt__input.is-borderless select:not(:last-child) {
   padding-right: 38px;
+}
+.pt__input.is-borderless .textarea,
+.pt__input.is-borderless textarea {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.pt__input.is-borderless .textarea.cm-autoresize,
+.pt__input.is-borderless textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.is-borderless .textarea.has-min-height,
+.pt__input.is-borderless textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.is-borderless .textarea.is-borderless,
+.pt__input.is-borderless textarea.is-borderless {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.pt__input.is-borderless .textarea.is-borderless.cm-autoresize,
+.pt__input.is-borderless textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.is-borderless .textarea.is-borderless.has-min-height,
+.pt__input.is-borderless textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.is-borderless .icon {
   height: 32px;
@@ -13245,7 +13326,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.size-large {
-  height: 32px;
+  min-height: 32px;
 }
 .pt__input.size-large .input,
 .pt__input.size-large input[type="text"],
@@ -13298,6 +13379,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-large textarea:not(:last-child),
 .pt__input.size-large select:not(:last-child) {
   padding-right: 36px;
+}
+.pt__input.size-large .textarea,
+.pt__input.size-large textarea {
+  min-height: 32px;
+  height: 100px;
+  padding: 6px;
+  border-width: 1px;
+}
+.pt__input.size-large .textarea.cm-autoresize,
+.pt__input.size-large textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-large .textarea.has-min-height,
+.pt__input.size-large textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.size-large .textarea.is-borderless,
+.pt__input.size-large textarea.is-borderless {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.pt__input.size-large .textarea.is-borderless.cm-autoresize,
+.pt__input.size-large textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-large .textarea.is-borderless.has-min-height,
+.pt__input.size-large textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.size-large .icon {
   height: 30px;
@@ -13441,7 +13552,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.size-large.is-borderless {
-  height: 32px;
+  min-height: 32px;
 }
 .pt__input.size-large.is-borderless .input,
 .pt__input.size-large.is-borderless input[type="text"],
@@ -13494,6 +13605,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless textarea:not(:last-child),
 .pt__input.size-large.is-borderless select:not(:last-child) {
   padding-right: 38px;
+}
+.pt__input.size-large.is-borderless .textarea,
+.pt__input.size-large.is-borderless textarea {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.pt__input.size-large.is-borderless .textarea.cm-autoresize,
+.pt__input.size-large.is-borderless textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-large.is-borderless .textarea.has-min-height,
+.pt__input.size-large.is-borderless textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.size-large.is-borderless .textarea.is-borderless,
+.pt__input.size-large.is-borderless textarea.is-borderless {
+  min-height: 32px;
+  height: 100px;
+  padding: 7px;
+  border-width: 0px;
+}
+.pt__input.size-large.is-borderless .textarea.is-borderless.cm-autoresize,
+.pt__input.size-large.is-borderless textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-large.is-borderless .textarea.is-borderless.has-min-height,
+.pt__input.size-large.is-borderless textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.size-large.is-borderless .icon {
   height: 32px;
@@ -13637,7 +13778,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.size-xlarge {
-  height: 48px;
+  min-height: 48px;
 }
 .pt__input.size-xlarge .input,
 .pt__input.size-xlarge input[type="text"],
@@ -13690,6 +13831,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge textarea:not(:last-child),
 .pt__input.size-xlarge select:not(:last-child) {
   padding-right: 52px;
+}
+.pt__input.size-xlarge .textarea,
+.pt__input.size-xlarge textarea {
+  min-height: 48px;
+  height: 100px;
+  padding: 14px;
+  border-width: 1px;
+}
+.pt__input.size-xlarge .textarea.cm-autoresize,
+.pt__input.size-xlarge textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xlarge .textarea.has-min-height,
+.pt__input.size-xlarge textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.size-xlarge .textarea.is-borderless,
+.pt__input.size-xlarge textarea.is-borderless {
+  min-height: 48px;
+  height: 100px;
+  padding: 15px;
+  border-width: 0px;
+}
+.pt__input.size-xlarge .textarea.is-borderless.cm-autoresize,
+.pt__input.size-xlarge textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xlarge .textarea.is-borderless.has-min-height,
+.pt__input.size-xlarge textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.size-xlarge .icon {
   height: 46px;
@@ -13833,7 +14004,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.size-xlarge.is-borderless {
-  height: 48px;
+  min-height: 48px;
 }
 .pt__input.size-xlarge.is-borderless .input,
 .pt__input.size-xlarge.is-borderless input[type="text"],
@@ -13886,6 +14057,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless textarea:not(:last-child),
 .pt__input.size-xlarge.is-borderless select:not(:last-child) {
   padding-right: 54px;
+}
+.pt__input.size-xlarge.is-borderless .textarea,
+.pt__input.size-xlarge.is-borderless textarea {
+  min-height: 48px;
+  height: 100px;
+  padding: 15px;
+  border-width: 0px;
+}
+.pt__input.size-xlarge.is-borderless .textarea.cm-autoresize,
+.pt__input.size-xlarge.is-borderless textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xlarge.is-borderless .textarea.has-min-height,
+.pt__input.size-xlarge.is-borderless textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.size-xlarge.is-borderless .textarea.is-borderless,
+.pt__input.size-xlarge.is-borderless textarea.is-borderless {
+  min-height: 48px;
+  height: 100px;
+  padding: 15px;
+  border-width: 0px;
+}
+.pt__input.size-xlarge.is-borderless .textarea.is-borderless.cm-autoresize,
+.pt__input.size-xlarge.is-borderless textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xlarge.is-borderless .textarea.is-borderless.has-min-height,
+.pt__input.size-xlarge.is-borderless textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.size-xlarge.is-borderless .icon {
   height: 48px;
@@ -14029,7 +14230,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.size-xxlarge {
-  height: 64px;
+  min-height: 64px;
 }
 .pt__input.size-xxlarge .input,
 .pt__input.size-xxlarge input[type="text"],
@@ -14082,6 +14283,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge textarea:not(:last-child),
 .pt__input.size-xxlarge select:not(:last-child) {
   padding-right: 68px;
+}
+.pt__input.size-xxlarge .textarea,
+.pt__input.size-xxlarge textarea {
+  min-height: 64px;
+  height: 100px;
+  padding: 22px;
+  border-width: 1px;
+}
+.pt__input.size-xxlarge .textarea.cm-autoresize,
+.pt__input.size-xxlarge textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xxlarge .textarea.has-min-height,
+.pt__input.size-xxlarge textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.size-xxlarge .textarea.is-borderless,
+.pt__input.size-xxlarge textarea.is-borderless {
+  min-height: 64px;
+  height: 100px;
+  padding: 23px;
+  border-width: 0px;
+}
+.pt__input.size-xxlarge .textarea.is-borderless.cm-autoresize,
+.pt__input.size-xxlarge textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xxlarge .textarea.is-borderless.has-min-height,
+.pt__input.size-xxlarge textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.size-xxlarge .icon {
   height: 62px;
@@ -14225,7 +14456,7 @@ ul.pt__field__hint li:before {
   padding-right: 0;
 }
 .pt__input.size-xxlarge.is-borderless {
-  height: 64px;
+  min-height: 64px;
 }
 .pt__input.size-xxlarge.is-borderless .input,
 .pt__input.size-xxlarge.is-borderless input[type="text"],
@@ -14278,6 +14509,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless textarea:not(:last-child),
 .pt__input.size-xxlarge.is-borderless select:not(:last-child) {
   padding-right: 70px;
+}
+.pt__input.size-xxlarge.is-borderless .textarea,
+.pt__input.size-xxlarge.is-borderless textarea {
+  min-height: 64px;
+  height: 100px;
+  padding: 23px;
+  border-width: 0px;
+}
+.pt__input.size-xxlarge.is-borderless .textarea.cm-autoresize,
+.pt__input.size-xxlarge.is-borderless textarea.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xxlarge.is-borderless .textarea.has-min-height,
+.pt__input.size-xxlarge.is-borderless textarea.has-min-height {
+  min-height: 100px;
+}
+.pt__input.size-xxlarge.is-borderless .textarea.is-borderless,
+.pt__input.size-xxlarge.is-borderless textarea.is-borderless {
+  min-height: 64px;
+  height: 100px;
+  padding: 23px;
+  border-width: 0px;
+}
+.pt__input.size-xxlarge.is-borderless .textarea.is-borderless.cm-autoresize,
+.pt__input.size-xxlarge.is-borderless textarea.is-borderless.cm-autoresize {
+  height: 0;
+}
+.pt__input.size-xxlarge.is-borderless .textarea.is-borderless.has-min-height,
+.pt__input.size-xxlarge.is-borderless textarea.is-borderless.has-min-height {
+  min-height: 100px;
 }
 .pt__input.size-xxlarge.is-borderless .icon {
   height: 64px;

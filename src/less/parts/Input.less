@@ -57,7 +57,7 @@
     @iconSizeDouble: @iconSize * 2;
     @iconPadding: @iconSize + @paddingX;
 
-    height: @height;
+    min-height: @height;
 
     .input {
         .input--size(@height, @paddingX, @borderWidth, @lineHeight);
@@ -69,6 +69,10 @@
         &:not(:last-child) {
             padding-right: @iconPadding;
         }
+    }
+
+    .textarea {
+        .textarea--size(@height, @paddingX, @borderWidth, @lineHeight);
     }
 
     .icon {

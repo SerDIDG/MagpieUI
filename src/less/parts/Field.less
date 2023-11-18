@@ -433,10 +433,11 @@ ul.pt__field__hint {
     }
 
     &.is-placeholder-above {
-        .com__input--textarea {
+        .pt__input--textarea {
             &::before {
                 display: block;
                 position: absolute;
+                z-index: 2;
                 content: '';
                 border-radius: @CmBorder-Radius @CmBorder-Radius 0 0;
                 background: @CmInput-DefaultBackground;
@@ -465,7 +466,7 @@ ul.pt__field__hint {
         }
 
         &:is(.error, .danger) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmColor-Danger-LightHighlight;
                 }
@@ -473,7 +474,7 @@ ul.pt__field__hint {
         }
 
         &:is(.warning) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmColor-Warning-LightHighlight;
                 }
@@ -481,7 +482,7 @@ ul.pt__field__hint {
         }
 
         &:is(.ok, .success) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmColor-Success-LightHighlight;
                 }
@@ -489,7 +490,7 @@ ul.pt__field__hint {
         }
 
         &:is(.disabled) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmInput-DisabledBackground;
                 }
@@ -532,7 +533,7 @@ ul.pt__field__hint {
             padding-bottom: @paddingBottom;
         }
 
-        .com__input--textarea {
+        .pt__input--textarea {
             &::before {
                 height: ((@inputPadding + @borderWidth) * 2);
                 .mx__position(@CmBorder-Width, @CmBorder-Width, auto, @CmBorder-Width);

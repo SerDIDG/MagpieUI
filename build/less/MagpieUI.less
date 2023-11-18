@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.56.1 (2023-11-17 17:14) ************ */
+/*! ************ MagpieUI v3.56.2 (2023-11-18 14:14) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.56.1';
+@CmVersion: '3.56.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7506,17 +7506,8 @@ tbody, thead, td, th, tr {
 }
 
 .textarea {
-    @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight - @CmBorder-Width * 2) / 2;
-    @padding: max(ceil((@padding_calc)), @CmInput-Padding);
-
-    height: @CmTextarea-Height;
-    min-height: @CmForm-FieldHeight;
-    padding: @padding;
     resize: vertical;
-
-    &.has-min-height {
-        min-height: @CmTextarea-Height;
-    }
+    .textarea--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
 }
 
 .select {
@@ -7527,6 +7518,31 @@ tbody, thead, td, th, tr {
 }
 
 /* *** MIXINS *** */
+
+.textarea--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    .textarea--size-helper(@height, @padding, @border, @lineHeight);
+
+    &.is-borderless {
+        .textarea--size-helper(@height, @padding, 0px, @lineHeight);
+    }
+}
+
+.textarea--size-helper (@height, @padding, @border, @lineHeight) {
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+
+    min-height: @height;
+    height: @CmTextarea-Height;
+    padding: max(ceil((@padding_calc)), @padding);
+    border-width: @border;
+
+    &.cm-autoresize {
+        height: 0;
+    }
+
+    &.has-min-height {
+        min-height: @CmTextarea-Height;
+    }
+}
 
 .input--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     .input--size-helper(@height, @padding, @border, @lineHeight);
@@ -11404,10 +11420,11 @@ ul.pt__field__hint {
     }
 
     &.is-placeholder-above {
-        .com__input--textarea {
+        .pt__input--textarea {
             &::before {
                 display: block;
                 position: absolute;
+                z-index: 2;
                 content: '';
                 border-radius: @CmBorder-Radius @CmBorder-Radius 0 0;
                 background: @CmInput-DefaultBackground;
@@ -11436,7 +11453,7 @@ ul.pt__field__hint {
         }
 
         &:is(.error, .danger) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmColor-Danger-LightHighlight;
                 }
@@ -11444,7 +11461,7 @@ ul.pt__field__hint {
         }
 
         &:is(.warning) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmColor-Warning-LightHighlight;
                 }
@@ -11452,7 +11469,7 @@ ul.pt__field__hint {
         }
 
         &:is(.ok, .success) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmColor-Success-LightHighlight;
                 }
@@ -11460,7 +11477,7 @@ ul.pt__field__hint {
         }
 
         &:is(.disabled) {
-            .com__input--textarea {
+            .pt__input--textarea {
                 &::before {
                     background-color: @CmInput-DisabledBackground;
                 }
@@ -11503,7 +11520,7 @@ ul.pt__field__hint {
             padding-bottom: @paddingBottom;
         }
 
-        .com__input--textarea {
+        .pt__input--textarea {
             &::before {
                 height: ((@inputPadding + @borderWidth) * 2);
                 .mx__position(@CmBorder-Width, @CmBorder-Width, auto, @CmBorder-Width);
@@ -12987,7 +13004,7 @@ ul.pt__field__hint {
     @iconSizeDouble: @iconSize * 2;
     @iconPadding: @iconSize + @paddingX;
 
-    height: @height;
+    min-height: @height;
 
     .input {
         .input--size(@height, @paddingX, @borderWidth, @lineHeight);
@@ -12999,6 +13016,10 @@ ul.pt__field__hint {
         &:not(:last-child) {
             padding-right: @iconPadding;
         }
+    }
+
+    .textarea {
+        .textarea--size(@height, @paddingX, @borderWidth, @lineHeight);
     }
 
     .icon {
