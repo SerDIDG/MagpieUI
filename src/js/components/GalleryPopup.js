@@ -6,6 +6,7 @@ cm.define('Com.GalleryPopup', {
         'onClose',
         'onChange',
         'onLoad',
+        'onRequest',
     ],
     params: {
         controllerEvents: true,
@@ -20,6 +21,7 @@ cm.define('Com.GalleryPopup', {
         showTitle: true,
         showZoom: true,
         autoPlay: false,
+        navigation: {},
         openOnSelfClick: false,
         data: [],
 
@@ -68,6 +70,7 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         var that = this;
         that.params.galleryParams.zoom = that.params.showZoom;
         that.params.galleryParams.autoplay = that.params.autoPlay;
+        that.params.galleryParams.navigation = that.params.navigation;
         that.params.placeholderParams.theme = that.params.theme;
         that.params.placeholderParams.size = that.params.size;
     };
@@ -131,6 +134,9 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
                         },
                         onSet: function() {
                             that.components.dialog.open();
+                        },
+                        onRequest: function(gallery, data) {
+                            that.triggerEvent('onRequest', data);
                         },
                         onItemLoad: function(gallery, data) {
                             that.loadEvent(data);

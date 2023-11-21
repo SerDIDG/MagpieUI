@@ -10,6 +10,7 @@ cm.define('Com.Gallery', {
         'onRenderStart',
         'onRender',
         'onSet',
+        'onRequest',
         'onChange',
         'onItemLoad',
         'onItemSet'
@@ -22,6 +23,11 @@ cm.define('Com.Gallery', {
         'showCaption' : true,
         'showArrowTitles' : false,
         'autoplay' : true,
+        'navigation': {
+            'count': 0,
+            'request': false,
+            'cycle': true,
+        },
         'types' : {
             'image' : 'jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff'
         },
@@ -64,6 +70,7 @@ function(params){
         that.convertEvents(that.params['events']);
         that.getDataNodes(that.params['node'], that.params['nodesDataMarker'], false);
         that.getDataConfig(that.params['node']);
+        validateParams();
         that.triggerEvent('onRenderStart');
         render();
         // Collect items
@@ -72,6 +79,12 @@ function(params){
         cm.forEach(that.params['data'], processItem);
         afterRender();
         that.triggerEvent('onRender');
+    };
+
+    var validateParams = function(){
+        if(that.params.navigation.request){
+            that.params.navigation.cycle = false;
+        }
     };
 
     var render = function(){
@@ -111,8 +124,8 @@ function(params){
             cm.remove(that.nodes['zoom']);
         }
         // Set events
-        cm.addEvent(that.nodes['next'], 'click', next);
-        cm.addEvent(that.nodes['prev'], 'click', prev);
+        cm.click.add(that.nodes['next'], next);
+        cm.click.add(that.nodes['prev'], prev);
         // Init animation
         anim['loader'] = new cm.Animation(that.nodes['loader']);
         // Embed
@@ -120,12 +133,12 @@ function(params){
     };
 
     var afterRender = function(){
-        if(that.items.length < 2){
-            that.nodes['next'].style.display = 'none';
-            that.nodes['prev'].style.display = 'none';
-        }else{
+        if(that.getCount() > 1){
             that.nodes['next'].style.display = '';
             that.nodes['prev'].style.display = '';
+        }else{
+            that.nodes['next'].style.display = 'none';
+            that.nodes['prev'].style.display = 'none';
         }
     };
 
@@ -189,6 +202,15 @@ function(params){
         }
     };
 
+    var setArrows = function(){
+        var index = that.currentItem.getParams('index');
+
+        if(!that.params.navigation.cycle && that.getCount() > 1){
+            that.nodes['prev'].style.display = index === 0 ? 'none' : '';
+            that.nodes['next'].style.display = index === that.getCount() - 1 ? 'none' : '';
+        }
+    };
+
     var setItemImage = function(item){
         cm.replaceClass(that.nodes.bar, 'is-partial', 'is-full');
         if(item.isLoaded()){
@@ -237,6 +259,9 @@ function(params){
             that.currentItem.appendTo(that.nodes.holder);
         }
 
+        // Toggle arrows visibility
+        setArrows();
+
         // Remove loader
         removeLoader();
 
@@ -260,12 +285,28 @@ function(params){
 
     var next = function(){
         var index = that.currentItem.getParams('index');
-        set((index === that.items.length - 1)? 0 : index + 1);
+
+        if (
+            that.params.navigation.request &&
+            index === that.items.length - 1 && that.params.navigation.count > that.items.length
+        ) {
+            setLoader();
+            that.triggerEvent('onRequest', {callback: that.next.bind(that)});
+        } else if (that.params.navigation.cycle) {
+            set(index === that.items.length - 1 ? 0 : index + 1);
+        } else if (index < that.items.length - 1) {
+            set(index + 1);
+        }
     };
 
     var prev = function(){
         var index = that.currentItem.getParams('index');
-        set((index === 0)? that.items.length - 1 : index - 1);
+
+        if (that.params.navigation.cycle) {
+            set(index === 0 ? that.items.length - 1 : index - 1);
+        } else if (index > 0) {
+            set(index - 1);
+        }
     };
 
     var zoom = function(){
@@ -294,7 +335,7 @@ function(params){
     };
 
     that.getCount = function(){
-        return that.items.length;
+        return Math.max(that.items.length, that.params.navigation.count);
     };
 
     that.stop = function(){
