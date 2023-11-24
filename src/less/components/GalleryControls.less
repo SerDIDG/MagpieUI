@@ -14,6 +14,7 @@
         opacity: 1;
         .mx__transition(opacity, @CmUI-Transition-Duration);
         cursor: pointer;
+        outline: none;
 
         .icon {
             position: absolute;
@@ -38,7 +39,7 @@
             }
         }
 
-        &:hover {
+        &:is(:hover, :focus-visible) {
             .icon {
                 opacity: 1;
             }
@@ -92,13 +93,14 @@
         position: absolute;
         z-index: 3;
         cursor: zoom-in;
+        outline: none;
 
         .icon {
             opacity: 0.3;
             .mx__transition(opacity, @CmUI-Transition-Duration);
         }
 
-        &:hover {
+        &:is(:hover, :focus-visible) {
             .icon {
                 opacity: 1;
             }

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.58.0 (2023-11-21 21:36) ************ */
+/*! ************ MagpieUI v3.59.0 (2023-11-24 20:44) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.58.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.58.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.58.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.58.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.58.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.59.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.59.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.59.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.59.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.59.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9649,7 +9649,7 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 }
 .pt__check-line.has-hover:not(.disabled) label {
   transition: all 250ms ease-in-out 0ms;
-  /* Emulate :focus-visible-focus-within. */
+  /* Emulate :focus-visible-within. */
   /* Separate rules because Firefox doesn't support this syntax yet. */
 }
 .pt__check-line.has-hover:not(.disabled) label:has(:focus-visible) {
@@ -18726,6 +18726,8 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   z-index: 1;
   -webkit-user-select: none;
   user-select: none;
+  /* Emulate :focus-visible-within. */
+  /* Separate rules because Firefox doesn't support this syntax yet. */
 }
 .com__gallery > .holder {
   height: 100%;
@@ -18747,36 +18749,22 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 }
 .com__gallery .pt__image.is-centered {
   padding-bottom: 0;
+  background-color: #111111;
 }
-.com__gallery > .loader {
-  display: none;
-  position: absolute;
-  z-index: 5;
-  opacity: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-.com__gallery > .loader .bg {
-  background: #111111;
-  position: absolute;
-  z-index: 1;
-  opacity: 0.6;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-.com__gallery > .loader .icon {
-  z-index: 2;
-}
-.com__gallery:hover .pt__image > .inner > .title {
+.com__gallery:has(:focus-visible) .pt__image > .inner > .title {
   bottom: 0;
   opacity: 1;
   transition: top 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
 }
-.com__gallery:hover > .com__gallery-controls {
+.com__gallery:has(:focus-visible) > .com__gallery-controls {
+  opacity: 1;
+}
+.com__gallery:is(:hover, :focus-visible) .pt__image > .inner > .title {
+  bottom: 0;
+  opacity: 1;
+  transition: top 100ms ease-in-out 0ms, opacity 100ms ease-in-out 0ms;
+}
+.com__gallery:is(:hover, :focus-visible) > .com__gallery-controls {
   opacity: 1;
 }
 /* *** DUMMY *** */
@@ -18936,6 +18924,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   opacity: 1;
   transition: opacity 250ms ease-in-out 0ms;
   cursor: pointer;
+  outline: none;
 }
 .com__gallery-controls .bar-arrow .icon {
   position: absolute;
@@ -18955,7 +18944,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__gallery-controls .bar-arrow.prev .icon {
   left: 0;
 }
-.com__gallery-controls .bar-arrow:hover .icon {
+.com__gallery-controls .bar-arrow:is(:hover, :focus-visible) .icon {
   opacity: 1;
 }
 .com__gallery-controls .bar-buttons {
@@ -19008,12 +18997,13 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   position: absolute;
   z-index: 3;
   cursor: zoom-in;
+  outline: none;
 }
 .com__gallery-controls .bar-zoom .icon {
   opacity: 0.3;
   transition: opacity 250ms ease-in-out 0ms;
 }
-.com__gallery-controls .bar-zoom:hover .icon {
+.com__gallery-controls .bar-zoom:is(:hover, :focus-visible) .icon {
   opacity: 1;
 }
 .com__gallery-controls.is-full {

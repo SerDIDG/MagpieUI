@@ -15,6 +15,8 @@ cm.define('Com.GalleryItem', {
         index: null,
         type: null,        // image | iframe
         src: null,
+        srcset: [],
+        sizes: [],
         title: null,
         info: null,
         mime: null,
@@ -43,6 +45,19 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
 
     classProto.onValidateParams = function() {
         var that = this;
+
+        // Srcsets
+        if (!cm.isEmpty(that.params.sizes)) {
+            that.params.size = that.params.sizes
+                .map(item => item.join(' '))
+                .join(', ');
+        }
+
+        if (!cm.isEmpty(that.params.srcset)) {
+            that.params.srcset = that.params.srcset
+                .map(item => item.join(' '))
+                .join(', ');
+        }
 
         // Get url
         try{
@@ -152,6 +167,12 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         } else {
             cm.addEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
             cm.addEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
+            if (!cm.isEmpty(that.params.sizes)) {
+                that.nodes.content.sizes = that.params.sizes;
+            }
+            if (!cm.isEmpty(that.params.srcset)) {
+                that.nodes.content.srcset = that.params.srcset;
+            }
             that.nodes.content.src = that.params.src;
         }
         return that;

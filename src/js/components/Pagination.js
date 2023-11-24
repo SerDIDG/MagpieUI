@@ -9,6 +9,7 @@ cm.define('Com.Pagination', {
         'onPageRenderEnd',
         'onPageRenderError',
         'onPageSwitched',
+        'onPageReady',
         'onEnd',
         'onSetCount'
     ],
@@ -325,10 +326,13 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         that.callbacks.end(that);
     };
 
-    classProto.callbacks.cached = function(that, data){
+    classProto.callbacks.cached = function(that, page){
         that.callbacks.start(that);
         that.setPage();
-        that.callbacks.render(that, data);
+        that.callbacks.append(that, page);
+        if(!that.params['switchManually']){
+            that.callbacks.switchPage(that, page);
+        }
         that.callbacks.end(that);
     };
 
@@ -366,9 +370,8 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         }else{
             that.callbacks.renderError(that, page);
         }
-        // Embed
-        cm.appendChild(page['container'], that.nodes['pages']);
-        cm.addClass(page['container'], 'is-visible', true);
+        // Append page
+        that.callbacks.append(that, page);
         that.triggerEvent('onPageRenderEnd', page);
         // Switch
         if(!that.params['switchManually']){
@@ -391,6 +394,12 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             );
         }
         that.triggerEvent('onPageRenderError', page);
+    };
+
+    classProto.callbacks.append = function(that, page){
+        cm.appendChild(page['container'], that.nodes['pages']);
+        cm.addClass(page['container'], 'is-visible', true);
+        that.triggerEvent('onPageReady', page);
     };
 
     classProto.callbacks.switchPage = function(that, page){
@@ -644,7 +653,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             // Request
             if(!that.currentPage || page !== that.currentPage){
                 if(that.params['cache'] && that.pages[that.page] && that.pages[that.page]['isRendered']){
-                    that.callbacks.cached(that, that.pages[that.page]['data']);
+                    that.callbacks.cached(that, that.pages[that.page]);
                 }else if(that.isAjax){
                     config = cm.clone(that.params['ajax']);
                     that.ajaxHandler = that.callbacks.request(that, config);

@@ -5,6 +5,8 @@ cm.define('Com.GalleryPopup', {
         'onOpenEnd',
         'onClose',
         'onChange',
+        'onPrev',
+        'onNext',
         'onLoad',
         'onRequest',
     ],
@@ -14,16 +16,20 @@ cm.define('Com.GalleryPopup', {
         embedStructure: 'append',
         embedStructureOnRender: false,
         removeOnDestruct: false,
+
         size: 'fullscreen',                   // fullscreen | auto
         aspectRatio: 'auto',                  // auto | 1x1 | 4x3 | 3x2 | 16x10 | 16x9 | 2x1 | 21x9 | 35x10 | 3x4 | 2x3 | 10x16 | 9x16 | 1x2
         theme: 'theme-black',
+
+        data: [],
+        active: null,
         showCounter: true,
         showTitle: true,
         showZoom: true,
         autoPlay: false,
         navigation: {},
+        overlayParams: {},
         openOnSelfClick: false,
-        data: [],
 
         placeholderConstructor: 'Com.Dialog',
         placeholderParams: {
@@ -38,7 +44,7 @@ cm.define('Com.GalleryPopup', {
         galleryConstructor: 'Com.Gallery',
         galleryParams: {
             showCaption: false
-        }
+        },
     }
 },
 function() {
@@ -71,6 +77,7 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.params.galleryParams.zoom = that.params.showZoom;
         that.params.galleryParams.autoplay = that.params.autoPlay;
         that.params.galleryParams.navigation = that.params.navigation;
+        that.params.galleryParams.overlayParams = that.params.overlayParams;
         that.params.placeholderParams.theme = that.params.theme;
         that.params.placeholderParams.size = that.params.size;
     };
@@ -128,12 +135,19 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
                     node: that.params.node,
                     container: that.nodes.inner,
                     data: that.params.data,
+                    active: that.params.active,
                     events: {
                         onChange: function(gallery, data) {
                             that.changeEvent(data.current, data.previous);
                         },
                         onSet: function() {
                             that.components.dialog.open();
+                        },
+                        onPrev: function(gallery, data) {
+                            that.triggerEvent('onPrev', data);
+                        },
+                        onNext: function(gallery, data) {
+                            that.triggerEvent('onNext', data);
                         },
                         onRequest: function(gallery, data) {
                             that.triggerEvent('onRequest', data);
@@ -214,7 +228,7 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
 
     classProto.open = function(){
         var that = this;
-        that.set(0);
+        that.set(that.params.active || 0);
         return that;
     };
 
