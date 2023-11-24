@@ -12,9 +12,9 @@
         .mx__position(0, auto, 0, auto);
         z-index: 2;
         opacity: 1;
-        .mx__transition(opacity, @CmUI-Transition-Duration);
         cursor: pointer;
         outline: none;
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         .icon {
             position: absolute;
@@ -43,6 +43,12 @@
             .icon {
                 opacity: 1;
             }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 
@@ -94,6 +100,7 @@
         z-index: 3;
         cursor: zoom-in;
         outline: none;
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         .icon {
             opacity: 0.3;
@@ -104,6 +111,12 @@
             .icon {
                 opacity: 1;
             }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 

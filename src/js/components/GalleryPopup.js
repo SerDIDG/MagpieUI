@@ -262,15 +262,42 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         return that;
     };
 
-    classProto.collect = function(node){
-        var that = this;
-        that.components.gallery.collect(node);
+    classProto.getIndex = function() {
+        const that = this;
+        return that.components.gallery.getIndex();
+    };
+
+    classProto.getLength = function() {
+        const that = this;
+        return that.components.gallery.getLength();
+    };
+
+    classProto.setCount = function(count) {
+        const that = this;
+        that.components.gallery.setCount(count);
         return that;
     };
 
-    classProto.collectItem = function(node){
+    classProto.getCount = function() {
+        const that = this;
+        return that.components.gallery.getCount();
+    };
+
+    classProto.toggleLoader = function(value) {
         var that = this;
-        that.components.gallery.collectItem(node);
+        that.components.gallery.toggleLoader(value);
+        return that;
+    };
+
+    classProto.collect = function(node, params){
+        var that = this;
+        that.components.gallery.collect(node, params);
+        return that;
+    };
+
+    classProto.collectItem = function(item){
+        var that = this;
+        that.components.gallery.collectItem(item);
         return that;
     };
 
@@ -279,4 +306,10 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
         that.components.gallery.clear();
         return that;
     };
+
+    classProto.getGallery = function() {
+        var that = this;
+        return that.components.gallery;
+    };
+
 });

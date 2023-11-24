@@ -24,13 +24,13 @@ cm.define('Com.Gallery', {
         'active': null,
         'duration': 500,
         'showCaption': true,
-        'showArrowTitles': false,
         'autoplay': true,
         'navigation': {
             'enable': true,
             'count': 0,
             'request': false,
             'cycle': true,
+            'showTitles': false,
         },
         'types': {
             'image': 'jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff'
@@ -67,6 +67,7 @@ cm.define('Com.Gallery', {
     'strings': {
         'next': 'Next',
         'prev': 'Previous',
+        'zoom': 'Zoom',
     },
 },
 function(params){
@@ -89,36 +90,29 @@ function(params){
         that.convertEvents(that.params.events);
         that.getDataNodes(that.params.node, that.params.nodesDataMarker, false);
         that.getDataConfig(that.params.node);
-        validateParams();
         that.triggerEvent('onRenderStart');
         render();
         // Collect items
         cm.forEach(that.nodes.items, that.collectItem);
         // Process config items
         cm.forEach(that.params.data, processItem);
-        afterRender();
+        that.set(that.params.active);
         that.triggerEvent('onRender');
-    };
-
-    var validateParams = function() {
-        if (that.params.navigation.request) {
-            that.params.navigation.cycle = false;
-        }
     };
 
     var render = function() {
         // Structure
         that.nodes.container = cm.node('div', {classes: 'com__gallery'},
             that.nodes.holder = cm.node('div', {classes: 'holder'}),
-            that.nodes.bar = cm.node('div', {classes: 'com__gallery-controls is-full'},
+            that.nodes.bar = cm.node('div', {classes: ['com__gallery-controls', 'is-full']},
                 cm.node('div', {classes: 'inner'},
-                    that.nodes.prev = cm.node('div', {classes: 'bar-arrow prev', role: 'button', tabindex: 0},
+                    that.nodes.prev = cm.node('div', {classes: ['bar-arrow', 'prev', 'is-hidden'], role: 'button', tabindex: 0, 'aria-label': that.msg('prev'), 'aria-hidden': 'true'},
                         cm.node('div', {classes: that.params.icons.prev})
                     ),
-                    that.nodes.next = cm.node('div', {classes: 'bar-arrow next', role: 'button', tabindex: 0},
+                    that.nodes.next = cm.node('div', {classes: ['bar-arrow', 'next', 'is-hidden'], role: 'button', tabindex: 0, 'aria-label': that.msg('next'), 'aria-hidden': 'true'},
                         cm.node('div', {classes: that.params.icons.next})
                     ),
-                    that.nodes.zoom = cm.node('div', {classes: 'bar-zoom', role: 'button', tabindex: 0},
+                    that.nodes.zoom = cm.node('div', {classes: ['bar-zoom', 'is-hidden'], role: 'button', tabindex: 0, 'aria-label': that.msg('zoom'), 'aria-hidden': 'true'},
                         cm.node('div', {classes: that.params.icons.zoom})
                     )
                 )
@@ -126,23 +120,24 @@ function(params){
         );
 
         // Arrow titles
-        if (that.params.showArrowTitles) {
+        if (that.params.navigation.showTitles) {
             that.nodes.prev.title = that.msg('prev');
             that.nodes.next.title = that.msg('next');
+            that.nodes.zoom.title = that.msg('zoom');
         }
 
         // Arrow click events
-        cm.click.add(that.nodes.next, next);
-        cm.click.add(that.nodes.prev, prev);
+        cm.click.add(that.nodes.prev, that.prev);
+        cm.click.add(that.nodes.next, that.next);
 
         // Zoom
         if (that.params.zoom) {
             cm.getConstructor(that.params.zoomConstructor, function(classConstructor) {
                 that.components.zoom = new classConstructor(that.params.zoomParams);
                 cm.click.add(that.nodes.zoom, zoom);
+                cm.removeClass(that.nodes.zoom, 'is-hidden');
+                that.nodes.zoom.setAttribute('aria-hidden', 'false');
             });
-        } else {
-            cm.remove(that.nodes.zoom);
         }
 
         // Overlay
@@ -160,24 +155,13 @@ function(params){
         that.params.container.appendChild(that.nodes.container);
     };
 
-    var afterRender = function() {
-        if (that.getCount() > 1) {
-            that.nodes.next.style.display = '';
-            that.nodes.prev.style.display = '';
-        } else {
-            that.nodes.next.style.display = 'none';
-            that.nodes.prev.style.display = 'none';
-        }
-        that.set(that.params.active);
-    };
-
     var processItem = function(params) {
         params = cm.merge(that.params.itemParams, params);
+        params.index = cm.isNumber(params.index) ? params.index : that.items.length;
 
         cm.getConstructor(that.params.itemConstructor, function(classConstructor) {
-            var item = new classConstructor(
+            that.items[params.index] = new classConstructor(
                 cm.merge(params, {
-                    index: that.items.length,
                     types: that.params.types,
                     showCaption: that.params.showCaption,
                     events: {
@@ -193,7 +177,6 @@ function(params){
                     },
                 })
             );
-            that.items.push(item);
         });
     };
 
@@ -232,46 +215,19 @@ function(params){
         }
     };
 
-    var setArrows = function() {
-        var index = that.currentItem.getParams('index');
-
-        if (!that.params.navigation.cycle && that.getCount() > 1) {
-            that.nodes.prev.style.display = index === 0 ? 'none' : '';
-            that.nodes.next.style.display = index === that.getCount() - 1 ? 'none' : '';
-        }
-    };
-
     var setItemImage = function(item) {
         cm.replaceClass(that.nodes.bar, 'is-partial', 'is-full');
         if (item.isLoaded()) {
             setItem(item);
         } else {
-            setLoader(item);
+            that.setLoader(item);
         }
     };
 
     var setItemIframe = function(item) {
         cm.replaceClass(that.nodes.bar, 'is-full', 'is-partial');
         item.appendTo(that.nodes.holder);
-        setLoader(item);
-    };
-
-    var setLoader = function(item) {
-        if (that.params.overlay) {
-            that.components.overlay.open();
-        }
-        if (item) {
-            item.load();
-        }
-    };
-
-    var removeLoader = function(item) {
-        if (that.params.overlay) {
-            that.components.overlay.close();
-        }
-        if (item) {
-            item.abort();
-        }
+        that.setLoader(item);
     };
 
     var setItem = function(item) {
@@ -291,10 +247,10 @@ function(params){
         }
 
         // Toggle arrows visibility
-        setArrows();
+        that.setArrows();
 
         // Remove loader
-        removeLoader();
+        that.removeLoader();
 
         // Animate item
         that.currentItem
@@ -317,13 +273,25 @@ function(params){
             });
     };
 
-    var next = function() {
+    var zoom = function() {
+        that.components.zoom
+            .set(that.currentItem.getParams('src'))
+            .open();
+    };
+
+    /* ******* MAIN ******* */
+
+    that.set = function(i) {
+        if (cm.isNumber(i) && that.items[i]) {
+            set(i);
+        }
+        return that;
+    };
+
+    that.next = function() {
         if (that.isProcess) {
             return;
         }
-
-        // Show lazy loader
-        setLoader();
 
         // API - onNext
         var index = that.currentItem.getParams('index');
@@ -340,6 +308,7 @@ function(params){
             that.params.navigation.request &&
             index === that.items.length - 1 && that.params.navigation.count > that.items.length
         ) {
+            that.setLoader();
             that.triggerEvent('onRequest', {callback: that.next.bind(that)});
         } else if (that.params.navigation.cycle) {
             set(index === that.items.length - 1 ? 0 : index + 1);
@@ -348,13 +317,10 @@ function(params){
         }
     };
 
-    var prev = function() {
+    that.prev = function() {
         if (that.isProcess) {
             return;
         }
-
-        // Show lazy loader
-        setLoader();
 
         // API - onPrev
         var index = that.currentItem.getParams('index');
@@ -374,34 +340,59 @@ function(params){
         }
     };
 
-    var zoom = function() {
-        that.components.zoom
-            .set(that.currentItem.getParams('src'))
-            .open();
+    that.getIndex = function() {
+        return that.currentItem.getParams('index');
     };
 
-    /* ******* MAIN ******* */
-
-    that.set = function(i) {
-        if (cm.isNumber(i) && that.items[i]) {
-            set(i);
-        }
-        return that;
+    that.getLength = function() {
+        return that.items.length;
     };
 
-    that.next = function() {
-        next();
-        return that;
-    };
-
-    that.prev = function() {
-        prev();
-        return that;
+    that.setCount = function(count) {
+        that.params.navigation.count = count;
+        that.setArrows();
     };
 
     that.getCount = function() {
-        return Math.max(that.items.length, that.params.navigation.count);
+        return Math.max(that.getLength(), that.params.navigation.count);
     };
+
+    that.setArrows = function() {
+        var index = that.currentItem.getParams('index');
+        var count = that.getCount();
+        var showPrev = that.params.navigation.cycle || count < 2 ? count > 1 : index > 0;
+        var showNext = that.params.navigation.cycle || count < 2 ? count > 1 : index < count - 1;
+        cm.toggleClass(that.nodes.prev, 'is-hidden', !showPrev);
+        cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
+        that.nodes.prev.setAttribute('aria-hidden', !showPrev);
+        that.nodes.next.setAttribute('aria-hidden', !showNext);
+    };
+    
+    that.setLoader = function(item) {
+        if (that.params.overlay) {
+            that.components.overlay.open();
+        }
+        if (item) {
+            item.load();
+        }
+    };
+
+    that.removeLoader = function(item) {
+        if (that.params.overlay) {
+            that.components.overlay.close();
+        }
+        if (item) {
+            item.abort();
+        }
+    };
+
+    that.toggleLoader = function(value) {
+        if (value) {
+            that.setLoader();
+        } else {
+            that.removeLoader();
+        }
+    }
 
     that.stop = function() {
         that.isProcess = false;
@@ -409,7 +400,7 @@ function(params){
             that.temporaryItem.destruct();
             that.temporaryItem.remove();
         }
-        removeLoader(that.temporaryItem);
+        that.removeLoader(that.temporaryItem);
         return that;
     };
 
@@ -428,6 +419,8 @@ function(params){
 
     that.add = function(item) {
         item = cm.merge({
+            index: null,
+            page: null,
             link: cm.node('a'),
             src: '',
             title: '',
@@ -437,34 +430,48 @@ function(params){
         return that;
     };
 
-    that.collect = function(node) {
-        if (cm.isNode(node)) {
-            var nodes = cm.getNodes(node);
+    that.collect = function(node, params) {
+        if (!cm.isNode(node)) {
+            return that;
+        }
 
-            // Collect items
-            if (!cm.isEmpty(nodes.items)) {
-                cm.forEach(nodes.items, that.collectItem);
-                afterRender();
-            }
+        // Validate params
+        params = cm.merge({
+            fromIndex: that.items.length,
+            fromPage: 0,
+        }, params);
+
+        // Collect items
+        var nodes = cm.getNodes(node);
+        if (!cm.isEmpty(nodes.items)) {
+            cm.forEach(nodes.items, function(item, i) {
+                item.index = params.fromIndex + i;
+                item.page = params.fromPage;
+                that.collectItem(item);
+            });
         }
         return that;
     };
 
     that.collectItem = function(item) {
-        if (!item.link) {
-            item.link = cm.node('a');
-        }
-        item = cm.merge({
-            src: item.link.getAttribute('href') || '',
-            title: item.link.getAttribute('title') || ''
-        }, item);
-        if (item.container) {
+        // Validate item
+        if (cm.isNode(item.container)) {
             item = cm.merge(that.getNodeDataConfig(item.container), item);
         }
+        if (cm.isEmpty(item.link)) {
+            item.link = cm.node('a');
+        }
+        if (cm.isEmpty(item.src)) {
+            item.src = item.link.getAttribute('href') || '';
+        }
+        if (cm.isEmpty(item.title)) {
+            item.title = item.link.getAttribute('title') || '';
+        }
+
+        // Process
         if (!that.hasItemCollected(item)) {
             processItem(item);
         }
-        return that;
     };
 
     that.hasItemCollected = function(item) {

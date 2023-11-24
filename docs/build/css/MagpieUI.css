@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.59.0 (2023-11-24 20:44) ************ */
+/*! ************ MagpieUI v3.60.0 (2023-11-25 01:38) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.59.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.59.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.59.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.59.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.59.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.60.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.60.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.60.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.60.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.60.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -4712,7 +4712,7 @@ html.is-scrollbar-visible .cm__scrollbar--light::-webkit-scrollbar-thumb:hover {
   overflow: scroll;
 }
 .cm__scroll--none {
-  overflow: hidden;
+  overflow: hidden !important;
 }
 .cm__scroll--auto {
   -webkit-overflow-scrolling: touch;
@@ -18922,9 +18922,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   left: auto;
   z-index: 2;
   opacity: 1;
-  transition: opacity 250ms ease-in-out 0ms;
   cursor: pointer;
   outline: none;
+  transition: all 250ms ease-in-out 0ms;
 }
 .com__gallery-controls .bar-arrow .icon {
   position: absolute;
@@ -18946,6 +18946,11 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 }
 .com__gallery-controls .bar-arrow:is(:hover, :focus-visible) .icon {
   opacity: 1;
+}
+.com__gallery-controls .bar-arrow.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 .com__gallery-controls .bar-buttons {
   position: absolute;
@@ -18998,6 +19003,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   z-index: 3;
   cursor: zoom-in;
   outline: none;
+  transition: all 250ms ease-in-out 0ms;
 }
 .com__gallery-controls .bar-zoom .icon {
   opacity: 0.3;
@@ -19005,6 +19011,11 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 }
 .com__gallery-controls .bar-zoom:is(:hover, :focus-visible) .icon {
   opacity: 1;
+}
+.com__gallery-controls .bar-zoom.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 .com__gallery-controls.is-full {
   top: 0;

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.59.0 (2023-11-24 20:44) ************ */
+/*! ************ MagpieUI v3.60.0 (2023-11-25 01:38) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.59.0';
+@CmVersion: '3.60.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6183,7 +6183,7 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 .cm__scroll--none {
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .cm__scroll--auto {
@@ -17268,9 +17268,9 @@ ul.pt__field__hint {
         .mx__position(0, auto, 0, auto);
         z-index: 2;
         opacity: 1;
-        .mx__transition(opacity, @CmUI-Transition-Duration);
         cursor: pointer;
         outline: none;
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         .icon {
             position: absolute;
@@ -17299,6 +17299,12 @@ ul.pt__field__hint {
             .icon {
                 opacity: 1;
             }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 
@@ -17350,6 +17356,7 @@ ul.pt__field__hint {
         z-index: 3;
         cursor: zoom-in;
         outline: none;
+        .mx__transition(all, @CmUI-Transition-Duration);
 
         .icon {
             opacity: 0.3;
@@ -17360,6 +17367,12 @@ ul.pt__field__hint {
             .icon {
                 opacity: 1;
             }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 
