@@ -10,7 +10,6 @@ cm.define('Com.Gallery', {
         'onRenderStart',
         'onRender',
         'onSet',
-        'onRequest',
         'onChange',
         'onPrev',
         'onNext',
@@ -28,7 +27,6 @@ cm.define('Com.Gallery', {
         'navigation': {
             'enable': true,
             'count': 0,
-            'request': false,
             'cycle': true,
             'showTitles': false,
         },
@@ -290,7 +288,7 @@ function(params){
 
     that.next = function() {
         if (that.isProcess) {
-            return;
+            return that;
         }
 
         // API - onNext
@@ -301,25 +299,20 @@ function(params){
         });
 
         if (!that.params.navigation.enable) {
-            return;
+            return that;
         }
 
-        if (
-            that.params.navigation.request &&
-            index === that.items.length - 1 && that.params.navigation.count > that.items.length
-        ) {
-            that.setLoader();
-            that.triggerEvent('onRequest', {callback: that.next.bind(that)});
-        } else if (that.params.navigation.cycle) {
+        if (that.params.navigation.cycle) {
             set(index === that.items.length - 1 ? 0 : index + 1);
         } else if (index < that.items.length - 1) {
             set(index + 1);
         }
+        return that;
     };
 
     that.prev = function() {
         if (that.isProcess) {
-            return;
+            return that;
         }
 
         // API - onPrev
@@ -330,7 +323,7 @@ function(params){
         });
 
         if (!that.params.navigation.enable) {
-            return;
+            return that;
         }
 
         if (that.params.navigation.cycle) {
@@ -338,6 +331,7 @@ function(params){
         } else if (index > 0) {
             set(index - 1);
         }
+        return that;
     };
 
     that.getIndex = function() {
@@ -351,6 +345,7 @@ function(params){
     that.setCount = function(count) {
         that.params.navigation.count = count;
         that.setArrows();
+        return that;
     };
 
     that.getCount = function() {
@@ -366,6 +361,7 @@ function(params){
         cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
         that.nodes.prev.setAttribute('aria-hidden', !showPrev);
         that.nodes.next.setAttribute('aria-hidden', !showNext);
+        return that;
     };
     
     that.setLoader = function(item) {
@@ -375,6 +371,7 @@ function(params){
         if (item) {
             item.load();
         }
+        return that;
     };
 
     that.removeLoader = function(item) {
@@ -384,6 +381,7 @@ function(params){
         if (item) {
             item.abort();
         }
+        return that;
     };
 
     that.toggleLoader = function(value) {
@@ -392,6 +390,7 @@ function(params){
         } else {
             that.removeLoader();
         }
+        return that;
     }
 
     that.stop = function() {
@@ -472,6 +471,7 @@ function(params){
         if (!that.hasItemCollected(item)) {
             processItem(item);
         }
+        return that;
     };
 
     that.hasItemCollected = function(item) {

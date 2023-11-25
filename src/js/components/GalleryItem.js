@@ -22,10 +22,15 @@ cm.define('Com.GalleryItem', {
         mime: null,
         link: null,
 
+        showCaption: false,
+        position: 'is-centered',
+        adaptive: false,
+        adaptiveFrom: cm._config.screenTabletPortrait,
+        adaptivePosition: 'is-contain',
+
         types: {
             image: null,
         },
-        showCaption: false,
     },
 },
 function() {
@@ -49,13 +54,17 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         // Srcsets
         if (!cm.isEmpty(that.params.sizes)) {
             that.params.size = that.params.sizes
-                .map(item => item.join(' '))
+                .map(function(item) {
+                    return item.join(' ');
+                })
                 .join(', ');
         }
 
         if (!cm.isEmpty(that.params.srcset)) {
             that.params.srcset = that.params.srcset
-                .map(item => item.join(' '))
+                .map(function(item) {
+                    return item.join(' ');
+                })
                 .join(', ');
         }
 
@@ -80,6 +89,17 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
     };
 
+    classProto.onRedraw = function() {
+        var that = this;
+        if (that.params.adaptive) {
+            if (cm._pageSize.winWidth > that.params.adaptiveFrom) {
+                cm.replaceClass(that.nodes.container, that.params.adaptivePosition, that.params.position);
+            } else {
+                cm.replaceClass(that.nodes.container, that.params.position, that.params.adaptivePosition);
+            }
+        }
+    };
+
     classProto.renderView = function() {
         var that = this;
 
@@ -91,22 +111,23 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
 
         // Structure
-        that.nodes.container = cm.node('div', {'classes': ['pt__image', 'is-centered']},
-            that.nodes.inner = cm.node('div', {'classes': 'inner'})
+        that.nodes.container = cm.node('div', {classes: 'pt__image'},
+            that.nodes.inner = cm.node('div', {classes: 'inner'})
         );
+        cm.addClass(that.nodes.container, that.params.position);
 
         // Render by type
         if (that.params.type === 'image') {
-            that.nodes.content = cm.node('img', {'classes': 'descr', 'alt': that.params.title, 'title': that.params.title});
+            that.nodes.content = cm.node('img', {classes: 'descr', alt: that.params.title, title: that.params.title});
         } else {
-            that.nodes.content = cm.node('iframe', {'classes': 'descr', 'allowfullscreen': true});
+            that.nodes.content = cm.node('iframe', {classes: 'descr', allowfullscreen: true});
         }
         cm.appendChild(that.nodes.content, that.nodes.inner);
 
         // Caption
         if (that.params.showCaption && that.params.type === 'image' && !cm.isEmpty(that.params.title)) {
-            that.nodes.caption = cm.node('div', {'classes': 'title'},
-                cm.node('div', {'classes': 'inner'}, that.params.title)
+            that.nodes.caption = cm.node('div', {classes: 'title'},
+                cm.node('div', {classes: 'inner'}, that.params.title)
             );
             cm.appendChild(that.nodes.caption, that.nodes.inner);
         }
@@ -202,6 +223,7 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         insertMethod = !cm.isUndefined(insertMethod) ? insertMethod : 'insertLast';
         if (cm.isNode(container)) {
             cm[insertMethod](that.nodes.container, container);
+            that.redraw();
         }
         return that;
     };
