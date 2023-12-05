@@ -171,9 +171,10 @@ Mod['Params'] = {
             that.params = cm.merge(that._inherit.prototype['params'], that.params);
         }
     },
-    'setParams' : function(params, replace){
+    'setParams' : function(params, replace, triggerEvents){
         var that = this;
         replace = cm.isUndefined(replace) ? false : replace;
+        triggerEvents = !cm.isUndefined(triggerEvents) ? triggerEvents : true;
         that.params = cm.merge(replace ? that._raw.params : that.params, params);
         that._update = cm.clone(that._update);
         that._update.params = cm.merge(that._update.params, that.params);
@@ -229,7 +230,7 @@ Mod['Params'] = {
             }
         });
         // Trigger event if module defined
-        if(that._modules['Events']){
+        if(triggerEvents && that._modules['Events']){
             that.triggerEvent('onSetParams');
         }
         return that;

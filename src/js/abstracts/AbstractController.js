@@ -36,6 +36,7 @@ cm.define('Com.AbstractController', {
         'onDestructProcess',
         'onDestructEnd',
         'onRedraw',
+        'onResize',
         'onScroll',
         'onSetEvents',
         'onSetEventsStart',
@@ -61,6 +62,7 @@ cm.define('Com.AbstractController', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'redrawOnRender' : 'immediately',
+        'redrawOnResize' : 'frame',
         'removeOnDestruct' : false,
         'className' : '',
         'controllerEvents' : false,
@@ -90,6 +92,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         that.isConstructed = false;
         // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
+        that.resizeHandler = that.resize.bind(that);
         that.scrollHandler = that.scroll.bind(that);
         that.destructHandler = that.destruct.bind(that);
         that.constructCollectorHandler = that.constructCollector.bind(that);
@@ -160,6 +163,21 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
                     that.triggerEvent('onRedraw');
                 });
                 break;
+        }
+        return that;
+    };
+
+    classProto.resize = function(params){
+        var that = this;
+        if (that.params.redrawOnResize) {
+            that.redraw(that.params.redrawOnResize);
+        }
+        if(params === 'immediately'){
+            that.triggerEvent('onResize');
+        }else{
+            animFrame(function(){
+                that.triggerEvent('onResize');
+            });
         }
         return that;
     };
@@ -264,7 +282,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onSetEventsStart');
         // Windows events
-        that.params['resizeEvent'] && cm.addEvent(that.params['resizeNode'], 'resize', that.redrawHandler);
+        that.params['resizeEvent'] && cm.addEvent(that.params['resizeNode'], 'resize', that.resizeHandler);
         that.params['scrollEvent'] && cm.addEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
         that.triggerEvent('onSetEvents');
         that.triggerEvent('onSetEventsProcess');
@@ -282,7 +300,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         that.triggerEvent('onUnsetEventsStart');
         // Windows events
-        that.params['resizeEvent'] && cm.removeEvent(that.params['resizeNode'], 'resize', that.redrawHandler);
+        that.params['resizeEvent'] && cm.removeEvent(that.params['resizeNode'], 'resize', that.resizeHandler);
         that.params['scrollEvent'] && cm.removeEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
         that.triggerEvent('onUnsetEvents');
         that.triggerEvent('onUnsetEventsProcess');

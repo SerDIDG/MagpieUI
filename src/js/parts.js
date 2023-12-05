@@ -121,13 +121,15 @@ Part['Autoresize'] = (function(){
             cm.addEvent(node, 'change', handle);
             cm.addEvent(node, 'focus', handle);
             cm.addEvent(node, 'blur', handle);
+            cm.customEvent.add(node, 'redraw', handle);
         }
         processedNodes.push(node);
     }
 
     function handle(event){
-        event.target.style.height = '0px';
-        event.target.style.height = [event.target.scrollHeight + getOffset(event.target), 'px'].join('');
+        var node = event.currentTarget || event.target;
+        node.style.height = '0px';
+        node.style.height = [node.scrollHeight + getOffset(node), 'px'].join('');
     }
 
     return function(container){

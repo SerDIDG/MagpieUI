@@ -942,24 +942,28 @@ cm.customEvent = (function(){
                     return cm.getNodeOffsetIndex(a['node']) - cm.getNodeOffsetIndex(b['node']);
                 });
                 cm.forEach(_stack[type], function(item){
+                    var itemParams = cm.merge(params, {
+                        'currentTarget' : item['node'],
+                        'item' : item
+                    });
                     if(!stopPropagation){
-                        if(params['self'] && node === item['node']){
-                            item['handler'](params);
+                        if(itemParams['self'] && node === item['node']){
+                            item['handler'](itemParams);
                         }
-                        switch(params['direction']){
+                        switch(itemParams['direction']){
                             case 'child':
                                 if(cm.isParent(node, item['node'], false)){
-                                    item['handler'](params);
+                                    item['handler'](itemParams);
                                 }
                                 break;
                             case 'parent':
                                 if(cm.isParent(item['node'], node, false)){
-                                    item['handler'](params);
+                                    item['handler'](itemParams);
                                 }
                                 break;
                             default:
                                 if(node !== item['node']){
-                                    item['handler'](params);
+                                    item['handler'](itemParams);
                                 }
                                 break;
                         }
