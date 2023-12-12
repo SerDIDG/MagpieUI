@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.60.2 (2023-12-05 03:30) ************ */
+/*! ************ MagpieUI v3.60.3 (2023-12-12 12:13) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.60.2');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.60.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.60.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.60.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.60.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.60.3');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.60.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.60.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.60.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.60.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11655,6 +11655,15 @@ ul.pt__field__hint li:before {
 .pt__grid.size-12 > ul {
   grid-template-columns: repeat(auto-fill, minmax(107px, 1fr));
 }
+.pt__grid > ul {
+  margin: 12px -12px -12px;
+}
+.pt__grid > ul:first-child {
+  margin: -12px;
+}
+.pt__grid > ul > li {
+  padding: 12px;
+}
 .pt__grid.has-outer-page-indent > ul {
   margin: 0 12px;
 }
@@ -11667,14 +11676,17 @@ ul.pt__field__hint li:before {
 .pt__grid.has-page-indent > ul:first-child {
   margin: 0 -12px;
 }
-.pt__grid > ul {
-  margin: 12px -12px -12px;
+.pt__grid.has-page-indent-first > ul {
+  margin-top: -12px;
 }
-.pt__grid > ul:first-child {
-  margin: -12px;
+.pt__grid.has-page-indent-first > ul:first-child {
+  margin-top: -12px;
 }
-.pt__grid > ul > li {
-  padding: 12px;
+.pt__grid.has-page-indent-last > ul {
+  margin-bottom: -12px;
+}
+.pt__grid.has-page-indent-last > ul:first-child {
+  margin-bottom: -12px;
 }
 .pt__grid.indent-0px > ul {
   margin: 0;
@@ -11684,6 +11696,15 @@ ul.pt__field__hint li:before {
 }
 .pt__grid.indent-0px > ul > li {
   padding: 0;
+}
+.pt__grid.indent-2px > ul {
+  margin: 1px -1px -1px;
+}
+.pt__grid.indent-2px > ul:first-child {
+  margin: -1px;
+}
+.pt__grid.indent-2px > ul > li {
+  padding: 1px;
 }
 .pt__grid.indent-2px.has-outer-page-indent > ul {
   margin: 0 1px;
@@ -11697,14 +11718,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-2px.has-page-indent > ul:first-child {
   margin: 0 -1px;
 }
-.pt__grid.indent-2px > ul {
-  margin: 1px -1px -1px;
+.pt__grid.indent-2px.has-page-indent-first > ul {
+  margin-top: -1px;
 }
-.pt__grid.indent-2px > ul:first-child {
-  margin: -1px;
+.pt__grid.indent-2px.has-page-indent-first > ul:first-child {
+  margin-top: -1px;
 }
-.pt__grid.indent-2px > ul > li {
-  padding: 1px;
+.pt__grid.indent-2px.has-page-indent-last > ul {
+  margin-bottom: -1px;
+}
+.pt__grid.indent-2px.has-page-indent-last > ul:first-child {
+  margin-bottom: -1px;
+}
+.pt__grid.indent-4px > ul {
+  margin: 2px -2px -2px;
+}
+.pt__grid.indent-4px > ul:first-child {
+  margin: -2px;
+}
+.pt__grid.indent-4px > ul > li {
+  padding: 2px;
 }
 .pt__grid.indent-4px.has-outer-page-indent > ul {
   margin: 0 2px;
@@ -11718,14 +11751,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-4px.has-page-indent > ul:first-child {
   margin: 0 -2px;
 }
-.pt__grid.indent-4px > ul {
-  margin: 2px -2px -2px;
+.pt__grid.indent-4px.has-page-indent-first > ul {
+  margin-top: -2px;
 }
-.pt__grid.indent-4px > ul:first-child {
-  margin: -2px;
+.pt__grid.indent-4px.has-page-indent-first > ul:first-child {
+  margin-top: -2px;
 }
-.pt__grid.indent-4px > ul > li {
-  padding: 2px;
+.pt__grid.indent-4px.has-page-indent-last > ul {
+  margin-bottom: -2px;
+}
+.pt__grid.indent-4px.has-page-indent-last > ul:first-child {
+  margin-bottom: -2px;
+}
+.pt__grid.indent-8px > ul {
+  margin: 4px -4px -4px;
+}
+.pt__grid.indent-8px > ul:first-child {
+  margin: -4px;
+}
+.pt__grid.indent-8px > ul > li {
+  padding: 4px;
 }
 .pt__grid.indent-8px.has-outer-page-indent > ul {
   margin: 0 4px;
@@ -11739,14 +11784,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-8px.has-page-indent > ul:first-child {
   margin: 0 -4px;
 }
-.pt__grid.indent-8px > ul {
-  margin: 4px -4px -4px;
+.pt__grid.indent-8px.has-page-indent-first > ul {
+  margin-top: -4px;
 }
-.pt__grid.indent-8px > ul:first-child {
-  margin: -4px;
+.pt__grid.indent-8px.has-page-indent-first > ul:first-child {
+  margin-top: -4px;
 }
-.pt__grid.indent-8px > ul > li {
-  padding: 4px;
+.pt__grid.indent-8px.has-page-indent-last > ul {
+  margin-bottom: -4px;
+}
+.pt__grid.indent-8px.has-page-indent-last > ul:first-child {
+  margin-bottom: -4px;
+}
+.pt__grid.indent-12px > ul {
+  margin: 6px -6px -6px;
+}
+.pt__grid.indent-12px > ul:first-child {
+  margin: -6px;
+}
+.pt__grid.indent-12px > ul > li {
+  padding: 6px;
 }
 .pt__grid.indent-12px.has-outer-page-indent > ul {
   margin: 0 6px;
@@ -11760,14 +11817,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-12px.has-page-indent > ul:first-child {
   margin: 0 -6px;
 }
-.pt__grid.indent-12px > ul {
-  margin: 6px -6px -6px;
+.pt__grid.indent-12px.has-page-indent-first > ul {
+  margin-top: -6px;
 }
-.pt__grid.indent-12px > ul:first-child {
-  margin: -6px;
+.pt__grid.indent-12px.has-page-indent-first > ul:first-child {
+  margin-top: -6px;
 }
-.pt__grid.indent-12px > ul > li {
-  padding: 6px;
+.pt__grid.indent-12px.has-page-indent-last > ul {
+  margin-bottom: -6px;
+}
+.pt__grid.indent-12px.has-page-indent-last > ul:first-child {
+  margin-bottom: -6px;
+}
+.pt__grid.indent-16px > ul {
+  margin: 8px -8px -8px;
+}
+.pt__grid.indent-16px > ul:first-child {
+  margin: -8px;
+}
+.pt__grid.indent-16px > ul > li {
+  padding: 8px;
 }
 .pt__grid.indent-16px.has-outer-page-indent > ul {
   margin: 0 8px;
@@ -11781,14 +11850,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-16px.has-page-indent > ul:first-child {
   margin: 0 -8px;
 }
-.pt__grid.indent-16px > ul {
-  margin: 8px -8px -8px;
+.pt__grid.indent-16px.has-page-indent-first > ul {
+  margin-top: -8px;
 }
-.pt__grid.indent-16px > ul:first-child {
-  margin: -8px;
+.pt__grid.indent-16px.has-page-indent-first > ul:first-child {
+  margin-top: -8px;
 }
-.pt__grid.indent-16px > ul > li {
-  padding: 8px;
+.pt__grid.indent-16px.has-page-indent-last > ul {
+  margin-bottom: -8px;
+}
+.pt__grid.indent-16px.has-page-indent-last > ul:first-child {
+  margin-bottom: -8px;
+}
+.pt__grid.indent-24px > ul {
+  margin: 12px -12px -12px;
+}
+.pt__grid.indent-24px > ul:first-child {
+  margin: -12px;
+}
+.pt__grid.indent-24px > ul > li {
+  padding: 12px;
 }
 .pt__grid.indent-24px.has-outer-page-indent > ul {
   margin: 0 12px;
@@ -11802,14 +11883,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-24px.has-page-indent > ul:first-child {
   margin: 0 -12px;
 }
-.pt__grid.indent-24px > ul {
-  margin: 12px -12px -12px;
+.pt__grid.indent-24px.has-page-indent-first > ul {
+  margin-top: -12px;
 }
-.pt__grid.indent-24px > ul:first-child {
-  margin: -12px;
+.pt__grid.indent-24px.has-page-indent-first > ul:first-child {
+  margin-top: -12px;
 }
-.pt__grid.indent-24px > ul > li {
-  padding: 12px;
+.pt__grid.indent-24px.has-page-indent-last > ul {
+  margin-bottom: -12px;
+}
+.pt__grid.indent-24px.has-page-indent-last > ul:first-child {
+  margin-bottom: -12px;
+}
+.pt__grid.indent-32px > ul {
+  margin: 16px -16px -16px;
+}
+.pt__grid.indent-32px > ul:first-child {
+  margin: -16px;
+}
+.pt__grid.indent-32px > ul > li {
+  padding: 16px;
 }
 .pt__grid.indent-32px.has-outer-page-indent > ul {
   margin: 0 16px;
@@ -11823,14 +11916,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-32px.has-page-indent > ul:first-child {
   margin: 0 -16px;
 }
-.pt__grid.indent-32px > ul {
-  margin: 16px -16px -16px;
+.pt__grid.indent-32px.has-page-indent-first > ul {
+  margin-top: -16px;
 }
-.pt__grid.indent-32px > ul:first-child {
-  margin: -16px;
+.pt__grid.indent-32px.has-page-indent-first > ul:first-child {
+  margin-top: -16px;
 }
-.pt__grid.indent-32px > ul > li {
-  padding: 16px;
+.pt__grid.indent-32px.has-page-indent-last > ul {
+  margin-bottom: -16px;
+}
+.pt__grid.indent-32px.has-page-indent-last > ul:first-child {
+  margin-bottom: -16px;
+}
+.pt__grid.indent-48px > ul {
+  margin: 24px -24px -24px;
+}
+.pt__grid.indent-48px > ul:first-child {
+  margin: -24px;
+}
+.pt__grid.indent-48px > ul > li {
+  padding: 24px;
 }
 .pt__grid.indent-48px.has-outer-page-indent > ul {
   margin: 0 24px;
@@ -11844,14 +11949,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-48px.has-page-indent > ul:first-child {
   margin: 0 -24px;
 }
-.pt__grid.indent-48px > ul {
-  margin: 24px -24px -24px;
+.pt__grid.indent-48px.has-page-indent-first > ul {
+  margin-top: -24px;
 }
-.pt__grid.indent-48px > ul:first-child {
-  margin: -24px;
+.pt__grid.indent-48px.has-page-indent-first > ul:first-child {
+  margin-top: -24px;
 }
-.pt__grid.indent-48px > ul > li {
-  padding: 24px;
+.pt__grid.indent-48px.has-page-indent-last > ul {
+  margin-bottom: -24px;
+}
+.pt__grid.indent-48px.has-page-indent-last > ul:first-child {
+  margin-bottom: -24px;
+}
+.pt__grid.indent-64px > ul {
+  margin: 32px -32px -32px;
+}
+.pt__grid.indent-64px > ul:first-child {
+  margin: -32px;
+}
+.pt__grid.indent-64px > ul > li {
+  padding: 32px;
 }
 .pt__grid.indent-64px.has-outer-page-indent > ul {
   margin: 0 32px;
@@ -11865,14 +11982,26 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-64px.has-page-indent > ul:first-child {
   margin: 0 -32px;
 }
-.pt__grid.indent-64px > ul {
-  margin: 32px -32px -32px;
+.pt__grid.indent-64px.has-page-indent-first > ul {
+  margin-top: -32px;
 }
-.pt__grid.indent-64px > ul:first-child {
-  margin: -32px;
+.pt__grid.indent-64px.has-page-indent-first > ul:first-child {
+  margin-top: -32px;
 }
-.pt__grid.indent-64px > ul > li {
-  padding: 32px;
+.pt__grid.indent-64px.has-page-indent-last > ul {
+  margin-bottom: -32px;
+}
+.pt__grid.indent-64px.has-page-indent-last > ul:first-child {
+  margin-bottom: -32px;
+}
+.pt__grid.indent-96px > ul {
+  margin: 48px -48px -48px;
+}
+.pt__grid.indent-96px > ul:first-child {
+  margin: -48px;
+}
+.pt__grid.indent-96px > ul > li {
+  padding: 48px;
 }
 .pt__grid.indent-96px.has-outer-page-indent > ul {
   margin: 0 48px;
@@ -11886,14 +12015,17 @@ ul.pt__field__hint li:before {
 .pt__grid.indent-96px.has-page-indent > ul:first-child {
   margin: 0 -48px;
 }
-.pt__grid.indent-96px > ul {
-  margin: 48px -48px -48px;
+.pt__grid.indent-96px.has-page-indent-first > ul {
+  margin-top: -48px;
 }
-.pt__grid.indent-96px > ul:first-child {
-  margin: -48px;
+.pt__grid.indent-96px.has-page-indent-first > ul:first-child {
+  margin-top: -48px;
 }
-.pt__grid.indent-96px > ul > li {
-  padding: 48px;
+.pt__grid.indent-96px.has-page-indent-last > ul {
+  margin-bottom: -48px;
+}
+.pt__grid.indent-96px.has-page-indent-last > ul:first-child {
+  margin-bottom: -48px;
 }
 /* *** TILES *** */
 .pt__grid--tiles > ul {
@@ -18831,6 +18963,15 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   position: relative;
   z-index: 1;
 }
+.com__gallery-bar .pt__grid > ul {
+  margin: 6px -6px -6px;
+}
+.com__gallery-bar .pt__grid > ul:first-child {
+  margin: -6px;
+}
+.com__gallery-bar .pt__grid > ul > li {
+  padding: 6px;
+}
 .com__gallery-bar .pt__grid.has-outer-page-indent > ul {
   margin: 0 6px;
 }
@@ -18843,14 +18984,17 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__gallery-bar .pt__grid.has-page-indent > ul:first-child {
   margin: 0 -6px;
 }
-.com__gallery-bar .pt__grid > ul {
-  margin: 6px -6px -6px;
+.com__gallery-bar .pt__grid.has-page-indent-first > ul {
+  margin-top: -6px;
 }
-.com__gallery-bar .pt__grid > ul:first-child {
-  margin: -6px;
+.com__gallery-bar .pt__grid.has-page-indent-first > ul:first-child {
+  margin-top: -6px;
 }
-.com__gallery-bar .pt__grid > ul > li {
-  padding: 6px;
+.com__gallery-bar .pt__grid.has-page-indent-last > ul {
+  margin-bottom: -6px;
+}
+.com__gallery-bar .pt__grid.has-page-indent-last > ul:first-child {
+  margin-bottom: -6px;
 }
 .com__gallery-bar .pt__grid > ul {
   overflow: hidden;

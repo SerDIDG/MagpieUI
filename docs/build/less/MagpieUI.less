@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.60.2 (2023-12-05 03:30) ************ */
+/*! ************ MagpieUI v3.60.3 (2023-12-12 12:13) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.60.2';
+@CmVersion: '3.60.3';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -11909,6 +11909,18 @@ ul.pt__field__hint {
 .pt__grid__indent (@indent: @PtGrid-Indent) when (@indent > 0) {
     @half__indent: (@indent / 2);
 
+    > ul {
+        margin: @half__indent -@half__indent -@half__indent;
+
+        &:first-child {
+            margin: -@half__indent;
+        }
+
+        > li {
+            padding: @half__indent;
+        }
+    }
+
     &.has-outer-page-indent {
         > ul {
             margin: 0 @half__indent;
@@ -11929,15 +11941,23 @@ ul.pt__field__hint {
         }
     }
 
-    > ul {
-        margin: @half__indent -@half__indent -@half__indent;
+    &.has-page-indent-first {
+        > ul {
+            margin-top: -@half__indent;
 
-        &:first-child {
-            margin: -@half__indent;
+            &:first-child {
+                margin-top: -@half__indent;
+            }
         }
+    }
 
-        > li {
-            padding: @half__indent;
+    &.has-page-indent-last {
+        > ul {
+            margin-bottom: -@half__indent;
+
+            &:first-child {
+                margin-bottom: -@half__indent;
+            }
         }
     }
 }

@@ -312,6 +312,18 @@
 .pt__grid__indent (@indent: @PtGrid-Indent) when (@indent > 0) {
     @half__indent: (@indent / 2);
 
+    > ul {
+        margin: @half__indent -@half__indent -@half__indent;
+
+        &:first-child {
+            margin: -@half__indent;
+        }
+
+        > li {
+            padding: @half__indent;
+        }
+    }
+
     &.has-outer-page-indent {
         > ul {
             margin: 0 @half__indent;
@@ -332,15 +344,23 @@
         }
     }
 
-    > ul {
-        margin: @half__indent -@half__indent -@half__indent;
+    &.has-page-indent-first {
+        > ul {
+            margin-top: -@half__indent;
 
-        &:first-child {
-            margin: -@half__indent;
+            &:first-child {
+                margin-top: -@half__indent;
+            }
         }
+    }
 
-        > li {
-            padding: @half__indent;
+    &.has-page-indent-last {
+        > ul {
+            margin-bottom: -@half__indent;
+
+            &:first-child {
+                margin-bottom: -@half__indent;
+            }
         }
     }
 }
