@@ -24,6 +24,7 @@ cm.define('Com.Tabset2', {
         'tabsWidth' : 256,                                          // Only for tabsPosition left or right
         'showTabs' : true,
         'showTabsTitle' : true,                                     // Show title tooltip
+        'setTabsHash' : false,
         'showContent' : true,
         'switchManually' : false,                                   // Change tab manually, not implemented yet
         'animateSwitch' : true,
@@ -116,11 +117,11 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
             that.nodes['headerMenu'] = cm.node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
                 that.nodes['headerMenuButton'] = cm.node('div', {'class' : that.params['icons']['menu']}),
-                that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
+                that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown', 'role' : 'tablist'})
             )
         );
         that.nodes['headerTabs'] = cm.node('div', {'class' : 'com__tabset__head-tabs'},
-            that.nodes['headerUL'] = cm.node('ul')
+            that.nodes['headerUL'] = cm.node('ul', {'role' : 'tablist'})
         );
         that.triggerEvent('onRenderViewProcess');
         // Adaptive
@@ -188,10 +189,12 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     classProto.renderTabView = function(item){
         var that = this;
+
         // Render structure
         item['label'] = that.renderTabLink(item, 'label');
         item['menu'] = that.renderTabLink(item, 'menu');
         item['tab'] = that.renderTabContent(item);
+
         // Embed
         cm.appendChild(item['label']['container'], that.nodes['headerUL']);
         cm.appendChild(item['menu']['container'], that.nodes['headerMenuUL']);
@@ -202,7 +205,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this,
             nodes = {};
         // Structure
-        nodes['container'] = cm.node('li',
+        nodes['container'] = cm.node('li', {'id' : item['tabName'], 'role' : 'tabpanel', 'tabindex' : '0', 'aria-labelledby' : item['labelName'], 'hidden' : true},
             nodes['inner'] = cm.node('div', item['content'])
         );
         return nodes;
@@ -212,8 +215,8 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this,
             nodes = {};
         // Structure
-        nodes['container'] = cm.node('li',
-            nodes['link'] = cm.node('a',
+        nodes['container'] = cm.node('li', {'id' : item['labelName'], 'role' : 'tab', 'tabindex' : '0', 'aria-controls': item['tabName'], 'aria-selected' : 'false'},
+            nodes['link'] = cm.node('a', {'role' : 'presentation', 'tabindex' : '-1'},
                 nodes['title'] = cm.node('div', {'class' : 'title'})
             )
         );
@@ -223,6 +226,16 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             cm.appendChild(item['title'], nodes['title']);
         }else{
             nodes['title'].innerHTML = item['title'];
+        }
+        // Attributes
+        if(that.params['setTabsHash']){
+            var url = new URL(window.location);
+            url.hash = item['id'];
+            nodes['link'].href = url.href;
+            nodes['link'].setAttribute('data-prevent-default', 'true');
+        }
+        if(that.params['showTabsTitle']){
+            nodes['link'].title = cm.cutHTML(item['title']);
         }
         // Image
         if(type === 'label'){
@@ -235,9 +248,6 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             }
             if(nodes['image']){
                 cm.insertFirst(nodes['image'], nodes['link']);
-            }
-            if(that.params['showTabsTitle']){
-                nodes['link'].setAttribute('title', cm.cutHTML(item['title']));
             }
         }
         return nodes;
@@ -277,31 +287,45 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
     };
 
     classProto.onTabShowStart = function(that, item){
+        var previous = that.current;
+        var previousItem = that.items[previous];
+
+        // Clear animate interval
         clearTimeout(item['switchInt']);
-        if(that.params['animateSwitch']){
-            var previous = that.current;
-            var previousItem = that.items[previous];
-            if(previousItem){
+
+        // Unset previous tab
+        if(previousItem){
+            if(that.params['animateSwitch']){
                 that.nodes['contentUL'].style.overflow = 'hidden';
                 that.nodes['contentUL'].style.height = previousItem['tab']['container'].offsetHeight + 'px';
             }
+            previousItem['menu']['container'].setAttribute('aria-selected', 'false');
+            previousItem['label']['container'].setAttribute('aria-selected', 'false');
         }
+
+        // Set current tab
         that.nodes['headerTitleText'].innerHTML = item['title'];
+        item['menu']['container'].setAttribute('aria-selected', 'true');
+        item['label']['container'].setAttribute('aria-selected', 'true');
+        item['tab']['container'].hidden = false;
         item['tab']['container'].style.display = 'block';
     };
 
     classProto.onTabShowEnd = function(that, item){
         var previous = that.previous;
         var previousItem = that.items[previous];
+
         if(previousItem && previousItem.id !== item.id){
             if(that.params['animateSwitch']){
                 that.nodes['contentUL'].style.height = item['tab']['container'].offsetHeight + 'px';
                 previousItem['switchInt'] = setTimeout(function(){
+                    previousItem['tab']['container'].hidden = true;
                     previousItem['tab']['container'].style.display = 'none';
                     that.nodes['contentUL'].style.overflow = '';
                     that.nodes['contentUL'].style.height = '';
                 }, that.params['animateDuration']);
             }else{
+                previousItem['tab']['container'].hidden = true;
                 previousItem['tab']['container'].style.display = 'none';
             }
         }

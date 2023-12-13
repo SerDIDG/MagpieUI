@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.60.3 (2023-12-12 12:13) ************ */
+/*! ************ MagpieUI v3.60.4 (2023-12-13 10:19) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.60.3';
+@CmVersion: '3.60.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5029,6 +5029,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmInput-ActiveBorder: @CmColor-BorderActive;
 @CmInput-DisabledBackground: @CmColor-Secondary-LightHighlight;
 @CmInput-DisableBorder: @CmColor-BorderDisabled;
+@CmInput-AccentColor: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, 40%);
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
@@ -7563,9 +7564,7 @@ input[type="file"] {
 input[type="radio"],
 input[type="checkbox"] {
     cursor: pointer;
-}
-input[type="checkbox"] {
-    accent-color: @CmColor-Primary-DarkDefault;
+    accent-color: @CmInput-AccentColor;
 }
 
 input[type="text"],

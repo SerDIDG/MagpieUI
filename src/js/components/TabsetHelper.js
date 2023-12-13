@@ -211,6 +211,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             'isAjax' : false,
             'isCached' : false
         }, item);
+        // Set names
+        item['tabName'] = ['tabset', that.params['name'], 'tab', (!cm.isEmpty(item['id']) ? item['id'] : item['index'])].join('--');
+        item['labelName'] = ['tabset', that.params['name'], 'label', (!cm.isEmpty(item['id']) ? item['id'] : item['index'])].join('--');
         // Cache
         if(!cm.isBoolean(item['cache'])){
             item['cache'] = that.params['cache'];
@@ -231,8 +234,6 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         }
         // Push
         if(!cm.isEmpty(item['id']) && !that.items[item['id']]){
-            that.itemsList.push(item);
-            that.items[item['id']] = item;
             // Hide nodes
             if(item.isHidden){
                 cm.addClass(item['label']['container'], 'hidden');
@@ -242,22 +243,41 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             // Target events
             that.renderTabTarget(item, item['label']['container']);
             that.renderTabTarget(item, item['menu']['container']);
+            // Export
+            that.itemsList.push(item);
+            that.items[item['id']] = item;
         }
         return that;
     };
 
     classProto.renderTabTarget = function(item, node){
         var that = this;
-        if(that.targetEvent){
-            cm.addEvent(node, that.targetEvent, function(){
-                that.triggerEvent('onLabelTarget', item);
-                // Set
-                if(that.params['toggleOnHashChange']){
-                    window.location.hash = item['id'];
-                }else{
-                    that.setTab(item['id']);
-                }
+        if(!that.targetEvent){
+            return;
+        }
+        if(that.targetEvent === 'click'){
+            cm.click.add(node, function(event){
+                cm.preventDefault(event);
+                cm.stopPropagation(event);
+                that.tabTarget(item);
             });
+        }else{
+            cm.addEvent(node, that.targetEvent, function(event){
+                cm.preventDefault(event);
+                cm.stopPropagation(event);
+                that.tabTarget(item);
+            });
+        }
+    };
+
+    classProto.tabTarget = function(item) {
+        var that = this;
+        that.triggerEvent('onLabelTarget', item);
+        // Set
+        if(that.params['toggleOnHashChange']){
+            window.location.hash = item['id'];
+        }else{
+            that.setTab(item['id']);
         }
     };
 
@@ -386,7 +406,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         if(cm.isEmpty(that.itemsList) || cm.isEmpty(that.items)){
             return null;
         }
-        // Get tab from hash is exists
+        // Get tab from hash if exists
         if(that.params['toggleOnHashChange']){
             id = window.location.hash.slice(1);
             if(that.isValidTab(id)){
