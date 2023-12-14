@@ -32,6 +32,7 @@ cm.define('Com.TabsetHelper', {
         'setInitialTabImmediately' : true,                          // Set initial tab without animation
         'active' : null,
         'items' : [],
+        'processTabs' : true,
         'targetEvent' : 'click',                                    // click | hover | none
         'toggleOnHashChange' : false,                               // URL hash change handler
         'showLoader' : true,
@@ -132,7 +133,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
         // Process tabs
-        that.processTabs(that.nodes['tabs'], that.nodes['labels']);
+        if(that.params['processTabs']){
+            that.processTabs(that.nodes['tabs'], that.nodes['labels']);
+        }
         // Process tabs in parameters
         cm.forEach(that.params['items'], function(item){
             that.renderTab(item);

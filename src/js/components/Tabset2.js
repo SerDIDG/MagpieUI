@@ -5,6 +5,7 @@ cm.define('Com.Tabset2', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'embedStructure' : 'replace',
+        'processTabs' : false,
         'renderTabView' : true,
         //'renderOnInit' : true,
         'removeOnDestruct' : true,
