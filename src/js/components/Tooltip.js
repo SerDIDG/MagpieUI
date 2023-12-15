@@ -6,6 +6,7 @@ cm.define('Com.Tooltip', {
         'Stack'
     ],
     'events' : [
+        'onValidateParams',
         'onRender',
         'onShowStart',
         'onShow',
@@ -16,6 +17,7 @@ cm.define('Com.Tooltip', {
     ],
     'params' : {
         'customEvents' : true,
+        'controllerEvents' : false,
         'name' : '',
         'target' : cm.node('div'),
         'targetEvent' : 'hover',                        // hover | click | none
@@ -79,6 +81,7 @@ function(params){
         that.targetEventHandler = targetEvent.bind(that);
         that.destructHandler = that.destruct.bind(that);
         // Params
+        that.params['controllerEvents'] && bindControllerEvents();
         that.setParams(params);
         that.convertEvents(that.params['events']);
         validateParams();
@@ -88,12 +91,25 @@ function(params){
         that.triggerEvent('onRender');
     };
 
+    var bindControllerEvents = function(){
+        cm.forEach(that._raw['events'], function(name){
+            if(!that[name]){
+                that[name] = function(){};
+            }
+            if(!that[name + 'Handler']){
+                that[name + 'Handler'] = that[name].bind(that);
+            }
+            that.addEvent(name, that[name + 'Handler']);
+        });
+    };
+
     var validateParams = function(){
         if(!that.params['adaptive']){
             that.params['adaptiveX'] = false;
             that.params['adaptiveY'] = false;
         }
         that.params['position'] = cm.inArray(['absolute', 'fixed'], that.params['position'])? that.params['position'] : 'absolute';
+        that.triggerEvent('onValidateParams');
     };
 
     var render = function(){
