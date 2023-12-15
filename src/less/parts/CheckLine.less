@@ -155,4 +155,35 @@
             display: block;
         }
     }
+
+    &.is-flex,
+    &.is-flex-reverse {
+        label {
+            display: flex;
+            gap: @CmForm-FieldInnerIndent;
+            align-items: flex-start;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 0;
+            margin-left: 0;
+            flex: none;
+        }
+
+        .icon {
+            min-height: @CmFont-Base-LineHeight;
+            flex: none;
+        }
+
+        .label {
+            flex: auto;
+        }
+    }
+
+    &.is-flex-reverse {
+        label {
+            flex-direction: row-reverse;
+        }
+    }
 }

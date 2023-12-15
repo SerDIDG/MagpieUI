@@ -9,6 +9,7 @@ cm.define('Com.Check', {
             checked: null,
             unchecked: null,
         },
+        contentIcon: null,
         helpConstructor: 'Com.HelpBubble',
         helpParams: {
             renderStructure: true,
@@ -228,6 +229,13 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             })
         );
         item.input = item.nodes.input;
+
+        // Icon
+        if (cm.isNode(that.params.contentIcon)) {
+            item.nodes.icon = cm.clone(that.params.contentIcon);
+            cm.appendChild(item.nodes.icon, item.nodes.container);
+            cm.addClass(item.nodes.container, 'has-icon');
+        }
 
         // Events
         cm.addEvent(item.nodes.input, 'click', function() {
