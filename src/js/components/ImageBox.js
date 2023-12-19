@@ -1,23 +1,24 @@
 cm.define('Com.ImageBox', {
-    'extend' : 'Com.AbstractController',
-    'params' : {
-        'renderStructure' : false,
-        'embedStructureOnRender' : false,
-        'controllerEvents' : true,
-        'customEvents' : true,
-        'animated' : false,
-        'effect' : 'none',
-        'zoom' : false,
-        'scrollNode' : window,
-        'Com.GalleryPopup' : {
-            'showCounter' : false
-        }
-    }
+    'extend': 'Com.AbstractController',
+    'params': {
+        'renderStructure': false,
+        'embedStructureOnRender': false,
+        'controllerEvents': true,
+        'customEvents': true,
+        'animated': false,
+        'effect': 'none',
+        'zoom': false,
+        'scrollNode': window,
+        'galleryPopup': {
+            'constructor': 'Com.GalleryPopup',
+            'constructorParams': {
+                'showCounter': false
+            },
+        },
+    },
 },
-function(params){
-    var that = this;
-    // Call parent class construct in current context
-    Com.AbstractController.apply(that, arguments);
+function() {
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.ImageBox', function(classConstructor, className, classProto, classInherit){
@@ -58,8 +59,8 @@ cm.getConstructor('Com.ImageBox', function(classConstructor, className, classPro
         }
         // Zoom
         if(that.params['zoom']){
-            cm.getConstructor('Com.GalleryPopup', function(classConstructor){
-                that.components['popup'] = new classConstructor(that.params['Com.GalleryPopup']);
+            cm.getConstructor(that.params.galleryPopup.constructor, function(classConstructor){
+                that.components['popup'] = new classConstructor(that.params.galleryPopup.constructorParams);
             });
             that.components['popup'].collectItem(that.nodes.item);
             cm.addEvent(that.nodes.buttons['preview'], 'click', that.components['popup'].openHandler);
