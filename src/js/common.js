@@ -359,6 +359,14 @@ cm.extend = function(o1, o2, deep){
     return o2;
 };
 
+cm.join = function(arr, separator) {
+    return arr
+        .filter(function(item) {
+            return !cm.isEmpty(item);
+        })
+        .join(separator);
+};
+
 cm.extract = function(o1, o2){
     if(!o1){
         return o2;
