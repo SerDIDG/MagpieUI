@@ -4306,6 +4306,9 @@ cm.ajaxPromise = function(o){
 };
 
 cm.parseJSON = function(str){
+    if(cm.isObject(str) || cm.isArray(str)){
+        return str;
+    }
     var o;
     if(str){
         try{

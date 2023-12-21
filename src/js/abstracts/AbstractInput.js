@@ -99,6 +99,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that.valueText;
     };
 
+    classProto.getJSON = function(){
+        var that = this;
+        return cm.stringifyJSON(that.value);
+    };
+
     classProto.getRaw = function(){
         var that = this;
         return that.rawValue;

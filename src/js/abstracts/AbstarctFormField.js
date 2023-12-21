@@ -393,7 +393,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                     break;
             }
         }
-        if(!cm.isEmpty(that.params.dataValue)){
+        if(!cm.isEmpty(that.params.dataValue) && that.params.inputValueType !== 'unset'){
             var dataValue;
             if(cm.isObject(that.params.dataValue) || cm.isArray(that.params.dataValue)){
                 dataValue = cm.stringifyJSON(that.params.dataValue);
@@ -538,6 +538,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
                 return that.getRaw();
             case 'text':
                 return that.getText();
+            case 'json':
+                return that.getJSON();
             case 'option':
                 return that.getValueOption();
             default:
@@ -553,6 +555,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.getText = function(){
         var that = this;
         return that.components.controller && cm.isFunction(that.components.controller.getText) ? that.components.controller.getText() : that.get('auto');
+    };
+
+    classProto.getJSON = function() {
+        var that = this;
+        return that.components.controller && cm.isFunction(that.components.controller.getJSON) ? that.components.controller.getJSON() : that.get('auto');
     };
 
     classProto.getValueOption = function(){

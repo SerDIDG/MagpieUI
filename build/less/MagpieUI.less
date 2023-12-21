@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.63.0 (2023-12-21 19:43) ************ */
+/*! ************ MagpieUI v3.64.0 (2023-12-21 23:45) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.63.0';
+@CmVersion: '3.64.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10343,12 +10343,14 @@ button {
     }
 
     &.field-indent,
-    &.field-inner-indent {
+    &.field-inner-indent,
+    &.indent--field-inner {
         .cm__box;
         margin-bottom: @CmForm-FieldInnerIndent;
     }
 
-    &.field-outer-indent {
+    &.field-outer-indent,
+    &.indent--field {
         .cm__box;
         margin-bottom: @CmForm-FieldIndent;
     }
@@ -10415,15 +10417,18 @@ button {
 
     .pt__columns__indent(@PtColumns-Indent);
 
-    &.indent-field {
+    &.indent-field,
+    &.gap--field {
         .pt__columns__indent(@CmForm-FieldIndent);
     }
 
-    &.indent-field-inner {
+    &.indent-field-inner,
+    &.gap--field-inner {
         .pt__columns__indent(@CmForm-FieldInnerIndent);
     }
 
-    &.indent-buttons {
+    &.indent-buttons,
+    &.gap--buttons {
         .pt__columns__indent(@CmForm-ButtonsIndent);
     }
 
@@ -10437,15 +10442,18 @@ button {
 .pt__columns--grid {
     .pt__columns__indent-grid(@PtColumns-Indent);
 
-    &.indent-field {
+    &.indent-field,
+    &.gap--field {
         .pt__columns__indent-grid(@CmForm-FieldIndent);
     }
 
-    &.indent-field-inner {
+    &.indent-field-inner,
+    &.gap--field-inner {
         .pt__columns__indent-grid(@CmForm-FieldInnerIndent);
     }
 
-    &.indent-buttons {
+    &.indent-buttons,
+    &.gap--buttons {
         .pt__columns__indent-grid(@CmForm-ButtonsIndent);
     }
 
@@ -10531,10 +10539,17 @@ button {
         }
     }
 
-    &.indent-field,
     &.indent-buttons,
-    &.indent-field-inner {
+    &.indent-field,
+    &.indent-field-inner,
+    &.gap--buttons,
+    &.gap--field,
+    &.gap--field-inner {
         .pt__columns__indent-mobile(@CmForm-FieldIndent);
+    }
+
+    &.gap-adaptive--field-inner {
+        .pt__columns__indent-mobile(@CmForm-FieldInnerIndent);
     }
 }
 

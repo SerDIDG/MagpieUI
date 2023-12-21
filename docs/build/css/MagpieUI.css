@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.63.0 (2023-12-21 19:43) ************ */
+/*! ************ MagpieUI v3.64.0 (2023-12-21 23:45) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.63.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.63.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.63.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.63.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.63.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.64.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.64.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.64.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.64.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.64.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9793,25 +9793,33 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   justify-content: center;
 }
 .pt__columns.field-indent,
-.pt__columns.field-inner-indent {
+.pt__columns.field-inner-indent,
+.pt__columns.indent--field-inner {
   margin-bottom: 24px;
   margin-bottom: 8px;
 }
 .pt__columns.field-indent.bottom,
 .pt__columns.field-inner-indent.bottom,
+.pt__columns.indent--field-inner.bottom,
 .pt__columns.field-indent.is-last,
 .pt__columns.field-inner-indent.is-last,
+.pt__columns.indent--field-inner.is-last,
 .pt__columns.field-indent:last-child,
-.pt__columns.field-inner-indent:last-child {
+.pt__columns.field-inner-indent:last-child,
+.pt__columns.indent--field-inner:last-child {
   margin-bottom: 0;
 }
-.pt__columns.field-outer-indent {
+.pt__columns.field-outer-indent,
+.pt__columns.indent--field {
   margin-bottom: 24px;
   margin-bottom: 16px;
 }
 .pt__columns.field-outer-indent.bottom,
+.pt__columns.indent--field.bottom,
 .pt__columns.field-outer-indent.is-last,
-.pt__columns.field-outer-indent:last-child {
+.pt__columns.indent--field.is-last,
+.pt__columns.field-outer-indent:last-child,
+.pt__columns.indent--field:last-child {
   margin-bottom: 0;
 }
 .pt__columns.is-none > .inner > .column {
@@ -9868,37 +9876,46 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__columns.theme--separators > .inner > .column:after {
   right: -12px;
 }
-.pt__columns.indent-field > .inner {
+.pt__columns.indent-field > .inner,
+.pt__columns.gap--field > .inner {
   margin-right: -8px;
   margin-left: -8px;
 }
-.pt__columns.indent-field > .inner > .column {
+.pt__columns.indent-field > .inner > .column,
+.pt__columns.gap--field > .inner > .column {
   margin-right: 8px;
   margin-left: 8px;
 }
-.pt__columns.indent-field.theme--separators > .inner > .column:after {
+.pt__columns.indent-field.theme--separators > .inner > .column:after,
+.pt__columns.gap--field.theme--separators > .inner > .column:after {
   right: -8px;
 }
-.pt__columns.indent-field-inner > .inner {
+.pt__columns.indent-field-inner > .inner,
+.pt__columns.gap--field-inner > .inner {
   margin-right: -4px;
   margin-left: -4px;
 }
-.pt__columns.indent-field-inner > .inner > .column {
+.pt__columns.indent-field-inner > .inner > .column,
+.pt__columns.gap--field-inner > .inner > .column {
   margin-right: 4px;
   margin-left: 4px;
 }
-.pt__columns.indent-field-inner.theme--separators > .inner > .column:after {
+.pt__columns.indent-field-inner.theme--separators > .inner > .column:after,
+.pt__columns.gap--field-inner.theme--separators > .inner > .column:after {
   right: -4px;
 }
-.pt__columns.indent-buttons > .inner {
+.pt__columns.indent-buttons > .inner,
+.pt__columns.gap--buttons > .inner {
   margin-right: -6px;
   margin-left: -6px;
 }
-.pt__columns.indent-buttons > .inner > .column {
+.pt__columns.indent-buttons > .inner > .column,
+.pt__columns.gap--buttons > .inner > .column {
   margin-right: 6px;
   margin-left: 6px;
 }
-.pt__columns.indent-buttons.theme--separators > .inner > .column:after {
+.pt__columns.indent-buttons.theme--separators > .inner > .column:after,
+.pt__columns.gap--buttons.theme--separators > .inner > .column:after {
   right: -6px;
 }
 .pt__columns.indent-0px > .inner {
@@ -10034,39 +10051,48 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   margin-right: 12px;
   margin-left: 12px;
 }
-.pt__columns--grid.indent-field > .inner {
+.pt__columns--grid.indent-field > .inner,
+.pt__columns--grid.gap--field > .inner {
   margin-right: -8px;
   margin-left: -8px;
 }
-.pt__columns--grid.indent-field > .inner > .column {
+.pt__columns--grid.indent-field > .inner > .column,
+.pt__columns--grid.gap--field > .inner > .column {
   margin-right: 0;
   margin-left: 0;
 }
-.pt__columns--grid.indent-field > .inner > .column > .inner {
+.pt__columns--grid.indent-field > .inner > .column > .inner,
+.pt__columns--grid.gap--field > .inner > .column > .inner {
   margin-right: 8px;
   margin-left: 8px;
 }
-.pt__columns--grid.indent-field-inner > .inner {
+.pt__columns--grid.indent-field-inner > .inner,
+.pt__columns--grid.gap--field-inner > .inner {
   margin-right: -4px;
   margin-left: -4px;
 }
-.pt__columns--grid.indent-field-inner > .inner > .column {
+.pt__columns--grid.indent-field-inner > .inner > .column,
+.pt__columns--grid.gap--field-inner > .inner > .column {
   margin-right: 0;
   margin-left: 0;
 }
-.pt__columns--grid.indent-field-inner > .inner > .column > .inner {
+.pt__columns--grid.indent-field-inner > .inner > .column > .inner,
+.pt__columns--grid.gap--field-inner > .inner > .column > .inner {
   margin-right: 4px;
   margin-left: 4px;
 }
-.pt__columns--grid.indent-buttons > .inner {
+.pt__columns--grid.indent-buttons > .inner,
+.pt__columns--grid.gap--buttons > .inner {
   margin-right: -6px;
   margin-left: -6px;
 }
-.pt__columns--grid.indent-buttons > .inner > .column {
+.pt__columns--grid.indent-buttons > .inner > .column,
+.pt__columns--grid.gap--buttons > .inner > .column {
   margin-right: 0;
   margin-left: 0;
 }
-.pt__columns--grid.indent-buttons > .inner > .column > .inner {
+.pt__columns--grid.indent-buttons > .inner > .column > .inner,
+.pt__columns--grid.gap--buttons > .inner > .column > .inner {
   margin-right: 6px;
   margin-left: 6px;
 }
@@ -10218,14 +10244,26 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__columns--adaptive.theme--separators > .inner > .column:after {
   display: none;
 }
-.pt__columns--adaptive.indent-field > .inner > .column,
 .pt__columns--adaptive.indent-buttons > .inner > .column,
-.pt__columns--adaptive.indent-field-inner > .inner > .column {
+.pt__columns--adaptive.indent-field > .inner > .column,
+.pt__columns--adaptive.indent-field-inner > .inner > .column,
+.pt__columns--adaptive.gap--buttons > .inner > .column,
+.pt__columns--adaptive.gap--field > .inner > .column,
+.pt__columns--adaptive.gap--field-inner > .inner > .column {
   margin-bottom: 16px;
 }
-.pt__columns--adaptive.indent-field > .inner > .column:last-child,
 .pt__columns--adaptive.indent-buttons > .inner > .column:last-child,
-.pt__columns--adaptive.indent-field-inner > .inner > .column:last-child {
+.pt__columns--adaptive.indent-field > .inner > .column:last-child,
+.pt__columns--adaptive.indent-field-inner > .inner > .column:last-child,
+.pt__columns--adaptive.gap--buttons > .inner > .column:last-child,
+.pt__columns--adaptive.gap--field > .inner > .column:last-child,
+.pt__columns--adaptive.gap--field-inner > .inner > .column:last-child {
+  margin-bottom: 0;
+}
+.pt__columns--adaptive.gap-adaptive--field-inner > .inner > .column {
+  margin-bottom: 8px;
+}
+.pt__columns--adaptive.gap-adaptive--field-inner > .inner > .column:last-child {
   margin-bottom: 0;
 }
 /* ******* PARTS: COLUMNS: ADAPTIVE ******* */
@@ -10246,14 +10284,26 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   html.is-adaptive .pt__columns.is-adaptive.theme--separators > .inner > .column:after {
     display: none;
   }
-  html.is-adaptive .pt__columns.is-adaptive.indent-field > .inner > .column,
   html.is-adaptive .pt__columns.is-adaptive.indent-buttons > .inner > .column,
-  html.is-adaptive .pt__columns.is-adaptive.indent-field-inner > .inner > .column {
+  html.is-adaptive .pt__columns.is-adaptive.indent-field > .inner > .column,
+  html.is-adaptive .pt__columns.is-adaptive.indent-field-inner > .inner > .column,
+  html.is-adaptive .pt__columns.is-adaptive.gap--buttons > .inner > .column,
+  html.is-adaptive .pt__columns.is-adaptive.gap--field > .inner > .column,
+  html.is-adaptive .pt__columns.is-adaptive.gap--field-inner > .inner > .column {
     margin-bottom: 16px;
   }
-  html.is-adaptive .pt__columns.is-adaptive.indent-field > .inner > .column:last-child,
   html.is-adaptive .pt__columns.is-adaptive.indent-buttons > .inner > .column:last-child,
-  html.is-adaptive .pt__columns.is-adaptive.indent-field-inner > .inner > .column:last-child {
+  html.is-adaptive .pt__columns.is-adaptive.indent-field > .inner > .column:last-child,
+  html.is-adaptive .pt__columns.is-adaptive.indent-field-inner > .inner > .column:last-child,
+  html.is-adaptive .pt__columns.is-adaptive.gap--buttons > .inner > .column:last-child,
+  html.is-adaptive .pt__columns.is-adaptive.gap--field > .inner > .column:last-child,
+  html.is-adaptive .pt__columns.is-adaptive.gap--field-inner > .inner > .column:last-child {
+    margin-bottom: 0;
+  }
+  html.is-adaptive .pt__columns.is-adaptive.gap-adaptive--field-inner > .inner > .column {
+    margin-bottom: 8px;
+  }
+  html.is-adaptive .pt__columns.is-adaptive.gap-adaptive--field-inner > .inner > .column:last-child {
     margin-bottom: 0;
   }
 }
