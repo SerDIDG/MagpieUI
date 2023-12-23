@@ -176,7 +176,7 @@ cm.isArguments = function(o){
 };
 
 cm.isFunction = function(o){
-    return Object.prototype.toString.call(o) === '[object Function]';
+    return Object.prototype.toString.call(o) === '[object Function]' || Object.prototype.toString.call(o) === '[object AsyncFunction]';
 };
 
 cm.isRegExp = function(o){
@@ -2124,6 +2124,15 @@ cm.constraintsCallback = function(callback, message){
     return function(data){
         data['message'] = message;
         data['valid'] = cm.isFunction(callback) ? callback(data) : function(){};
+        return data;
+    }
+};
+
+cm.constraintsCallbackAsync = function(callback, message){
+    return async function(data){
+        data['async'] = true;
+        data['message'] = message;
+        data['valid'] = cm.isFunction(callback) ? await callback(data) : function(){};
         return data;
     }
 };
@@ -4662,7 +4671,7 @@ cm.getConstructor = function(className, callback){
                 cm.errorLog({
                     'type' : 'attention',
                     'name' : 'cm.getConstructor',
-                    'message' : ['Class', cm.strWrap(className, '"'), 'does not exists or define.'].join(' ')
+                    'message' : ['Class', cm.strWrap(className, '"'), 'is not defined.'].join(' ')
                 });
             }
             return false;

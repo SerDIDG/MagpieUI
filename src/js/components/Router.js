@@ -1,23 +1,29 @@
 cm.define('Com.Router', {
-    'extend' : 'Com.AbstractController',
-    'events' : [
+    'extend': 'Com.AbstractController',
+    'events': [
         'onChangeStart',
         'onChange',
         'onChangeEnd'
     ],
-    'params' : {
-        'renderStructure' : false,
-        'embedStructureOnRender' : false,
-        'controllerEvents' : true,
-        'customEvents' : true,
-        'route' : null,
-        'addLeadPoint' : true
-    }
+    'params': {
+        'renderStructure': false,
+        'embedStructureOnRender': false,
+        'controllerEvents': true,
+        'customEvents': true,
+        'route': null,
+        'addLeadPoint': true,
+        'catchRouteErrors': false,
+        'summonRouteOnError': false,
+    },
+    'strings': {
+        'errors': {
+            'constructor_error': 'An error has occurred in the route "{route}" constructor "{constructor}".',
+            'constructor_not_found': 'Route "{route}" constructor "{constructor}" is not defined.',
+        },
+    },
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
+function() {
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.Router', function(classConstructor, className, classProto, classInherit){
@@ -268,15 +274,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             }
         }
         if(constructor){
-            cm.getConstructor(constructor, function(classConstructor){
-                routeItem.controller = new classConstructor(
-                    cm.merge(routeItem.constructorParams, {
-                        'container' : that.params.container,
-                        'route' : routeItem
-                    })
-                );
-                routeItem.controller.triggerEvent('onConstructComplete');
-            });
+            that.constructRouteController(routeItem, constructor);
         }else{
             routeItem.onConstruct(routeItem);
             routeItem.callback(routeItem);
@@ -284,6 +282,62 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         that.triggerEvent('onChange', routeItem);
         that.triggerEvent('onChangeEnd', routeItem);
         return that;
+    };
+
+    classProto.constructRouteController = function(routeItem, constructor) {
+        var that = this;
+
+        // Bypass errors
+        if (!that.params.catchRouteErrors) {
+            cm.getConstructor(constructor, function(classConstructor) {
+                routeItem.controller = new classConstructor(
+                    cm.merge(routeItem.constructorParams, {
+                        'container': that.params.container,
+                        'route': routeItem
+                    })
+                );
+                routeItem.controller.triggerEvent('onConstructComplete');
+            });
+            return;
+        }
+
+        // Catch errors
+        var errorMessage;
+        var errorMessageData = {
+            '{route}': routeItem.route,
+            '{constructor}': constructor,
+        };
+        var classConstructor = cm.getConstructor(constructor, function(classConstructor) {
+            try {
+                routeItem.controller = new classConstructor(
+                    cm.merge(routeItem.constructorParams, {
+                        'container': that.params.container,
+                        'route': routeItem
+                    })
+                );
+                routeItem.controller.triggerEvent('onConstructComplete');
+            } catch (e) {
+                errorMessage = [that.msg('errors.constructor_error', errorMessageData), e.message].join('\n');
+            }
+        });
+        if (cm.isEmpty(classConstructor)) {
+            errorMessage = that.msg('errors.constructor_not_found', errorMessageData);
+        }
+        if (!cm.isEmpty(errorMessage)) {
+            cm.errorLog({
+                'type': 'error',
+                'name': 'Com.Router',
+                'message': errorMessage,
+            });
+            if (that.params.summonRouteOnError) {
+                that.summon('error', null, {
+                    'data': {
+                        'code': 1404,
+                        'message': errorMessage,
+                    },
+                });
+            }
+        }
     };
 
     classProto.getRouteRedirect = function(routeItem){

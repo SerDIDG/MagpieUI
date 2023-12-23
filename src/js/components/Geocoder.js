@@ -51,9 +51,9 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
         var that = this,
             args = arguments;
         if(that.components['geocoder']){
-            that.process.apply(that, args);
+            return that.process.apply(that, args);
         }else{
-            cm.loadScript({
+            return cm.loadScript({
                 'path' : 'google.maps',
                 'src' : that.apiLink,
                 'callback' : function(){
@@ -65,7 +65,7 @@ cm.getConstructor('Com.Geocoder', function(classConstructor, className, classPro
 
     classProto.process = function(data, success, error){
         var that = this;
-        that.components['geocoder'].geocode(data, function(results, status) {
+        return that.components['geocoder'].geocode(data, function(results, status) {
             if(status === 'OK'){
                 cm.isFunction(success) && success(results, status);
             }else{
