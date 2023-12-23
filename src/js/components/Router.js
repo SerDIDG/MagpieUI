@@ -302,6 +302,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
 
         // Catch errors
+        var errorDetails;
         var errorMessage;
         var errorMessageData = {
             '{route}': routeItem.route,
@@ -316,8 +317,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                     })
                 );
                 routeItem.controller.triggerEvent('onConstructComplete');
-            } catch (e) {
-                errorMessage = [that.msg('errors.constructor_error', errorMessageData), e.message].join('\n');
+            } catch (err) {
+                errorDetails = err;
+                errorMessage = that.msg('errors.constructor_error', errorMessageData);
             }
         });
         if (cm.isEmpty(classConstructor)) {
@@ -329,11 +331,13 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 'name': 'Com.Router',
                 'message': errorMessage,
             });
+            console.error(errorDetails);
             if (that.params.summonRouteOnError) {
                 that.summon('error', null, {
                     'data': {
                         'code': 1404,
                         'message': errorMessage,
+                        'error': errorDetails,
                     },
                 });
             }
