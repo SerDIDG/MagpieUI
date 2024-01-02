@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.65.1 (2023-12-23 21:42) ************ */
+/*! ************ MagpieUI v3.66.0 (2024-01-03 01:28) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.65.1';
+@CmVersion: '3.66.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -17401,7 +17401,7 @@ ul.pt__field__hint {
                     margin: 0;
                 }
 
-                &:hover {
+                &:is(:hover, :focus-visible) {
                     border-color: @CmColor-Primary-DarkDefault;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
@@ -17411,6 +17411,12 @@ ul.pt__field__hint {
                     background-color: @CmColor-Primary-DarkDefault;
                 }
             }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 
@@ -17567,6 +17573,10 @@ ul.pt__field__hint {
         .bar-zoom {
             display: none;
         }
+    }
+
+    &.is-visible {
+        opacity: 1;
     }
 }
 
@@ -19245,6 +19255,12 @@ ul.pt__field__hint {
     }
 }
 
+.com__slider__holder {
+    > li {
+        display: none;
+    }
+}
+
 // /* *** MIXINS *** */
 
 .com__slider__effects () {
@@ -19343,7 +19359,7 @@ ul.pt__field__hint {
 
                 &:first-child {
                     display: block;
-                    left: 0%;
+                    left: 0;
                 }
             }
         }
@@ -19358,7 +19374,7 @@ ul.pt__field__hint {
 
                 &:first-child {
                     display: block;
-                    left: 0%;
+                    left: 0;
                 }
             }
         }
@@ -19373,7 +19389,7 @@ ul.pt__field__hint {
 
                 &:first-child {
                     display: block;
-                    left: 0%;
+                    left: 0;
                 }
             }
         }
@@ -19694,6 +19710,7 @@ ul.pt__field__hint {
     }
 }
 
+.com__tabset__holder,
 .com__tabset__content-ul {
     > li {
         display: none;

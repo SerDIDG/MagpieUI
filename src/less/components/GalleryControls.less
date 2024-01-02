@@ -80,7 +80,7 @@
                     margin: 0;
                 }
 
-                &:hover {
+                &:is(:hover, :focus-visible) {
                     border-color: @CmColor-Primary-DarkDefault;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
@@ -90,6 +90,12 @@
                     background-color: @CmColor-Primary-DarkDefault;
                 }
             }
+        }
+
+        &.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
     }
 
@@ -246,6 +252,10 @@
         .bar-zoom {
             display: none;
         }
+    }
+
+    &.is-visible {
+        opacity: 1;
     }
 }
 
