@@ -35,6 +35,7 @@ cm.define('Com.Slider', {
         'pauseOnHover' : true,
         'pauseOnScroll' : true,
         'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
+        'setOnClick' : false,
         'controlsType' : 'partial',     // full | partial | small | null
         'controlsClasses' : [],
         'buttons' : true,               // Display buttons, can hide exists buttons
@@ -190,22 +191,22 @@ function(params){
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
     };
 
-    var renderView = function(){
-        that.nodes['container'] = cm.node('div', {'class' : 'com__slider'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['size'] = cm.node('div', {'class' : 'size'}),
-                that.nodes['slides'] = cm.node('div', {'class' : 'slides'},
+    var renderView = function() {
+        that.nodes['container'] = cm.node('div', {'class': 'com__slider'},
+            that.nodes['inner'] = cm.node('div', {'class': 'inner'},
+                that.nodes['size'] = cm.node('div', {'class': 'size'}),
+                that.nodes['slides'] = cm.node('div', {'class': 'slides'},
                     that.nodes['slidesInner'] = cm.node('ul')
                 ),
-                that.nodes['controls'] = cm.node('div', {'class' : 'com__gallery-controls'},
-                    cm.node('div', {'class' : 'inner'},
-                        that.nodes['prev'] = cm.node('div', {'class' : 'bar-arrow prev', 'title' : that.msg('prev')},
-                            cm.node('div', {'class' : 'icon default prev'})
+                that.nodes['controls'] = cm.node('div', {'class': 'com__gallery-controls'},
+                    cm.node('div', {'class': 'inner'},
+                        that.nodes['prev'] = cm.node('div', {'class': 'bar-arrow prev', 'title': that.msg('prev'), 'role': 'button', 'tabindex': 0},
+                            cm.node('div', {'class': 'icon default prev'})
                         ),
-                        that.nodes['next'] = cm.node('div', {'class' : 'bar-arrow next', 'title' : that.msg('next')},
-                            cm.node('div', {'class' : 'icon default next'})
+                        that.nodes['next'] = cm.node('div', {'class': 'bar-arrow next', 'title': that.msg('next'), 'role': 'button', 'tabindex': 0},
+                            cm.node('div', {'class': 'icon default next'})
                         ),
-                        that.nodes['buttonsBar'] = cm.node('div', {'class' : 'bar-buttons'},
+                        that.nodes['buttonsBar'] = cm.node('div', {'class': 'bar-buttons'},
                             that.nodes['buttons'] = cm.node('ul')
                         )
                     )
@@ -337,15 +338,21 @@ function(params){
         // Bar
         if(that.params['hasBar']){
             // Set image on thumb click
-            cm.addEvent(item['bar']['link'], 'click', function(e){
-                e = cm.getEvent(e);
-                cm.preventDefault(e);
+            cm.click.add(item['bar']['link'], function(event){
+                cm.preventDefault(event);
                 set(item['index']);
             });
         }
 
         // Init animation
         item['anim'] = new cm.Animation(item['nodes']['container']);
+
+        // Set image on slide click
+        if (that.params['setOnClick']) {
+            cm.click.add(item['nodes']['container'], function(){
+                set(item['index']);
+            });
+        }
 
         // Embed
         if(that.params['renderStructure'] || !cm.hasParentNode(item['nodes']['container'])){
