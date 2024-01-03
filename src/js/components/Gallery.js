@@ -125,14 +125,23 @@ function(params){
         }
 
         // Arrow click events
-        cm.click.add(that.nodes.prev, that.prev);
-        cm.click.add(that.nodes.next, that.next);
+        cm.click.add(that.nodes.prev, function(event){
+            cm.preventDefault(event);
+            that.prev();
+        });
+        cm.click.add(that.nodes.next, function(event){
+            cm.preventDefault(event);
+            that.next();
+        });
 
         // Zoom
         if (that.params.zoom) {
             cm.getConstructor(that.params.zoomConstructor, function(classConstructor) {
                 that.components.zoom = new classConstructor(that.params.zoomParams);
-                cm.click.add(that.nodes.zoom, zoom);
+                cm.click.add(that.nodes.zoom, function(event){
+                    cm.preventDefault(event);
+                    that.zoom();
+                });
                 cm.removeClass(that.nodes.zoom, 'is-hidden');
                 that.nodes.zoom.setAttribute('aria-hidden', 'false');
             });
@@ -271,12 +280,6 @@ function(params){
             });
     };
 
-    var zoom = function() {
-        that.components.zoom
-            .set(that.currentItem.getParams('src'))
-            .open();
-    };
-
     /* ******* MAIN ******* */
 
     that.set = function(i) {
@@ -334,6 +337,16 @@ function(params){
         return that;
     };
 
+    that.zoom = function() {
+        if (!that.components.zoom) {
+            return that;
+        }
+        that.components.zoom
+            .set(that.currentItem.getParams('src'))
+            .open();
+        return that;
+    };
+
     that.getIndex = function() {
         return that.currentItem.getParams('index');
     };
@@ -355,12 +368,16 @@ function(params){
     that.setArrows = function() {
         var index = that.currentItem.getParams('index');
         var count = that.getCount();
+
         var showPrev = that.params.navigation.cycle || count < 2 ? count > 1 : index > 0;
-        var showNext = that.params.navigation.cycle || count < 2 ? count > 1 : index < count - 1;
-        cm.toggleClass(that.nodes.prev, 'is-hidden', !showPrev);
-        cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
+        that.nodes.prev.disabled = !showPrev;
         that.nodes.prev.setAttribute('aria-hidden', !showPrev);
+        cm.toggleClass(that.nodes.prev, 'is-hidden', !showPrev);
+
+        var showNext = that.params.navigation.cycle || count < 2 ? count > 1 : index < count - 1;
+        that.nodes.next.disabled = !showNext;
         that.nodes.next.setAttribute('aria-hidden', !showNext);
+        cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
         return that;
     };
     

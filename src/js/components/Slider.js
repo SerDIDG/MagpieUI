@@ -34,8 +34,8 @@ cm.define('Com.Slider', {
         'direction' : 'forward',        // Slideshow direction: forward | backward | random
         'pauseOnHover' : true,
         'pauseOnScroll' : true,
-        'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
         'setOnClick' : false,
+        'fadePrevious' : false,         // Fade out previous slide, needed when using transparency slides
         'controlsType' : 'partial',     // full | partial | small | null
         'controlsClasses' : [],
         'buttons' : true,               // Display buttons, can hide exists buttons
@@ -133,27 +133,36 @@ function(params){
     };
 
     var renderSlider = function(){
-        var transitionRule = cm.getSupportedStyle('transition');
+
         // Render Structure
         if(that.params['renderStructure']){
             renderView();
         }
         cm.addClass(that.nodes['container'], that.params['className']);
+
         // Collect items
         cm.forEach(that.nodes['items'], collectItem);
-        // Collect items from config
         cm.forEach(that.params['items'], collectItem);
+
         // Controls
         if(cm.inArray(['full', 'partial', 'small'], that.params['controlsType'])){
             cm.addClass(that.nodes['controls'], ['is', that.params['controlsType']].join('-'));
         }
         cm.addClass(that.nodes['controls'], that.params['controlsClasses']);
+
         // Arrows
         if(that.params['arrows']){
-            cm.click.add(that.nodes['next'], that.next);
-            cm.click.add(that.nodes['prev'], that.prev);
+            cm.click.add(that.nodes['next'], function(event){
+                cm.preventDefault(event);
+                that.next();
+            });
+            cm.click.add(that.nodes['prev'], function(event){
+                cm.preventDefault(event);
+                that.prev();
+            });
         }
         setArrows(that.params['arrows']);
+
         // Buttons
         if(that.params['buttons']){
             cm.forEach(that.items, renderButton);
@@ -162,11 +171,13 @@ function(params){
             cm.addClass(that.nodes['buttonsBar'], 'is-hidden');
             that.nodes['buttonsBar'].setAttribute('aria-hidden', true);
         }
+
         // Height Type Parameters
-        that.nodes['inner'].style[transitionRule] = [that.params['time'], 'ms'].join('');
+        that.nodes['inner'].style.transition = [that.params['time'], 'ms'].join('');
         if(/max|slide/.test(that.params['height'])){
             cm.addClass(that.nodes['container'], 'is-adaptive-content');
         }
+
         // Pause slider when it hovered
         if(that.params['slideshow'] && that.params['pauseOnHover']){
             cm.addEvent(that.nodes['container'], 'mouseover', function(e){
@@ -184,8 +195,10 @@ function(params){
                 }
             });
         }
+
         // Pause slider when in not in screen range
         scrollPauseHandler();
+
         // Init animations
         that.anim['slides'] = new cm.Animation(that.nodes['slides']);
         that.anim['slidesInner'] = new cm.Animation(that.nodes['slidesInner']);
@@ -349,7 +362,8 @@ function(params){
 
         // Set image on slide click
         if (that.params['setOnClick']) {
-            cm.click.add(item['nodes']['container'], function(){
+            cm.click.add(item['nodes']['container'], function(event){
+                cm.preventDefault(event);
                 set(item['index']);
             });
         }
@@ -383,7 +397,8 @@ function(params){
             item['nodes']['button'].innerHTML = item['index'] + 1;
         }
         // Event
-        cm.click.add(item['nodes']['button'], function(){
+        cm.click.add(item['nodes']['button'], function(event){
+            cm.preventDefault(event);
             that.direction = item['index'] <= that.current ? 'next' : 'prev';
             set(item['index']);
         });
@@ -445,13 +460,16 @@ function(params){
         var showPrev = toggle === false
             ? false
             : that.params.cycle || that.itemsLength < 2 ? that.itemsLength > 1 : that.current > 0;
+        that.nodes.prev.disabled = !showPrev;
+        that.nodes.prev.setAttribute('aria-hidden', !showPrev);
+        cm.toggleClass(that.nodes.prev, 'is-hidden', !showPrev);
+
         var showNext = toggle === false
             ? false
             : that.params.cycle || that.itemsLength < 2 ? that.itemsLength > 1 : that.current < that.itemsLength - 1;
-        cm.toggleClass(that.nodes.prev, 'is-hidden', !showPrev);
-        cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
-        that.nodes.prev.setAttribute('aria-hidden', !showPrev);
+        that.nodes.next.disabled = !showNext;
         that.nodes.next.setAttribute('aria-hidden', !showNext);
+        cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
     };
 
     var setBarItem = function(current, previous){
