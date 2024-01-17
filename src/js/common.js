@@ -2392,7 +2392,7 @@ cm.getCurrentDate = function(format){
 cm.dateFormat = function(date, format, langs, formatCase){
     if(cm.isDate(date)){
         date = new Date(+date);
-    }else if(cm.isString(date)){
+    }else if(cm.isString(date) || cm.isNumber(date)){
         date = new Date(date);
     }
     if(isNaN(date)){
