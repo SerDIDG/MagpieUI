@@ -197,7 +197,7 @@ cm.isWindow = function(o){
 
 cm.isNode = function(node){
     try{
-        return !!(node && node.nodeType);
+        return !!(node && node.nodeType && node.nodeType !== 9);
     }catch(e){}
     return false;
 };
