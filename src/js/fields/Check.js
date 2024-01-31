@@ -223,12 +223,19 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         // Structure
         item.nodes.container = cm.node('label',
             item.nodes.input = cm.node('input', {type: that.params.type}),
+        );
+
+        // Input
+        item.input = item.nodes.input;
+
+        // Label
+        if (!cm.isEmpty(item.text)) {
             item.nodes.label = cm.node('span', {
                 classes: 'label',
                 innerHTML: item.text,
-            })
-        );
-        item.input = item.nodes.input;
+            });
+            cm.appendChild(item.nodes.label, item.nodes.container);
+        }
 
         // Icon
         if (cm.isNode(that.params.contentIcon)) {

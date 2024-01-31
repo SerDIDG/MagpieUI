@@ -478,7 +478,7 @@
         }
 
         &.help {
-            right: @icon_size + (@icon_indent * 2);
+            right: (@icon_size + @icon_indent * 2);
         }
     }
 
@@ -491,7 +491,7 @@
     &.has-close-inside {
         > .inner {
             > .title {
-                padding-right: @indent + @icon_indent + @icon_size;
+                padding-right: (@icon_size + @icon_indent * 2);
             }
         }
     }
@@ -503,7 +503,7 @@
             }
 
             &.help {
-                right: -(@icon_indent + @icon_size) * 2;
+                right: -((@icon_indent + @icon_size) * 2);
             }
         }
     }

@@ -283,6 +283,25 @@
                 }
             }
 
+            &.sticky {
+                position: sticky;
+                top: 0;
+
+                > a,
+                > .inner,
+                > .text {
+                    background-color: @CmColor-Background;
+                }
+            }
+
+            &.group-sticky {
+                .title {
+                    position: sticky;
+                    top: 0;
+                    background-color: @CmColor-Background;
+                }
+            }
+
             &.hidden {
                 display: none;
             }
