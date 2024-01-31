@@ -35,6 +35,7 @@ cm.define('Com.Select', {
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendered in component container.
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
+        'showPlaceholderAbove' : false,
         'showTitleTag' : true,                  // Copy title from available select node to component container. Will be shown on hover.
         'title' : false,                        // Title text. Will be shown on hover.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
@@ -190,11 +191,15 @@ function(params){
         }
         // Placeholder
         if(!cm.isEmpty(that.params['placeholder'])){
-            nodes['items'].appendChild(
-                nodes['placeholder'] = cm.node('li',
-                    cm.node('div', {'class' : 'text disabled'}, that.params['placeholder'])
+            nodes['placeholder'] = cm.node('li',
+                cm.node('div', {'class' : 'text disabled'},
+                    cm.node('span', {'class' : 'label'}, that.params['placeholder'])
                 )
             );
+            if(that.params['showPlaceholderAbove']){
+                cm.addClass(nodes['placeholder'], 'sticky');
+            }
+            cm.appendChild(nodes['placeholder'], nodes['items']);
         }
         /* *** RENDER OPTIONS *** */
         if(cm.isNode(that.params['node'])){
@@ -375,6 +380,7 @@ function(params){
             item['items'] = cm.node('ul', {'class' : 'pt__listing-items'})
         );
         if(!cm.isEmpty(item['name'])){
+            cm.addClass(item['container'], 'group-sticky');
             cm.insertFirst(
                 cm.node('div', {'class' : 'title', 'innerHTML' : item['name']}),
                 item['container']

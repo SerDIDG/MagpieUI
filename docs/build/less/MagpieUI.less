@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.66.5 (2024-01-22 21:10) ************ */
+/*! ************ MagpieUI v3.66.6 (2024-01-31 20:27) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.66.5';
+@CmVersion: '3.66.6';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -13004,7 +13004,7 @@ ul.pt__field__hint {
         padding: 0;
         position: absolute;
         border-radius: max(@CmBorder-Radius - 2px, 0px);
-        color: @CmColor-Border;
+        color: @CmColor-Icon;
     }
 
     &.no-label {
@@ -13930,6 +13930,25 @@ ul.pt__field__hint {
                 > .inner {
                     background-color: @CmColor-Secondary-LightHighlight;
                     color: @CmColor-Font-Disabled;
+                }
+            }
+
+            &.sticky {
+                position: sticky;
+                top: 0;
+
+                > a,
+                > .inner,
+                > .text {
+                    background-color: @CmColor-Background;
+                }
+            }
+
+            &.group-sticky {
+                .title {
+                    position: sticky;
+                    top: 0;
+                    background-color: @CmColor-Background;
                 }
             }
 
@@ -16879,7 +16898,7 @@ ul.pt__field__hint {
         }
 
         &.help {
-            right: @icon_size + (@icon_indent * 2);
+            right: (@icon_size + @icon_indent * 2);
         }
     }
 
@@ -16892,7 +16911,7 @@ ul.pt__field__hint {
     &.has-close-inside {
         > .inner {
             > .title {
-                padding-right: @indent + @icon_indent + @icon_size;
+                padding-right: (@icon_size + @icon_indent * 2);
             }
         }
     }
@@ -16904,7 +16923,7 @@ ul.pt__field__hint {
             }
 
             &.help {
-                right: -(@icon_indent + @icon_size) * 2;
+                right: -((@icon_indent + @icon_size) * 2);
             }
         }
     }
@@ -18327,6 +18346,10 @@ ul.pt__field__hint {
             }
         }
     }
+
+    &__entry {
+        color: inherit;
+    }
 }
 
 /* ******* COMPONENTS: OLD BROWSERS ALERT ******* */
@@ -19073,8 +19096,10 @@ ul.pt__field__hint {
         cursor: default;
     }
 
-    .pt__listing-items > ul {
-        max-height: @ComSelect-MaxHeight;
+    .pt__listing-items {
+        > ul {
+            max-height: @ComSelect-MaxHeight;
+        }
     }
 
     &.is-max {

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.66.5 (2024-01-22 21:10) ************ */
+/*! ************ MagpieUI v3.66.6 (2024-01-31 20:27) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.66.5');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.66.5') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.66.5') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.66.5') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.66.5#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.66.6');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.66.6') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.66.6') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.66.6') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.66.6#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -13053,7 +13053,7 @@ ul.pt__field__hint li:before {
   padding: 0;
   position: absolute;
   border-radius: 1px;
-  color: hsl(0, 0%, 80%);
+  color: #666666;
 }
 .pt__input.no-label .input,
 .pt__input.no-label input[type="text"],
@@ -15643,6 +15643,20 @@ ul.pt__field__hint li:before {
 .pt__listing-items ul li.disabled > .inner {
   background-color: hsl(0, 0%, 98%);
   color: #999999;
+}
+.pt__listing-items ul li.sticky {
+  position: sticky;
+  top: 0;
+}
+.pt__listing-items ul li.sticky > a,
+.pt__listing-items ul li.sticky > .inner,
+.pt__listing-items ul li.sticky > .text {
+  background-color: #ffffff;
+}
+.pt__listing-items ul li.group-sticky .title {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
 }
 .pt__listing-items ul li.hidden {
   display: none;
@@ -18387,7 +18401,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__dialog__window.theme-black.has-close-inside > .inner > .title,
 .com__dialog__window.theme-light.has-close-inside > .inner > .title,
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
-  padding-right: 60px;
+  padding-right: 48px;
 }
 .com__dialog__window.theme-default.has-no-title > .icon.default,
 .com__dialog__window.theme-black.has-no-title > .icon.default,
@@ -18593,7 +18607,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   padding-left: 12px;
 }
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
-  padding-right: 44px;
+  padding-right: 32px;
 }
 .com__dialog__window.theme-compact.has-no-title > .icon.default {
   right: -32px;
@@ -20384,6 +20398,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__notifications > ul > li.notice > .close,
 .com__notifications > ul > li.warning > .close {
   border-color: #d2a323;
+}
+.com__notifications__entry {
+  color: inherit;
 }
 /* ******* COMPONENTS: OLD BROWSERS ALERT ******* */
 .com__oldbrowser-alert .b-descr {
