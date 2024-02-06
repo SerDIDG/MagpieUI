@@ -33,6 +33,7 @@ cm.define('Com.Gridlist', {
         'container' : null,
         'embedStructure' : 'append',
         'customEvents' : true,
+        'destructOnRemove': false,
         'name' : '',
 
         // Data
@@ -136,6 +137,7 @@ function(params){
     that.rows = [];
     that.checked = [];
     that.actions = [];
+    that.isDestructed = false;
     that.isAjax = false;
     that.isCheckedAll = false;
     that.sortBy = null;
@@ -1349,6 +1351,21 @@ function(params){
 
     that.getToolbar = function(){
         return that.components['toolbar'];
+    };
+
+    that.destruct = function(){
+        if(!that.isDestructed){
+            that.isDestructed = true;
+            that.removeFromStack();
+            cm.remove(that.nodes['container']);
+        }
+        return that;
+    };
+
+    that.remove = function(){
+        that.params['destructOnRemove'] && that.destruct();
+        cm.remove(that.nodes['container']);
+        return that;
     };
 
     init();

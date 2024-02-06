@@ -1483,7 +1483,7 @@ cm.node = cm.Node = function(){
             if(typeof args[i] === 'string' || typeof args[i] === 'number'){
                 cm.appendChild(cm.textNode(args[i]), el);
             }else{
-                cm.appendChild(args[i], el);
+                cm.appendNodes(args[i], el);
             }
         }
     }
@@ -1646,8 +1646,9 @@ cm.insertFirst = function(node, target){
     return node;
 };
 
-cm.insertLast = cm.appendChild = function(node, target){
-    if(cm.isNode(node) && cm.isNode(target)){
+cm.insertLast = cm.appendChild = function(node, target, reAppend){
+    reAppend = cm.isUndefined(reAppend) ? true : reAppend;
+    if(cm.isNode(node) && cm.isNode(target) && (reAppend || !cm.isParent(target, node))){
         target.appendChild(node);
     }
     return node;

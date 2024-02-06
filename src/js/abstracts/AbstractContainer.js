@@ -175,12 +175,17 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.constructController = function(classObject){
         var that = this;
         return new classObject(
-            cm.merge(that.params['params'], {
-                'opener' : that,
-                'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
-                'content' : that.params['params']['content'] || that.params['content']
-            })
+            that.constructControllerParams(that.params['params'])
         );
+    };
+
+    classProto.constructControllerParams = function(defaultParams) {
+        var that = this;
+        return cm.merge(defaultParams, {
+            'opener' : that,
+            'container' : that.params['placeholder'] ? that.nodes['placeholder']['content'] : that.params['container'],
+            'content' : that.params['params']['content'] || that.params['content']
+        });
     };
 
     classProto.renderControllerEvents = function(){

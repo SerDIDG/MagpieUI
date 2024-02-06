@@ -1,6 +1,7 @@
 cm.define('Com.TabsetHelper', {
     'extend' : 'Com.AbstractController',
     'events' : [
+        'onTabChangeStart',
         'onTabChange',
         'onTabShowStart',
         'onTabShow',
@@ -314,10 +315,11 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         var that = this,
             item = that.items[id];
         if(item && that.current !== id){
-            that.triggerEvent('onTabShowStart', item);
+            that.triggerEvent('onTabChangeStart', item);
             // Hide previous tab
             that.unsetTab(that.current);
             // Show new tab
+            that.triggerEvent('onTabShowStart', item);
             that.previous = that.current;
             that.current = id;
             item.isShow = true;

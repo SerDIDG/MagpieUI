@@ -145,14 +145,15 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.redraw = function(params){
+    classProto.redraw = function(type, params){
         var that = this;
-        switch(params){
+        params = cm.merge({
+            'direction' : 'child',
+            'self' : true
+        }, params);
+        switch(type){
             case 'full':
-                cm.customEvent.trigger(that.nodes['container'], 'redraw', {
-                    'direction' : 'child',
-                    'self' : true
-                });
+                cm.customEvent.trigger(that.nodes['container'], 'redraw', params);
                 break;
             case 'immediately':
                 that.triggerEvent('onRedraw');
@@ -167,12 +168,12 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.resize = function(params){
+    classProto.resize = function(type){
         var that = this;
         if (that.params.redrawOnResize) {
             that.redraw(that.params.redrawOnResize);
         }
-        if(params === 'immediately'){
+        if(type === 'immediately'){
             that.triggerEvent('onResize');
         }else{
             animFrame(function(){
@@ -182,9 +183,9 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         return that;
     };
 
-    classProto.scroll = function(params){
+    classProto.scroll = function(type){
         var that = this;
-        if(params === 'immediately'){
+        if(type === 'immediately'){
             that.triggerEvent('onScroll');
         }else{
             animFrame(function(){

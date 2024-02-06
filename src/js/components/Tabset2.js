@@ -19,6 +19,7 @@ cm.define('Com.Tabset2', {
         'active' : null,
         'setInitialTab' : true,                                     // Set possible initial tab even if "active" is not defined
         'setInitialTabImmediately' : true,                          // Set initial tab without animation
+        'tabsHolderTagName': 'ul',
         'tabsAlign' : 'left',                                       // left | center | right | justify
         'tabsPosition' : 'top',                                     // top | right | bottom | left
         'tabsFlexible' : false,
@@ -110,20 +111,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this;
         // Structure
         that.triggerEvent('onRenderViewStart');
-        that.nodes['container'] = that.nodes['inner'] = cm.node('div', {'class' : 'com__tabset'});
-        that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
-            that.nodes['contentUL'] = cm.node('ul')
-        );
-        that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
-            that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
-            that.nodes['headerMenu'] = cm.node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
-                that.nodes['headerMenuButton'] = cm.node('div', {'class' : that.params['icons']['menu']}),
-                that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown', 'role' : 'tablist'})
-            )
-        );
-        that.nodes['headerTabs'] = cm.node('div', {'class' : 'com__tabset__head-tabs'},
-            that.nodes['headerUL'] = cm.node('ul', {'role' : 'tablist'})
-        );
+        that.renderViewStructure();
         that.triggerEvent('onRenderViewProcess');
         // Adaptive
         if(that.params['adaptive']){
@@ -167,11 +155,32 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         that.triggerEvent('onRenderViewEnd');
     };
 
+    classProto.renderViewStructure = function() {
+        var that = this;
+        that.nodes['container'] = that.nodes['inner'] = cm.node('div', {'class' : 'com__tabset'});
+        that.nodes['content'] = cm.node('div', {'class' : 'com__tabset__content'},
+            that.nodes['contentUL'] = cm.node('ul', {'class' : 'inner'})
+        );
+        that.nodes['headerTitle'] = cm.node('div', {'class' : 'com__tabset__head-title'},
+            that.nodes['headerTitleText'] = cm.node('div', {'class' : 'com__tabset__head-text'}),
+            that.nodes['headerMenu'] = cm.node('div', {'class' : 'com__tabset__head-menu pt__menu is-manual is-hide'},
+                that.nodes['headerMenuButton'] = cm.node('div', {'class' : that.params['icons']['menu']}),
+                that.nodes['headerMenuUL'] = cm.node('ul', {'class' : 'pt__menu-dropdown', 'role' : 'tablist'})
+            )
+        );
+        that.nodes['headerTabs'] = cm.node('div', {'class' : 'com__tabset__head-tabs'},
+            that.nodes['headerUL'] = cm.node(that.params['tabsHolderTagName'], {'class' : 'inner', 'role' : 'tablist'})
+        );
+    };
+
     classProto.renderViewModel = function(){
         var that = this;
-        cm.addEvent(that.nodes['headerMenuButton'], 'click', that.toggleMenuHandler);
-        // Call parent method - renderViewModel
+
+        // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
+        // Add menu actions
+        cm.addEvent(that.nodes['headerMenuButton'], 'click', that.toggleMenuHandler);
     };
 
     /******* TABS *******/
@@ -196,7 +205,12 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         item['menu'] = that.renderTabLink(item, 'menu');
         item['tab'] = that.renderTabContent(item);
 
-        // Embed
+        // Set attributes
+        that.setTabLinkAttributes(item, item['label']);
+        that.setTabLinkAttributes(item, item['menu']);
+        that.setTabContentAttributes(item, item['tab']);
+
+        // Append
         cm.appendChild(item['label']['container'], that.nodes['headerUL']);
         cm.appendChild(item['menu']['container'], that.nodes['headerMenuUL']);
         cm.appendChild(item['tab']['container'], that.nodes['contentUL']);
@@ -206,18 +220,26 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         var that = this,
             nodes = {};
         // Structure
-        nodes['container'] = cm.node('li', {'id' : item['tabName'], 'role' : 'tabpanel', 'tabindex' : '0', 'aria-labelledby' : item['labelName'], 'hidden' : true},
+        nodes['container'] = cm.node('li',
             nodes['inner'] = cm.node('div', item['content'])
         );
         return nodes;
+    };
+
+    classProto.setTabContentAttributes = function(item, nodes) {
+        nodes.container.setAttribute('id', item.tabName);
+        nodes.container.setAttribute('role', 'tabpanel');
+        nodes.container.setAttribute('tabindex', '0');
+        nodes.container.setAttribute('aria-labelledby', item.labelName);
+        nodes.container.setAttribute('hidden', false);
     };
 
     classProto.renderTabLink = function(item, type){
         var that = this,
             nodes = {};
         // Structure
-        nodes['container'] = cm.node('li', {'id' : item['labelName'], 'role' : 'tab', 'tabindex' : '0', 'aria-controls': item['tabName'], 'aria-selected' : 'false'},
-            nodes['link'] = cm.node('a', {'role' : 'presentation', 'tabindex' : '-1'},
+        nodes['container'] = cm.node('li',
+            nodes['link'] = cm.node('a',
                 nodes['title'] = cm.node('div', {'class' : 'title'})
             )
         );
@@ -227,16 +249,6 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             cm.appendChild(item['title'], nodes['title']);
         }else{
             nodes['title'].innerHTML = item['title'];
-        }
-        // Attributes
-        if(that.params['setTabsHash']){
-            var url = new URL(window.location);
-            url.hash = item['id'];
-            nodes['link'].href = url.href;
-            nodes['link'].setAttribute('data-prevent-default', 'true');
-        }
-        if(that.params['showTabsTitle']){
-            nodes['link'].title = cm.cutHTML(item['title']);
         }
         // Image
         if(type === 'label'){
@@ -252,6 +264,31 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             }
         }
         return nodes;
+    };
+
+    classProto.setTabLinkAttributes = function(item, nodes) {
+        var that = this;
+
+        nodes.container.setAttribute('id', item.labelName);
+        nodes.container.setAttribute('role', 'tab');
+        nodes.container.setAttribute('tabindex', '0');
+        nodes.container.setAttribute('aria-controls', item.tabName);
+        nodes.container.setAttribute('aria-selected', 'false');
+
+        if (that.params.showTabsTitle) {
+            nodes.container.title = cm.cutHTML(item.title);
+        }
+
+        if (nodes.link) {
+            nodes.link.setAttribute('role', 'presentation');
+            nodes.link.setAttribute('tabindex', '-1');
+            if (that.params.setTabsHash) {
+                var url = new URL(window.location);
+                url.hash = item.id;
+                nodes.link.href = url.href;
+                nodes.link.setAttribute('data-prevent-default', 'true');
+            }
+        }
     };
 
     /*** MENU ***/
@@ -287,7 +324,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         that.hideMenu();
     };
 
-    classProto.onTabShowStart = function(that, item){
+    classProto.onTabChangeStart = function(that, item){
         var previous = that.current;
         var previousItem = that.items[previous];
 
