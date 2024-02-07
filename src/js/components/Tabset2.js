@@ -5,20 +5,23 @@ cm.define('Com.Tabset2', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'embedStructure' : 'replace',
-        'processTabs' : false,
-        'renderTabView' : true,
-        //'renderOnInit' : true,
         'removeOnDestruct' : true,
         'toggleOnHashChange' : true,                                // URL hash change handler
         'targetEvent' : 'click',                                    // click | hover | none
         'documentNode' : window,
 
-        /* TABS */
+        /* ITEMS */
 
         'items' : [],
         'active' : null,
         'setInitialTab' : true,                                     // Set possible initial tab even if "active" is not defined
         'setInitialTabImmediately' : true,                          // Set initial tab without animation
+        'processTabs' : false,
+
+        /* TABS */
+
+        'showMenu' : true,
+        'renderTabView' : true,
         'tabsHolderTagName': 'ul',
         'tabsAlign' : 'left',                                       // left | center | right | justify
         'tabsPosition' : 'top',                                     // top | right | bottom | left
@@ -27,6 +30,9 @@ cm.define('Com.Tabset2', {
         'showTabs' : true,
         'showTabsTitle' : true,                                     // Show title tooltip
         'setTabsHash' : false,
+
+        /* CONTENT */
+
         'showContent' : true,
         'switchManually' : false,                                   // Change tab manually, not implemented yet
         'animateSwitch' : true,
@@ -141,14 +147,18 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         // Embed Tabs
         if(that.params['showTabs']){
             if(that.params['showContent']){
-                cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
+                if(that.params['showMenu']){
+                    cm.insertBefore(that.nodes['headerTitle'], that.nodes['content']);
+                }
                 if(/bottom|right/.test(that.params['tabsPosition'])){
                     cm.insertAfter(that.nodes['headerTabs'], that.nodes['content']);
                 }else{
                     cm.insertBefore(that.nodes['headerTabs'], that.nodes['content']);
                 }
             }else{
-                cm.appendChild(that.nodes['headerTitle'], that.nodes['inner']);
+                if(that.params['showMenu']) {
+                    cm.appendChild(that.nodes['headerTitle'], that.nodes['inner']);
+                }
                 cm.appendChild(that.nodes['headerTabs'], that.nodes['inner']);
             }
         }
