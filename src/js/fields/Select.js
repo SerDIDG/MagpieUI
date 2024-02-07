@@ -197,7 +197,7 @@ function(params){
                 )
             );
             if(that.params['showPlaceholderAbove']){
-                cm.addClass(nodes['placeholder'], 'sticky');
+                cm.addClass(nodes['placeholder'], ['sticky', 'placeholder-sticky']);
             }
             cm.appendChild(nodes['placeholder'], nodes['items']);
         }
