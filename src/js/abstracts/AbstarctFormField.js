@@ -564,7 +564,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.getValueOption = function(){
         var that = this;
-        return that.components.controller && cm.isFunction(that.components.controller.getRaw) ? that.components.controller.getValueOption() : that.get('auto');
+        return that.components.controller && cm.isFunction(that.components.controller.getValueOption) ? that.components.controller.getValueOption() : that.get('auto');
     };
 
     classProto.reset = function(){

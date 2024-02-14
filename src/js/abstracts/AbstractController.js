@@ -64,6 +64,7 @@ cm.define('Com.AbstractController', {
         'redrawOnRender' : 'immediately',
         'redrawOnResize' : 'frame',
         'removeOnDestruct' : false,
+        'destructOnRemove' : true,
         'className' : '',
         'controllerEvents' : false,
         'customEvents' : true,
@@ -133,15 +134,22 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             that.triggerEvent('onDestructStart');
             that.triggerEvent('onDestruct');
             that.triggerEvent('onDestructProcess');
-            cm.customEvent.trigger(that.getStackNode(), 'destruct', {
+            cm.customEvent.trigger(that.nodes['container'], 'destruct', {
                 'direction' : 'child',
                 'self' : false
             });
             that.unsetEvents();
-            that.params['removeOnDestruct'] && cm.remove(that.getStackNode());
+            that.params['removeOnDestruct'] && cm.remove(that.nodes['container']);
             that.removeFromStack();
             that.triggerEvent('onDestructEnd');
         }
+        return that;
+    };
+
+    classProto.remove = function() {
+        var that = this;
+        that.params['destructOnRemove'] && that.destruct();
+        cm.remove(that.nodes['container']);
         return that;
     };
 

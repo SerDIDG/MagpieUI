@@ -795,7 +795,7 @@ function(params){
         return null;
     };
 
-    that.getSelectedOption = function(){
+    that.getSelectedOption = that.getValueOption = function(){
         return that.getOption(active);
     };
 

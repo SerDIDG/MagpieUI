@@ -421,7 +421,7 @@ function(params){
     var removeField = function(name){
         var item = that.getField(name);
         if(item){
-            item.fieldController && cm.isFunction(item.fieldController.destruct) && item.fieldController.destruct();
+            item.fieldController && cm.isFunction(item.fieldController.remove) && item.fieldController.remove();
             delete that.fields[name];
         }
     };
