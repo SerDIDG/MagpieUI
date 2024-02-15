@@ -811,21 +811,39 @@ function(params){
     };
 
     that.hideOption = function(value){
-        var option;
-        if(!cm.isUndefined(value) && options[value]){
-            option = options[value];
-            option['hidden'] = true;
-            cm.addClass(option['node'], 'hidden');
+        if(cm.isUndefined(value) || !options[value]){
+            return;
         }
+        var option = options[value];
+        option['hidden'] = true;
+        cm.addClass(option['node'], 'hidden');
     };
 
     that.showOption = function(value){
-        var option;
-        if(!cm.isUndefined(value) && options[value]){
-            option = options[value];
-            option['hidden'] = false;
-            cm.removeClass(option['node'], 'hidden');
+        if(cm.isUndefined(value) || !options[value]){
+            return;
         }
+        var option = options[value];
+        option['hidden'] = false;
+        cm.removeClass(option['node'], 'hidden');
+    };
+
+    that.disableOption = function(value) {
+        if(cm.isUndefined(value) || !options[value]){
+            return;
+        }
+        var option = options[value];
+        option['disabled'] = true;
+        cm.addClass(option['node'], 'disabled');
+    };
+
+    that.enableOption = function(value) {
+        if(cm.isUndefined(value) || !options[value]){
+            return;
+        }
+        var option = options[value];
+        option['disabled'] = false;
+        cm.removeClass(option['node'], 'disabled');
     };
 
     that.disable = function(){

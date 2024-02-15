@@ -12,6 +12,7 @@ cm.define('Com.FileInput', {
         'showClearButton' : true,
         'autoOpen' : false,
         'placeholder' : null,
+        'buttonsAdaptive' : false,
 
         'defaultValue' : '',
         'accept' : [],                      // empty - accept all, example: ['image/png', 'image/jpeg']
@@ -179,7 +180,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         nodes['container'] = cm.node('div', {'class' : 'com__file-input__content'},
             nodes['inner'] = cm.node('div', {'class' : 'inner'},
                 nodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
-                    cm.node('div', {'class' : 'pt__file-line'},
+                    nodes['buttons'] = cm.node('div', {'class' : 'pt__file-line'},
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
                             nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
                             nodes['label'] = cm.node('div', {'class' : 'label'}),
@@ -189,6 +190,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 )
             )
         );
+        // Adaptive
+        if(that.params['buttonsAdaptive']){
+            cm.addClass(nodes['buttons'], 'is-adaptive');
+        }
         // Clear button
         if(!that.params['showClearButton']){
             cm.addClass(nodes['clear'], 'is-hidden');

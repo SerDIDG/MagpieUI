@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.66.10 (2024-02-14 14:22) ************ */
+/*! ************ MagpieUI v3.67.0 (2024-02-15 06:21) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.66.10';
+@CmVersion: '3.67.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -11604,34 +11604,21 @@ ul.pt__field__hint {
 
 }
 
-/* ******* PARTS: FILE LINE ******* */
-
 .pt__file-line {
     > .inner {
-        .clearfix;
+        display: flex;
+        align-items: center;
+        gap: @CmForm-ButtonsIndent;
     }
 
     .button-alike {
-        float: left;
-        margin-right: @CmForm-ButtonsIndent;
-
-        &:last-child {
-            margin-right: 0;
-        }
+        flex: none;
     }
 
     .label {
         .cm__text-nowrap;
-        opacity: 1;
-        line-height: @CmForm-FieldHeight;
-        .mx__transition(all, @CmUI-Transition-DurationShort);
+        flex: auto;
 
-        &.is-hidden {
-            opacity: 0;
-        }
-    }
-
-    .label-placeholder {
         &.is-hidden {
             display: none;
         }
@@ -11639,6 +11626,19 @@ ul.pt__field__hint {
 
     &.is-hidden {
         display: none;
+    }
+
+    @media (max-width: @CmUI-AdaptiveFrom) {
+        &.is-adaptive {
+            > .inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .label {
+                .cm__text-wrap;
+            }
+        }
     }
 }
 /* ******* PARTS: GRID ******* */

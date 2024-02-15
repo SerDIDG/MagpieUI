@@ -1,31 +1,18 @@
-/* ******* PARTS: FILE LINE ******* */
-
 .pt__file-line {
     > .inner {
-        .clearfix;
+        display: flex;
+        align-items: center;
+        gap: @CmForm-ButtonsIndent;
     }
 
     .button-alike {
-        float: left;
-        margin-right: @CmForm-ButtonsIndent;
-
-        &:last-child {
-            margin-right: 0;
-        }
+        flex: none;
     }
 
     .label {
         .cm__text-nowrap;
-        opacity: 1;
-        line-height: @CmForm-FieldHeight;
-        .mx__transition(all, @CmUI-Transition-DurationShort);
+        flex: auto;
 
-        &.is-hidden {
-            opacity: 0;
-        }
-    }
-
-    .label-placeholder {
         &.is-hidden {
             display: none;
         }
@@ -33,5 +20,18 @@
 
     &.is-hidden {
         display: none;
+    }
+
+    @media (max-width: @CmUI-AdaptiveFrom) {
+        &.is-adaptive {
+            > .inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .label {
+                .cm__text-wrap;
+            }
+        }
     }
 }

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.66.10 (2024-02-14 14:22) ************ */
+/*! ************ MagpieUI v3.67.0 (2024-02-15 06:21) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.66.10');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.66.10') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.66.10') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.66.10') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.66.10#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.67.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.67.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.67.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.67.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.67.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11436,15 +11436,10 @@ ul.pt__field__hint li:before {
     display: none;
   }
 }
-/* ******* PARTS: FILE LINE ******* */
-.pt__file-line > .inner:after {
-  content: ".";
-  display: block;
-  clear: both;
-  visibility: hidden;
-  line-height: 0;
-  font-size: 0;
-  height: 0;
+.pt__file-line > .inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .pt__file-line .button-alike,
 .pt__file-line .button,
@@ -11456,37 +11451,30 @@ ul.pt__field__hint li:before {
 .pt__file-line input[type="submit"],
 .pt__file-line input[type="reset"],
 .pt__file-line button {
-  float: left;
-  margin-right: 12px;
-}
-.pt__file-line .button-alike:last-child,
-.pt__file-line .button:last-child,
-.pt__file-line .browse-button:last-child,
-.pt__file-line .cm__button-wrapper:last-child,
-.pt__file-line .com__menu:last-child,
-.pt__file-line .com__pagination__bar ul li a:last-child,
-.pt__file-line input[type="button"]:last-child,
-.pt__file-line input[type="submit"]:last-child,
-.pt__file-line input[type="reset"]:last-child,
-.pt__file-line button:last-child {
-  margin-right: 0;
+  flex: none;
 }
 .pt__file-line .label {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  opacity: 1;
-  line-height: 32px;
-  transition: all 100ms ease-in-out 0ms;
+  flex: auto;
 }
 .pt__file-line .label.is-hidden {
-  opacity: 0;
-}
-.pt__file-line .label-placeholder.is-hidden {
   display: none;
 }
 .pt__file-line.is-hidden {
   display: none;
+}
+@media (max-width: 768px) {
+  .pt__file-line.is-adaptive > .inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pt__file-line.is-adaptive .label {
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+  }
 }
 /* ******* PARTS: GRID ******* */
 .pt__grid {
