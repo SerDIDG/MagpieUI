@@ -125,6 +125,10 @@
     backface-visibility: @value;
 }
 
+.mx__letter-spacing (@value, @fontSize) {
+    letter-spacing: ((@value * @fontSize) / 1000px);
+}
+
 // /* ******* COMMON ******* */
 
 .mx__google-font(@family, @weight, @enable: true) when (@enable = true) {

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.67.0 (2024-02-15 06:21) ************ */
+/*! ************ MagpieUI v3.67.1 (2024-03-06 21:35) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.67.0';
+@CmVersion: '3.67.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4642,6 +4642,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-Transition-DurationNone: 0ms;
 @CmUI-Transition-Delay-Hide: 300ms;
 @CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
+@CmUI-Opacity-Transparent: 0.01;
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
@@ -5689,6 +5690,10 @@ span.CodeMirror-selectedtext { background: none; }
 
 .mx__backface-visibility (@value: visible) {
     backface-visibility: @value;
+}
+
+.mx__letter-spacing (@value, @fontSize) {
+    letter-spacing: ((@value * @fontSize) / 1000px);
 }
 
 // /* ******* COMMON ******* */
@@ -12905,7 +12910,7 @@ ul.pt__field__hint {
     &.is-loading {
         > .inner {
             > .descr {
-                opacity: 0.01;
+                opacity: @CmUI-Opacity-Transparent;
                 .mx__transition(opacity, @CmUI-Transition-Duration);
             }
         }
