@@ -43,6 +43,13 @@
     }
 }
 
+.mx__backdrop-filter (@properties) {
+    .for(@properties); .-each(@property) {
+        -webkit-backdrop-filter+_: @property;
+                backdrop-filter+_: @property;
+    }
+}
+
 .mx__transform (@properties) {
     .for(@properties); .-each(@property) {
         transform+_: @property;

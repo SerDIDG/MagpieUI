@@ -158,7 +158,7 @@ function(params){
     var validateParams = function(){
         that.sortBy = that.params['sortBy'];
         that.orderBy = that.params['orderBy'];
-        // ToDo: remove deprecated parameter name
+        // ToDo: remove deprecated parameter name 'childBy'
         that.params['groupBy'] = !cm.isEmpty(that.params['childBy']) ? that.params['childsBy'] : that.params['groupBy'];
         // Ajax
         if(!cm.isEmpty(that.params['ajax']['url'])){
