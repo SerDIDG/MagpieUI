@@ -416,6 +416,18 @@ Com.FormFields.add('email', {
     }
 });
 
+Com.FormFields.add('url', {
+    'node': cm.node('input', {'type': 'url'}),
+    'value': '',
+    'defaultValue': '',
+    'fieldConstructor': 'Com.AbstractFormField',
+    'constructor': 'Com.Input',
+    'constructorParams': {
+        'type': 'url'
+    }
+});
+
+
 Com.FormFields.add('search', {
     'node': cm.node('input', {'type': 'search', 'inputmode': 'search', 'autocomplete': 'off'}),
     'value': '',
