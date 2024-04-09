@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.67.4 (2024-03-30 01:27) ************ */
+/*! ************ MagpieUI v3.68.0 (2024-04-09 20:02) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.67.4';
+@CmVersion: '3.68.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5107,6 +5107,11 @@ span.CodeMirror-selectedtext { background: none; }
 @PtLinks-Indent: @CmIndent-XXXSmall;
 @PtLinks-Separator: '|';
 @PtLinks-Separator-Color: @CmFont-Base-Color;
+
+// /* ******* CHECK LINE ******* */
+
+@PtCheckLine-Gap: 0px;
+@PtCheckLine-HasHover-Gap: @CmBorder-Width;
 
 // /* ******* IMAGE ******* */
 
@@ -5838,6 +5843,10 @@ span.CodeMirror-selectedtext { background: none; }
 
 .display-none {
     display: none !important;
+}
+
+.display-block {
+    display: block;
 }
 
 .display-inline,
@@ -10166,7 +10175,7 @@ button {
 
     &.has-hover {
         label {
-            margin-right: @CmBorder-Width;
+            margin: 0;
             padding: @padding @CmForm-FieldInnerIndent;
             border-radius: @CmBorder-Radius;
         }
@@ -10212,6 +10221,16 @@ button {
                 }
             }
         }
+
+        &.is-line {
+            label {
+                margin-right: @PtCheckLine-HasHover-Gap;
+            }
+        }
+
+        &.is-box {
+            gap: @PtCheckLine-HasHover-Gap;
+        }
     }
 
     &.has-fields {
@@ -10247,7 +10266,13 @@ button {
     }
 
     &.is-box {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: @PtCheckLine-Gap;
+
         label {
+            margin: 0;
             display: block;
         }
 
@@ -10258,6 +10283,10 @@ button {
 
         .label {
             overflow: hidden;
+            display: block;
+        }
+
+        .text {
             display: block;
         }
     }
@@ -15290,6 +15319,14 @@ ul.pt__field__hint {
 
     .input__content {
         position: relative;
+    }
+
+    &--input {
+        .input;
+        height: auto;
+        min-height: @CmForm-FieldHeight;
+        padding: @CmIndent-XXXSmall;
+        cursor: default;
     }
 }
 /* ******* COMPONENT: TOGGLE BOX ******* */

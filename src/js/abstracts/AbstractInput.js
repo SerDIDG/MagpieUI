@@ -198,8 +198,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             }
             // Parse JSON
             if(
-                !cm.isEmpty(dataValue)
-                && (that.params['isValueOption'] || that.params['isValueObject'])
+                !cm.isEmpty(dataValue) &&
+                 (that.params['isValueOption'] || that.params['isValueObject'])
             ){
                 value = cm.parseJSON(dataValue);
             }

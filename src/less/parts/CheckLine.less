@@ -60,7 +60,7 @@
 
     &.has-hover {
         label {
-            margin-right: @CmBorder-Width;
+            margin: 0;
             padding: @padding @CmForm-FieldInnerIndent;
             border-radius: @CmBorder-Radius;
         }
@@ -106,6 +106,16 @@
                 }
             }
         }
+
+        &.is-line {
+            label {
+                margin-right: @PtCheckLine-HasHover-Gap;
+            }
+        }
+
+        &.is-box {
+            gap: @PtCheckLine-HasHover-Gap;
+        }
     }
 
     &.has-fields {
@@ -141,7 +151,13 @@
     }
 
     &.is-box {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: @PtCheckLine-Gap;
+
         label {
+            margin: 0;
             display: block;
         }
 
@@ -152,6 +168,10 @@
 
         .label {
             overflow: hidden;
+            display: block;
+        }
+
+        .text {
             display: block;
         }
     }

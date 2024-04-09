@@ -204,6 +204,8 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             nodes: {},
             value: null,
             text: '',
+            hint: null,
+            icon: null,
             help: null,
             helpType: 'tooltip',
             values: {
@@ -213,6 +215,9 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }, item);
 
         // Validate
+        if (cm.isEmpty(item.icon)) {
+            item.icon = that.params.contentIcon;
+        }
         if (cm.isEmpty(item.values.checked)) {
             item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
         }
@@ -228,6 +233,11 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         // Input
         item.input = item.nodes.input;
 
+        // Value
+        if (that.params.type === 'checkbox') {
+            item.input.value = item.value;
+        }
+
         // Label
         if (!cm.isEmpty(item.text)) {
             item.nodes.label = cm.node('span', {
@@ -237,9 +247,18 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             cm.appendChild(item.nodes.label, item.nodes.container);
         }
 
+        // Hint
+        if (!cm.isEmpty(item.hint)) {
+            item.nodes.hint = cm.node('span', {
+                classes: 'hint',
+                innerHTML: item.hint,
+            });
+            cm.appendChild(item.nodes.hint, item.nodes.label);
+        }
+
         // Icon
-        if (cm.isNode(that.params.contentIcon)) {
-            item.nodes.icon = cm.clone(that.params.contentIcon);
+        if (cm.isNode(item.icon)) {
+            item.nodes.icon = cm.clone(item.icon);
             cm.appendChild(item.nodes.icon, item.nodes.container);
             cm.addClass(item.nodes.container, 'has-icon');
         }
@@ -348,7 +367,6 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }
 
         item.input.checked = checked;
-        item.input.value = value;
         cm.toggleClass(item.nodes.container, 'active', checked);
     };
 
@@ -383,6 +401,18 @@ Com.FormFields.add('checkbox', {
     constructor: 'Com.Check',
     constructorParams: {
         type: 'checkbox',
+    },
+});
+
+Com.FormFields.add('checkbox-group', {
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    multiple: true,
+    isValueObject: true,    // ToDo: implement
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'checkbox',
+        inline: false,
     },
 });
 
