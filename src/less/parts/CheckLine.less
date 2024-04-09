@@ -1,7 +1,7 @@
 .pt__check-line {
     @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
     @padding: max(floor((@padding_calc)), 0px);
-    @margin_calc: (@CmFont-Base-LineHeight - 13px) / 2;
+    @margin_calc: (@CmFont-Base-LineHeight - 14px) / 2;
     @margin: max(floor((@margin_calc)), 0px);
 
     min-height: @CmForm-FieldHeight;
@@ -143,7 +143,7 @@
     &.has-fields-box {
         input[type="radio"],
         input[type="checkbox"] {
-            @margin_calc: (@CmForm-FieldHeight - 13px) / 2;
+            @margin_calc: (@CmForm-FieldHeight - 14px) / 2;
             @margin: max(floor((@margin_calc)), 0px);
             margin-top: @margin;
             margin-bottom: @margin;
