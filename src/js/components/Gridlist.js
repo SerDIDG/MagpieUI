@@ -463,7 +463,7 @@ function(params){
             });
             // Render Table Filter
             if(that.params['renderFilter']) {
-                that.nodes['filter'] = cm.node('tr');
+                that.nodes['filter'] = cm.node('tr', {classes: 'pt__gridlist__row-filter'});
                 cm.forEach(that.params['cols'], function(item, i){
                     renderFilterItem(item, i, that.nodes['filter']);
                 });
@@ -571,10 +571,12 @@ function(params){
             item['nodes']['inner'] = cm.node('div', {'class' : 'inner'})
         );
         // Set column width
-        if(/%|px|auto/.test(item['width'])){
-            item['nodes']['container'].style.width = item['width'];
-        }else{
-            item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
+        if(!cm.isEmpty(item['width'])){
+            if(/%|px|auto/.test(item['width'])){
+                item['nodes']['container'].style.width = item['width'];
+            }else{
+                item['nodes']['container'].style.width = parseFloat(item['width']) + 'px';
+            }
         }
         // Embed
         cm.appendChild(item['nodes']['container'], container);

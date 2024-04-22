@@ -66,12 +66,17 @@ cm.define('Com.Autocomplete', {
         'icons' : {
             'search' : 'icon default linked'
         },
-        'Com.Tooltip' : {
-            'hideOnOut' : true,
-            'targetEvent' : 'none',
-            'width' : 'targetWidth',
-            'top' : 'targetHeight + 4'
-        }
+        'tooltip': {
+            'limitWidth': true,
+            'constructor': 'Com.Tooltip',
+            'constructorParams': {
+                'hideOnOut' : true,
+                'targetEvent' : 'none',
+                'width' : 'targetWidth',
+                'minWidth' : 'targetWidth',
+                'top' : cm._config.tooltipDown
+            },
+        },
     },
     'strings' : {
         'loader' : 'Searching for <b>"%query%"</b>…',
@@ -134,7 +139,14 @@ function(params){
         // Input
         that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
         // Tooltip
-        that.params['Com.Tooltip']['className'] = [
+        // ToDo: Deprecated legacy parameter
+        if(cm.isObject(that.params['Com.Tooltip'])){
+            that.params.tooltip.constructorParams = cm.merge(that.params.tooltip.constructorParams, that.params['Com.Tooltip']);
+        }
+        if(!that.params.tooltip.limitWidth){
+            that.params.tooltip.constructorParams.width = 'auto';
+        }
+        that.params.tooltip.constructorParams.className = [
             'com__ac-tooltip',
             [that.params['className'], 'tooltip'].join('__')
         ].join(' ');
@@ -142,22 +154,24 @@ function(params){
 
     var render = function(){
         // Init tooltip
-        that.components['tooltip'] = new Com.Tooltip(
-            cm.merge(that.params['Com.Tooltip'], {
-                'container' : that.params['container'],
-                'target' : that.params['target'],
-                'events' : {
-                    'onShowStart' : function(){
-                        that.isOpen = true;
-                        cm.addEvent(document, 'mousedown', bodyEvent);
-                    },
-                    'onHideStart' : function(){
-                        that.isOpen = false;
-                        cm.removeEvent(document, 'mousedown', bodyEvent);
+        cm.getConstructor(that.params.tooltip.constructor, function(classConstructor){
+            that.components['tooltip'] = new classConstructor(
+                cm.merge(that.params.tooltip.constructorParams, {
+                    'container' : that.params['container'],
+                    'target' : that.params['target'],
+                    'events' : {
+                        'onShowStart' : function(){
+                            that.isOpen = true;
+                            cm.addEvent(document, 'mousedown', bodyEvent);
+                        },
+                        'onHideStart' : function(){
+                            that.isOpen = false;
+                            cm.removeEvent(document, 'mousedown', bodyEvent);
+                        }
                     }
-                }
-            })
-        );
+                })
+            );
+        });
         // Set input
         that.setInput(that.params['node']);
         // Set

@@ -55,6 +55,7 @@ cm.define('Com.AbstractFormField', {
         'disabled' : false,
         'checked' : null,
         'renderName' : false,
+        'inputClasses': [],
         'options' : [],
         'constraints' : [
             /* cm.constraintsPattern(/^\s*$/g, false, message), */
@@ -313,6 +314,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
             cm.click.add(nodes.icon, that.focusHandler);
             nodes.field = cm.node('div', {'class' : 'pt__input'}, nodes.input, nodes.icon);
+            cm.addClass(nodes.field, that.params.inputClasses)
             cm.appendChild(nodes.field, nodes.container);
         }
         // Placeholder

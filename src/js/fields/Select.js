@@ -51,13 +51,18 @@ cm.define('Com.Select', {
         'icons' : {
             'arrow' : 'icon default linked'
         },
-        'Com.Tooltip' : {
-            'targetEvent' : 'click',
-            'hideOnReClick' : true,
-            'className' : 'com__select__tooltip',
-            'width' : 'targetWidth',
-            'top' : cm._config.tooltipDown
-        }
+        'tooltip': {
+            'limitWidth': true,
+            'constructor': 'Com.Tooltip',
+            'constructorParams': {
+                'targetEvent' : 'click',
+                'hideOnReClick' : true,
+                'className' : 'com__select__tooltip',
+                'width' : 'targetWidth',
+                'minWidth' : 'targetWidth',
+                'top' : cm._config.tooltipDown
+            },
+        },
     }
 },
 function(params){
@@ -121,6 +126,13 @@ function(params){
 
     var validateParams = function(){
         that.triggerEvent('onValidateParamsStart');
+        // ToDo: Deprecated legacy parameter
+        if(cm.isObject(that.params['Com.Tooltip'])){
+            that.params.tooltip.constructorParams = cm.merge(that.params.tooltip.constructorParams, that.params['Com.Tooltip']);
+        }
+        if(!that.params.tooltip.limitWidth){
+            that.params.tooltip.constructorParams.width = 'auto';
+        }
         if(cm.isNode(that.params['node'])){
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['multiple'] = that.params['node'].multiple;
@@ -286,19 +298,21 @@ function(params){
                 cm.removeEvent(window, 'keydown', blockDocumentArrows);
             });
             // Render tooltip
-            components['menu'] = new Com.Tooltip(
-                cm.merge(that.params['Com.Tooltip'], {
-                    'container' : that.params['renderInBody']? document.body : nodes['container'],
-                    'content' : nodes['scroll'],
-                    'target' : nodes['target'],
-                    'disabled' : !optionsLength,
-                    'events' : {
-                        'onShowStart' : show,
-                        'onHideStart' : hide
-                    }
-                })
-            );
-            nodes['menu'] = components['menu'].getNodes();
+            cm.getConstructor(that.params.tooltip.constructor, function(classConstructor){
+                components['menu'] = new classConstructor(
+                    cm.merge(that.params.tooltip.constructorParams, {
+                        'container' : that.params['renderInBody']? document.body : nodes['container'],
+                        'content' : nodes['scroll'],
+                        'target' : nodes['target'],
+                        'disabled' : !optionsLength,
+                        'events' : {
+                            'onShowStart' : show,
+                            'onHideStart' : hide
+                        }
+                    })
+                );
+                nodes['menu'] = components['menu'].getNodes();
+            });
         }
         // Enable / Disable
         if(that.disabled){

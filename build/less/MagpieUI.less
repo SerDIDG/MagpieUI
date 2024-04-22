@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.68.1 (2024-04-09 20:58) ************ */
+/*! ************ MagpieUI v3.69.0 (2024-04-23 01:53) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.68.1';
+@CmVersion: '3.69.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -12235,6 +12235,16 @@ ul.pt__field__hint {
         .pt__gridlist__has-background;
     }
 
+    &.is-scrollable {
+        .cm__scroll--auto;
+
+        table {
+            width: auto;
+            min-width: 100%;
+            max-width: none;
+        }
+    }
+
     &.is-editable {
         > .com__columns__chassis {
             display: block;
@@ -12272,6 +12282,14 @@ ul.pt__field__hint {
 
 .pt__gridlist__counter {
     .cm__box;
+}
+
+.pt__gridlist__row-filter {
+    td, th {
+        > .inner {
+            min-height: @CmForm-FieldHeight;
+        }
+    }
 }
 
 .pt__gridlist__indent {
@@ -12440,13 +12458,7 @@ ul.pt__field__hint {
 
     html.is-adaptive {
         .pt__gridlist {
-            .cm__scroll--auto;
-
-            table {
-                width: auto;
-                min-width: 100%;
-                max-width: none;
-            }
+            .pt__gridlist.is-scrollable;
         }
 
         .pt__gridlist.is-adaptive {
@@ -13087,6 +13099,23 @@ ul.pt__field__hint {
 
     &.size-xxlarge {
         .pt__input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    }
+
+    &.is-icon-compact {
+        .icon {
+            width: @CmSize-Small;
+            background-size: @CmSize-XSmall;
+        }
+
+        .input {
+            &:not(:first-child) {
+                padding-left: @CmSize-Small;
+            }
+
+            &:not(:last-child) {
+                padding-right: @CmSize-Small;
+            }
+        }
     }
 }
 
@@ -19123,6 +19152,10 @@ ul.pt__field__hint {
                 .mx__transform(rotate(180deg));
             }
         }
+    }
+
+    &.is-icon-compact {
+        .pt__input.is-icon-compact;
     }
 
     &.is-hidden {

@@ -42,6 +42,23 @@
     &.size-xxlarge {
         .pt__input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
     }
+
+    &.is-icon-compact {
+        .icon {
+            width: @CmSize-Small;
+            background-size: @CmSize-XSmall;
+        }
+
+        .input {
+            &:not(:first-child) {
+                padding-left: @CmSize-Small;
+            }
+
+            &:not(:last-child) {
+                padding-right: @CmSize-Small;
+            }
+        }
+    }
 }
 
 .pt__input--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){

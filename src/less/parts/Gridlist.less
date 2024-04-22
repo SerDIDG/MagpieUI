@@ -149,6 +149,16 @@
         .pt__gridlist__has-background;
     }
 
+    &.is-scrollable {
+        .cm__scroll--auto;
+
+        table {
+            width: auto;
+            min-width: 100%;
+            max-width: none;
+        }
+    }
+
     &.is-editable {
         > .com__columns__chassis {
             display: block;
@@ -186,6 +196,14 @@
 
 .pt__gridlist__counter {
     .cm__box;
+}
+
+.pt__gridlist__row-filter {
+    td, th {
+        > .inner {
+            min-height: @CmForm-FieldHeight;
+        }
+    }
 }
 
 .pt__gridlist__indent {
@@ -354,13 +372,7 @@
 
     html.is-adaptive {
         .pt__gridlist {
-            .cm__scroll--auto;
-
-            table {
-                width: auto;
-                min-width: 100%;
-                max-width: none;
-            }
+            .pt__gridlist.is-scrollable;
         }
 
         .pt__gridlist.is-adaptive {

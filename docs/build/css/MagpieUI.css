@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.68.1 (2024-04-09 20:58) ************ */
+/*! ************ MagpieUI v3.69.0 (2024-04-23 01:53) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.68.1');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.68.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.68.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.68.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.68.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.69.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.69.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.69.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.69.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.69.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12500,6 +12500,15 @@ ul.pt__field__hint li:before {
 .pt__gridlist.has-background tbody tr:active td {
   background-color: hsl(0, 0%, 91%);
 }
+.pt__gridlist.is-scrollable {
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
+}
+.pt__gridlist.is-scrollable table {
+  width: auto;
+  min-width: 100%;
+  max-width: none;
+}
 .pt__gridlist.is-editable > .com__columns__chassis {
   display: block;
 }
@@ -12525,6 +12534,10 @@ ul.pt__field__hint li:before {
 .pt__gridlist__counter.is-last,
 .pt__gridlist__counter:last-child {
   margin-bottom: 0;
+}
+.pt__gridlist__row-filter td > .inner,
+.pt__gridlist__row-filter th > .inner {
+  min-height: 32px;
 }
 .pt__gridlist__indent {
   width: 12px;
@@ -15041,6 +15054,36 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless.is-no-label textarea:not(:last-child),
 .pt__input.size-xxlarge.is-borderless.is-no-label select:not(:last-child) {
   padding-right: 0;
+}
+.pt__input.is-icon-compact .icon {
+  width: 16px;
+  background-size: 12px;
+}
+.pt__input.is-icon-compact .input:not(:first-child),
+.pt__input.is-icon-compact input[type="text"]:not(:first-child),
+.pt__input.is-icon-compact input[type="search"]:not(:first-child),
+.pt__input.is-icon-compact input[type="email"]:not(:first-child),
+.pt__input.is-icon-compact input[type="url"]:not(:first-child),
+.pt__input.is-icon-compact input[type="tel"]:not(:first-child),
+.pt__input.is-icon-compact input[type="number"]:not(:first-child),
+.pt__input.is-icon-compact input[type="time"]:not(:first-child),
+.pt__input.is-icon-compact input[type="password"]:not(:first-child),
+.pt__input.is-icon-compact textarea:not(:first-child),
+.pt__input.is-icon-compact select:not(:first-child) {
+  padding-left: 16px;
+}
+.pt__input.is-icon-compact .input:not(:last-child),
+.pt__input.is-icon-compact input[type="text"]:not(:last-child),
+.pt__input.is-icon-compact input[type="search"]:not(:last-child),
+.pt__input.is-icon-compact input[type="email"]:not(:last-child),
+.pt__input.is-icon-compact input[type="url"]:not(:last-child),
+.pt__input.is-icon-compact input[type="tel"]:not(:last-child),
+.pt__input.is-icon-compact input[type="number"]:not(:last-child),
+.pt__input.is-icon-compact input[type="time"]:not(:last-child),
+.pt__input.is-icon-compact input[type="password"]:not(:last-child),
+.pt__input.is-icon-compact textarea:not(:last-child),
+.pt__input.is-icon-compact select:not(:last-child) {
+  padding-right: 16px;
 }
 /* ******* PART: LINE ******* */
 /* ****** PART: LINE: INFO ******* */
@@ -21751,6 +21794,36 @@ html.ie9 .com__palette .b-range {
 .com__select:focus .pt__input .icon.default,
 .com__select.active .pt__input .icon.default {
   transform: rotate(180deg);
+}
+.com__select.is-icon-compact .icon {
+  width: 16px;
+  background-size: 12px;
+}
+.com__select.is-icon-compact .input:not(:first-child),
+.com__select.is-icon-compact input[type="text"]:not(:first-child),
+.com__select.is-icon-compact input[type="search"]:not(:first-child),
+.com__select.is-icon-compact input[type="email"]:not(:first-child),
+.com__select.is-icon-compact input[type="url"]:not(:first-child),
+.com__select.is-icon-compact input[type="tel"]:not(:first-child),
+.com__select.is-icon-compact input[type="number"]:not(:first-child),
+.com__select.is-icon-compact input[type="time"]:not(:first-child),
+.com__select.is-icon-compact input[type="password"]:not(:first-child),
+.com__select.is-icon-compact textarea:not(:first-child),
+.com__select.is-icon-compact select:not(:first-child) {
+  padding-left: 16px;
+}
+.com__select.is-icon-compact .input:not(:last-child),
+.com__select.is-icon-compact input[type="text"]:not(:last-child),
+.com__select.is-icon-compact input[type="search"]:not(:last-child),
+.com__select.is-icon-compact input[type="email"]:not(:last-child),
+.com__select.is-icon-compact input[type="url"]:not(:last-child),
+.com__select.is-icon-compact input[type="tel"]:not(:last-child),
+.com__select.is-icon-compact input[type="number"]:not(:last-child),
+.com__select.is-icon-compact input[type="time"]:not(:last-child),
+.com__select.is-icon-compact input[type="password"]:not(:last-child),
+.com__select.is-icon-compact textarea:not(:last-child),
+.com__select.is-icon-compact select:not(:last-child) {
+  padding-right: 16px;
 }
 .com__select.is-hidden {
   display: none;
