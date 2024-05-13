@@ -3317,7 +3317,7 @@ cm.scrollTo = function(node, parent, params, callback){
         var nodeOffsetTop = (params['type'] === 'docScrollTop' ? cm.getY(node) : node.offsetTop) - scrollPadding;
         switch(params['block']){
             case 'end':
-                params['top'] = Math.max(Math.min(nodeOffsetTop + scrollOffsetHeight, scrollMax), 0);
+                params['top'] = Math.max(Math.min(nodeOffsetTop + node.offsetHeight, scrollMax), 0);
                 break;
 
             case 'center':
