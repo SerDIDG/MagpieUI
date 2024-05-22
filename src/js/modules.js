@@ -622,7 +622,7 @@ Mod['Storage'] = {
     'storageGet' : function(key, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
-            storage = JSON.parse(cm[method](that._className)) || {};
+            storage = cm.parseJSON(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -648,7 +648,7 @@ Mod['Storage'] = {
     'storageGetAll' : function(session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
-            storage = JSON.parse(cm[method](that._className)) || {};
+            storage = cm.parseJSON(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -674,7 +674,7 @@ Mod['Storage'] = {
     'storageSet' : function(key, value, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
-            storage = JSON.parse(cm[method](that._className)) || {};
+            storage = cm.parseJSON(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -698,7 +698,7 @@ Mod['Storage'] = {
     'storageSetAll' : function(data, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
-            storage = JSON.parse(cm[method](that._className)) || {};
+            storage = cm.parseJSON(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
@@ -719,7 +719,7 @@ Mod['Storage'] = {
     'storageRemove' : function(key, session){
         var that = this,
             method = session ? 'sessionStorageGet' : 'storageGet',
-            storage = JSON.parse(cm[method](that._className)) || {};
+            storage = cm.parseJSON(cm[method](that._className)) || {};
         if(cm.isEmpty(that.params['name'])){
             cm.errorLog({
                 'type' : 'error',
