@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.69.4 (2024-05-22 22:45) ************ */
+/*! ************ MagpieUI v3.69.5 (2024-05-24 22:55) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.69.4';
+@CmVersion: '3.69.5';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7533,13 +7533,11 @@ tbody, thead, td, th, tr {
     }
 }
 
-.textarea--size-helper (@height, @padding, @border, @lineHeight) {
-    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
-
+.textarea--size-helper (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     min-height: @height;
     height: @CmTextarea-Height;
-    padding: max(ceil((@padding_calc)), @padding);
     border-width: @border;
+    .textarea--padding(@height, @padding, @border, @lineHeight);
 
     &.cm-autoresize {
         height: 0;
@@ -7550,6 +7548,11 @@ tbody, thead, td, th, tr {
     }
 }
 
+.textarea--padding (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+    padding: max(ceil((@padding_calc)), @padding);
+}
+
 .input--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     .input--size-helper(@height, @padding, @border, @lineHeight);
 
@@ -7558,14 +7561,17 @@ tbody, thead, td, th, tr {
     }
 }
 
-.input--size-helper (@height, @padding, @border, @lineHeight) {
+.input--size-helper (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    height: @height;
+    border-width: @border;
+    .input--padding(@height, @padding, @border, @lineHeight);
+}
+
+.input--padding (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     @padding_calc: (@height - @lineHeight - @border * 2) / 2;
     @padding_y: max(ceil((@padding_calc)), 0px);
     @padding_x: max(ceil((@padding_calc)), @padding);
-
-    height: @height;
     padding: @padding_y @padding_x;
-    border-width: @border;
 }
 
 /* *** APPLY *** */

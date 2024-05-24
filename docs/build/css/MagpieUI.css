@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.69.4 (2024-05-22 22:45) ************ */
+/*! ************ MagpieUI v3.69.5 (2024-05-24 22:55) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.69.4');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.69.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.69.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.69.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.69.4#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.69.5');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.69.5') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.69.5') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.69.5') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.69.5#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -6135,8 +6135,8 @@ select {
   background-clip: padding-box;
   transition: background 250ms ease-in-out 0ms, border-color 250ms ease-in-out 0ms, color 250ms ease-in-out 0ms, box-shadow 250ms ease-in-out 0ms, text-shadow 250ms ease-in-out 0ms;
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
 }
 .input.input-hover,
 .input:hover,
@@ -6303,8 +6303,8 @@ input[type="password"].is-borderless,
 textarea.is-borderless,
 select.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .input.input--large,
 input[type="text"].input--large,
@@ -6318,8 +6318,8 @@ input[type="password"].input--large,
 textarea.input--large,
 select.input--large {
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
 }
 .input.input--large.is-borderless,
 input[type="text"].input--large.is-borderless,
@@ -6333,8 +6333,8 @@ input[type="password"].input--large.is-borderless,
 textarea.input--large.is-borderless,
 select.input--large.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .input.input--xlarge,
 input[type="text"].input--xlarge,
@@ -6348,8 +6348,8 @@ input[type="password"].input--xlarge,
 textarea.input--xlarge,
 select.input--xlarge {
   height: 48px;
-  padding: 14px 14px;
   border-width: 1px;
+  padding: 14px 14px;
 }
 .input.input--xlarge.is-borderless,
 input[type="text"].input--xlarge.is-borderless,
@@ -6363,8 +6363,8 @@ input[type="password"].input--xlarge.is-borderless,
 textarea.input--xlarge.is-borderless,
 select.input--xlarge.is-borderless {
   height: 48px;
-  padding: 15px 15px;
   border-width: 0px;
+  padding: 15px 15px;
 }
 .input.input--xxlarge,
 input[type="text"].input--xxlarge,
@@ -6378,8 +6378,8 @@ input[type="password"].input--xxlarge,
 textarea.input--xxlarge,
 select.input--xxlarge {
   height: 64px;
-  padding: 22px 22px;
   border-width: 1px;
+  padding: 22px 22px;
 }
 .input.input--xxlarge.is-borderless,
 input[type="text"].input--xxlarge.is-borderless,
@@ -6393,16 +6393,16 @@ input[type="password"].input--xxlarge.is-borderless,
 textarea.input--xxlarge.is-borderless,
 select.input--xxlarge.is-borderless {
   height: 64px;
-  padding: 23px 23px;
   border-width: 0px;
+  padding: 23px 23px;
 }
 .textarea,
 textarea {
   resize: vertical;
   min-height: 32px;
   height: 100px;
-  padding: 6px;
   border-width: 1px;
+  padding: 6px;
 }
 .textarea.cm-autoresize,
 textarea.cm-autoresize {
@@ -6416,8 +6416,8 @@ textarea.has-min-height {
 textarea.is-borderless {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .textarea.is-borderless.cm-autoresize,
 textarea.is-borderless.cm-autoresize {
@@ -13150,8 +13150,8 @@ ul.pt__field__hint li:before {
 .pt__input textarea,
 .pt__input select {
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
 }
 .pt__input .input.is-borderless,
 .pt__input input[type="text"].is-borderless,
@@ -13165,8 +13165,8 @@ ul.pt__field__hint li:before {
 .pt__input textarea.is-borderless,
 .pt__input select.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .pt__input .input:not(:first-child),
 .pt__input input[type="text"]:not(:first-child),
@@ -13198,8 +13198,8 @@ ul.pt__field__hint li:before {
 .pt__input textarea {
   min-height: 32px;
   height: 100px;
-  padding: 6px;
   border-width: 1px;
+  padding: 6px;
 }
 .pt__input .textarea.cm-autoresize,
 .pt__input textarea.cm-autoresize {
@@ -13213,8 +13213,8 @@ ul.pt__field__hint li:before {
 .pt__input textarea.is-borderless {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .pt__input .textarea.is-borderless.cm-autoresize,
 .pt__input textarea.is-borderless.cm-autoresize {
@@ -13390,8 +13390,8 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless textarea,
 .pt__input.is-borderless select {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .pt__input.is-borderless .input.is-borderless,
 .pt__input.is-borderless input[type="text"].is-borderless,
@@ -13405,8 +13405,8 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless textarea.is-borderless,
 .pt__input.is-borderless select.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .pt__input.is-borderless .input:not(:first-child),
 .pt__input.is-borderless input[type="text"]:not(:first-child),
@@ -13438,8 +13438,8 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless textarea {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .pt__input.is-borderless .textarea.cm-autoresize,
 .pt__input.is-borderless textarea.cm-autoresize {
@@ -13453,8 +13453,8 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless textarea.is-borderless {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .pt__input.is-borderless .textarea.is-borderless.cm-autoresize,
 .pt__input.is-borderless textarea.is-borderless.cm-autoresize {
@@ -13630,8 +13630,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large textarea,
 .pt__input.size-large select {
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
 }
 .pt__input.size-large .input.is-borderless,
 .pt__input.size-large input[type="text"].is-borderless,
@@ -13645,8 +13645,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large textarea.is-borderless,
 .pt__input.size-large select.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .pt__input.size-large .input:not(:first-child),
 .pt__input.size-large input[type="text"]:not(:first-child),
@@ -13678,8 +13678,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large textarea {
   min-height: 32px;
   height: 100px;
-  padding: 6px;
   border-width: 1px;
+  padding: 6px;
 }
 .pt__input.size-large .textarea.cm-autoresize,
 .pt__input.size-large textarea.cm-autoresize {
@@ -13693,8 +13693,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large textarea.is-borderless {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .pt__input.size-large .textarea.is-borderless.cm-autoresize,
 .pt__input.size-large textarea.is-borderless.cm-autoresize {
@@ -13870,8 +13870,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless textarea,
 .pt__input.size-large.is-borderless select {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .pt__input.size-large.is-borderless .input.is-borderless,
 .pt__input.size-large.is-borderless input[type="text"].is-borderless,
@@ -13885,8 +13885,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless textarea.is-borderless,
 .pt__input.size-large.is-borderless select.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .pt__input.size-large.is-borderless .input:not(:first-child),
 .pt__input.size-large.is-borderless input[type="text"]:not(:first-child),
@@ -13918,8 +13918,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless textarea {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .pt__input.size-large.is-borderless .textarea.cm-autoresize,
 .pt__input.size-large.is-borderless textarea.cm-autoresize {
@@ -13933,8 +13933,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless textarea.is-borderless {
   min-height: 32px;
   height: 100px;
-  padding: 7px;
   border-width: 0px;
+  padding: 7px;
 }
 .pt__input.size-large.is-borderless .textarea.is-borderless.cm-autoresize,
 .pt__input.size-large.is-borderless textarea.is-borderless.cm-autoresize {
@@ -14110,8 +14110,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge textarea,
 .pt__input.size-xlarge select {
   height: 48px;
-  padding: 14px 14px;
   border-width: 1px;
+  padding: 14px 14px;
 }
 .pt__input.size-xlarge .input.is-borderless,
 .pt__input.size-xlarge input[type="text"].is-borderless,
@@ -14125,8 +14125,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge textarea.is-borderless,
 .pt__input.size-xlarge select.is-borderless {
   height: 48px;
-  padding: 15px 15px;
   border-width: 0px;
+  padding: 15px 15px;
 }
 .pt__input.size-xlarge .input:not(:first-child),
 .pt__input.size-xlarge input[type="text"]:not(:first-child),
@@ -14158,8 +14158,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge textarea {
   min-height: 48px;
   height: 100px;
-  padding: 14px;
   border-width: 1px;
+  padding: 14px;
 }
 .pt__input.size-xlarge .textarea.cm-autoresize,
 .pt__input.size-xlarge textarea.cm-autoresize {
@@ -14173,8 +14173,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge textarea.is-borderless {
   min-height: 48px;
   height: 100px;
-  padding: 15px;
   border-width: 0px;
+  padding: 15px;
 }
 .pt__input.size-xlarge .textarea.is-borderless.cm-autoresize,
 .pt__input.size-xlarge textarea.is-borderless.cm-autoresize {
@@ -14350,8 +14350,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless textarea,
 .pt__input.size-xlarge.is-borderless select {
   height: 48px;
-  padding: 15px 15px;
   border-width: 0px;
+  padding: 15px 15px;
 }
 .pt__input.size-xlarge.is-borderless .input.is-borderless,
 .pt__input.size-xlarge.is-borderless input[type="text"].is-borderless,
@@ -14365,8 +14365,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless textarea.is-borderless,
 .pt__input.size-xlarge.is-borderless select.is-borderless {
   height: 48px;
-  padding: 15px 15px;
   border-width: 0px;
+  padding: 15px 15px;
 }
 .pt__input.size-xlarge.is-borderless .input:not(:first-child),
 .pt__input.size-xlarge.is-borderless input[type="text"]:not(:first-child),
@@ -14398,8 +14398,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless textarea {
   min-height: 48px;
   height: 100px;
-  padding: 15px;
   border-width: 0px;
+  padding: 15px;
 }
 .pt__input.size-xlarge.is-borderless .textarea.cm-autoresize,
 .pt__input.size-xlarge.is-borderless textarea.cm-autoresize {
@@ -14413,8 +14413,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless textarea.is-borderless {
   min-height: 48px;
   height: 100px;
-  padding: 15px;
   border-width: 0px;
+  padding: 15px;
 }
 .pt__input.size-xlarge.is-borderless .textarea.is-borderless.cm-autoresize,
 .pt__input.size-xlarge.is-borderless textarea.is-borderless.cm-autoresize {
@@ -14590,8 +14590,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge textarea,
 .pt__input.size-xxlarge select {
   height: 64px;
-  padding: 22px 22px;
   border-width: 1px;
+  padding: 22px 22px;
 }
 .pt__input.size-xxlarge .input.is-borderless,
 .pt__input.size-xxlarge input[type="text"].is-borderless,
@@ -14605,8 +14605,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge textarea.is-borderless,
 .pt__input.size-xxlarge select.is-borderless {
   height: 64px;
-  padding: 23px 23px;
   border-width: 0px;
+  padding: 23px 23px;
 }
 .pt__input.size-xxlarge .input:not(:first-child),
 .pt__input.size-xxlarge input[type="text"]:not(:first-child),
@@ -14638,8 +14638,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge textarea {
   min-height: 64px;
   height: 100px;
-  padding: 22px;
   border-width: 1px;
+  padding: 22px;
 }
 .pt__input.size-xxlarge .textarea.cm-autoresize,
 .pt__input.size-xxlarge textarea.cm-autoresize {
@@ -14653,8 +14653,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge textarea.is-borderless {
   min-height: 64px;
   height: 100px;
-  padding: 23px;
   border-width: 0px;
+  padding: 23px;
 }
 .pt__input.size-xxlarge .textarea.is-borderless.cm-autoresize,
 .pt__input.size-xxlarge textarea.is-borderless.cm-autoresize {
@@ -14830,8 +14830,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless textarea,
 .pt__input.size-xxlarge.is-borderless select {
   height: 64px;
-  padding: 23px 23px;
   border-width: 0px;
+  padding: 23px 23px;
 }
 .pt__input.size-xxlarge.is-borderless .input.is-borderless,
 .pt__input.size-xxlarge.is-borderless input[type="text"].is-borderless,
@@ -14845,8 +14845,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless textarea.is-borderless,
 .pt__input.size-xxlarge.is-borderless select.is-borderless {
   height: 64px;
-  padding: 23px 23px;
   border-width: 0px;
+  padding: 23px 23px;
 }
 .pt__input.size-xxlarge.is-borderless .input:not(:first-child),
 .pt__input.size-xxlarge.is-borderless input[type="text"]:not(:first-child),
@@ -14878,8 +14878,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless textarea {
   min-height: 64px;
   height: 100px;
-  padding: 23px;
   border-width: 0px;
+  padding: 23px;
 }
 .pt__input.size-xxlarge.is-borderless .textarea.cm-autoresize,
 .pt__input.size-xxlarge.is-borderless textarea.cm-autoresize {
@@ -14893,8 +14893,8 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless textarea.is-borderless {
   min-height: 64px;
   height: 100px;
-  padding: 23px;
   border-width: 0px;
+  padding: 23px;
 }
 .pt__input.size-xxlarge.is-borderless .textarea.is-borderless.cm-autoresize,
 .pt__input.size-xxlarge.is-borderless textarea.is-borderless.cm-autoresize {
@@ -17209,8 +17209,8 @@ ul.pt__field__hint li:before {
   background-clip: padding-box;
   transition: background 250ms ease-in-out 0ms, border-color 250ms ease-in-out 0ms, color 250ms ease-in-out 0ms, box-shadow 250ms ease-in-out 0ms, text-shadow 250ms ease-in-out 0ms;
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
   height: auto;
   min-height: 32px;
   padding: 4px;
@@ -17261,38 +17261,38 @@ ul.pt__field__hint li:before {
 }
 .com__input--input.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .com__input--input.input--large {
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
 }
 .com__input--input.input--large.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .com__input--input.input--xlarge {
   height: 48px;
-  padding: 14px 14px;
   border-width: 1px;
+  padding: 14px 14px;
 }
 .com__input--input.input--xlarge.is-borderless {
   height: 48px;
-  padding: 15px 15px;
   border-width: 0px;
+  padding: 15px 15px;
 }
 .com__input--input.input--xxlarge {
   height: 64px;
-  padding: 22px 22px;
   border-width: 1px;
+  padding: 22px 22px;
 }
 .com__input--input.input--xxlarge.is-borderless {
   height: 64px;
-  padding: 23px 23px;
   border-width: 0px;
+  padding: 23px 23px;
 }
 /* ******* COMPONENT: TOGGLE BOX ******* */
 .com__togglebox {
@@ -21856,8 +21856,8 @@ html.ie9 .com__palette .b-range {
   background-clip: padding-box;
   transition: background 250ms ease-in-out 0ms, border-color 250ms ease-in-out 0ms, color 250ms ease-in-out 0ms, box-shadow 250ms ease-in-out 0ms, text-shadow 250ms ease-in-out 0ms;
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
   height: auto;
   min-height: 32px;
   padding: 4px;
@@ -21908,38 +21908,38 @@ html.ie9 .com__palette .b-range {
 }
 .com__select-multi .inner.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .com__select-multi .inner.input--large {
   height: 32px;
-  padding: 6px 6px;
   border-width: 1px;
+  padding: 6px 6px;
 }
 .com__select-multi .inner.input--large.is-borderless {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
 }
 .com__select-multi .inner.input--xlarge {
   height: 48px;
-  padding: 14px 14px;
   border-width: 1px;
+  padding: 14px 14px;
 }
 .com__select-multi .inner.input--xlarge.is-borderless {
   height: 48px;
-  padding: 15px 15px;
   border-width: 0px;
+  padding: 15px 15px;
 }
 .com__select-multi .inner.input--xxlarge {
   height: 64px;
-  padding: 22px 22px;
   border-width: 1px;
+  padding: 22px 22px;
 }
 .com__select-multi .inner.input--xxlarge.is-borderless {
   height: 64px;
-  padding: 23px 23px;
   border-width: 0px;
+  padding: 23px 23px;
 }
 .com__select-multi .pt__listing-items > ul {
   max-height: 114px;
@@ -23042,8 +23042,8 @@ html.ie9 .com__palette .b-range {
 }
 .com__tags-input > .inner .adder {
   height: 32px;
-  padding: 7px 7px;
   border-width: 0px;
+  padding: 7px 7px;
   background: transparent;
   border-color: transparent;
   box-shadow: none;

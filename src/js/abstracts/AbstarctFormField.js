@@ -478,7 +478,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.togglePlaceholder = function(){
         var that = this;
         if(that.params.showPlaceholderAbove){
-            if(that.isFocus || !cm.isEmpty(that.getText())){
+            if(that.params.showPlaceholderAbove === 'always' || that.isFocus || !cm.isEmpty(that.getText())){
                 cm.addClass(that.nodes.content.placeholder, 'pull-top');
             }else{
                 cm.removeClass(that.nodes.content.placeholder, 'pull-top');

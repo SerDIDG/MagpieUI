@@ -692,12 +692,20 @@ function(params){
         return active;
     };
 
-    that.getText = function(){
-        var option = options[active];
-        if(option){
-            return option['text'];
+    that.getText = function() {
+        var strings = [];
+        if (cm.isArray(active)) {
+            cm.forEach(active, value => {
+                if (options[value]) {
+                    strings.push(options[value].text);
+                }
+            });
+        } else {
+            if (options[active]) {
+                strings.push(options[active].text);
+            }
         }
-        return null;
+        return strings.join(', ') || null;
     };
 
     that.set = function(value, triggerEvents){
