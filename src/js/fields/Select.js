@@ -850,6 +850,18 @@ function(params){
         cm.removeClass(option['node'], 'hidden');
     };
 
+    that.toggleOptionVisibility = function(value, state) {
+        var option = options[value];
+        if(cm.isUndefined(value) || !option){
+            return;
+        }
+        if (state) {
+            that.showOption(value);
+        } else {
+            that.hideOption(value);
+        }
+    };
+
     that.disableOption = function(value) {
         if(cm.isUndefined(value) || !options[value]){
             return;
@@ -894,16 +906,16 @@ function(params){
         return that;
     };
 
-    that.toggleVisibility = function(value){
-        cm.toggleClass(nodes['container'], 'is-hidden', !value);
+    that.toggleVisibility = function(state){
+        cm.toggleClass(nodes['container'], 'is-hidden', !state);
         return that;
     };
 
-    that.toggleMenu = function(value, immediately){
+    that.toggleMenu = function(state, immediately){
         if(that.disabled || !components['menu']){
             return that;
         }
-        if(value){
+        if(state){
             components['menu'].show(immediately);
         }else{
             components['menu'].hide(immediately);
