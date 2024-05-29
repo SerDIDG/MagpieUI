@@ -87,9 +87,9 @@ function(params){
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__dateselect'},
             nodes['hidden'] = cm.node('input', {'type' : 'hidden'}),
-            cm.node('div', {'class' : 'pt__toolbar bottom'},
+            cm.node('div', {'class' : 'pt__toolbar bottom is-not-adaptive'},
                 cm.node('div', {'class' : 'inner clear'},
-                    nodes['fields'] = cm.node('ul', {'class' : 'group'})
+                    nodes['fields'] = cm.node('ul', {'class' : 'group is-adaptive-flex'})
                 )
             )
         );

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.69.6 (2024-05-29 21:02) ************ */
+/*! ************ MagpieUI v3.69.7 (2024-05-29 21:22) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.69.6');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.69.6') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.69.6') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.69.6') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.69.6#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.69.7');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.69.7') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.69.7') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.69.7') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.69.7#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -16847,6 +16847,9 @@ ul.pt__field__hint li:before {
 /* ******* PARTS: TOOLBAR: MIXINS ********** */
 /* ******* PARTS: TOOLBAR: ADAPTIVE ********** */
 @media only screen and (max-width: 768px) {
+  html.is-adaptive .pt__toolbar .group.is-adaptive-flex {
+    display: flex;
+  }
   html.is-adaptive .pt__toolbar:not(.is-not-adaptive) > .inner {
     display: block;
   }
