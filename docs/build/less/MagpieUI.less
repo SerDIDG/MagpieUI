@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.69.8 (2024-06-07 01:33) ************ */
+/*! ************ MagpieUI v3.70.0 (2024-07-01 10:40) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.69.8';
+@CmVersion: '3.70.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -13606,21 +13606,15 @@ ul.pt__field__hint {
     }
 
     &.pull-left {
-        > ul {
-            text-align: left;
-        }
+        text-align: left;
     }
 
     &.pull-center {
-        > ul {
-            text-align: center;
-        }
+        text-align: center;
     }
 
     &.pull-right {
-        > ul {
-            text-align: right;
-        }
+        text-align: right;
     }
 }
 
@@ -18197,24 +18191,28 @@ ul.pt__field__hint {
 /* ******* COMPONENTS: MENU ******* */
 
 .com__menu {
+    display: inline-flex;
+    align-items: center;
+    gap: @CmIndent-XXXSmall;
+
     .button {
         margin: 0 !important;
     }
 
-    > .label {
-        margin: 0 @CmIndent-XXXSmall;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
-    }
-
     .pt__menu {
         display: none;
+    }
+
+    &--link {
+        text-decoration: none;
+
+        &:is(:hover, :active, :focus-visible) {
+            text-decoration: none;
+
+            .label {
+                text-decoration: underline;
+            }
+        }
     }
 }
 

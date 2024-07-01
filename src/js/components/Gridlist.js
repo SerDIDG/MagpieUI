@@ -118,7 +118,10 @@ cm.define('Com.Gridlist', {
         },
         'menuConstructor' : 'Com.Menu',
         'menuParams' : {
-            'left' : '-(selfWidth-targetWidth)'
+            'renderStructure' : true,
+            'embedStructureOnRender' : true,
+            'left' : '-(selfWidth-targetWidth)',
+            'className': ['com__menu--gridlist'],
         }
     },
     'strings' : {
@@ -540,8 +543,9 @@ function(params){
             'wrap' : false,                 // Wrap cell values in div
             'textOverflow' : null,         // Overflow long text to single line
             'showTitle' : null,             // Show title on hover
+            'titleKey': '',                 // Alternative title keu, if not specified - will be shown data text
             'titleText' : '',               // Alternative title text, if not specified - will be shown key text
-            'altText' : '',                 // Alternative column text
+            'altText' : '',                 // Alternative column text for links and icons
             'urlKey' : false,               // Alternative link href, for type="url|icon"
             'links' : [],                   // Render links menu, for type="links"
             'linksParams' : {
@@ -745,8 +749,13 @@ function(params){
 
         // Validate
         item['data'] = cm.objectPath(config['key'], row['data']);
-        item['text'] = cm.isEmpty(item['data'])? '' : item['data'];
-        item['title']= cm.isEmpty(config['titleText'])? item['text'] : config['titleText'];
+        item['text'] = !cm.isEmpty(item['data'])? item['data'] : '';
+        item['titleData'] = cm.objectPath(config['titleKey'], row['data']);
+        item['title'] = !cm.isEmpty(config['titleText'])
+            ? config['titleText'] : !cm.isEmpty(item['titleData'])
+                ? item['titleData'] : item['text'];
+
+        // Validate css classes
         if(cm.isString(config['classes'])){
             config['classes'] = [config['classes']];
         }
@@ -933,43 +942,39 @@ function(params){
     var renderCellActions = function(config, row, item){
         // Config
         item['classes'] = ['pt__links', ['pull', config['actionsParams']['align']].join('-'), config['class']];
+
         // Structure
         item['nodes']['items'] = item['nodes']['actions'] = [];
-        item['nodes']['node'] = cm.node('div', {'class' : item['classes']},
-            cm.node('ul',
-                item['nodes']['componentNode'] = cm.node('li', {'class' : 'com__menu', 'data-node' : 'ComMenu:{}:button'},
-                    cm.node('a', {'class' : 'label'}, that.lang('actions')),
-                    cm.node('span', {'class' : 'cm-i__chevron-down xx-small inline'}),
-                    cm.node('div', {'class' : 'pt__menu', 'data-node' : 'ComMenu.target'},
-                        item['nodes']['itemsList'] = item['nodes']['actionsList'] = cm.node('ul', {'class' : 'pt__menu-dropdown'})
-                    )
-                )
-            )
-        );
-        // Items
-        item['actions'] = renderCellActionItems(config, row, item, 'actions');
-        // Embed
-        if(item['nodes']['actions'].length){
-            cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
-            // Render menu component
-            cm.getConstructor(that.params['menuConstructor'], function(classConstructor){
-                item['component'] = new classConstructor(
-                    cm.merge(that.params['menuParams'], {
-                        'node' : item['nodes']['componentNode']
-                    })
-                );
-            });
-        }
+        item['nodes']['node'] = cm.node('div', {'class' : item['classes']});
+
+        // Render menu component
+        cm.getConstructor(that.params['menuConstructor'], function(classConstructor){
+            item['component'] = new classConstructor(
+                cm.merge(that.params['menuParams'], {
+                    'container' : item['nodes']['node']
+                })
+            );
+
+            // Get items container
+            item['nodes']['itemsList'] = item['nodes']['actionsList'] = item['component'].getNodes('holder');
+
+            // Render items
+            item['actions'] = renderCellActionItems(config, row, item, 'actions');
+
+            // Append
+            if(item['nodes']['actions'].length > 0){
+                cm.appendChild(item['nodes']['node'], item['nodes']['inner']);
+            }
+        });
     };
 
     var renderCellActionItems = function(config, row, item, list){
-        var isInArray,
-            isEmpty,
-            items = [];
+        var items = [];
         cm.forEach(config[list], function(actionItem, key){
             actionItem = cm.merge({
                 'name' : '',
                 'label' : '',
+                'access' : true,
                 'classes' : [],
                 'attr' : {},
                 'events' : {},
@@ -981,9 +986,9 @@ function(params){
             // Validate
             actionItem['preventDefault'] = cm.isBoolean(actionItem['preventDefault']) ? actionItem['preventDefault'] : config['preventDefault'];
             // Check access
-            isEmpty = !cm.isArray(item['data']) || cm.isEmpty(actionItem['name']);
-            isInArray = cm.isArray(item['data']) && cm.inArray(item['data'], actionItem['name']);
-            if(isEmpty || isInArray){
+            var isDataEmpty = !cm.isArray(item['data']) || cm.isEmpty(actionItem['name']);
+            var isInDataArray = cm.isArray(item['data']) && cm.inArray(item['data'], actionItem['name']);
+            if(actionItem['access'] && (isDataEmpty || isInDataArray)){
                 renderCellActionItem(config, row, item, actionItem);
             }
             // Export

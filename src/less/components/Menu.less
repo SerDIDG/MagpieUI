@@ -1,24 +1,28 @@
 /* ******* COMPONENTS: MENU ******* */
 
 .com__menu {
+    display: inline-flex;
+    align-items: center;
+    gap: @CmIndent-XXXSmall;
+
     .button {
         margin: 0 !important;
     }
 
-    > .label {
-        margin: 0 @CmIndent-XXXSmall;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
-    }
-
     .pt__menu {
         display: none;
+    }
+
+    &--link {
+        text-decoration: none;
+
+        &:is(:hover, :active, :focus-visible) {
+            text-decoration: none;
+
+            .label {
+                text-decoration: underline;
+            }
+        }
     }
 }
 

@@ -1,97 +1,138 @@
 cm.define('Com.Menu', {
-    'modules' : [
-        'Params',
-        'Events',
-        'DataConfig',
-        'DataNodes',
-        'Stack'
-    ],
-    'events' : [
-        'onRender'
-    ],
-    'params' : {
-        'node' : cm.node('div'),
-        'name' : '',
-        'event' : 'hover',
-        'top' : 'targetHeight',
-        'left' : 0,
-        'adaptiveFrom' : null,
-        'adaptiveTop' : null,
-        'adaptiveLeft' : null,
-        'minWidth' : 'targetWidth',
-        'tooltipConstructor' : 'Com.Tooltip',
-        'tooltipParams' : {
-            'className' : 'com__menu-tooltip',
-            'targetEvent' : 'hover',
-            'hideOnReClick' : true,
-            'theme' : null,
-            'hold' : true
-        }
-    }
+    extend: 'Com.AbstractController',
+    params: {
+        controllerEvents: true,
+        renderStructure: false,
+        embedStructureOnRender: false,
+        embedStructure: 'append',
+
+        iconClasses: ['cm-i', 'cm-i__chevron-down', 'xx-small'],
+        targetEvent: 'hover',
+        top: 'targetHeight',
+        left: 0,
+        adaptiveFrom: null,
+        adaptiveTop: null,
+        adaptiveLeft: null,
+        minWidth: 'targetWidth',
+
+        tooltipConstructor: 'Com.Tooltip',
+        tooltipParams: {
+            className: 'com__menu-tooltip',
+            targetEvent: 'hover',
+            hideOnReClick: true,
+            theme: null,
+            hold: true,
+            delay: 'cm._config.hideDelay',
+        },
+    },
+    strings: {
+        label: 'Actions',
+    },
 },
-function(params){
-    var that = this;
+function(params) {
+    Com.AbstractController.apply(this, arguments);
+});
 
-    that.nodes = {
-        'button' : cm.node('div'),
-        'target' : cm.node('div')
-    };
-    that.components = {};
+cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, classInherit) {
+    classProto.construct = function() {
+        var that = this;
 
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        that.getDataNodes(that.params['node']);
-        that.getDataConfig(that.params['node']);
-        validateParams();
-        render();
-        that.addToStack(that.params['node']);
-        that.triggerEvent('onRender');
+        // Variables
+        that.nodes = {
+            button: cm.node('div'),
+            target: cm.node('div'),
+        };
+
+        // Call parent method
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
-    var validateParams = function(){
-        that.params['tooltipParams']['targetEvent'] = that.params['event'];
-        that.params['tooltipParams']['minWidth'] = that.params['minWidth'];
-        that.params['tooltipParams']['top'] = that.params['top'];
-        that.params['tooltipParams']['left'] = that.params['left'];
-        that.params['tooltipParams']['adaptiveFrom'] = that.params['adaptiveFrom'];
-        that.params['tooltipParams']['adaptiveTop'] = that.params['adaptiveTop'];
-        that.params['tooltipParams']['adaptiveLeft'] = that.params['adaptiveLeft'];
+    classProto.validateParams = function(){
+        var that = this;
+        that.triggerEvent('onValidateParamsStart');
+
+        // ToDo: deprecated legacy parameter
+        if (!cm.isEmpty(that.params.event)) {
+            that.params.targetEvent = that.params.event;
+        }
+
+        // Tooltip parameters
+        var tooltipParams = [
+            'targetEvent',
+            'minWidth',
+            'top',
+            'left',
+            'adaptiveFrom',
+            'adaptiveTop',
+            'adaptiveLeft',
+        ];
+        cm.forEach(tooltipParams, function(item) {
+            if (typeof that.params[item] !== 'undefined') {
+                that.params.tooltipParams[item] = that.params[item];
+            }
+        });
+
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
+        that.triggerEvent('onValidateParamsEnd');
     };
 
-    var render = function(){
+    classProto.renderView = function() {
+        var that = this;
+
+        // Structure
+        that.nodes.container = cm.node('a', {classes: ['com__menu', 'com__menu--link'], title: that.msg('label'), role: 'button', tabindex: '0'},
+            cm.node('div', {classes: 'label'}, that.msg('label')),
+            cm.node('div', {classes: that.params.iconClasses}),
+            that.nodes.target = cm.node('div', {classes: 'pt__menu'},
+                that.nodes.holder = cm.node('ul', {classes: 'pt__menu-dropdown'})
+            )
+        );
+
+        that.nodes.button = that.nodes.container;
+    };
+
+    classProto.renderViewModel = function() {
+        var that = this;
+
+        // Call parent method
+        classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Tooltip
-        cm.getConstructor(that.params['tooltipConstructor'], function(classConstructor){
-            that.components['tooltip'] = new classConstructor(
-                cm.merge(that.params['tooltipParams'], {
-                    'target' : that.nodes['container'] || that.nodes['button'],
-                    'content' : that.nodes['target'],
-                    'events' : {
-                        'onShowStart' : function(){
-                            cm.addClass(that.params['node'], 'active');
-                            cm.addClass(that.nodes['button'], 'active');
+        cm.getConstructor(that.params.tooltipConstructor, function(classConstructor) {
+            that.components.tooltip = new classConstructor(
+                cm.merge(that.params.tooltipParams, {
+                    target: that.nodes.container || that.nodes.button,
+                    content: that.nodes.target,
+                    events: {
+                        onShowStart: function() {
+                            cm.addClass(that.nodes.button, 'active');
                         },
-                        'onHideStart' : function(){
-                            cm.removeClass(that.params['node'], 'active');
-                            cm.removeClass(that.nodes['button'], 'active');
-                        }
-                    }
+                        onHideStart: function() {
+                            cm.removeClass(that.nodes.button, 'active');
+                        },
+                    },
                 })
             );
         });
     };
 
-    /* ******* PUBLIC ******* */
+    /******** PUBLIC ********/
 
-    that.show = function(){
-        that.components['tooltip'] && that.components['tooltip'].show();
+    classProto.show = function() {
+        var that = this;
+        that.components.tooltip && that.components.tooltip.show();
         return that;
     };
 
-    that.hide = function(){
-        that.components['tooltip'] && that.components['tooltip'].hide();
+    classProto.hide = function() {
+        var that = this;
+        that.components.tooltip && that.components.tooltip.hide();
         return that;
     };
 
-    init();
+    classProto.getNodes = function(key) {
+        var that = this;
+        return that.nodes[key] || that.nodes;
+    };
 });
