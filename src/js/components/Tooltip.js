@@ -63,6 +63,7 @@ function(params){
     var that = this;
     
     that.nodes = {};
+    that.container = null;
     that.animation = null;
     that.delayInterval = null;
     that.resizeInterval = null;
@@ -104,6 +105,7 @@ function(params){
     };
 
     var validateParams = function(){
+        that.setContainer(that.params['container'] || that.params['holdTarget'] || that.params['target']);
         if(!that.params['adaptive']){
             that.params['adaptiveX'] = false;
             that.params['adaptiveY'] = false;
@@ -237,7 +239,7 @@ function(params){
 
     var showHandler = function(immediately){
         // Append
-        that.params['container'].appendChild(that.nodes['container']);
+        that.container.appendChild(that.nodes['container']);
         that.nodes['container'].style.display = 'block';
         resizeHelper();
         that.triggerEvent('onShowStart');
@@ -446,12 +448,12 @@ function(params){
             }
             // Fix scroll position for absolute
             if(that.params['position'] === 'absolute'){
-                if(that.params['container'] === document.body){
+                if(that.container === document.body){
                     positionTop += scrollTop;
                     positionLeft += scrollLeft;
                 }else{
-                    positionTop -= cm.getRealY(that.params['container']);
-                    positionLeft -= cm.getRealX(that.params['container']);
+                    positionTop -= cm.getRealY(that.container);
+                    positionLeft -= cm.getRealX(that.container);
                 }
             }
             positionTop = Math.round(positionTop);
@@ -535,13 +537,16 @@ function(params){
     that.setTarget = function(node){
         removeTargetEvent();
         that.params['target'] = node || cm.node('div');
+        if(!that.params['container']){
+            that.setContainer(that.params['holdTarget'] || that.params['target']);
+        }
         setTargetEvent();
         return that;
     };
 
     that.setContainer = function(node){
         if(cm.isNode(node)){
-            that.params['container'] = node;
+            that.container = node;
         }
         return that;
     };
