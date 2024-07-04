@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.70.1 (2024-07-03 17:45) ************ */
+/*! ************ MagpieUI v3.70.2 (2024-07-04 19:59) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.70.1';
+@CmVersion: '3.70.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -12359,17 +12359,23 @@ ul.pt__field__hint {
 
     tbody {
         tr {
+            background-color: @PtGridlist-Cell-DefaultBackground;
+
             th, td {
                 background-color: @PtGridlist-Cell-DefaultBackground;
             }
 
             &:hover {
+                background-color: @PtGridlist-Cell-HoverBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HoverBackground;
                 }
             }
 
             &:active {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
@@ -12377,11 +12383,15 @@ ul.pt__field__hint {
 
             &.success,
             &.valid {
+                background-color: @PtGridlist-Cell-SuccessBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-SuccessBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-SuccessHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-SuccessHoverBackground;
                     }
@@ -12390,11 +12400,15 @@ ul.pt__field__hint {
 
             &.danger,
             &.invalid {
+                background-color: @PtGridlist-Cell-DangerBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-DangerBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-DangerHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-DangerHoverBackground;
                     }
@@ -12402,11 +12416,15 @@ ul.pt__field__hint {
             }
 
             &.warning {
+                background-color: @PtGridlist-Cell-WarningBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-WarningBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-WarningHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-WarningHoverBackground;
                     }
@@ -12414,11 +12432,15 @@ ul.pt__field__hint {
             }
 
             &.active {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-ActiveHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-ActiveHoverBackground;
                     }
@@ -12445,17 +12467,23 @@ ul.pt__field__hint {
 
     tbody {
         tr {
+            background-color: @PtGridlist-Cell-HasBackground-Default;
+
             td {
                 background-color: @PtGridlist-Cell-HasBackground-Default;
             }
 
             &:hover {
+                background-color: @PtGridlist-Cell-HasBackground-Hover;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HasBackground-Hover;
                 }
             }
 
             &:active {
+                background-color: @PtGridlist-Cell-HasBackground-Active;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HasBackground-Active;
                 }

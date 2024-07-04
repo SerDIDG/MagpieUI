@@ -261,17 +261,23 @@
 
     tbody {
         tr {
+            background-color: @PtGridlist-Cell-DefaultBackground;
+
             th, td {
                 background-color: @PtGridlist-Cell-DefaultBackground;
             }
 
             &:hover {
+                background-color: @PtGridlist-Cell-HoverBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HoverBackground;
                 }
             }
 
             &:active {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
@@ -279,11 +285,15 @@
 
             &.success,
             &.valid {
+                background-color: @PtGridlist-Cell-SuccessBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-SuccessBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-SuccessHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-SuccessHoverBackground;
                     }
@@ -292,11 +302,15 @@
 
             &.danger,
             &.invalid {
+                background-color: @PtGridlist-Cell-DangerBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-DangerBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-DangerHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-DangerHoverBackground;
                     }
@@ -304,11 +318,15 @@
             }
 
             &.warning {
+                background-color: @PtGridlist-Cell-WarningBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-WarningBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-WarningHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-WarningHoverBackground;
                     }
@@ -316,11 +334,15 @@
             }
 
             &.active {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
 
                 &:hover {
+                    background-color: @PtGridlist-Cell-ActiveHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-ActiveHoverBackground;
                     }
@@ -347,17 +369,23 @@
 
     tbody {
         tr {
+            background-color: @PtGridlist-Cell-HasBackground-Default;
+
             td {
                 background-color: @PtGridlist-Cell-HasBackground-Default;
             }
 
             &:hover {
+                background-color: @PtGridlist-Cell-HasBackground-Hover;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HasBackground-Hover;
                 }
             }
 
             &:active {
+                background-color: @PtGridlist-Cell-HasBackground-Active;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HasBackground-Active;
                 }
