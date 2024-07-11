@@ -40,6 +40,7 @@ cm.define('Com.Select', {
         'title' : false,                        // Title text. Will be shown on hover.
         'options' : [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         'selected' : 0,                         // Deprecated, use 'value' parameter instead.
+        'max': 0,                               // Maximum selected options, 0 - for unlimited
         'setInitialValue' : true,
         'value' : null,                         // Option value / array of option values.
         'defaultValue' : null,
@@ -584,7 +585,10 @@ function(params){
         var value = !cm.isUndefined(option['value'])? option['value'] : option['text'];
         if(option['selected']){
             deselectMultiple(option);
-        }else{
+        }else if(
+            !that.params.max ||
+            (that.params.max > 0 && active.length < that.params.max)
+        ){
             active.push(value);
             setOption(option);
         }

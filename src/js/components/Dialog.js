@@ -39,6 +39,7 @@ cm.define('Com.Dialog', {
         'title' : '',
         'titleOverflow' : false,
         'titleReserve': true,
+        'titleAlign': 'left',
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeOnBackground' : true,
@@ -238,6 +239,9 @@ function(params){
                 if(that.params['titleOverflow']){
                     cm.addClass(nodes['title'], 'cm__text-overflow');
                 }
+            }
+            if(cm.inArray(['left', 'center', 'right'], that.params['titleAlign'])){
+                cm.addClass(nodes['title'], ['is-align', that.params['titleAlign']].join('-'));
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }else{
@@ -566,6 +570,16 @@ function(params){
 
     that.close = function(){
         close();
+        return that;
+    };
+
+    that.setSize = function(data){
+        var params = ['width', 'height', 'minHeight', 'maxHeight'];
+        cm.forEach(params, function(key) {
+            if (!cm.isEmpty(data[key])) {
+                that.params[key] = data[key];
+            }
+        });
         return that;
     };
 

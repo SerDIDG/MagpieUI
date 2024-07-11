@@ -77,6 +77,28 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         that.components['controller'].addEvent('onScroll', that.afterScroll.bind(that));
     };
 
+    /******* CONTENT *******/
+
+    classProto.setTitle = function(title){
+        var that = this;
+        that.params['params']['title'] = title;
+        that.components['controller'] && cm.isFunction(that.components['controller'].setTitle) && that.components['controller'].setTitle(title);
+        return that;
+    };
+
+    classProto.setSize = function(data) {
+        var that = this;
+        var params = ['width', 'height', 'minHeight', 'maxHeight'];
+        cm.forEach(params, function(key) {
+            if (!cm.isEmpty(data[key])) {
+                that.params['params'][key] = data[key];
+            }
+        });
+        that.components['controller'] && cm.isFunction(that.components['controller'].setSize) && that.components['controller'].setSize(data);
+    };
+
+    /******* BUTTONS *******/
+
     classProto.renderButtonsView = function(){
         var that = this;
         // Structure
@@ -194,13 +216,6 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             item['visible'] = value;
             cm.toggleClass(item['node'], 'is-hidden', !value);
         }
-        return that;
-    };
-
-    classProto.setTitle = function(title){
-        var that = this;
-        that.params['params']['title'] = title;
-        that.components['controller'] && cm.isFunction(that.components['controller'].setTitle) && that.components['controller'].setTitle(title);
         return that;
     };
 

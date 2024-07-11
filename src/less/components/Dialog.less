@@ -58,6 +58,14 @@
         > .title {
             position: relative;
             z-index: 2;
+
+            &.is-align-center {
+                text-align: center;
+            }
+
+            &.is-align-right {
+                text-align: right;
+            }
         }
 
         > .descr {
@@ -491,7 +499,12 @@
     &.has-close-inside {
         > .inner {
             > .title {
-                padding-right: (@icon_size + @icon_indent * 2);
+                @padding: (@icon_size + @icon_indent * 2);
+                padding-right: @padding;
+
+                &.is-align-center {
+                    padding-left: @padding;
+                }
             }
         }
     }
