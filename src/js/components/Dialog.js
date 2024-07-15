@@ -223,11 +223,12 @@ function(params){
     };
 
     var renderTitle = function(title){
+        // Remove old nodes
+        cm.remove(nodes['title']);
+        // Set new title
         if(that.params['showTitle']){
             cm.removeClass(nodes['container'], 'has-no-title');
             cm.removeClass(nodes['window'], 'has-no-title');
-            // Remove old nodes
-            cm.remove(nodes['title']);
             // Render new nodes
             nodes['title'] = cm.node('div', {'class' : 'title', 'role' : 'heading'});
             if(!cm.isEmpty(title)){
