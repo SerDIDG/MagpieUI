@@ -1469,6 +1469,9 @@ cm.node = cm.Node = function(){
                 case 'innerHTML':
                     el.innerHTML = value;
                     break;
+                case 'innerText':
+                    el.innerText = value;
+                    break;
                 default:
                     el.setAttribute(key, value);
                     break;
