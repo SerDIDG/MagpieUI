@@ -26,6 +26,7 @@ cm.define('Com.AbstractFormField', {
         'renderStructureContent' : true,
         'renderError' : true,
         'renderErrorMessage' : true,
+        'renderRequiredMessage' : false,
         'form' : false,
         'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text' | 'option'
         'inputValueType' : 'auto',       // 'auto' | 'unset'
@@ -595,7 +596,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         if(cm.isEmpty(data.value)){
             if(data.required){
                 data.valid = false;
-                data.message = that.msg('required');
+                if (that.params.renderRequiredMessage) {
+                    data.message = that.msg('required');
+                }
                 return data;
             }else{
                 data.valid = true;
