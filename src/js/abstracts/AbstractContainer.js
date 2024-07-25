@@ -51,7 +51,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.construct = function(){
         var that = this;
         // Variables
-        that.isOpen = false;
+        that.hasOpen = false;
         that.targetNode = null;
         // Bind context to methods
         that.openHandler = that.open.bind(that);
@@ -112,6 +112,11 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
             that.closeController();
         }
         return that;
+    };
+
+    classProto.isOpen = function() {
+        var that = this;
+        return that.wasOpen;
     };
 
     classProto.getController = function(){
@@ -242,7 +247,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.afterOpenController = function(){
         var that = this;
-        that.isOpen = true;
+        that.wasOpen = true;
         that.triggerEvent('onOpen', that.components.controller);
     };
 
@@ -258,7 +263,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.afterCloseController = function(){
         var that = this;
-        that.isOpen = false;
+        that.wasOpen = false;
         if(that.params.destructOnClose){
             that.destructController();
         }
