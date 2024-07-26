@@ -46,8 +46,7 @@
         }
     }
 
-    &.error,
-    &.danger {
+    &:is(.error, .danger) {
         > dt,
         > .field__title {
             color: @CmColor-Danger-DarkDefault;
@@ -57,7 +56,7 @@
             color: @CmColor-Danger-DarkDefault;
         }
 
-        .input {
+        .input-alike {
             border: 1px solid @CmColor-Danger-DarkDefault;
             background-color: @CmColor-Danger-LightHighlight;
         }
@@ -73,14 +72,13 @@
             color: @CmColor-Warning-DarkDefault;
         }
 
-        .input {
+        .input-alike {
             border: 1px solid @CmColor-Warning-DarkDefault;
             background-color: @CmColor-Warning-LightHighlight;
         }
     }
 
-    &.ok,
-    &.success {
+    &:is(.ok, .success) {
         > dt,
         > .field__title {
             color: @CmColor-Success-DarkDefault;
@@ -90,7 +88,7 @@
             color: @CmColor-Success-DarkDefault;
         }
 
-        .input {
+        .input-alike {
             border: 1px solid @CmColor-Success-DarkDefault;
             background-color: @CmColor-Success-LightHighlight;
         }

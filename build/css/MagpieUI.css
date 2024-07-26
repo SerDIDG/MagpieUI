@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.71.3 (2024-07-25 18:32) ************ */
+/*! ************ MagpieUI v3.71.3 (2024-07-26 19:34) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -10979,38 +10979,25 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__field > .field__descr:first-child {
   margin: 0;
 }
-.pt__field.error > dt,
-.pt__field.danger > dt,
-.pt__field.error > .field__title,
-.pt__field.danger > .field__title {
+.pt__field:is(.error, .danger) > dt,
+.pt__field:is(.error, .danger) > .field__title {
   color: hsl(0, 65%, 52%);
 }
-.pt__field.error .pt__field__error,
-.pt__field.danger .pt__field__error {
+.pt__field:is(.error, .danger) .pt__field__error {
   color: hsl(0, 65%, 52%);
 }
-.pt__field.error .input,
-.pt__field.danger .input,
-.pt__field.error input[type="text"],
-.pt__field.danger input[type="text"],
-.pt__field.error input[type="search"],
-.pt__field.danger input[type="search"],
-.pt__field.error input[type="email"],
-.pt__field.danger input[type="email"],
-.pt__field.error input[type="url"],
-.pt__field.danger input[type="url"],
-.pt__field.error input[type="tel"],
-.pt__field.danger input[type="tel"],
-.pt__field.error input[type="number"],
-.pt__field.danger input[type="number"],
-.pt__field.error input[type="time"],
-.pt__field.danger input[type="time"],
-.pt__field.error input[type="password"],
-.pt__field.danger input[type="password"],
-.pt__field.error textarea,
-.pt__field.danger textarea,
-.pt__field.error select,
-.pt__field.danger select {
+.pt__field:is(.error, .danger) .input-alike,
+.pt__field:is(.error, .danger) input[type="text"],
+.pt__field:is(.error, .danger) input[type="search"],
+.pt__field:is(.error, .danger) input[type="email"],
+.pt__field:is(.error, .danger) input[type="url"],
+.pt__field:is(.error, .danger) input[type="tel"],
+.pt__field:is(.error, .danger) input[type="number"],
+.pt__field:is(.error, .danger) input[type="time"],
+.pt__field:is(.error, .danger) input[type="password"],
+.pt__field:is(.error, .danger) textarea,
+.pt__field:is(.error, .danger) select,
+.pt__field:is(.error, .danger) .com__select-multi .inner {
   border: 1px solid hsl(0, 65%, 52%);
   background-color: hsl(0, 65%, 98%);
 }
@@ -11021,7 +11008,7 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__field.warning .pt__field__error {
   color: hsl(38, 75%, 52%);
 }
-.pt__field.warning .input,
+.pt__field.warning .input-alike,
 .pt__field.warning input[type="text"],
 .pt__field.warning input[type="search"],
 .pt__field.warning input[type="email"],
@@ -11031,42 +11018,30 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__field.warning input[type="time"],
 .pt__field.warning input[type="password"],
 .pt__field.warning textarea,
-.pt__field.warning select {
+.pt__field.warning select,
+.pt__field.warning .com__select-multi .inner {
   border: 1px solid hsl(38, 75%, 52%);
   background-color: hsl(38, 70%, 98%);
 }
-.pt__field.ok > dt,
-.pt__field.success > dt,
-.pt__field.ok > .field__title,
-.pt__field.success > .field__title {
+.pt__field:is(.ok, .success) > dt,
+.pt__field:is(.ok, .success) > .field__title {
   color: hsl(120, 65%, 42%);
 }
-.pt__field.ok .pt__field__error,
-.pt__field.success .pt__field__error {
+.pt__field:is(.ok, .success) .pt__field__error {
   color: hsl(120, 65%, 42%);
 }
-.pt__field.ok .input,
-.pt__field.success .input,
-.pt__field.ok input[type="text"],
-.pt__field.success input[type="text"],
-.pt__field.ok input[type="search"],
-.pt__field.success input[type="search"],
-.pt__field.ok input[type="email"],
-.pt__field.success input[type="email"],
-.pt__field.ok input[type="url"],
-.pt__field.success input[type="url"],
-.pt__field.ok input[type="tel"],
-.pt__field.success input[type="tel"],
-.pt__field.ok input[type="number"],
-.pt__field.success input[type="number"],
-.pt__field.ok input[type="time"],
-.pt__field.success input[type="time"],
-.pt__field.ok input[type="password"],
-.pt__field.success input[type="password"],
-.pt__field.ok textarea,
-.pt__field.success textarea,
-.pt__field.ok select,
-.pt__field.success select {
+.pt__field:is(.ok, .success) .input-alike,
+.pt__field:is(.ok, .success) input[type="text"],
+.pt__field:is(.ok, .success) input[type="search"],
+.pt__field:is(.ok, .success) input[type="email"],
+.pt__field:is(.ok, .success) input[type="url"],
+.pt__field:is(.ok, .success) input[type="tel"],
+.pt__field:is(.ok, .success) input[type="number"],
+.pt__field:is(.ok, .success) input[type="time"],
+.pt__field:is(.ok, .success) input[type="password"],
+.pt__field:is(.ok, .success) textarea,
+.pt__field:is(.ok, .success) select,
+.pt__field:is(.ok, .success) .com__select-multi .inner {
   border: 1px solid hsl(120, 65%, 42%);
   background-color: hsl(120, 60%, 98%);
 }

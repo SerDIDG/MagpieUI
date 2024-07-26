@@ -96,6 +96,9 @@
     }
 }
 
+.input-alike {
+}
+
 /* *** MIXINS *** */
 
 .textarea--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
@@ -180,6 +183,7 @@ input[type="password"],
 textarea,
 select {
     &:extend(.input all);
+    &:extend(.input-alike all);
 }
 
 input[type="search"] {
