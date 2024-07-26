@@ -4,12 +4,15 @@ cm.define('Com.Check', {
         controllerEvents: true,
         type: 'checkbox',
         inline: false,
+        renderRequiredMessage: false,
+
         multiple: false,
         values: {
             checked: null,
             unchecked: null,
         },
         contentIcon: null,
+
         helpConstructor: 'Com.HelpBubble',
         helpParams: {
             renderStructure: true,
@@ -385,7 +388,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         var that = this;
         if (data.required && cm.isEmpty(that.params.options)) {
             data.valid = data.value === that.params.values.checked;
-            if (!data.valid) {
+            if (!data.valid && that.params.renderRequiredMessage) {
                 data.message = that.msg('required');
             }
         }

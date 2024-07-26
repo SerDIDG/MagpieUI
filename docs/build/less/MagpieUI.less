@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.71.3 (2024-07-26 19:34) ************ */
+/*! ************ MagpieUI v3.71.3 (2024-07-26 20:26) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -7432,7 +7432,11 @@ tbody, thead, td, th, tr {
 
 /* ******* COMMON: INPUTS ******* */
 
+.input-alike {
+}
+
 .input {
+    &:extend(.input-alike all);
     width: 100%;
     margin: 0;
     vertical-align: top;
@@ -7528,9 +7532,6 @@ tbody, thead, td, th, tr {
     }
 }
 
-.input-alike {
-}
-
 /* *** MIXINS *** */
 
 .textarea--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
@@ -7615,7 +7616,6 @@ input[type="password"],
 textarea,
 select {
     &:extend(.input all);
-    &:extend(.input-alike all);
 }
 
 input[type="search"] {
@@ -10137,6 +10137,7 @@ button {
 
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
+    .mx__transition(color, @CmUI-Transition-Duration);
 
     label {
         margin-right: @CmIndent-Medium;
@@ -11125,6 +11126,7 @@ button {
             color: @CmColor-Danger-DarkDefault;
         }
 
+        .pt__check-line,
         .pt__field__error {
             color: @CmColor-Danger-DarkDefault;
         }
@@ -11141,6 +11143,7 @@ button {
             color: @CmColor-Warning-DarkDefault;
         }
 
+        .pt__check-line,
         .pt__field__error {
             color: @CmColor-Warning-DarkDefault;
         }
@@ -11157,6 +11160,7 @@ button {
             color: @CmColor-Success-DarkDefault;
         }
 
+        .pt__check-line,
         .pt__field__error {
             color: @CmColor-Success-DarkDefault;
         }
@@ -19250,7 +19254,6 @@ ul.pt__field__hint {
     .mx__user-select(none);
 
     .inner {
-        &:extend(.input-alike all);
         .input;
         height: auto;
         min-height: @CmForm-FieldHeight;

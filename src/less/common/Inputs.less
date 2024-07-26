@@ -1,6 +1,10 @@
 /* ******* COMMON: INPUTS ******* */
 
+.input-alike {
+}
+
 .input {
+    &:extend(.input-alike all);
     width: 100%;
     margin: 0;
     vertical-align: top;
@@ -96,9 +100,6 @@
     }
 }
 
-.input-alike {
-}
-
 /* *** MIXINS *** */
 
 .textarea--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
@@ -183,7 +184,6 @@ input[type="password"],
 textarea,
 select {
     &:extend(.input all);
-    &:extend(.input-alike all);
 }
 
 input[type="search"] {

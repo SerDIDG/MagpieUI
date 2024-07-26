@@ -176,6 +176,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.params.constructorParams.defaultValue = that.params.defaultValue;
         that.params.constructorParams.values = that.params.values;
         that.params.constructorParams.required = that.params.required;
+        that.params.constructorParams.renderRequiredMessage = that.params.renderRequiredMessage;
         that.params.constructorParams.validate = that.params.validate;
         that.params.constructorParams.disabled = that.params.disabled;
         that.params.constructorParams.checked = that.params.checked;
