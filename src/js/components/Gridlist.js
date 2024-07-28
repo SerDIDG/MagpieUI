@@ -979,6 +979,7 @@ function(params){
                 'attr' : {},
                 'events' : {},
                 'preventDefault' : null,
+                'dataKey': 'data',
                 'constructor' : false,
                 'constructorParams' : {},
                 'callback' : null,
@@ -1000,7 +1001,9 @@ function(params){
     var renderCellActionItem = function(config, row, item, actionItem){
         // Merge css classes
         actionItem['attr']['classes'] = cm.merge(actionItem['classes'], actionItem['attr']['classes']);
-        // WTF is that? - that is attribute bindings, for example - href
+
+        // Bind data to the html attributes if they provided.
+        // ToDo: deprecated it or refactor
         cm.forEach(row['data'], function(itemValue, itemKey){
             actionItem['attr'] = cm.replaceDeep(
                 actionItem['attr'],
@@ -1008,23 +1011,26 @@ function(params){
                 itemValue
             );
         });
-        item['nodes']['itemsList'].appendChild(
-            cm.node('li',
-                actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
-            )
-        );
+
+        // Structure
+        actionItem['container'] = cm.node('li',
+            actionItem['node'] = cm.node('a', actionItem['attr'], actionItem['label'])
+        )
+
+        // Set role action attributes if callback or controller provided
         if(actionItem['constructor'] || cm.isFunction(actionItem['callback'])){
             actionItem['node'].setAttribute('role', 'button');
             actionItem['node'].setAttribute('tabindex', 0);
         }
+
         if(actionItem['constructor']){
             cm.getConstructor(actionItem['constructor'], function(classConstructor){
                 actionItem['_constructorParams'] = cm.merge(actionItem['constructorParams'], {
                     'node' : actionItem['node'],
-                    'data' : row['data'],
                     'rowItem' : row,
                     'cellItem' : item,
-                    'actionItem' : actionItem
+                    'actionItem' : actionItem,
+                    [actionItem['dataKey']]: row['data'],
                 });
                 actionItem['controller'] = new classConstructor(actionItem['_constructorParams']);
                 actionItem['controller'].addEvent('onRenderControllerEnd', function(){
@@ -1032,13 +1038,16 @@ function(params){
                 });
             });
         }else{
-            cm.addEvent(actionItem['node'], 'click', function(e){
+            cm.click.add(actionItem['node'], function(e){
                 actionItem['preventDefault'] && cm.preventDefault(e);
                 item['component'].hide(false);
                 cm.isFunction(actionItem['callback']) && actionItem['callback'](e, actionItem, row);
             });
         }
+
+        // Append
         item['nodes']['items'].push(actionItem['node']);
+        cm.appendChild(actionItem['container'], item['nodes']['itemsList']);
     };
 
     /*** HELPING FUNCTIONS ***/

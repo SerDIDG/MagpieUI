@@ -5,6 +5,9 @@
  * @param  {Object} obj2 The object to compare against it
  * @return {Object}      An object of differences between the two
  */
+
+// ToDo: replace with https://github.com/cosmicanant/recursive-diff
+
 cm.diff = function (obj1, obj2) {
 
     // Make sure an object to compare is provided

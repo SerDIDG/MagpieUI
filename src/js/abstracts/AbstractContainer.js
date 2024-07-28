@@ -160,10 +160,9 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.setControllerParams = function(params) {
         var that = this;
+        that.params.params = cm.merge(that.params.params, params);
         if (that.components.controller) {
             that.components.controller.setParams(params);
-        } else {
-            that.params.params = cm.merge(that.params.params, params);
         }
         return that;
     };
@@ -274,10 +273,9 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.setPlaceholderParams = function(params) {
         var that = this;
+        that.params.placeholderParams = cm.merge(that.params.placeholderParams, params);
         if (that.components.placeholder) {
             that.components.placeholder.setParams(params);
-        } else {
-            that.params.placeholderParams = cm.merge(that.params.placeholderParams, params);
         }
         return that;
     };

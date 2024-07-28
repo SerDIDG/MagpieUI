@@ -479,31 +479,34 @@ function(params){
     /* ******* HELPERS ******* */
 
     var getHelper = function(type, o, field, name){
-        var value = field.controller.get(),
-            path;
+        var value = field.controller.get();
+
         // Process send callback function if specified
         if(cm.isFunction(field.sendCallback)){
             value = field.sendCallback(field, value);
         }
+
         // To send only changed values we need to make diff between original and current values
         if(
-            cm.inArray(['send', 'sendPath'], type)
-            && that.params.sendOnlyChangedFields && !field.sendAlways
+            cm.inArray(['send', 'sendPath'], type) &&
+            that.params.sendOnlyChangedFields &&
+            !field.sendAlways
         ){
             value = cm.getDiffCompare(field.originValue, value);
         }
         if(
-            !cm.isUndefined(value)
-            && (that.params.sendEmptyFields || !that.params.sendEmptyFields && !cm.isEmpty(value))
-            && (field.sendEmpty || !field.sendEmpty && !cm.isEmpty(value))
+            !cm.isUndefined(value) &&
+            (that.params.sendEmptyFields || !that.params.sendEmptyFields && !cm.isEmpty(value)) &&
+            (field.sendEmpty || !field.sendEmpty && !cm.isEmpty(value))
         ){
             if(type === 'sendPath' && !cm.isEmpty(field.sendPath)){
-                path = cm.objectFormPath(field.sendPath, value, '');
+                var path = cm.objectFormPath(field.sendPath, value, '');
                 o = cm.merge(o, path);
             }else{
                 o[name] = value;
             }
         }
+
         return o;
     };
 
