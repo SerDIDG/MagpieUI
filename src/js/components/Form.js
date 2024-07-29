@@ -822,8 +822,9 @@ function(params){
         return that;
     };
 
-    that.appendChild = function(node){
-        cm.appendChild(node, that.nodes.fields);
+    that.appendChild = function(node, insertMethod){
+        insertMethod = cm.isUndefined(insertMethod) ? 'appendChild' : insertMethod;
+        cm[insertMethod](node, that.nodes.fields);
         return that;
     };
 
