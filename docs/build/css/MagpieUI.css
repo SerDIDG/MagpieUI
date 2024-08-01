@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.71.6 (2024-07-29 07:42) ************ */
+/*! ************ MagpieUI v3.71.7 (2024-08-01 07:28) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.71.6');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.71.6') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.71.6') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.71.6') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.71.6#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.71.7');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.71.7') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.71.7') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.71.7') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.71.7#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9489,6 +9489,26 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__buttons.is-box-reverse input[type="reset"],
 .pt__buttons.is-box-reverse button {
   width: 100%;
+  margin: 0;
+}
+.pt__buttons--flex > .inner {
+  gap: var(--pt-buttons--indent);
+  margin: 0;
+}
+.pt__buttons--flex > .inner > .left,
+.pt__buttons--flex > .inner > .right {
+  gap: var(--pt-buttons--indent);
+}
+.pt__buttons--flex .button-alike,
+.pt__buttons--flex .button,
+.pt__buttons--flex .browse-button,
+.pt__buttons--flex .cm__button-wrapper,
+.pt__buttons--flex .com__menu,
+.pt__buttons--flex .com__pagination__bar ul li a,
+.pt__buttons--flex input[type="button"],
+.pt__buttons--flex input[type="submit"],
+.pt__buttons--flex input[type="reset"],
+.pt__buttons--flex button {
   margin: 0;
 }
 .pt__buttons--box > .inner {

@@ -36,8 +36,9 @@ cm.define('Com.Tabset2', {
         'showContent' : true,
         'switchManually' : false,                                   // Change tab manually, not implemented yet
         'animateSwitch' : true,
+        'animateHeight' : true,
         'animateDuration' : 300,
-        'calculateMaxHeight' : false,
+        'calculateMaxHeight' : false,                               // ToDo: implement
 
         /* AJAX */
 
@@ -345,7 +346,9 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         if(previousItem){
             if(that.params['animateSwitch']){
                 that.nodes['contentUL'].style.overflow = 'hidden';
-                that.nodes['contentUL'].style.height = previousItem['tab']['container'].offsetHeight + 'px';
+                if(that.params['animateHeight']) {
+                    that.nodes['contentUL'].style.height = previousItem['tab']['container'].offsetHeight + 'px';
+                }
             }
             previousItem['menu']['container'].setAttribute('aria-selected', 'false');
             previousItem['label']['container'].setAttribute('aria-selected', 'false');
@@ -365,7 +368,9 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
         if(previousItem && previousItem.id !== item.id){
             if(that.params['animateSwitch']){
-                that.nodes['contentUL'].style.height = item['tab']['container'].offsetHeight + 'px';
+                if(that.params['animateHeight']){
+                    that.nodes['contentUL'].style.height = item['tab']['container'].offsetHeight + 'px';
+                }
                 previousItem['switchInt'] = setTimeout(function(){
                     previousItem['tab']['container'].hidden = true;
                     previousItem['tab']['container'].style.display = 'none';

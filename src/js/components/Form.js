@@ -40,7 +40,7 @@ cm.define('Com.Form', {
 
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
-        'buttonsClasses' : null,
+        'buttonsClasses' : [],
         'buttonsAlign' : 'right',
         'buttonsAdaptive' : true,
         'renderNames' : false,                                      // Render visual input name attribute
