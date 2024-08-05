@@ -53,6 +53,7 @@ cm.define('Com.Form', {
         'showSuccessNotification' : false,
         'showValidationNotification' : false,
         'showValidationMessages' : true,
+        'notificationsClosable' : true,
         'Com.Notifications' : {},
 
         'data' : {},
@@ -157,6 +158,7 @@ function(params){
         cm.getConstructor('Com.Notifications', function(classConstructor, className){
             that.components.notifications = new classConstructor(
                 cm.merge(that.params[className], {
+                    'closable' : that.params.notificationsClosable,
                     'container' : that.nodes.notifications
                 })
             );

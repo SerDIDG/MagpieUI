@@ -10,6 +10,7 @@ cm.define('Com.Notifications', {
         'embedStructureOnRender' : true,
         'embedStructure' : 'append',
         'icon' : 'icon small remove linked',
+        'closable' : true,
         'Com.ToggleBox' : {
             'toggleTitle' : false,
             'className' : null,
@@ -37,7 +38,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.renderView = function(){
         var that = this;
-        that.nodes['container'] = cm.node('div', {'class' : 'com__notifications is-hidden'},
+        that.nodes['container'] = cm.node('div', {'classes' : 'com__notifications is-hidden'},
             that.nodes['list'] = cm.node('ul')
         );
     };
@@ -53,31 +54,44 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.add = function(item){
         var that = this;
+        
         // Config
         item = cm.merge({
             'label' : '',
             'type' : 'warning',           // success | warning | danger
             'messages' : [],
             'collapsed' : true,
+            'closable': that.params['closable'],
             'nodes' : {}
         }, item);
+        
         // Structure
-        item['nodes']['container'] = cm.node('li', {'class' : item['type']},
-            item['nodes']['close'] = cm.node('div', {'class' : that.params['icon'], 'title' : that.lang('close')}),
-            item['nodes']['descr'] = cm.node('div', {'class' : 'descr'}),
-            item['nodes']['messages'] = cm.node('div', {'class' : 'messages'},
+        item['nodes']['container'] = cm.node('li', {'classes' : item['type']},
+            item['nodes']['descr'] = cm.node('div', {'classes' : 'descr'}),
+            item['nodes']['messages'] = cm.node('div', {'classes' : 'messages'},
                 item['nodes']['messagesList'] = cm.node('ul')
             )
         );
+        
+        // Close action
+        if (item['closable']) {
+            item['nodes']['close'] = cm.node('div', {'classes' : that.params['icon'], 'title' : that.lang('close'), 'role' : 'button', 'tabindex' : 0});
+            cm.insertFirst(item['nodes']['close'], item['nodes']['container']);
+            cm.click.add(item['nodes']['close'], function(){
+                that.remove(item);
+            });
+        }
+        
         // Label
         if(!cm.isNode(item['label']) && !cm.isTextNode(item['label'])){
             item['label'] = cm.node('div', {'innerHTML' : item['label']});
         }
         cm.appendChild(item['label'], item['nodes']['descr']);
+        
         // Messages
         if(!cm.isEmpty(item['messages'])){
             // Button
-            item['nodes']['button'] = cm.node('a', {'class' : 'more'}, that.lang('more'));
+            item['nodes']['button'] = cm.node('a', {'classes' : 'more'}, that.lang('more'));
             cm.insertFirst(item['nodes']['button'], item['nodes']['descr']);
             // List
             cm.forEach(item['messages'], function(message){
@@ -96,13 +110,11 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
                 );
             });
         }
-        // Events
-        cm.addEvent(item['nodes']['close'], 'click', function(){
-            that.remove(item);
-        });
+        
         // Embed
         cm.appendChild(item['nodes']['container'], that.nodes['list']);
         cm.removeClass(that.nodes['container'], 'is-hidden');
+        
         // Push
         that.items.push(item);
         that.triggerEvent('onAdd', item);

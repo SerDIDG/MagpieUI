@@ -136,6 +136,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             'classes': ['button-primary'],
             'justify' : 'auto',
             'visible' : true,
+            'focus': false,
             'embed' : false,
             'callback' : function(){}
         }, item);
@@ -145,10 +146,10 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         if(!cm.isArray(item['classes'])){
             item['classes'] = [item['classes']];
         }
-        item['classes'].unshift('button');
         if(!item['visible']){
             item['classes'].push('is-hidden');
         }
+        item['classes'].unshift('button');
 
         // Structure
         item['node'] = cm.node('button', {'class' : item['classes']}, item['label']);
@@ -157,6 +158,11 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         // Append
         that.buttons[item['name']] = item;
         that.embedButton(item);
+
+        // Set focus
+        if(item['focus']){
+            item['node'].focus();
+        }
         return item;
     };
 
@@ -207,6 +213,22 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
     classProto.getButton = function(name){
         var that = this;
         return that.buttons[name];
+    };
+
+    classProto.removeButton = function(name) {
+        var that = this;
+        var item = that.getButton(name);
+        if (item) {
+            cm.remove(item['node']);
+            delete that.buttons[item['name']];
+        }
+        return that;
+    };
+
+    classProto.removeButtons = function() {
+        var that = this;
+        cm.forEach(that.buttons, (item, name) => that.removeButton(name));
+        return that;
     };
 
     classProto.toggleButtonVisibility = function(name, value){
