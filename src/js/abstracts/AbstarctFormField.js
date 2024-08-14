@@ -307,6 +307,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             input: that.params.node,
         };
         nodes.container = cm.node('div', {'class' : 'pt__field__content'}, nodes.input);
+
         // Icon
         if(that.params.icon){
             if(cm.isNode(that.params.icon)){
@@ -319,14 +320,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             cm.addClass(nodes.field, that.params.inputClasses)
             cm.appendChild(nodes.field, nodes.container);
         }
+
         // Placeholder
         if(that.params.showPlaceholderAbove && !cm.isEmpty(that.params.placeholder)){
             nodes.placeholder = cm.node('label', {'class' : 'placeholder', 'for' : that.fieldName},
-                cm.node('span', {'innerHTML' : that.params.placeholder})
+                nodes.placeholderLabel = cm.node('span', {'innerHTML' : that.params.placeholder})
             );
             cm.appendChild(nodes.placeholder, nodes.container);
             cm.addClass(nodes.container, 'is-placeholder-above');
         }
+
         // Export
         return nodes;
     };
