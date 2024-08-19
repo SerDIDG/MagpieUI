@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.73.0 (2024-08-15 01:48) ************ */
+/*! ************ MagpieUI v3.74.0 (2024-08-20 00:01) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.73.0';
+@CmVersion: '3.74.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -10195,10 +10195,6 @@ button {
         }
     }
 
-    &.pull-center {
-        text-align: center;
-    }
-
     &.disabled {
         label {
             color: @CmColor-Font-Disabled;
@@ -10260,10 +10256,6 @@ button {
                 margin-right: @PtCheckLine-HasHover-Gap;
             }
         }
-
-        &.is-box {
-            gap: @PtCheckLine-HasHover-Gap;
-        }
     }
 
     &.has-fields {
@@ -10298,6 +10290,12 @@ button {
         }
     }
 
+    &.is-line {
+        &.pull-center {
+            text-align: center;
+        }
+    }
+
     &.is-box {
         display: flex;
         flex-direction: column;
@@ -10321,6 +10319,10 @@ button {
 
         .text {
             display: block;
+        }
+
+        &.has-hover {
+            gap: @PtCheckLine-HasHover-Gap;
         }
     }
 
@@ -10352,6 +10354,29 @@ button {
     &.is-flex-reverse {
         label {
             flex-direction: row-reverse;
+        }
+    }
+
+    &.is-flex-inline {
+        display: flex;
+        flex-wrap: wrap;
+
+        &.pull-center {
+            justify-content: center;
+        }
+
+        &.has-hover {
+            gap: @PtCheckLine-HasHover-Gap;
+        }
+    }
+}
+
+@media only screen and (max-width : @CmUI-AdaptiveFrom) {
+    html.is-adaptive {
+        .pt__check-line {
+            &.is-adaptive {
+                .pt__check-line.is-box;
+            }
         }
     }
 }

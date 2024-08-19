@@ -174,15 +174,20 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Structure
         nodes.container = cm.node('div', {classes: 'pt__check-line'});
-        if (that.params.inline) {
-            cm.addClass(nodes.container, 'is-line');
-        } else {
-            cm.addClass(nodes.container, 'is-box');
+        if (cm.isBoolean(that.params.inline)) {
+            if (that.params.inline) {
+                cm.addClass(nodes.container, 'is-line');
+            } else {
+                cm.addClass(nodes.container, 'is-box');
+            }
         }
 
         // Render inputs
         that.triggerEvent('onRenderContentProcess');
         if (!cm.isEmpty(that.params.options)) {
+            if (that.params.type === 'radio') {
+                nodes.container.setAttribute('role', 'radiogroup');
+            }
             cm.forEach(that.params.options, function(option) {
                 inputContainer = that.renderInput(option);
                 cm.appendChild(inputContainer, nodes.container);

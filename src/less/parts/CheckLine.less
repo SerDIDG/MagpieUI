@@ -48,10 +48,6 @@
         }
     }
 
-    &.pull-center {
-        text-align: center;
-    }
-
     &.disabled {
         label {
             color: @CmColor-Font-Disabled;
@@ -113,10 +109,6 @@
                 margin-right: @PtCheckLine-HasHover-Gap;
             }
         }
-
-        &.is-box {
-            gap: @PtCheckLine-HasHover-Gap;
-        }
     }
 
     &.has-fields {
@@ -151,6 +143,12 @@
         }
     }
 
+    &.is-line {
+        &.pull-center {
+            text-align: center;
+        }
+    }
+
     &.is-box {
         display: flex;
         flex-direction: column;
@@ -174,6 +172,10 @@
 
         .text {
             display: block;
+        }
+
+        &.has-hover {
+            gap: @PtCheckLine-HasHover-Gap;
         }
     }
 
@@ -205,6 +207,29 @@
     &.is-flex-reverse {
         label {
             flex-direction: row-reverse;
+        }
+    }
+
+    &.is-flex-inline {
+        display: flex;
+        flex-wrap: wrap;
+
+        &.pull-center {
+            justify-content: center;
+        }
+
+        &.has-hover {
+            gap: @PtCheckLine-HasHover-Gap;
+        }
+    }
+}
+
+@media only screen and (max-width : @CmUI-AdaptiveFrom) {
+    html.is-adaptive {
+        .pt__check-line {
+            &.is-adaptive {
+                .pt__check-line.is-box;
+            }
         }
     }
 }
