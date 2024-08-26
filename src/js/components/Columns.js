@@ -21,10 +21,10 @@ cm.define('Com.Columns', {
         'onRemove',
         'onChange',
         'onResize',
-        'enableEditing',
-        'disableEditing',
-        'enableEditable',
-        'disableEditable'
+        'onEnableEditing',
+        'onEnableEditable',
+        'onDisableEditing',
+        'onDisableEditable',
     ],
     'params' : {
         'columns' : false,                  // Deprecated, use 'node' parameter instead.
@@ -404,8 +404,8 @@ function(params){
             that.isEditing = true;
             cm.addClass(nodes['container'], 'is-editing is-editable');
             that.redraw();
-            that.triggerEvent('enableEditing');
-            that.triggerEvent('enableEditable');
+            that.triggerEvent('onEnableEditing');
+            that.triggerEvent('onEnableEditable');
         }
         return that;
     };
@@ -414,8 +414,8 @@ function(params){
         if(!cm.isBoolean(that.isEditing) || that.isEditing){
             that.isEditing = false;
             cm.removeClass(nodes['container'], 'is-editing is-editable');
-            that.triggerEvent('disableEditing');
-            that.triggerEvent('disableEditable');
+            that.triggerEvent('onDisableEditing');
+            that.triggerEvent('onDisableEditable');
         }
         return that;
     };

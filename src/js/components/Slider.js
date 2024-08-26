@@ -14,10 +14,10 @@ cm.define('Com.Slider', {
         'onChange',
         'onPause',
         'onStart',
-        'enableEditing',
-        'disableEditing',
-        'enableEditable',
-        'disableEditable'
+        'onEnableEditing',
+        'onEnableEditable',
+        'onDisableEditing',
+        'onDisableEditable',
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -566,8 +566,8 @@ function(params){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
             that.enableEditMode();
-            that.triggerEvent('enableEditing');
-            that.triggerEvent('enableEditable');
+            that.triggerEvent('onEnableEditing');
+            that.triggerEvent('onEnableEditable');
         }
         return that;
     };
@@ -577,8 +577,8 @@ function(params){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.disableEditMode();
-            that.triggerEvent('disableEditing');
-            that.triggerEvent('disableEditable');
+            that.triggerEvent('onDisableEditing');
+            that.triggerEvent('onDisableEditable');
         }
         return that;
     };

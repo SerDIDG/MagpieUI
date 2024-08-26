@@ -15,10 +15,10 @@ cm.define('Com.ColumnsHelper', {
         'onDragStart',
         'onDragMove',
         'onDragStop',
-        'enableEditing',
-        'disableEditing',
-        'enableEditable',
-        'disableEditable'
+        'onEnableEditing',
+        'onEnableEditable',
+        'onDisableEditing',
+        'onDisableEditable',
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -314,8 +314,8 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || !that.isEditing){
             that.isEditing = true;
             renderChassis();
-            that.triggerEvent('enableEditing');
-            that.triggerEvent('enableEditable');
+            that.triggerEvent('onEnableEditing');
+            that.triggerEvent('onEnableEditable');
         }
         return that;
     };
@@ -324,8 +324,8 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             removeChassis();
-            that.triggerEvent('disableEditing');
-            that.triggerEvent('disableEditable');
+            that.triggerEvent('onDisableEditing');
+            that.triggerEvent('onDisableEditable');
         }
         return that;
     };

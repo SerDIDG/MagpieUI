@@ -12,10 +12,10 @@ cm.define('Com.Spacer', {
         'onRender',
         'onChange',
         'onResize',
-        'enableEditing',
-        'disableEditing',
-        'enableEditable',
-        'disableEditable'
+        'onEnableEditing',
+        'onEnableEditable',
+        'onDisableEditing',
+        'onDisableEditable',
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -167,8 +167,8 @@ function(params){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
             that.redraw();
-            that.triggerEvent('enableEditing');
-            that.triggerEvent('enableEditable');
+            that.triggerEvent('onEnableEditing');
+            that.triggerEvent('onEnableEditable');
         }
         return that;
     };
@@ -177,8 +177,8 @@ function(params){
         if(typeof that.isEditing !== 'boolean' || that.isEditing){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing is-editable');
-            that.triggerEvent('disableEditing');
-            that.triggerEvent('disableEditable');
+            that.triggerEvent('onDisableEditing');
+            that.triggerEvent('onDisableEditable');
         }
         return that;
     };
