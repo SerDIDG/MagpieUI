@@ -6,14 +6,14 @@ cm.define('Com.AbstractFileManagerContainer', {
     ],
     'params' : {
         'constructor' : 'Com.AbstractFileManager',
-        'params' : {
+        'constructorParams' : {
             'embedStructure' : 'append'
         },
         'placeholder' : true,
         'placeholderConstructor' : 'Com.DialogContainer',
         'placeholderParams' : {
             'renderButtons' : true,
-            'params' : {
+            'constructorParams' : {
                 'width' : 900
             }
         }
@@ -67,7 +67,7 @@ cm.getConstructor('Com.AbstractFileManagerContainer', function(classConstructor,
         var that = this;
         // Validate Language Strings
         that.setLangs({
-            'title' : !that.params['params']['max'] || that.params['params']['max'] > 1 ? that.lang('title_multiple') : that.lang('title_single')
+            'title' : !that.params['constructorParams']['max'] || that.params['constructorParams']['max'] > 1 ? that.lang('title_multiple') : that.lang('title_single')
         });
     };
 

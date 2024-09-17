@@ -23,7 +23,7 @@ cm.define('Com.FileInput', {
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
-            'params' : {
+            'constructorParams' : {
                 'max' : 1
             }
         },
@@ -31,7 +31,7 @@ cm.define('Com.FileInput', {
         'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
-            'params' : {
+            'constructorParams' : {
                 'max' : 1
             }
         },
@@ -94,8 +94,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         // File Uploader
         that.params['fileUploaderParams']['openOnConstruct'] = that.params['autoOpen'];
-        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
-        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
+        that.params['fileUploaderParams']['constructorParams']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['constructorParams']['fileManager'] = that.params['fileManager'];
         // Other
         that.params['fileReaderParams']['readValueType'] = that.params['readValueType'];
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];

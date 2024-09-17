@@ -18,12 +18,12 @@ cm.define('Com.MultipleFileInput', {
         'fileManager' : false,
         'fileManagerConstructor' : 'Com.AbstractFileManagerContainer',
         'fileManagerParams' : {
-            'params' : {}
+            'constructorParams' : {}
         },
         'fileUploader' : false,
         'fileUploaderConstructor' : 'Com.FileUploaderContainer',
         'fileUploaderParams' : {
-            'params' : {}
+            'constructorParams' : {}
         },
         'dropzone' : true,
         'dropzoneConstructor' : 'Com.FileDropzone',
@@ -85,11 +85,11 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         });
         // Components parameters
         that.params['dropzoneParams']['max'] = that.params['max'];
-        that.params['fileManagerParams']['params']['max'] = that.params['max'];
-        that.params['fileUploaderParams']['params']['max'] = that.params['max'];
+        that.params['fileManagerParams']['constructorParams']['max'] = that.params['max'];
+        that.params['fileUploaderParams']['constructorParams']['max'] = that.params['max'];
         // File Uploader
-        that.params['fileUploaderParams']['params']['local'] = that.params['local'];
-        that.params['fileUploaderParams']['params']['fileManager'] = that.params['fileManager'];
+        that.params['fileUploaderParams']['constructorParams']['local'] = that.params['local'];
+        that.params['fileUploaderParams']['constructorParams']['fileManager'] = that.params['fileManager'];
         // Other
         that.params['dropzone'] = !that.params['local'] ? false : that.params['dropzone'];
         that.params['local'] = that.params['fileUploader'] ? false : that.params['local'];

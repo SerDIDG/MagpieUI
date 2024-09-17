@@ -16,7 +16,7 @@ cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, classN
         var that = this;
         return new classObject(
             cm.merge(that.params.params, {
-                data: [that.params.data],
+                data: !cm.isArray(that.params.data) ? [that.params.data] : that.params.data,
             })
         );
     };

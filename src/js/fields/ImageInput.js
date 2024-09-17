@@ -5,10 +5,11 @@ cm.define('Com.ImageInput', {
 
         className: 'com__image-input',
         size: 'default',                                    // default, full, custom
+        fit: 'cover',
         aspect: false,                                      // 1x1, 3x2, etc
         types: {
             image: /image\/.*/,
-            video: /video\/(mp4|webm|ogg|avi)/,
+            video: /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
             embed: /application\/pdf/
         },
         showLabel: true,
@@ -63,12 +64,12 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         that.nodes.content = nodes;
         nodes.container = cm.node('div', {classes: 'com__image-input__content'},
             nodes.inner = cm.node('div', {classes: 'inner'},
-                nodes.content = cm.node('div', {classes: 'input__holder'},
+                nodes.content = cm.node('div', {classes: 'input__holder', tabindex: 0},
                     cm.node('div', {classes: 'input__cover'},
                         nodes.label = cm.node('div', {classes: 'input__label'}),
                         nodes.buttonsInner = cm.node('div', {classes: 'input__buttons'})
                     ),
-                    nodes.imageContainer = cm.node('div', {classes: 'pt__image is-cover'},
+                    nodes.imageContainer = cm.node('div', {classes: 'pt__image'},
                         cm.node('div', {classes: 'inner'},
                             nodes.image = cm.node('div', {classes: 'descr'})
                         )
@@ -81,6 +82,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         if (that.params.aspect) {
             cm.addClass(nodes.imageContainer, 'is-background has-aspect');
             cm.addClass(nodes.imageContainer, ['cm__aspect', that.params.aspect].join('-'));
+        }
+        if (that.params.fit) {
+            cm.addClass(nodes.imageContainer, ['is', that.params.fit].join('-'));
         }
 
         // Render Buttons
@@ -102,7 +106,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                 cm.node('span', that.msg('remove'))
             )
         )
-        cm.addEvent(that.nodes.content.clear, 'click', that.clearEventHandler);
+        cm.click.add(that.nodes.content.clear, that.clearEventHandler);
         cm.insertFirst(that.nodes.content.clear, that.nodes.content.buttonsInner);
         
         if (that.params.preview) {

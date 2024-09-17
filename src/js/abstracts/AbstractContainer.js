@@ -79,11 +79,14 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         that.triggerEvent('onValidateParamsStart');
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
-        that.params.params.node = that.params.node;
-        that.params.params.container = that.params.container;
-        that.triggerEvent('onValidateParamsEnd');
         // TODO: replace that.params.params to that.params.constructorParams
-        that.params.params = cm.merge(that.params.constructorParams, that.params.params);
+        that.params.constructorParams = cm.merge(that.params.constructorParams, that.params.params);
+        that.params.constructorParams = cm.merge(that.params.constructorParams, {
+            node: that.params.node,
+            container: that.params.container,
+        });
+        that.params.params = that.params.constructorParams;
+        that.triggerEvent('onValidateParamsEnd');
     };
 
     classProto.open = function(event){
@@ -160,7 +163,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.setControllerParams = function(params) {
         var that = this;
-        that.params.params = cm.merge(that.params.params, params);
+        that.params.constructorParams = cm.merge(that.params.constructorParams, params);
         if (that.components.controller) {
             that.components.controller.setParams(params);
         }
@@ -189,7 +192,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
     classProto.constructController = function(classObject){
         var that = this;
         return new classObject(
-            that.constructControllerParams(that.params.params)
+            that.constructControllerParams(that.params.constructorParams)
         );
     };
 
@@ -198,7 +201,7 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         return cm.merge(defaultParams, {
             opener: that,
             container: that.params.placeholder ? that.nodes.placeholder.content : that.params.container,
-            content: that.params.params.content || that.params.content,
+            content: that.params.constructorParams.content || that.params.content,
             events: that.constructControllerEvents(),
         });
     };

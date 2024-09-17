@@ -561,7 +561,7 @@ function(params){
             wrap: false,                 // Wrap cell values in div
             textOverflow: null,          // Overflow long text to single line
             showTitle: null,             // Show title on hover
-            titleKey: '',                // Alternative title keu, if not specified - will be shown data text
+            titleKey: '',                // Alternative title key, if not specified - will be shown data text
             titleText: '',               // Alternative title text, if not specified - will be shown key text
             altText: '',                 // Alternative column text for links and icons
             urlKey: false,               // Alternative link href, for type="url|icon"
@@ -1001,6 +1001,7 @@ function(params){
                 events: {},
                 preventDefault: null,
                 dataKey: 'data',
+                dataPath: null,
                 constructor: false,
                 constructorParams: {},
                 callback: null,
@@ -1051,7 +1052,7 @@ function(params){
                     rowItem: row,
                     cellItem: item,
                     actionItem: actionItem,
-                    [actionItem.dataKey]: row.data,
+                    [actionItem.dataKey]: cm.reducePath(actionItem.dataPath, row.data),
                 });
                 actionItem.controller = new classConstructor(actionItem['_constructorParams']);
                 actionItem.controller.addEvent('onRenderControllerEnd', function(){

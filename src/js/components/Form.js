@@ -58,6 +58,7 @@ cm.define('Com.Form', {
 
         'data' : {},
         'mergeData': false,
+        'sendable': true,
         'autoSend' : false,
         'sendOnChange' : false,
         'sendEmptyForm' : true,
@@ -125,7 +126,7 @@ function(params){
         that.params.buttonsAlign = cm.inArray(['left', 'center', 'right', 'justify'], that.params.buttonsAlign) ? that.params.buttonsAlign : 'right';
         that.params.loaderCoverage = cm.inArray(['fields', 'all'], that.params.loaderCoverage) ? that.params.loaderCoverage : 'all';
         // Ajax
-        that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url);
+        that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url) && that.params.sendable;
     };
 
     var render = function(){
