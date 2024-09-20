@@ -395,15 +395,13 @@ function(params){
         cm.appendChild(params.node, params.container);
     };
 
-    var toggleButtons = function(){
+    var toggleButtons = function(value){
         cm.forEach(that.buttons, function(item){
-            if(that.isProcess){
-                if(item.spinner){
+            if(item.spinner){
+                if(value){
                     cm.replaceClass(item.labelNode, 'is-show', 'is-hide');
                     cm.replaceClass(item.spinnerNode, 'is-hide', 'is-show');
-                }
-            }else{
-                if(item.spinner){
+                }else{
                     cm.replaceClass(item.labelNode, 'is-hide', 'is-show');
                     cm.replaceClass(item.spinnerNode, 'is-show', 'is-hide');
                 }
@@ -594,25 +592,13 @@ function(params){
 
     that.callbacks.start = function(that, config){
         that.isProcess = true;
-        cm.addClass(that.nodes.container, 'is-submitting');
-        // Toggle buttons
-        toggleButtons();
-        // Show Loader
-        if(that.params.showLoader){
-            that.showLoader();
-        }
+        that.sendStart();
         that.triggerEvent('onSendStart');
     };
 
     that.callbacks.end = function(that, config){
         that.isProcess = false;
-        cm.removeClass(that.nodes.container, 'is-submitting');
-        // Toggle buttons
-        toggleButtons();
-        // Hide Loader
-        if(that.params.showLoader){
-            that.hideLoader();
-        }
+        that.sendEnd();
         that.triggerEvent('onSendEnd');
     };
 
@@ -803,6 +789,11 @@ function(params){
                 renderButton(item);
             });
         }
+        return that;
+    };
+
+    that.toggleButtons = function(value){
+        toggleButtons(value);
         return that;
     };
 
@@ -1053,6 +1044,28 @@ function(params){
             }else{
                 sendPlaceholderHelper();
             }
+        }
+        return that;
+    };
+
+    that.sendStart = function() {
+        cm.addClass(that.nodes.container, 'is-submitting');
+        // Toggle buttons
+        toggleButtons(true);
+        // Show Loader
+        if(that.params.showLoader){
+            that.showLoader();
+        }
+        return that;
+    };
+
+    that.sendEnd = function() {
+        cm.removeClass(that.nodes.container, 'is-submitting');
+        // Toggle buttons
+        toggleButtons(false);
+        // Hide Loader
+        if(that.params.showLoader){
+            that.hideLoader();
         }
         return that;
     };
