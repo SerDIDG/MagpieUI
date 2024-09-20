@@ -264,8 +264,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             isValid = true;
         if (
-            cm.isEmpty(that.params.accept) || !cm.isArray(that.params.accept)
-            || cm.isEmpty(item) || cm.isEmpty(item.file)
+            cm.isEmpty(that.params.accept) || !cm.isArray(that.params.accept) ||
+            cm.isEmpty(item) || cm.isEmpty(item.file)
         ) {
             isValid = true;
         } else {

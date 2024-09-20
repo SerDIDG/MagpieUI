@@ -78,7 +78,11 @@ var cm = {
             'tooltipIndent' : 4,
             'tooltipTop' : 'targetHeight + 4',
             'tooltipDown' : 'targetHeight + 4',
-            'tooltipUp' : '- (selfHeight + 4)'
+            'tooltipUp' : '- (selfHeight + 4)',
+            'fileTypes' : {
+                'video' : /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
+                'embed' : /application\/pdf/,
+            }
         },
         '_variables' : {
             '%baseUrl%' : 'cm._baseUrl',

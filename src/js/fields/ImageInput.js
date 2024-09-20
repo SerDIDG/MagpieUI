@@ -9,8 +9,8 @@ cm.define('Com.ImageInput', {
         aspect: false,                                      // 1x1, 3x2, etc
         types: {
             image: /image\/.*/,
-            video: /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
-            embed: /application\/pdf/
+            video: cm._config.fileTypes.video,
+            embed: cm._config.fileTypes.embed,
         },
         showLabel: true,
         showLink: true,
@@ -159,9 +159,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this,
             isValid = true;
         if (
-            cm.isEmpty(that.params.dimensions)
-            || cm.isEmpty(item) || cm.isEmpty(item.file) || !item._isLoaded
-            || !that.params.types.image.test(item.type) || item.type === 'image/svg+xml'
+            cm.isEmpty(that.params.dimensions) ||
+            cm.isEmpty(item) || cm.isEmpty(item.file) || !item._isLoaded ||
+            !that.params.types.image.test(item.type) || item.type === 'image/svg+xml'
         ) {
             isValid = true;
         } else {
@@ -183,9 +183,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this,
             item = that.components.validator.validate(value);
         if (
-            (cm.isEmpty(item.value) && cm.isEmpty(item.file))
-            || !that.isAcceptableFileFormat(item)
-            || !that.isAcceptableImageDimensions(item)
+            (cm.isEmpty(item.value) && cm.isEmpty(item.file)) ||
+            !that.isAcceptableFileFormat(item) ||
+            !that.isAcceptableImageDimensions(item)
         ) {
             return that.params.defaultValue;
         }
@@ -236,13 +236,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         } else {
             that.components.preview && that.components.preview.set(that.value);
             if(that.params.types.video.test(that.value.type)) {
-                that.nodes.content.video = cm.node('video',
-                    cm.node('source', {'src': that.value.url})
-                );
-                that.nodes.content.video.muted = true;
-                that.nodes.content.video.autoplay = false;
-                that.nodes.content.video.loop = true;
-                cm.appendChild(that.nodes.content.video, that.nodes.content.image);
+                that.renderPreviewVideo();
             /*
             }else if(that.params.types.embed.test(that.value.type)) {
                 that.nodes.content.iframe = cm.node('iframe', {'src' : that.value.url});
@@ -254,6 +248,27 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.removeClass(that.nodes.content.preview, 'is-hidden');
             cm.removeClass(that.nodes.content.imageContainer, 'is-default-image');
         }
+    };
+
+    classProto.renderPreviewVideo = function() {
+        var that = this;
+        // Structure
+        that.nodes.content.video = cm.node('video', {'playsinline': true, 'controls': false, 'muted': true});
+        that.nodes.content.video.playsinline = true;
+        that.nodes.content.video.playsInline = true;
+        that.nodes.content.video.muted = true;
+        that.nodes.content.video.autoplay = true;
+        that.nodes.content.video.loop = true;
+        that.nodes.content.video.controls = false;
+        // Pause video after load
+        cm.addEvent(that.nodes.content.video, 'loadeddata', function(){
+            that.nodes.content.video.pause();
+        });
+        // Source
+        that.nodes.content.videoSource = cm.node('source', {'src': that.value.url});
+        cm.appendChild(that.nodes.content.videoSource, that.nodes.content.video);
+        // Append
+        cm.appendChild(that.nodes.content.video, that.nodes.content.image);
     };
 });
 

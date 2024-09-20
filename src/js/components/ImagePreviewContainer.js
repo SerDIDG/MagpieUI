@@ -8,8 +8,8 @@ cm.define('Com.ImagePreviewContainer', {
         },
         placeholder: false,
         types: {
-            video: /video\/(mp4|webm|ogg|avi)/,
-            embed: /application\/pdf/,
+            video: cm._config.fileTypes.video,
+            embed: cm._config.fileTypes.embed,
         },
     },
 },
