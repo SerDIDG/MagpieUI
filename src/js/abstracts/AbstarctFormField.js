@@ -882,6 +882,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that.nodes.container;
     };
 
+    classProto.getContent = function(){
+        var that = this;
+        return that.nodes.content;
+    };
+
     /******* CALLBACKS *******/
 
     classProto.callbacks.prepare = function(that, config){

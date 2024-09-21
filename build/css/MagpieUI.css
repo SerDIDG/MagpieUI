@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.77.0 (2024-09-20 14:33) ************ */
+/*! ************ MagpieUI v3.78.0 (2024-09-21 04:02) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.77.0');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.77.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.77.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.77.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.77.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.78.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.78.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.78.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.78.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.78.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11412,6 +11412,9 @@ ul.pt__field__hint li:before {
   margin-right: 4px;
 }
 /* *** CONTENT *** */
+.pt__field__content {
+  position: relative;
+}
 .pt__field__content .placeholder {
   font-size: inherit;
   font-style: inherit;
@@ -16277,7 +16280,8 @@ ul.pt__field__hint li:before {
   transition: all 500ms ease-in-out 0ms;
 }
 .pt__overlay .overlay__spinner,
-.pt__overlay .overlay__content {
+.pt__overlay .overlay__content,
+.pt__overlay .overlay__progress {
   visibility: hidden;
   position: absolute;
   opacity: 0;
@@ -16288,7 +16292,8 @@ ul.pt__field__hint li:before {
   transition: all 500ms ease-in-out 0ms;
 }
 .pt__overlay .overlay__spinner.is-show,
-.pt__overlay .overlay__content.is-show {
+.pt__overlay .overlay__content.is-show,
+.pt__overlay .overlay__progress.is-show {
   visibility: visible;
   opacity: 1;
 }
@@ -16307,8 +16312,36 @@ ul.pt__field__hint li:before {
   height: 64px;
   border-width: 6px;
 }
-.pt__overlay .overlay__content {
+.pt__overlay .overlay__progress {
+  width: 100%;
+  height: 4px;
   z-index: 2;
+  display: block;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: hsl(0, 0%, 91%);
+  border-radius: 3px;
+  color: transparent;
+  top: auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.pt__overlay .overlay__progress::-webkit-progress-bar {
+  background: transparent;
+}
+.pt__overlay .overlay__progress::-moz-progress-bar {
+  background: hsl(210, 75%, 52%);
+}
+.pt__overlay .overlay__progress::-webkit-progress-value {
+  background: hsl(210, 75%, 52%);
+}
+.pt__overlay .overlay__content {
+  z-index: 3;
 }
 .pt__overlay.theme-transparent {
   background-color: transparent;

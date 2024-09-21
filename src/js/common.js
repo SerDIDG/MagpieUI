@@ -68,6 +68,7 @@ var cm = {
             'screenTabletPortrait' : 768,
             'screenMobile' : 640,
             'screenMobilePortrait' : 480,
+            'screenXSmall' : 375,
             'dateFormat' : '%Y-%m-%d',
             'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
             'dateFormatCase' : 'nominative',
@@ -4092,6 +4093,7 @@ cm.ajax = function(o){
             'beacon' : false,
             'onStart' : function(){},
             'onEnd' : function(){},
+            'onProgress': function(){},
             'onSuccess' : function(){},
             'onError' : function(){},
             'onAbort' : function(){},
@@ -4203,6 +4205,12 @@ cm.ajax = function(o){
         cm.addEvent(config['httpRequestObject'], 'load', loadHandler);
         cm.addEvent(config['httpRequestObject'], 'error', errorHandler);
         cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
+        // Upload progress events
+        if (config['httpRequestObject'].upload) {
+            cm.addEvent(config['httpRequestObject'].upload, 'loadstart', progressHandler);
+            cm.addEvent(config['httpRequestObject'].upload, 'progress', progressHandler);
+            cm.addEvent(config['httpRequestObject'].upload, 'loadend', progressHandler);
+        }
         // Send
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
@@ -4222,6 +4230,10 @@ cm.ajax = function(o){
                 config['httpRequestObject'].send(null);
             }
         }
+    };
+
+    var progressHandler = function(e){
+        config['onProgress'].apply(config['onProgress'], arguments);
     };
 
     var loadHandler = function(e){

@@ -16,7 +16,7 @@ cm.define('Com.ImageInput', {
         showLink: true,
 
         accept: [],                                         // empty - accept all, example: ['image/png', 'image/jpeg']
-        dimensions: {                                       // image dimensions, example: {minWidth: 0, minHeight: 0}
+        acceptDimensions: {                                 // image dimensions, example: {minWidth: 0, minHeight: 0}
             minWidth: 0,
             minHeight: 0,
         },
@@ -159,13 +159,13 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this,
             isValid = true;
         if (
-            cm.isEmpty(that.params.dimensions) ||
+            cm.isEmpty(that.params.acceptDimensions) ||
             cm.isEmpty(item) || cm.isEmpty(item.file) || !item._isLoaded ||
             !that.params.types.image.test(item.type) || item.type === 'image/svg+xml'
         ) {
             isValid = true;
         } else {
-            isValid = item.width >= that.params.dimensions.minWidth && item.height >= that.params.dimensions.minHeight;
+            isValid = item.width >= that.params.acceptDimensions.minWidth && item.height >= that.params.acceptDimensions.minHeight;
         }
         if (that.params.formField) {
             if (!isValid) {
@@ -185,6 +185,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         if (
             (cm.isEmpty(item.value) && cm.isEmpty(item.file)) ||
             !that.isAcceptableFileFormat(item) ||
+            !that.isAcceptableFileSizes(item) ||
             !that.isAcceptableImageDimensions(item)
         ) {
             return that.params.defaultValue;

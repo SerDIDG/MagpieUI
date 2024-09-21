@@ -27,6 +27,7 @@ cm.define('Com.Overlay', {
         'showSpinner' : true,
         'spinnerSize' : 'default',
         'showContent' : true,
+        'showProgress' : false,
         'autoOpen' : true,
         'autoClose' : false,                // ToDo: implement
         'removeOnClose' : true,
@@ -76,7 +77,8 @@ function(params){
         // Structure
         that.nodes['container'] = cm.node('div', {'class' : 'com__overlay pt__overlay', 'aria-busy' : 'false', 'aria-live' : 'assertive'},
             that.nodes['spinner'] = cm.node('div', {'class' : ['overlay__spinner', ['size', that.params['spinnerSize']].join('--')]}),
-            that.nodes['content'] = cm.node('div', {'class' : 'overlay__content'})
+            that.nodes['content'] = cm.node('div', {'class' : 'overlay__content'}),
+            that.nodes['progress'] = cm.node('progress', {'class' : 'overlay__progress', 'value' : 0, 'min' : 0, 'max' : 100})
         );
         // CSS Class
         cm.addClass(that.nodes['container'], that.params['className']);
@@ -89,6 +91,8 @@ function(params){
         that.params['showSpinner'] && that.showSpinner();
         // Show content
         that.params['showContent'] && that.showContent();
+        // Show progress
+        that.params['showProgress'] && that.showProgress();
         // Set theme
         that.setTheme(that.params['theme']);
     };
@@ -253,6 +257,17 @@ function(params){
         return that;
     };
 
+    that.showProgress = function(){
+        cm.addClass(that.nodes['progress'], 'is-show');
+        return that;
+    };
+
+    that.setProgress = function(total, value){
+        that.nodes['progress'].max = total;
+        that.nodes['progress'].value = value;
+        return that;
+    };
+
     that.embed = function(node, appendMode){
         appendMode = !cm.isUndefined(appendMode) ? appendMode : that.params['appendMode'];
         if(cm.isNode(node)){
@@ -275,6 +290,7 @@ function(params){
     };
 
     that.bindControllerEvents = function(){
+        // ToDo: refactor overlay class to abstract controller
         cm.forEach(that._raw['events'], function(name){
             if(!that[name]){
                 that[name] = function(){};

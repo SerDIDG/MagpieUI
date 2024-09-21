@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.77.0 (2024-09-20 14:33) ************ */
+/*! ************ MagpieUI v3.78.0 (2024-09-21 04:02) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.77.0';
+@CmVersion: '3.78.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4597,10 +4597,11 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* ******* SCREEN TYPES ******* */
 
-@CmScreen-Mobile: 640px;
-@CmScreen-MobilePortrait: 480px;
 @CmScreen-Tablet: 1024px;
 @CmScreen-TabletPortrait: 768px;
+@CmScreen-Mobile: 640px;
+@CmScreen-MobilePortrait: 480px;
+@CmScreen-XSmall: 375px;
 
 // /* ******* SIZES ******* */
 
@@ -5292,6 +5293,7 @@ span.CodeMirror-selectedtext { background: none; }
 @PtOverlay-Dark: @CmUI-Overlay-Dark;
 @PtOverlay-Duration: @CmUI-Overlay-Duration;
 @PtOverlay-Spinner-Size: @CmSize-Large;
+@PtOverlay-Progress-Size: @CmSize-XXXSmall;
 @PtOverlay-ZIndex: 1003;
 
 // /* ************************************************ */
@@ -11524,6 +11526,8 @@ ul.pt__field__hint {
 /* *** CONTENT *** */
 
 .pt__field__content {
+    position: relative;
+
     .placeholder {
         .cm__font--placeholder;
         .cm__text-nowrap;
@@ -14374,7 +14378,8 @@ ul.pt__field__hint {
     .mx__transition(all, @PtOverlay-Duration);
 
     .overlay__spinner,
-    .overlay__content {
+    .overlay__content,
+    .overlay__progress {
         visibility: hidden;
         position: absolute;
         opacity: 0;
@@ -14398,8 +14403,37 @@ ul.pt__field__hint {
         }
     }
 
-    .overlay__content {
+    .overlay__progress {
+        width: 100%;
+        height: @PtOverlay-Progress-Size;
         z-index: 2;
+        display: block;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        background: @CmColor-Secondary-LightActive;
+        border-radius: @CmBorder-Radius;
+        color: transparent;
+        .mx__position(auto, 0, 0, 0);
+
+        &::-webkit-progress-bar {
+            background: transparent;
+        }
+
+        &::-moz-progress-bar {
+            background: @CmColor-Primary-DarkDefault;
+        }
+
+        &::-webkit-progress-value {
+            background: @CmColor-Primary-DarkDefault;
+        }
+    }
+
+    .overlay__content {
+        z-index: 3;
     }
 
     &.theme-transparent {

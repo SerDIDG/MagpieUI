@@ -16,6 +16,10 @@ cm.define('Com.FileInput', {
 
         'defaultValue' : '',
         'accept' : [],                      // empty - accept all, example: ['image/png', 'image/jpeg']
+        'acceptSizes' : {                   // file size, example: {min: 0, max: 0}
+            'min': 0,
+            'max': 0,
+        },
         'readValueType' : 'base64',         // base64 | binary
         'outputValueType' : 'object',       // file | object
 
@@ -56,7 +60,8 @@ cm.define('Com.FileInput', {
         'remove' : 'Remove',
         'open' : 'Open',
         'errors': {
-            'accept': 'This file type is not accepted'
+            'accept': 'File type is not accepted',
+            'sizes': 'File size does not meet requirements',
         }
     }
 },
@@ -281,6 +286,27 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         return isValid;
     };
 
+    classProto.isAcceptableFileSizes = function(item){
+        var that = this,
+            isValid = true;
+        if (
+            cm.isEmpty(that.params.acceptSizes) ||
+            cm.isEmpty(item) || cm.isEmpty(item.file)
+        ) {
+            isValid = true;
+        } else {
+            isValid = item.size >= that.params.acceptSizes.min && (that.params.acceptSizes.max === 0 || item.size <= that.params.acceptSizes.max);
+        }
+        if (that.params.formField) {
+            if (!isValid) {
+                that.params.formField.renderError(that.msg('errors.sizes'));
+            } else {
+                that.params.formField.clearError();
+            }
+        }
+        return isValid;
+    };
+
     /* *** DATA *** */
 
     classProto.get = function(){
@@ -298,8 +324,9 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         var that = this,
             item = that.components.validator.validate(value);
         if (
-            (cm.isEmpty(item.value) && cm.isEmpty(item.file))
-            || !that.isAcceptableFileFormat(item)
+            (cm.isEmpty(item.value) && cm.isEmpty(item.file)) ||
+            !that.isAcceptableFileFormat(item) ||
+            !that.isAcceptableFileSizes(item)
         ) {
             return that.params.defaultValue;
         }

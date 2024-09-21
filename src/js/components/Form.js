@@ -16,6 +16,7 @@ cm.define('Com.Form', {
         'onValidate',
         'onRequestError',
         'onRequestSuccess',
+        'onProgress',
         'onError',
         'onAbort',
         'onSuccess',
@@ -572,6 +573,9 @@ function(params){
                 'onStart' : function(){
                     that.callbacks.start(that, config);
                 },
+                'onProgress' : function(event){
+                    that.callbacks.progress(that, config, event);
+                },
                 'onSuccess' : function(response, event){
                     event = response instanceof ProgressEvent ? response : event;
                     that.callbacks.response(that, config, response, event);
@@ -600,6 +604,11 @@ function(params){
         that.isProcess = false;
         that.sendEnd();
         that.triggerEvent('onSendEnd');
+    };
+
+    that.callbacks.progress = function(that, config, event){
+        that.sendProgress(event);
+        that.triggerEvent('onProgress', event);
     };
 
     that.callbacks.response = function(that, config, response, event){
@@ -1059,6 +1068,14 @@ function(params){
         return that;
     };
 
+    that.sendProgress = function(event) {
+        // Hide Loader
+        if(that.params.showLoader){
+            that.setLoaderProgress(event.total, event.loaded);
+        }
+        return that;
+    };
+
     that.sendEnd = function() {
         cm.removeClass(that.nodes.container, 'is-submitting');
         // Toggle buttons
@@ -1123,6 +1140,10 @@ function(params){
         return that;
     };
 
+    that.getLoader = function(){
+        return that.components.loader;
+    };
+
     that.showLoader = function(isImmediately){
         that.components.loader && that.components.loader.open(isImmediately);
         return that;
@@ -1130,6 +1151,11 @@ function(params){
 
     that.hideLoader = function(isImmediately){
         that.components.loader && that.components.loader.close(isImmediately);
+        return that;
+    };
+
+    that.setLoaderProgress = function(total, value){
+        that.components.loader && that.components.loader.setProgress(total, value);
         return that;
     };
 
