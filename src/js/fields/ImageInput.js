@@ -70,9 +70,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                         nodes.buttonsInner = cm.node('div', {classes: 'input__buttons'})
                     ),
                     nodes.imageContainer = cm.node('div', {classes: 'pt__image'},
-                        cm.node('div', {classes: 'inner'},
-                            nodes.image = cm.node('div', {classes: 'descr'})
-                        )
+                        nodes.imageHolder = cm.node('div', {classes: 'inner'})
                     )
                 )
             )
@@ -225,36 +223,48 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this;
 
         // Clear
-        that.nodes.content.image.style.backgroundImage = '';
-        cm.remove(that.nodes.content.iframe);
+        cm.remove(that.nodes.content.image);
         cm.remove(that.nodes.content.video);
 
         // Set
         if (cm.isEmpty(that.value)) {
             that.components.preview && that.components.preview.clear();
+            that.renderPreviewDefault();
             cm.addClass(that.nodes.content.preview, 'is-hidden');
             cm.addClass(that.nodes.content.imageContainer, 'is-default-image');
         } else {
             that.components.preview && that.components.preview.set(that.value);
             if(that.params.types.video.test(that.value.type)) {
                 that.renderPreviewVideo();
-            /*
-            }else if(that.params.types.embed.test(that.value.type)) {
-                that.nodes.content.iframe = cm.node('iframe', {'src' : that.value.url});
-                cm.appendChild(that.nodes.content.iframe, that.nodes.content.image);
-            */
             }else{
-                that.nodes.content.image.style.backgroundImage = cm.URLToCSSURL(that.value.url);
+                that.renderPreviewImage();
             }
             cm.removeClass(that.nodes.content.preview, 'is-hidden');
             cm.removeClass(that.nodes.content.imageContainer, 'is-default-image');
         }
     };
 
+    classProto.renderPreviewDefault = function() {
+        var that = this;
+        // Structure
+        that.nodes.content.image = cm.node('div', {classes: 'descr'});
+        // Append
+        cm.appendChild(that.nodes.content.image, that.nodes.content.imageHolder);
+    };
+
+    classProto.renderPreviewImage = function() {
+        var that = this;
+        // Structure
+        that.nodes.content.image = cm.node('div', {classes: 'descr'});
+        that.nodes.content.image.style.backgroundImage = cm.URLToCSSURL(that.value.url);
+        // Append
+        cm.appendChild(that.nodes.content.image, that.nodes.content.imageHolder);
+    };
+
     classProto.renderPreviewVideo = function() {
         var that = this;
         // Structure
-        that.nodes.content.video = cm.node('video', {'preload': 'none', 'playsinline': true, 'controls': false, 'muted': true});
+        that.nodes.content.video = cm.node('video', {classes: 'descr', preload: 'none', playsinline: true, controls: false, muted: true});
         that.nodes.content.video.playsinline = true;
         that.nodes.content.video.playsInline = true;
         that.nodes.content.video.muted = true;
@@ -265,11 +275,14 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         cm.addEvent(that.nodes.content.video, 'loadeddata', function(){
             that.nodes.content.video.pause();
         });
+        cm.addEvent(that.nodes.content.video, 'loadedmetadata', function(){
+            that.nodes.content.video.pause();
+        });
         // Source
-        that.nodes.content.videoSource = cm.node('source', {'src': that.value.url});
+        that.nodes.content.videoSource = cm.node('source', {src: that.value.url});
         cm.appendChild(that.nodes.content.videoSource, that.nodes.content.video);
         // Append
-        cm.appendChild(that.nodes.content.video, that.nodes.content.image);
+        cm.appendChild(that.nodes.content.video, that.nodes.content.imageHolder);
     };
 });
 
