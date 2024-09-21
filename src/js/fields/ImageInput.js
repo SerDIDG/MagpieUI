@@ -8,7 +8,7 @@ cm.define('Com.ImageInput', {
         fit: 'cover',
         aspect: false,                                      // 1x1, 3x2, etc
         types: {
-            image: /image\/.*/,
+            image: cm._config.fileTypes.image,
             video: cm._config.fileTypes.video,
             embed: cm._config.fileTypes.embed,
         },
@@ -254,7 +254,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     classProto.renderPreviewVideo = function() {
         var that = this;
         // Structure
-        that.nodes.content.video = cm.node('video', {'playsinline': true, 'controls': false, 'muted': true});
+        that.nodes.content.video = cm.node('video', {'preload': 'none', 'playsinline': true, 'controls': false, 'muted': true});
         that.nodes.content.video.playsinline = true;
         that.nodes.content.video.playsInline = true;
         that.nodes.content.video.muted = true;

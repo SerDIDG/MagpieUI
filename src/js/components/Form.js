@@ -1071,7 +1071,11 @@ function(params){
     that.sendProgress = function(event) {
         // Hide Loader
         if(that.params.showLoader){
-            that.setLoaderProgress(event.total, event.loaded);
+            if (event.lengthComputable) {
+                that.setLoaderProgress(event.total, event.loaded);
+            } else {
+                that.hideLoaderProgress();
+            }
         }
         return that;
     };
@@ -1156,6 +1160,11 @@ function(params){
 
     that.setLoaderProgress = function(total, value){
         that.components.loader && that.components.loader.setProgress(total, value);
+        return that;
+    };
+
+    that.hideLoaderProgress = function(){
+        that.components.loader && that.components.loader.hideProgress();
         return that;
     };
 

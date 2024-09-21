@@ -91,8 +91,6 @@ function(params){
         that.params['showSpinner'] && that.showSpinner();
         // Show content
         that.params['showContent'] && that.showContent();
-        // Show progress
-        that.params['showProgress'] && that.showProgress();
         // Set theme
         that.setTheme(that.params['theme']);
     };
@@ -262,9 +260,17 @@ function(params){
         return that;
     };
 
+    that.hideProgress = function(){
+        cm.removeClass(that.nodes['progress'], 'is-show');
+        return that;
+    };
+
     that.setProgress = function(total, value){
         that.nodes['progress'].max = total;
         that.nodes['progress'].value = value;
+        if(that.params['showProgress']){
+            that.showProgress();
+        }
         return that;
     };
 

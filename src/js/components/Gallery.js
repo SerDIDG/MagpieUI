@@ -30,9 +30,6 @@ cm.define('Com.Gallery', {
             'cycle': true,
             'showTitles': false,
         },
-        'types': {
-            'image': 'jpg|png|gif|jpeg|bmp|tga|svg|webp|tiff'
-        },
         'icons': {
             'prev': 'icon default prev',
             'next': 'icon default next',
@@ -169,7 +166,6 @@ function(params){
         cm.getConstructor(that.params.itemConstructor, function(classConstructor) {
             that.items[params.index] = new classConstructor(
                 cm.merge(params, {
-                    types: that.params.types,
                     showCaption: that.params.showCaption,
                     events: {
                         onClick: function(item) {

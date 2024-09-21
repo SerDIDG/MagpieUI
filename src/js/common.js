@@ -80,7 +80,12 @@ var cm = {
             'tooltipTop' : 'targetHeight + 4',
             'tooltipDown' : 'targetHeight + 4',
             'tooltipUp' : '- (selfHeight + 4)',
+            'fileExtensions' : {
+                'image' : 'jpg|jpeg|png|gif|bmp|tga|svg|tiff|webp',
+                'video' : 'avi|ogg|mpeg|mp4|m4a|m4b|mov|wmv|webm',
+            },
             'fileTypes' : {
+                'image' : /image\/.*/,
                 'video' : /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
                 'embed' : /application\/pdf/,
             }
@@ -4120,7 +4125,7 @@ cm.ajax = function(o){
             sendJSONP();
         }else{
             validate();
-            returnObject = config['httpRequestObject'];
+            returnObject = config.httpRequestObject;
             send();
         }
     };
@@ -4137,7 +4142,7 @@ cm.ajax = function(o){
 
     var validate = function(){
         cm.hook.trigger('ajax.beforePrepare', config);
-        config['httpRequestObject'] = cm.createXmlHttpRequestObject();
+        config.httpRequestObject = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         config['method'] = config['method'].toUpperCase();
         if(config['formData'] === true){
@@ -4192,25 +4197,31 @@ cm.ajax = function(o){
     };
 
     var send = function(){
-        config['httpRequestObject'].open(config['method'], config['url'], config['async']);
-        config['httpRequestObject'].responseType = config['type'];
+        config.httpRequestObject.open(config['method'], config['url'], config['async']);
+        config.httpRequestObject.responseType = config['type'];
+
         // Set Headers
-        if('withCredentials' in config['httpRequestObject']){
-            config['httpRequestObject'].withCredentials = config['withCredentials'];
+        if('withCredentials' in config.httpRequestObject){
+            config.httpRequestObject.withCredentials = config.withCredentials;
         }
         cm.forEach(config['headers'], function(value, name){
-            config['httpRequestObject'].setRequestHeader(name, value);
+            config.httpRequestObject.setRequestHeader(name, value);
         });
+
         // Add response events
-        cm.addEvent(config['httpRequestObject'], 'load', loadHandler);
-        cm.addEvent(config['httpRequestObject'], 'error', errorHandler);
-        cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
+        cm.addEvent(config.httpRequestObject, 'load', loadHandler);
+        cm.addEvent(config.httpRequestObject, 'error', errorHandler);
+        cm.addEvent(config.httpRequestObject, 'abort', abortHandler);
+
         // Upload progress events
-        if (config['httpRequestObject'].upload) {
-            cm.addEvent(config['httpRequestObject'].upload, 'loadstart', progressHandler);
-            cm.addEvent(config['httpRequestObject'].upload, 'progress', progressHandler);
-            cm.addEvent(config['httpRequestObject'].upload, 'loadend', progressHandler);
+        if (config.httpRequestObject.upload) {
+            cm.addEvent(config.httpRequestObject.upload, 'loadstart', progressHandler);
+            cm.addEvent(config.httpRequestObject.upload, 'loadend', progressHandler);
+            cm.addEvent(config.httpRequestObject.upload, 'progress', progressHandler);
+            // For some reason Safari does not like addEventListener for progress event
+            config.httpRequestObject.upload.onprogress = progressHandler;
         }
+
         // Send
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
@@ -4223,11 +4234,11 @@ cm.ajax = function(o){
             }
         }else{
             if(!cm.isEmpty(config['data'])){
-                config['httpRequestObject'].send(config['data']);
+                config.httpRequestObject.send(config['data']);
             }else if(!cm.isEmpty(config['params']) && cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
-                config['httpRequestObject'].send(config['params']);
+                config.httpRequestObject.send(config['params']);
             }else{
-                config['httpRequestObject'].send(null);
+                config.httpRequestObject.send(null);
             }
         }
     };
@@ -4237,9 +4248,9 @@ cm.ajax = function(o){
     };
 
     var loadHandler = function(e){
-        if(config['httpRequestObject'].readyState === 4){
-            response = config['httpRequestObject'].response;
-            if(cm.inArray(successStatuses, config['httpRequestObject'].status)){
+        if(config.httpRequestObject.readyState === 4){
+            response = config.httpRequestObject.response;
+            if(cm.inArray(successStatuses, config.httpRequestObject.status)){
                 config['onSuccess'](response, e);
                 config['onResolve'](response, e);
             }else{
