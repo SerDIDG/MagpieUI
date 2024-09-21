@@ -76,7 +76,6 @@
 
         &:is(:hover, :active, :focus-visible, :focus-within) {
             .input__cover {
-                visibility: visible;
                 opacity: 1;
                 .mx__transition(all, @CmUI-Transition-DurationReverse);
                 .mx__transition-delay(0ms);
@@ -90,7 +89,6 @@
 
     .input__cover {
         .display-flex;
-        visibility: hidden;
         position: absolute;
         z-index: 2;
         opacity: 0;
@@ -136,6 +134,10 @@
                 display: none;
             }
         }
+    }
+
+    .input__browse {
+        display: none;
     }
 
     &.disabled {

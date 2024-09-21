@@ -75,6 +75,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     classProto.construct = function(){
         var that = this;
         // Bind context to methods
+        that.browseHandler = that.browse.bind(that);
         that.browseActionHandler = that.browseAction.bind(that);
         that.processFilesHandler = that.processFiles.bind(that);
         // Call parent method

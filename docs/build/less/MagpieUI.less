@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.78.2 (2024-09-21 09:07) ************ */
+/*! ************ MagpieUI v3.78.3 (2024-09-22 02:26) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.78.2';
+@CmVersion: '3.78.3';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7834,6 +7834,7 @@ select {
     }
 
     &.button-danger--focus {
+        .mx__background__color(@CmColor-Danger-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-danger--hover {
@@ -18202,7 +18203,6 @@ ul.pt__field__hint {
 
         &:is(:hover, :active, :focus-visible, :focus-within) {
             .input__cover {
-                visibility: visible;
                 opacity: 1;
                 .mx__transition(all, @CmUI-Transition-DurationReverse);
                 .mx__transition-delay(0ms);
@@ -18216,7 +18216,6 @@ ul.pt__field__hint {
 
     .input__cover {
         .display-flex;
-        visibility: hidden;
         position: absolute;
         z-index: 2;
         opacity: 0;
@@ -18262,6 +18261,10 @@ ul.pt__field__hint {
                 display: none;
             }
         }
+    }
+
+    .input__browse {
+        display: none;
     }
 
     &.disabled {

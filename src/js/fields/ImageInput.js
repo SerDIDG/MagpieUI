@@ -48,7 +48,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.getConstructor(that.params.previewConstructor, function(classObject) {
                 that.components.preview = new classObject(
                     cm.merge(that.params.previewParams, {
-                        node: that.nodes.content.preview
+                        node: that.nodes.content.previewButton
                     })
                 );
             });
@@ -64,7 +64,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         that.nodes.content = nodes;
         nodes.container = cm.node('div', {classes: 'com__image-input__content'},
             nodes.inner = cm.node('div', {classes: 'inner'},
-                nodes.content = cm.node('div', {classes: 'input__holder', tabindex: 0},
+                nodes.content = cm.node('div', {classes: 'input__holder'},
                     cm.node('div', {classes: 'input__cover'},
                         nodes.label = cm.node('div', {classes: 'input__label'}),
                         nodes.buttonsInner = cm.node('div', {classes: 'input__buttons'})
@@ -99,39 +99,42 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     classProto.renderButtons = function() {
         var that = this;
 
+        // Clear button
         that.nodes.content.clear = cm.node('div', {classes: 'cm__button-wrapper input__button--remove'},
-            cm.node('button', {type: 'button', classes: 'button button-danger'},
+            that.nodes.content.clearButton = cm.node('button', {type: 'button', classes: 'button button-danger'},
                 cm.node('span', that.msg('remove'))
             )
         )
-        cm.click.add(that.nodes.content.clear, that.clearEventHandler);
+        cm.click.add(that.nodes.content.clearButton, that.clearEventHandler);
         cm.insertFirst(that.nodes.content.clear, that.nodes.content.buttonsInner);
-        
+
+        // Preview button
         if (that.params.preview) {
             that.nodes.content.preview = cm.node('div', {classes: 'cm__button-wrapper input__button--preview'},
-                cm.node('button', {type: 'button', classes: 'button button-primary'},
+                that.nodes.content.previewButton = cm.node('button', {type: 'button', classes: 'button button-primary'},
                     cm.node('span', that.msg('preview'))
                 )
             );
             cm.insertFirst(that.nodes.content.preview, that.nodes.content.buttonsInner);
         }
-        
+
+        // Local browse button
         if (that.params.local) {
-            that.nodes.content.browseLocal = cm.node('div', {classes: 'browse-button input__button--browse'},
-                cm.node('button', {type: 'button', classes: 'button button-primary'},
+            that.nodes.content.browseLocal = cm.node('div', {classes: 'cm__button-wrapper input__button--browse'},
+                that.nodes.content.browseLocalButton = cm.node('button', {type: 'button', classes: 'button button-primary'},
                     cm.node('span', that.msg('_browse_local'))
                 ),
-                cm.node('div', {classes: 'inner'},
-                    that.nodes.content.input = cm.node('input', {type: 'file'})
-                )
+                that.nodes.content.input = cm.node('input', {classes: 'input__browse', type: 'file'}),
             );
             if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
                 that.nodes.content.input.accept = that.params.accept.join(',');
             }
+            cm.click.add(that.nodes.content.browseLocalButton, that.browseHandler);
             cm.addEvent(that.nodes.content.input, 'change', that.browseActionHandler);
             cm.insertFirst(that.nodes.content.browseLocal, that.nodes.content.buttonsInner);
         }
-        
+
+        // File manager browse button
         if (that.params.fileManager) {
             that.nodes.content.browseFileManager = cm.node('div', {classes: 'cm__button-wrapper input__button--browse'},
                 cm.node('button', {type: 'button', classes: 'button button-primary'},
@@ -140,7 +143,8 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             );
             cm.insertFirst(that.nodes.content.browseFileManager, that.nodes.content.buttonsInner);
         }
-        
+
+        // File browser browse button
         if (that.params.fileUploader) {
             that.nodes.content.browseFileUploader = cm.node('div', {classes: 'cm__button-wrapper input__button--browse'},
                 cm.node('button', {type: 'button', classes: 'button button-primary'},
@@ -151,7 +155,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         }
     };
 
-    /* *** PROCESS FILES *** */
+    /******* PROCESS FILES *******/
 
     classProto.isAcceptableImageDimensions = function(item) {
         var that = this,
@@ -175,7 +179,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         return isValid;
     };
 
-    /* *** DATA *** */
+    /******* DATA *******/
 
     classProto.validateValue = function(value){
         var that = this,
@@ -229,18 +233,18 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         // Set
         if (cm.isEmpty(that.value)) {
             that.components.preview && that.components.preview.clear();
-            that.renderPreviewDefault();
             cm.addClass(that.nodes.content.preview, 'is-hidden');
             cm.addClass(that.nodes.content.imageContainer, 'is-default-image');
+            that.renderPreviewDefault();
         } else {
             that.components.preview && that.components.preview.set(that.value);
+            cm.removeClass(that.nodes.content.preview, 'is-hidden');
+            cm.removeClass(that.nodes.content.imageContainer, 'is-default-image');
             if(that.params.types.video.test(that.value.type)) {
                 that.renderPreviewVideo();
             }else{
                 that.renderPreviewImage();
             }
-            cm.removeClass(that.nodes.content.preview, 'is-hidden');
-            cm.removeClass(that.nodes.content.imageContainer, 'is-default-image');
         }
     };
 
@@ -254,33 +258,44 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
 
     classProto.renderPreviewImage = function() {
         var that = this;
+
         // Structure
         that.nodes.content.image = cm.node('div', {classes: 'descr'});
         that.nodes.content.image.style.backgroundImage = cm.URLToCSSURL(that.value.url);
+
         // Append
         cm.appendChild(that.nodes.content.image, that.nodes.content.imageHolder);
     };
 
     classProto.renderPreviewVideo = function() {
         var that = this;
+
         // Structure
-        that.nodes.content.video = cm.node('video', {classes: 'descr', preload: 'none', playsinline: true, controls: false, muted: true});
+        that.nodes.content.video = cm.node('video', {classes: 'descr', preload: 'none', playsinline: true, controls: false, muted: true, tabindex: -1});
+        that.nodes.content.video.controls = false;
         that.nodes.content.video.playsinline = true;
         that.nodes.content.video.playsInline = true;
+
+        // Some browsers don't display the first video frame, so we need to enable autoplay
         that.nodes.content.video.muted = true;
-        that.nodes.content.video.autoplay = true;
         that.nodes.content.video.loop = true;
-        that.nodes.content.video.controls = false;
-        // Pause video after load
+        that.nodes.content.video.autoplay = true;
+
+        // And then pause the video after it loads
         cm.addEvent(that.nodes.content.video, 'loadeddata', function(){
             that.nodes.content.video.pause();
         });
         cm.addEvent(that.nodes.content.video, 'loadedmetadata', function(){
             that.nodes.content.video.pause();
         });
-        // Source
+        cm.addEvent(that.nodes.content.video, 'canplay', function(){
+            that.nodes.content.video.pause();
+        });
+
+        // Add video source
         that.nodes.content.videoSource = cm.node('source', {src: that.value.url});
         cm.appendChild(that.nodes.content.videoSource, that.nodes.content.video);
+
         // Append
         cm.appendChild(that.nodes.content.video, that.nodes.content.imageHolder);
     };
