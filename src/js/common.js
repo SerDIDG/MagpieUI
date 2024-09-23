@@ -1342,8 +1342,8 @@ cm.addScript = function(src, async, callback){
         cm._addScriptStack[src] = item;
         // Render Script
         item['script'] = document.createElement('script');
-        item['script'].src = item['src'];
         item['script'].async = item['async'];
+        item['script'].src = item['src'];
         cm.addEvent(item['script'], 'load', item['callback']);
         cm.addEvent(item['script'], 'error', item['callback']);
         cm.appendChild(item['script'], cm.getDocumentHead());
@@ -4216,23 +4216,16 @@ cm.ajax = function(o){
 
         // Upload progress events
         if (config.httpRequestObject.upload) {
-            cm.addEvent(config.httpRequestObject.upload, 'loadstart', progressHandler);
-            cm.addEvent(config.httpRequestObject.upload, 'loadend', progressHandler);
             cm.addEvent(config.httpRequestObject.upload, 'progress', progressHandler);
-            // For some reason Safari does not like addEventListener for progress event
-            config.httpRequestObject.upload.onprogress = progressHandler;
         }
 
         // Send
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
-            if(!cm.isEmpty(config['data'])){
-                navigator.sendBeacon(config['url'], config['data']);
-            }else if(!cm.isEmpty(config['params'])){
-                navigator.sendBeacon(config['url'], config['params']);
-            }else{
-                navigator.sendBeacon(config['url']);
-            }
+            navigator.sendBeacon(
+                config['url'],
+                !cm.isEmpty(config['data']) ? config['data'] : (!cm.isEmpty(config['params']) ? config['params'] : null)
+            );
         }else{
             if(!cm.isEmpty(config['data'])){
                 config.httpRequestObject.send(config['data']);
@@ -4285,7 +4278,11 @@ cm.ajax = function(o){
 
     var deprecatedHandler = function(){
         if(cm.isFunction(config['handler'])){
-            cm.errorLog({'type' : 'attention', 'name' : 'cm.ajax', 'message' : 'Parameter "handler" is deprecated. Use "onSuccess", "onError" or "onAbort" callbacks instead.'});
+            cm.errorLog({
+                'type' : 'attention',
+                'name' : 'cm.ajax',
+                'message' : 'Parameter "handler" is deprecated. Use "onSuccess", "onError" or "onAbort" callbacks instead.'
+            });
             config['handler'].apply(config['handler'], arguments);
         }
     };
@@ -4306,11 +4303,13 @@ cm.ajax = function(o){
                 removeJSONP();
             }
         };
+
         // Prepare url and attach events
         scriptNode = cm.Node('script', {'type' : 'application/javascript'});
         cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
         cm.addEvent(scriptNode, 'error', window[callbackErrorName]);
-        // Embed
+
+        // Append
         config['onStart']();
         scriptNode.setAttribute('src', config['url']);
         cm.getDocumentHead().appendChild(scriptNode);
@@ -4547,28 +4546,7 @@ cm.responseInArray = function(xmldoc){
 };
 
 cm.createXmlHttpRequestObject = function(){
-    var xmlHttp;
-    try{
-        xmlHttp = new XMLHttpRequest();
-    }catch(e){
-        var XmlHttpVersions = [
-            "MSXML2.XMLHTTP.6.0",
-            "MSXML2.XMLHTTP.5.0",
-            "MSXML2.XMLHTTP.4.0",
-            "MSXML2.XMLHTTP.3.0",
-            "MSXML2.XMLHTTP",
-            "Microsoft.XMLHTTP"
-        ];
-        cm.forEach(XmlHttpVersions, function(item){
-            try{
-                xmlHttp = new ActiveXObject(item);
-            }catch(e){}
-        });
-    }
-    if(!xmlHttp){
-        return null;
-    }
-    return xmlHttp;
+    return new XMLHttpRequest();
 };
 
 /* ******* HASH ******* */

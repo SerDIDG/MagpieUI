@@ -100,56 +100,42 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         var that = this;
 
         // Clear button
-        that.nodes.content.clear = cm.node('div', {classes: 'cm__button-wrapper input__button--remove'},
-            that.nodes.content.clearButton = cm.node('button', {type: 'button', classes: 'button button-danger'},
-                cm.node('span', that.msg('remove'))
-            )
-        )
+        that.nodes.content.clearButton = cm.node('button', {type: 'button', classes: ['button', 'button-danger', 'input__button', 'input__button--remove']},
+            cm.node('span', that.msg('remove'))
+        );
         cm.click.add(that.nodes.content.clearButton, that.clearEventHandler);
-        cm.insertFirst(that.nodes.content.clear, that.nodes.content.buttonsInner);
+        cm.insertFirst(that.nodes.content.clearButton, that.nodes.content.buttonsInner);
 
         // Preview button
         if (that.params.preview) {
-            that.nodes.content.preview = cm.node('div', {classes: 'cm__button-wrapper input__button--preview'},
-                that.nodes.content.previewButton = cm.node('button', {type: 'button', classes: 'button button-primary'},
-                    cm.node('span', that.msg('preview'))
-                )
+            that.nodes.content.previewButton = cm.node('button', {type: 'button', classes: ['button', 'button-primary', 'input__button', 'input__button--preview']},
+                cm.node('span', that.msg('preview'))
             );
-            cm.insertFirst(that.nodes.content.preview, that.nodes.content.buttonsInner);
+            cm.insertFirst(that.nodes.content.previewButton, that.nodes.content.buttonsInner);
         }
 
         // Local browse button
         if (that.params.local) {
-            that.nodes.content.browseLocal = cm.node('div', {classes: 'cm__button-wrapper input__button--browse'},
-                that.nodes.content.browseLocalButton = cm.node('button', {type: 'button', classes: 'button button-primary'},
-                    cm.node('span', that.msg('_browse_local'))
-                ),
-                that.nodes.content.input = cm.node('input', {classes: 'input__browse', type: 'file'}),
+            that.renderLocalInput();
+            that.nodes.content.browseLocal = cm.node('button', {type: 'button', classes: ['button', 'button-primary', 'input__button', 'input__button--browse']},
+                cm.node('span', that.msg('_browse_local'))
             );
-            if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
-                that.nodes.content.input.accept = that.params.accept.join(',');
-            }
-            cm.click.add(that.nodes.content.browseLocalButton, that.browseHandler);
-            cm.addEvent(that.nodes.content.input, 'change', that.browseActionHandler);
+            cm.click.add(that.nodes.content.browseLocal, that.browseHandler);
             cm.insertFirst(that.nodes.content.browseLocal, that.nodes.content.buttonsInner);
         }
 
         // File manager browse button
         if (that.params.fileManager) {
-            that.nodes.content.browseFileManager = cm.node('div', {classes: 'cm__button-wrapper input__button--browse'},
-                cm.node('button', {type: 'button', classes: 'button button-primary'},
-                    cm.node('span', that.msg('_browse_filemanager'))
-                )
+            that.nodes.content.browseFileManager = cm.node('button', {type: 'button', classes: ['button', 'button-primary', 'input__button', 'input__button--browse']},
+                cm.node('span', that.msg('_browse_filemanager'))
             );
             cm.insertFirst(that.nodes.content.browseFileManager, that.nodes.content.buttonsInner);
         }
 
         // File browser browse button
         if (that.params.fileUploader) {
-            that.nodes.content.browseFileUploader = cm.node('div', {classes: 'cm__button-wrapper input__button--browse'},
-                cm.node('button', {type: 'button', classes: 'button button-primary'},
-                    cm.node('span', that.msg('browse'))
-                )
+            that.nodes.content.browseFileUploader = cm.node('button', {type: 'button', classes: ['button', 'button-primary', 'input__button', 'input__button--browse']},
+                cm.node('span', that.msg('browse'))
             );
             cm.insertFirst(that.nodes.content.browseFileUploader, that.nodes.content.buttonsInner);
         }
@@ -202,7 +188,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             cm.clearNode(that.nodes.content.label);
             cm.addClass(that.nodes.content.label, 'is-hidden');
             // Hde clear button
-            cm.addClass(that.nodes.content.clear, 'is-hidden');
+            cm.addClass(that.nodes.content.clearButton, 'is-hidden');
         } else {
             // Label
             cm.clearNode(that.nodes.content.label);
@@ -216,7 +202,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                 cm.removeClass(that.nodes.content.label, 'is-hidden');
             }
             // Show clear button
-            cm.removeClass(that.nodes.content.clear, 'is-hidden');
+            cm.removeClass(that.nodes.content.clearButton, 'is-hidden');
         }
 
         // Set preview
@@ -233,12 +219,12 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         // Set
         if (cm.isEmpty(that.value)) {
             that.components.preview && that.components.preview.clear();
-            cm.addClass(that.nodes.content.preview, 'is-hidden');
+            cm.addClass(that.nodes.content.previewButton, 'is-hidden');
             cm.addClass(that.nodes.content.imageContainer, 'is-default-image');
             that.renderPreviewDefault();
         } else {
             that.components.preview && that.components.preview.set(that.value);
-            cm.removeClass(that.nodes.content.preview, 'is-hidden');
+            cm.removeClass(that.nodes.content.previewButton, 'is-hidden');
             cm.removeClass(that.nodes.content.imageContainer, 'is-default-image');
             if(that.params.types.video.test(that.value.type)) {
                 that.renderPreviewVideo();

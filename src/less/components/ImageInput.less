@@ -117,22 +117,22 @@
         .display-flex;
         padding: @half_buttons_indent;
         .mx__flex-flow(column nowrap);
+    }
 
-        .button-alike {
-            .display-flex;
-            min-height: auto;
-            margin: @half_buttons_indent;
-            padding: 0;
-            .mx__flex(1 1 100%);
-            .mx__justify-content(center);
+    .input__button {
+        .display-flex;
+        min-height: auto;
+        margin: @half_buttons_indent;
+        padding: 0;
+        .mx__flex(1 1 100%);
+        .mx__justify-content(center);
 
-            span {
-                margin: auto;
-            }
+        span {
+            margin: auto;
+        }
 
-            &.is-hidden {
-                display: none;
-            }
+        &.is-hidden {
+            display: none;
         }
     }
 

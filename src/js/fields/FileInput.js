@@ -188,7 +188,6 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 nodes['content'] = cm.node('div', {'class' : 'com__file-input__holder'},
                     nodes['buttons'] = cm.node('div', {'class' : 'pt__file-line'},
                         nodes['buttonsInner'] = cm.node('div', {'class' : 'inner'},
-                            nodes['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove')),
                             nodes['label'] = cm.node('div', {'class' : 'label'}),
                             nodes['placeholder'] = cm.node('div', {'class' : 'label label-placeholder', 'innerHTML' : that.params['placeholder']})
                         )
@@ -196,42 +195,58 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 )
             )
         );
-        // Adaptive
-        if(that.params['buttonsAdaptive']){
-            cm.addClass(nodes['buttons'], 'is-adaptive');
-        }
-        // Clear button
-        if(!that.params['showClearButton']){
-            cm.addClass(nodes['clear'], 'is-hidden');
-        }
-        // Render Browse Buttons
-        if(that.params['local']){
-            nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
-                cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
-                cm.node('div', {'class' : 'inner'},
-                    nodes['input'] = cm.node('input', {'type' : 'file'})
-                )
-            );
-            if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
-                nodes['input'].accept = that.params['accept'].join(',');
-            }
-            cm.addEvent(nodes['input'], 'change', that.browseActionHandler);
-            cm.insertFirst(nodes['browseLocal'], nodes['buttonsInner']);
-        }
-        if(that.params['fileManager']){
-            nodes['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
-            cm.insertFirst(nodes['browseFileManager'], nodes['buttonsInner']);
-        }
-        if(that.params['fileUploader']){
-            nodes['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
-            cm.insertFirst(nodes['browseFileUploader'], nodes['buttonsInner']);
-        }
+
+        // Render Buttons
+        that.renderButtons();
+
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['clear'], 'click', that.clearEventHandler);
         that.triggerEvent('onRenderContentEnd');
+
         // Export
         return nodes['container'];
+    };
+
+    classProto.renderLocalInput = function() {
+        var that = this;
+        that.nodes['content']['input'] = cm.node('input', {'class': 'input__browse', 'type' : 'file'});
+        if(!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)){
+            that.nodes['content']['input'].accept = that.params['accept'].join(',');
+        }
+        cm.addEvent(that.nodes['content']['input'], 'change', that.browseActionHandler);
+        cm.insertFirst(that.nodes['content']['input'], that.nodes['content']['content']);
+    };
+
+    classProto.renderButtons = function() {
+        var that = this;
+
+        // Clear button
+        that.nodes['content']['clear'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('remove'));
+        cm.click.add(that.nodes['content']['clear'], that.clearEventHandler);
+        cm.insertFirst(that.nodes['content']['clear'], that.nodes['content']['buttonsInner']);
+        if(!that.params['showClearButton']){
+            cm.addClass(that.nodes['content']['clear'], 'is-hidden');
+        }
+
+        // Local browse button
+        if(that.params['local']){
+            that.renderLocalInput();
+            that.nodes['content']['browseLocal'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local'));
+            cm.click.add(that.nodes['content']['browseLocal'], that.browseHandler);
+            cm.insertFirst(that.nodes['content']['browseLocal'], that.nodes['content']['buttonsInner']);
+        }
+
+        // File manager browse button
+        if(that.params['fileManager']){
+            that.nodes['content']['browseFileManager'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_filemanager'));
+            cm.insertFirst(that.nodes['content']['browseFileManager'], that.nodes['content']['buttonsInner']);
+        }
+
+        // File browser browse button
+        if(that.params['fileUploader']){
+            that.nodes['content']['browseFileUploader'] = cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('browse'));
+            cm.insertFirst(that.nodes['content']['browseFileUploader'], that.nodes['content']['buttonsInner']);
+        }
     };
 
     /* *** PROCESS FILES *** */
@@ -350,6 +365,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 cm.removeClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
                 cm.addClass(that.nodes['content']['clear'], 'is-hidden');
             }
+            // Adaptive
+            if(that.params['buttonsAdaptive']){
+                cm.addClass(that.nodes['content']['buttons'], 'is-adaptive');
+            }
         }else{
             cm.addClass(that.nodes['content']['placeholder'], 'is-hidden');
             cm.clearNode(that.nodes['content']['label']);
@@ -367,6 +386,10 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 cm.addClass(that.nodes['content']['browseFileManager'], 'is-hidden');
                 cm.addClass(that.nodes['content']['browseFileUploader'], 'is-hidden');
                 cm.removeClass(that.nodes['content']['clear'], 'is-hidden');
+            }
+            // Adaptive
+            if(that.params['buttonsAdaptive']){
+                cm.removeClass(that.nodes['content']['buttons'], 'is-adaptive');
             }
         }
         return that;

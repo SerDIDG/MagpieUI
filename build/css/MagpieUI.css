@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.78.3 (2024-09-22 02:26) ************ */
+/*! ************ MagpieUI v3.79.0 (2024-09-23 09:58) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4376,8 +4376,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.78.3');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.78.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.78.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.78.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.78.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.79.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.79.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.79.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.79.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.79.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -19299,6 +19299,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__file-input__content > .inner {
   position: relative;
 }
+.com__file-input__content .input__browse {
+  display: none;
+}
 .com__file-input__holder {
   opacity: 1;
   transition: all 250ms ease-in-out 0ms;
@@ -20515,16 +20518,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   -ms-flex-flow: column nowrap;
   flex-flow: column nowrap;
 }
-.com__image-input__content .input__buttons .button-alike,
-.com__image-input__content .input__buttons .button,
-.com__image-input__content .input__buttons .browse-button,
-.com__image-input__content .input__buttons .cm__button-wrapper,
-.com__image-input__content .input__buttons .com__menu,
-.com__image-input__content .input__buttons .com__pagination__bar ul li a,
-.com__image-input__content .input__buttons input[type="button"],
-.com__image-input__content .input__buttons input[type="submit"],
-.com__image-input__content .input__buttons input[type="reset"],
-.com__image-input__content .input__buttons button {
+.com__image-input__content .input__button {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -20536,28 +20530,10 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   flex: 1 1 100%;
   justify-content: center;
 }
-.com__image-input__content .input__buttons .button-alike span,
-.com__image-input__content .input__buttons .button span,
-.com__image-input__content .input__buttons .browse-button span,
-.com__image-input__content .input__buttons .cm__button-wrapper span,
-.com__image-input__content .input__buttons .com__menu span,
-.com__image-input__content .input__buttons .com__pagination__bar ul li a span,
-.com__image-input__content .input__buttons input[type="button"] span,
-.com__image-input__content .input__buttons input[type="submit"] span,
-.com__image-input__content .input__buttons input[type="reset"] span,
-.com__image-input__content .input__buttons button span {
+.com__image-input__content .input__button span {
   margin: auto;
 }
-.com__image-input__content .input__buttons .button-alike.is-hidden,
-.com__image-input__content .input__buttons .button.is-hidden,
-.com__image-input__content .input__buttons .browse-button.is-hidden,
-.com__image-input__content .input__buttons .cm__button-wrapper.is-hidden,
-.com__image-input__content .input__buttons .com__menu.is-hidden,
-.com__image-input__content .input__buttons .com__pagination__bar ul li a.is-hidden,
-.com__image-input__content .input__buttons input[type="button"].is-hidden,
-.com__image-input__content .input__buttons input[type="submit"].is-hidden,
-.com__image-input__content .input__buttons input[type="reset"].is-hidden,
-.com__image-input__content .input__buttons button.is-hidden {
+.com__image-input__content .input__button.is-hidden {
   display: none;
 }
 .com__image-input__content .input__browse {
