@@ -69,6 +69,7 @@ cm.define('Com.Gridlist', {
         hideTableHeader: false,
         pagination: true,
         perPage: 25,
+        pageCount: 0,
         responseKey: 'data',                                     // Response data response key
         responseCodeKey: 'code',
         responseErrorsKey: 'errors',
@@ -190,6 +191,7 @@ function(params){
         }
         // Pagination
         that.params.paginationParams.perPage = that.params.perPage;
+        that.params.paginationParams.pageCount = that.params.pageCount;
         // Helper
         that.params['Com.GridlistHelper'].columns = that.params.columns;
     };
