@@ -4,7 +4,7 @@ cm.define('Com.GalleryPopupContainer', {
         constructor: 'Com.GalleryPopup',
         destructOnClose: false,
         data: {},
-        params: {},
+        constructorParams: {},
     },
 },
 function() {
@@ -15,7 +15,7 @@ cm.getConstructor('Com.GalleryPopupContainer', function(classConstructor, classN
     classProto.constructController = function(classObject) {
         var that = this;
         return new classObject(
-            cm.merge(that.params.params, {
+            cm.merge(that.params.constructorParams, {
                 data: !cm.isArray(that.params.data) ? [that.params.data] : that.params.data,
             })
         );

@@ -209,6 +209,8 @@ function(params){
             // Set by type
             if (current.getParams('type') === 'image') {
                 setItemImage(current);
+            } else if (current.getParams('type') === 'video') {
+                setItemVideo(current);
             } else {
                 setItemIframe(current);
             }
@@ -220,6 +222,15 @@ function(params){
 
     var setItemImage = function(item) {
         cm.replaceClass(that.nodes.bar, 'is-partial', 'is-full');
+        if (item.isLoaded()) {
+            setItem(item);
+        } else {
+            that.setLoader(item);
+        }
+    };
+
+    var setItemVideo = function(item) {
+        cm.replaceClass(that.nodes.bar, 'is-full', 'is-partial');
         if (item.isLoaded()) {
             setItem(item);
         } else {
@@ -245,8 +256,13 @@ function(params){
             that.previousItem.setZIndex(1);
             that.currentItem.setZIndex(2);
         }
-        if (that.currentItem.getParams('type') === 'image') {
+        if (cm.inArray(['image', 'video'], that.currentItem.getParams('type'))) {
             that.currentItem.appendTo(that.nodes.holder);
+        }
+
+        // Play video
+        if (that.currentItem.getParams('type') === 'video') {
+            that.currentItem.play();
         }
 
         // Toggle arrows visibility
@@ -287,13 +303,14 @@ function(params){
 
     that.next = function() {
         if (that.isProcess) {
-            return that;
+            return;
         }
 
         // API - onNext
-        var index = that.currentItem.getParams('index');
+        var item = that.currentItem || that.temporaryItem;
+        var index = item.getParams('index');
         that.triggerEvent('onNext', {
-            current: that.currentItem.getParams(),
+            current: item.getParams(),
             index: index,
         });
 
@@ -311,13 +328,14 @@ function(params){
 
     that.prev = function() {
         if (that.isProcess) {
-            return that;
+            return;
         }
 
         // API - onPrev
-        var index = that.currentItem.getParams('index');
+        var item = that.currentItem || that.temporaryItem;
+        var index = item.getParams('index');
         that.triggerEvent('onPrev', {
-            current: that.currentItem.getParams(),
+            current: item.getParams(),
             index: index,
         });
 

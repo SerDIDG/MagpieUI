@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.79.1 (2024-09-25 13:05) ************ */
+/*! ************ MagpieUI v3.79.3 (2024-09-25 15:18) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4587,7 +4587,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.79.1';
+@CmVersion: '3.79.3';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -13007,7 +13007,7 @@ ul.pt__field__hint {
             > .descr {
                 background-size: contain;
 
-                &:is(img, svg) {
+                &:is(img, svg, video) {
                     width: 100%;
                     height: 100%;
                     object-fit: contain;
@@ -13021,7 +13021,7 @@ ul.pt__field__hint {
             > .descr {
                 background-size: cover;
 
-                &:is(img, svg) {
+                &:is(img, svg, video) {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
@@ -13059,18 +13059,14 @@ ul.pt__field__hint {
 
     &.is-loading {
         > .inner {
-            > .descr {
-                opacity: @CmUI-Opacity-Transparent;
-                .mx__transition(opacity, @CmUI-Transition-Duration);
-            }
+            opacity: @CmUI-Opacity-Transparent;
+            .mx__transition(opacity, @CmUI-Transition-Duration);
         }
     }
 
     &.is-loaded {
         > .inner {
-            > .descr {
-                opacity: 1;
-            }
+            opacity: 1;
         }
     }
 

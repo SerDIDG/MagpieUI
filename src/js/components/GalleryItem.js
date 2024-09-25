@@ -204,7 +204,7 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
 
     classProto.loadVideo = function() {
         var that = this;
-        cm.addEvent(that.nodes.content, 'loadeddata', that.loadSuccessEventHanlder);
+        cm.addEvent(that.nodes.content, 'loadedmetadata', that.loadSuccessEventHanlder);
         cm.addEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
         that.nodes.content.videoSource = cm.node('source', {src: that.params.src});
         cm.appendChild(that.nodes.content.videoSource, that.nodes.content);
@@ -232,7 +232,7 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
 
         that.hasProcess = true;
-        if (that.hasLoaded && that.params.type === 'image') {
+        if (that.hasLoaded && cm.inArray(['image', 'video'], that.params.type)) {
             that.loadSuccessEvent();
         } else {
             if (that.params.type === 'video') {
@@ -254,6 +254,17 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         cm.removeEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
         cm.removeEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
         that.triggerEvent('onAbort');
+        return that;
+    };
+
+    classProto.play = function() {
+        var that = this;
+        if (that.hasProcess) {
+            return that;
+        }
+        if (that.params.type === 'video' && that.hasLoaded) {
+            that.nodes.content.play();
+        }
         return that;
     };
 
