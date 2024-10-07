@@ -37,14 +37,18 @@ cm.define('Com.ScrollPagination', {
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'useToken' : false,
         'autoSend' : true,
-        'showButton' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
+        'showButton' : undefined,                                   // deprecated, user button.enable
         'showLoader' : true,
         'loaderDelay' : 'cm._config.loadDelay',
         'setDelay' : 'cm._config.loadDelay',
         'stopOnESC' : true,
         'pageTag' : 'div',
         'pageAttributes' : {
-            'class' : 'com__scroll-pagination__page'
+            'class' : 'com__scroll-pagination__page',
+        },
+        'button' : {
+            'enable' : true,                                        // true - always | once - show once after first loaded page | none - don't show and don't scroll
+            'classes' : ['button', 'button-primary'],
         },
         'responseCountKey' : 'count',                               // Take items count from response
         'responseTokenKey' : 'token',                               // Token key name
@@ -125,6 +129,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if(that.nodes['scroll']){
             that.params['scrollNode'] = that.nodes['scroll'];
         }
+        // Button
+        if (!cm.isUndefined(that.params.showButton)) {
+            that.params.button.enable = that.params.showButton;
+        }
         // If URL parameter exists, use ajax data
         if(!cm.isEmpty(that.params['ajax']['url'])){
             that.isAjax = true;
@@ -168,7 +176,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
                 that.nodes['pages'] = cm.node('div', {'class' : 'com__scroll-pagination__pages'})
             ),
             that.nodes['bar'] = cm.node('div', {'class' : 'com__scroll-pagination__bar'},
-                that.nodes['button'] = cm.node('div', {'class' : 'button button-primary'}, that.lang('load_more')),
+                that.nodes['button'] = cm.node('button', {'class' : that.params.button.classes}, that.lang('load_more')),
                 that.nodes['loader'] = cm.node('div', {'class' : 'button button-clear has-icon has-icon has-icon-small'},
                     cm.node('div', {'class' : 'icon small loader'})
                 )
@@ -183,7 +191,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Reset styles and variables
         that.resetStyles();
         // Events
-        cm.addEvent(that.nodes['button'], 'click', function(e){
+        cm.click.add(that.nodes['button'], function(e){
             e = cm.getEvent(e);
             cm.preventDefault(e);
             that.set();
@@ -198,7 +206,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.resetStyles = function(){
         var that = this;
         // Load More Button
-        if(!that.params['showButton'] || that.params['showButton'] === 'none'){
+        if(!that.params.button.enable || that.params.button.enable === 'none'){
             that.callbacks.hideButton(that);
         }else{
             that.callbacks.showButton(that);
@@ -210,7 +218,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.keyDownEvent = function(e){
         var that = this;
         cm.handleKey(e, 'escape', function(){
-            if(!that.isDisabled && !that.isProcess && !that.isFinalize && that.params['showButton'] !== 'none'){
+            if(!that.isDisabled && !that.isProcess && !that.isFinalize && that.params.button.enable !== 'none'){
                 that.callbacks.showButton(that);
             }
         });
@@ -237,8 +245,8 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.checkForButton = function(){
         var that = this;
         return (
-            that.params['showButton'] === true ||
-            (that.params['showButton'] === 'once' && that.params['startPage'] === that.page)
+            that.params.button.enable === true ||
+            (that.params.button.enable === 'once' && that.params['startPage'] === that.page)
         );
     };
 

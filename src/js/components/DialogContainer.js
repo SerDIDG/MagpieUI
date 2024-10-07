@@ -152,8 +152,12 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         item['classes'].unshift('button');
 
         // Structure
-        item['node'] = cm.node('button', {'class' : item['classes']}, item['label']);
-        cm.click.add(item['node'], item['callback']);
+        if (!item['node']) {
+            item['node'] = cm.node('button', {'class' : item['classes']}, item['label']);
+        }
+        if (cm.isFunction(item['callback'])) {
+            cm.click.add(item['node'], item['callback']);
+        }
 
         // Append
         that.buttons[item['name']] = item;
