@@ -9,7 +9,7 @@ cm.define('Com.Notifications', {
         'renderStructure' : true,
         'embedStructureOnRender' : true,
         'embedStructure' : 'append',
-        'icon' : 'icon small remove linked',
+        'iconClasses' : ['icon', 'small', 'linked'],
         'closable' : true,
         'Com.ToggleBox' : {
             'toggleTitle' : false,
@@ -75,7 +75,9 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         
         // Close action
         if (item['closable']) {
-            item['nodes']['close'] = cm.node('div', {'classes' : that.params['icon'], 'title' : that.lang('close'), 'role' : 'button', 'tabindex' : 0});
+            item.iconClasses = cm.clone(that.params.iconClasses);
+            item.iconClasses.push(['svg__close', item['type']].join('-'));
+            item['nodes']['close'] = cm.node('div', {'classes' : item.iconClasses, 'title' : that.lang('close'), 'role' : 'button', 'tabindex' : 0});
             cm.insertFirst(item['nodes']['close'], item['nodes']['container']);
             cm.click.add(item['nodes']['close'], function(){
                 that.remove(item);
