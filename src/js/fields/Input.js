@@ -37,6 +37,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.selectionStartInitial = null;
         that.selectionEndInitial = null;
         that.isFocus = false;
+        that.wasFocus = false;
         that.lazyDelay = null;
         that.constraints = {};
         
@@ -186,6 +187,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.addEvent(that.nodes.content.input, 'keydown', that.inputKeyDownHanlder);
         cm.addEvent(that.nodes.content.input, 'keyup', that.inputKeyUpHanlder);
         cm.addEvent(that.nodes.content.input, 'keypress', that.inputKeyPressHanlder);
+        cm.addEvent(that.nodes.content.icon, 'mousedown', that.iconEventHanlder);
         cm.addEvent(that.nodes.content.icon, 'click', that.iconEventHanlder);
     };
 
@@ -256,12 +258,19 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.iconEvent = function(e) {
-        var that = this,
-            value = that.nodes.content.input.value;
+        var that = this;
         cm.preventDefault(e);
-        that.nodes.content.input.setSelectionRange(0, value.length);
-        that.focus();
-        that.triggerEvent('onIconClick');
+        if (e.type === 'mousedown') {
+            that.wasFocus = that.isFocus;
+        }
+        if (e.type === 'click') {
+            if (!that.wasFocus) {
+                var value = that.nodes.content.input.value;
+                that.nodes.content.input.setSelectionRange(0, value.length);
+                that.focus();
+            }
+            that.triggerEvent('onIconClick');
+        }
     };
 
     /*** CONSTRAINT ***/

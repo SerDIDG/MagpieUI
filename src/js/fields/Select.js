@@ -42,6 +42,7 @@ cm.define('Com.Select', {
         'selected' : 0,                         // Deprecated, use 'value' parameter instead.
         'max': 0,                               // Maximum selected options, 0 - for unlimited
         'setInitialValue' : true,
+        'setPlaceholderText' : true,            // Set text of the placeholder option as selected
         'value' : null,                         // Option value / array of option values.
         'defaultValue' : null,
         'disabled' : false,
@@ -56,8 +57,8 @@ cm.define('Com.Select', {
             'limitWidth': true,
             'constructor': 'Com.Tooltip',
             'constructorParams': {
-                'targetEvent' : 'click',
-                'hideOnReClick' : true,
+                'targetEvent' : 'none',
+                'hideOnOut' : true,
                 'className' : 'com__select__tooltip',
                 'width' : 'targetWidth',
                 'minWidth' : 'targetWidth',
@@ -81,6 +82,8 @@ function(params){
         active;
 
     that.disabled = false;
+    that.isOpen = false;
+    that.wasOpen = false;
     that.isDestructed = null;
 
     /* *** CLASS FUNCTIONS *** */
@@ -255,49 +258,12 @@ function(params){
 
     var setMiscEvents = function(){
         if(!that.params['multiple']){
-            // Switch items on arrows press
-            cm.addEvent(nodes['container'], 'keydown', function(e){
-                if(optionsLength){
-                    var item = options[active],
-                        index = optionsList.indexOf(item),
-                        option;
+            cm.addEvent(nodes['arrow'], 'mousedown', afterClick);
+            cm.addEvent(nodes['arrow'], 'click', afterClick);
+            cm.addEvent(nodes['text'], 'keydown', afterKeypress);
+            cm.addEvent(nodes['text'], 'focus', afterFocus);
+            cm.addEvent(nodes['text'], 'blur', afterBlur);
 
-                    switch(e.keyCode){
-                        case 38:
-                            cm.preventDefault(e);
-                            if(index - 1 >= 0){
-                                option = optionsList[index - 1];
-                            }else{
-                                option = optionsList[optionsLength - 1];
-                            }
-                            break;
-
-                        case 40:
-                            cm.preventDefault(e);
-                            if(index + 1 < optionsLength){
-                                option = optionsList[index + 1];
-                            }else{
-                                option = optionsList[0];
-                            }
-                            break;
-
-                        case 13:
-                            components['menu'].hide();
-                            break;
-                    }
-
-                    if(option){
-                        set(option, true);
-                        scrollToItem(option);
-                    }
-                }
-            });
-            cm.addEvent(nodes['container'], 'focus', function(){
-                cm.addEvent(window, 'keydown', blockDocumentArrows);
-            });
-            cm.addEvent(nodes['container'], 'blur', function(){
-                cm.removeEvent(window, 'keydown', blockDocumentArrows);
-            });
             // Render tooltip
             cm.getConstructor(that.params.tooltip.constructor, function(classConstructor){
                 components['menu'] = new classConstructor(
@@ -307,12 +273,11 @@ function(params){
                         'target' : nodes['target'],
                         'disabled' : !optionsLength,
                         'events' : {
-                            'onShowStart' : show,
-                            'onHideStart' : hide
+                            'onShowStart' : afterShow.bind(that),
+                            'onHideStart' : afterHide.bind(that),
                         }
                     })
                 );
-                nodes['menu'] = components['menu'].getNodes();
             });
         }
         // Enable / Disable
@@ -337,7 +302,91 @@ function(params){
         }
     };
 
-    /* *** COLLECTORS *** */
+    /******* EVENTS *******/
+
+    var afterClick = function(e) {
+        if (e.type === 'mousedown') {
+            that.wasOpen = that.isOpen;
+        }
+        if (e.type === 'click' && !that.wasOpen) {
+            that.focus();
+        }
+    };
+
+    var afterFocus = function() {
+        if(optionsLength){
+            cm.addClass(nodes['container'], 'active');
+            that.toggleMenu(true);
+            // Scroll to active element
+            if(active && options[active]){
+                scrollToItem(options[active]);
+            }
+        }
+        that.triggerEvent('onFocus', active);
+    };
+
+    var afterBlur = function() {
+        cm.removeClass(nodes['container'], 'active');
+        that.toggleMenu(false);
+        that.triggerEvent('onBlur', active);
+    };
+
+    var afterShow = function() {
+        that.isOpen = true;
+        cm.addEvent(document, 'keydown', blockDocumentArrows);
+        cm.addEvent(document, 'mousedown', afterBodyClick);
+    };
+
+    var afterHide = function() {
+        that.isOpen = false;
+        cm.removeEvent(document, 'keydown', blockDocumentArrows);
+        cm.removeEvent(document, 'mousedown', afterBodyClick);
+    };
+
+    var afterKeypress = function(e) {
+        if(optionsLength){
+            var item = options[active],
+                index = optionsList.indexOf(item),
+                option;
+            switch(e.keyCode){
+                case 38:
+                    cm.preventDefault(e);
+                    if(index - 1 >= 0){
+                        option = optionsList[index - 1];
+                    }else{
+                        option = optionsList[optionsLength - 1];
+                    }
+                    break;
+
+                case 40:
+                    cm.preventDefault(e);
+                    if(index + 1 < optionsLength){
+                        option = optionsList[index + 1];
+                    }else{
+                        option = optionsList[0];
+                    }
+                    break;
+
+                case 13:
+                    that.toggleMenu(false);
+                    break;
+            }
+
+            if(option){
+                set(option, true);
+                scrollToItem(option);
+            }
+        }
+    };
+
+    var afterBodyClick = function(e) {
+        var target = cm.getEventTarget(e);
+        if (!that.isOwnNode(target)) {
+            that.toggleMenu(false);
+        }
+    };
+
+    /******* COLLECTORS *******/
 
     var collectSelectGroupOption = function(node){
         return {
@@ -500,7 +549,7 @@ function(params){
                 set(item, true);
             }
             if(!that.params['multiple']){
-                components['menu'].hide(false);
+                that.toggleMenu(false);
             }
         });
 
@@ -600,10 +649,14 @@ function(params){
         optionsList.forEach(function(item){
             cm.removeClass(item['node'], 'active');
         });
-        if(option['group']){
-            nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' > ');
+        if(!option['placeholder'] || that.params['setPlaceholderText']) {
+            if(option['group']){
+                nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' > ');
+            }else{
+                nodes['text'].value = cm.decode(option['text']);
+            }
         }else{
-            nodes['text'].value = cm.decode(option['text']);
+            nodes['text'].value = '';
         }
         nodes['hidden'].value = active;
         setOption(option);
@@ -635,29 +688,8 @@ function(params){
 
     /* *** DROPDOWN *** */
 
-    var show = function(){
-        if(!optionsLength){
-            components['menu'].hide();
-        }else{
-            // Set classes
-            cm.addClass(nodes['container'], 'active');
-            nodes['text'].focus();
-            // Scroll to active element
-            if(active && options[active]){
-                scrollToItem(options[active]);
-            }
-        }
-        that.triggerEvent('onFocus', active);
-    };
-
-    var hide = function(){
-        nodes['text'].blur();
-        cm.removeClass(nodes['container'], 'active');
-        that.triggerEvent('onBlur', active);
-    };
-
     var scrollToItem = function(option){
-        nodes['menu']['content'].scrollTop = option['node'].offsetTop - nodes['menu']['content'].offsetTop;
+        components['menu'].scrollToNode(option['node']);
     };
 
     var toggleMenuState = function(){
@@ -884,6 +916,20 @@ function(params){
         cm.removeClass(option['node'], 'disabled');
     };
 
+    that.focus = function(){
+        if(!that.params['multiple']){
+            nodes['text'].focus();
+        }
+        return that;
+    };
+
+    that.blur = function(){
+        if(!that.params['multiple']){
+            nodes['text'].blur();
+        }
+        return that;
+    };
+
     that.disable = function(){
         that.disabled = true;
         cm.addClass(nodes['container'], 'disabled');
@@ -933,6 +979,10 @@ function(params){
 
     that.getContainer = function(){
         return nodes.container;
+    };
+
+    that.isOwnNode = function(node) {
+        return cm.isParent(nodes.container, node, true) || components['menu'].isOwnNode(node);
     };
 
     init();

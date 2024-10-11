@@ -72,15 +72,17 @@ cm.define('Com.Autocomplete', {
                 top: cm._config.tooltipDown
             },
         },
-
-        showSuggestion: false,                                   // Show suggestion option when search query was empty
-        suggestionConstructor: 'Com.AbstractContainer',
-        suggestionParams: {},
-        suggestionQueryName: 'text',
+        
+        suggestion: {
+            enable: false,                                       // Show suggestion option when search query was empty
+            queryKey: 'text',
+            constructor: 'Com.AbstractContainer',
+            constructorParams: {},
+        },
     },
     strings: {
-        loader: 'Searching for <b>"%query%"</b>…',
-        suggestion: '<b>"%query%"</b> not found. Add?'
+        loader: 'Searching for <b>%query%</b>…',
+        suggestion: '<b>%query%</b> not found. Add?'
     },
 },
 function() {
@@ -101,6 +103,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
         that.registeredItems = [];
         that.suggestionItem = null;
+        that.suggestionItemFocus = false;
         that.selectedItemIndex = null;
         that.value = null;
         that.previousValue = null;
@@ -188,14 +191,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                     container: that.params.container,
                     target: that.params.target,
                     events: {
-                        onShowStart: function() {
-                            that.isOpen = true;
-                            cm.addEvent(document, 'mousedown', that.afterBodyClickHandler);
-                        },
-                        onHideStart: function() {
-                            that.isOpen = false;
-                            cm.removeEvent(document, 'mousedown', that.afterBodyClickHandler);
-                        }
+                        onShowStart: that.afterShow.bind(that),
+                        onHideStart: that.afterHide.bind(that),
                     }
                 })
             );
@@ -241,6 +238,18 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         that.triggerEvent('onBlur', that.value);
     };
 
+    classProto.afterShow = function() {
+        var that = this;
+        that.isOpen = true;
+        cm.addEvent(document, 'mousedown', that.afterBodyClickHandler);
+    };
+
+    classProto.afterHide = function() {
+        var that = this;
+        that.isOpen = false;
+        cm.removeEvent(document, 'mousedown', that.afterBodyClickHandler);
+    };
+
     classProto.afterClick = function() {
         var that = this;
         if (that.params.showListOnEmpty) {
@@ -255,12 +264,18 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         switch (e.keyCode) {
             // Enter
             case 13:
-                that.clearAction();
-                that.hide();
+                cm.preventDefault(e);
+                if (that.suggestionItemFocus) {
+                    that.callbacks.listSuggestionItemEvent(that,  that.suggestionItem);
+                } else {
+                    that.clearAction();
+                    that.hide();
+                }
                 break;
 
             // Arrow Up
             case 38:
+                cm.preventDefault(e);
                 if (listLength) {
                     if (that.selectedItemIndex === null) {
                         listIndex = listLength - 1;
@@ -270,11 +285,14 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                         listIndex = listLength - 1;
                     }
                     that.setListAction(listIndex);
+                } else if (that.params.suggestion.enable) {
+                    that.callbacks.suggestionItemSelect(that,  that.suggestionItem);
                 }
                 break;
 
             // Arrow Down
             case 40:
+                cm.preventDefault(e);
                 if (listLength) {
                     if (that.selectedItemIndex === null) {
                         listIndex = 0;
@@ -284,6 +302,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                         listIndex = 0;
                     }
                     that.setListAction(listIndex);
+                } else if (that.params.suggestion.enable) {
+                    that.callbacks.suggestionItemSelect(that,  that.suggestionItem);
                 }
                 break;
         }
@@ -388,6 +408,10 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.setListAction = function(index) {
         var that = this;
+
+        if (that.params.suggestion.enable) {
+            that.callbacks.suggestionItemUnselect(that,  that.suggestionItem);
+        }
 
         var previousItem = that.registeredItems[that.selectedItemIndex];
         if (previousItem) {
@@ -623,13 +647,16 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.renderListSuggestionItem = function(that, params, item, container) {
+        // Params
+        item.params = params;
+
         // Structure
-        item.nodes = that.callbacks.renderListSuggestionItemStructure(that, params, item);
+        item.nodes = that.callbacks.renderListSuggestionItemStructure(that, item);
         that.params.listItemNowrap && cm.addClass(item.nodes.container, 'is-nowrap');
 
         // Callbacks
-        if (that.params.suggestionConstructor) {
-            that.callbacks.renderListSuggestionItemConstructor(that, params, item);
+        if (that.params.suggestion.constructor) {
+            that.callbacks.renderListSuggestionItemConstructor(that, item);
         }
 
         // Append
@@ -637,44 +664,33 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
         // Export
         that.suggestionItem = item;
+        that.suggestionItemFocus = false;
         return item;
     };
 
-    classProto.callbacks.renderListSuggestionItemConstructor = function(that, params, item) {
+    classProto.callbacks.renderListSuggestionItemConstructor = function(that, item) {
         // If controller was not cached, render new one
         var isCachedController = that.suggestionItem && that.suggestionItem.controller && !that.suggestionItem.controller.isDestructed;
         if (!isCachedController) {
-            that.callbacks.renderListSuggestionItemController(that, params, item);
+            that.callbacks.renderListSuggestionItemController(that, item);
         } else {
-            that.callbacks.renderListSuggestionItemControllerCached(that, params, item);
+            that.callbacks.renderListSuggestionItemControllerCached(that, item);
         }
 
         // Set query data on link click and hide tooltip
         cm.click.add(item.nodes.container, function() {
-            that.callbacks.renderListSuggestionItemEvent(that, params, item);
+            that.callbacks.listSuggestionItemEvent(that, item);
         });
     };
 
-    classProto.callbacks.renderListSuggestionItemEvent = function(that, params, item) {
-        var data = {};
-        data[that.params.suggestionQueryName] = params.query;
-
-        // Set Query Data
-        item.controller.set(data);
-
-        // Hide tooltip on item click
-        that.hide();
-        that.clear();
-    };
-
-    classProto.callbacks.renderListSuggestionItemStructure = function(that, params, item) {
+    classProto.callbacks.renderListSuggestionItemStructure = function(that, item) {
         // Structure
         var nodes = {};
         nodes.container = cm.node('li', {classes: that.params.classes.listItem},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content'},
                     cm.node('span', {classes: 'icon small add'}),
-                    cm.node('span', {innerHTML: that.lang('suggestion', {'%query%': params.query})})
+                    cm.node('span', {innerHTML: that.lang('suggestion', {'%query%': item.params.query})})
                 )
             )
         );
@@ -683,12 +699,11 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         return nodes;
     };
 
-    classProto.callbacks.renderListSuggestionItemController = function(that, params, item) {
+    classProto.callbacks.renderListSuggestionItemController = function(that, item) {
         // Render controller
-        cm.getConstructor(that.params.suggestionConstructor, function(classConstructor) {
+        cm.getConstructor(that.params.suggestion.constructor, function(classConstructor) {
             item.controller = new classConstructor(
-                cm.merge(item.suggestionParams, {
-                    node: item.nodes.container,
+                cm.merge(that.params.suggestion.constructorParams, {
                     events: {
                         onSuccess: function(controller, data) {
                             that.set(data, true);
@@ -699,9 +714,37 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         });
     };
 
-    classProto.callbacks.renderListSuggestionItemControllerCached = function(that, params, item) {
+    classProto.callbacks.renderListSuggestionItemControllerCached = function(that, item) {
         item.controller = that.suggestionItem.controller;
-        item.controller.setTarget(item.nodes.container);
+    };
+
+    classProto.callbacks.listSuggestionItemEvent = function(that, item) {
+        var data = {};
+        data[that.params.suggestion.queryKey] = item.params.query;
+
+        // Set Query Data
+        item.controller.set(data);
+        item.controller.open();
+
+        // Hide tooltip on item click
+        that.hide();
+        that.clear();
+    };
+
+    classProto.callbacks.suggestionItemSelect = function(that, item) {
+        if (!item) {
+            return;
+        }
+        that.suggestionItemFocus = true;
+        cm.addClass(item.nodes.container, 'active');
+    };
+
+    classProto.callbacks.suggestionItemUnselect = function(that, item) {
+        if (!item) {
+            return;
+        }
+        that.suggestionItemFocus = false;
+        cm.removeClass(item.nodes.container, 'active');
     };
 
     /*** HELPERS ***/
@@ -729,10 +772,10 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.render = function(that, params) {
-        if (params.data.length) {
+        if (!cm.isEmpty(params.data)) {
             that.callbacks.renderList(that, params);
             that.show();
-        } else if (that.params.showSuggestion) {
+        } else if (that.params.suggestion.enable) {
             that.callbacks.renderListSuggestion(that, params);
             that.show();
         } else {

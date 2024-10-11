@@ -114,6 +114,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.isProcess = false;
         that.isPreloaded = false;
         that.isFocus = false;
+        that.wasFocus = false;
         that.nodeTagName = null;
         // Bind context
         that.focusHandler = that.focus.bind(that);
@@ -124,6 +125,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         that.selectEventHandler = that.selectEvent.bind(that);
         that.changeEventHandler = that.changeEvent.bind(that);
         that.resetEventHandler = that.resetEvent.bind(that);
+        that.iconEventHandler = that.iconEvent.bind(that);
     };
 
     classProto.onAfterRender = function(){
@@ -315,7 +317,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }else{
                 nodes.icon = cm.node('div', {'class' : that.params.icon});
             }
-            cm.click.add(nodes.icon, that.focusHandler);
+            cm.addEvent(nodes.icon, 'mousedown', that.iconEventHandler);
+            cm.addEvent(nodes.icon, 'click', that.iconEventHandler);
             nodes.field = cm.node('div', {'class' : 'pt__input'}, nodes.input, nodes.icon);
             cm.addClass(nodes.field, that.params.inputClasses)
             cm.appendChild(nodes.field, nodes.container);
@@ -527,6 +530,16 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         var that = this;
         that.togglePlaceholder();
         that.triggerEvent('onReset', data);
+    };
+
+    classProto.iconEvent = function(e){
+        var that = this;
+        if (e.type === 'mousedown') {
+            that.wasFocus = that.isFocus;
+        }
+        if (e.type === 'click' && !that.wasFocus) {
+            that.focus();
+        }
     };
 
     /******* DATA *******/
