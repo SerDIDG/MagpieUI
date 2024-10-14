@@ -4,7 +4,6 @@ cm.define('Com.DialogContainer', {
         'onScroll',
     ],
     'params' : {
-        'constructor' : 'Com.Dialog',
         'container' : 'document.body',
         'destructOnClose' : false,
         'renderTitle' : true,
@@ -13,7 +12,8 @@ cm.define('Com.DialogContainer', {
         'renderButtonsPositions' : false,
         'buttonsAdaptive': true,
         'justifyButtons' : 'right',
-        'params' : {
+        'constructor' : 'Com.Dialog',
+        'constructorParams' : {
             'destructOnRemove' : false,
             'autoOpen' : false
         }
@@ -39,25 +39,25 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         var that = this;
         // Set Content
         if(cm.isObject(that.params['content'])){
-            that.params['params']['title'] = that.params['content']['title'] || that.params['params']['title'];
-            that.params['params']['content'] = that.params['content']['content'] || that.params['params']['content'];
-            that.params['params']['buttons'] = that.params['content']['buttons'] || that.params['params']['buttons'];
-            that.params['params']['help'] = that.params['content']['help'] || that.params['params']['help'];
+            that.params['constructorParams']['title'] = that.params['content']['title'] || that.params['constructorParams']['title'];
+            that.params['constructorParams']['content'] = that.params['content']['content'] || that.params['constructorParams']['content'];
+            that.params['constructorParams']['buttons'] = that.params['content']['buttons'] || that.params['constructorParams']['buttons'];
+            that.params['constructorParams']['help'] = that.params['content']['help'] || that.params['constructorParams']['help'];
         }
-        that.params['params']['showTitle'] = that.params['renderTitle'];
-        that.params['params']['showHelp'] = that.params['renderHelp'];
+        that.params['constructorParams']['showTitle'] = that.params['renderTitle'];
+        that.params['constructorParams']['showHelp'] = that.params['renderHelp'];
     };
 
     classProto.constructController = function(classObject){
         var that = this;
         return new classObject(
-            cm.merge(that.params['params'], {
+            cm.merge(that.params['constructorParams'], {
                 'opener' : that,
                 'container' : that.params['container'],
-                'title' : that.nodes['title'] || that.params['params']['title'] || that.params['title'],
-                'content' : that.nodes['content'] || that.params['params']['content'] || that.params['content'],
-                'buttons' : that.nodes['buttons'] || that.params['params']['buttons'] || that.params['buttons'],
-                'help' : that.nodes['help'] || that.params['params']['help'] || that.params['help']
+                'title' : that.nodes['title'] || that.params['constructorParams']['title'] || that.params['title'],
+                'content' : that.nodes['content'] || that.params['constructorParams']['content'] || that.params['content'],
+                'buttons' : that.nodes['buttons'] || that.params['constructorParams']['buttons'] || that.params['buttons'],
+                'help' : that.nodes['help'] || that.params['constructorParams']['help'] || that.params['help']
             })
         );
     };
@@ -81,7 +81,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
 
     classProto.setTitle = function(title){
         var that = this;
-        that.params['params']['title'] = title;
+        that.params['constructorParams']['title'] = title;
         that.components['controller'] && cm.isFunction(that.components['controller'].setTitle) && that.components['controller'].setTitle(title);
         return that;
     };
@@ -91,7 +91,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         var params = ['width', 'height', 'minHeight', 'maxHeight'];
         cm.forEach(params, function(key) {
             if (!cm.isEmpty(data[key])) {
-                that.params['params'][key] = data[key];
+                that.params['constructorParams'][key] = data[key];
             }
         });
         that.components['controller'] && cm.isFunction(that.components['controller'].setSize) && that.components['controller'].setSize(data);

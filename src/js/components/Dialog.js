@@ -76,6 +76,7 @@ cm.define('Com.Dialog', {
         },
     },
     'strings' : {
+        'label': 'Dialog',
         'closeTitle' : 'Close',
         'close' : '',
         'helpTitle' : 'Help',
@@ -246,6 +247,11 @@ function(params){
             }
             cm.insertFirst(nodes['title'], nodes['windowInner']);
         }else{
+            var label = cm.isNode(title) ? title.textContent : title;
+            if(cm.isEmpty(title)){
+                label = that.msg('label');
+            }
+            nodes['window'].setAttribute('aria-label', label);
             cm.addClass(nodes['container'], 'has-no-title');
             cm.addClass(nodes['window'], 'has-no-title');
         }
@@ -254,7 +260,7 @@ function(params){
     var renderContent = function(node){
         if(!nodes['descr']){
             nodes['descr'] = cm.node('div', {'class' : 'descr'},
-                nodes['scroll'] = cm.node('div', {'class' : 'scroll'},
+                nodes['scroll'] = cm.node('div', {'class' : 'scroll com__dialog__scroll'},
                     nodes['inner'] = cm.node('div', {'class' : 'inner com__dialog__inner'})
                 )
             );
@@ -319,8 +325,8 @@ function(params){
 
     var stateHelper = function(){
         if(
-            /full|fullscreen/.test(that.params['size'])
-            || cm.getPageSize('winWidth') <= cm._config.screenTabletPortrait
+            /full|fullscreen/.test(that.params['size']) ||
+            cm.getPageSize('winWidth') <= cm._config.screenTabletPortrait
         ){
             that.maximize();
         }else{
