@@ -252,7 +252,7 @@ function(params){
             if(cm.isEmpty(title)){
                 label = that.msg('label');
             }
-            nodes['window'].setAttribute('aria-label', label);
+            nodes['container'].setAttribute('aria-label', label);
             cm.addClass(nodes['container'], 'has-no-title');
             cm.addClass(nodes['window'], 'has-no-title');
         }
