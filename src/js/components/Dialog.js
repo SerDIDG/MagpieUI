@@ -43,6 +43,7 @@ cm.define('Com.Dialog', {
         'closeButtonOutside' : false,
         'closeButton' : true,
         'closeOnBackground' : true,
+        'closeOnDocument': false,
         'closeOnEsc' : true,
         'buttons' : false,
         'openTime' : null,
@@ -451,7 +452,8 @@ function(params){
                 cm.bodyScroll.add(nodes['container']);
             }
             // Add close event on Esc press
-            cm.addEvent(window, 'keydown', windowClickEvent);
+            cm.addEvent(window, 'click', windowClickEvent);
+            cm.addEvent(window, 'keydown', windowKeyEvent);
             cm.addEvent(window, 'resize', windowResizeEvent);
             // Animate
             cm.addClass(nodes['container'], 'is-open', true);
@@ -480,7 +482,8 @@ function(params){
             that.isOpen = false;
             that.isFocus = false;
             // Remove close event on Esc press
-            cm.removeEvent(window, 'keydown', windowClickEvent);
+            cm.removeEvent(window, 'click', windowClickEvent);
+            cm.removeEvent(window, 'keydown', windowKeyEvent);
             cm.removeEvent(window, 'resize', windowResizeEvent);
             // Stop height animation
             if(that.params['animateHeight']){
@@ -525,13 +528,22 @@ function(params){
         stateHelper();
     };
 
-    var windowClickEvent = function(e){
+    var windowKeyEvent = function(e){
         // Close dialog when ESC key pressed
         cm.handleKey(e, 'escape', function(){
             if(that.params['closeOnEsc'] && that.isFocus){
                 close();
             }
         });
+    };
+
+    var windowClickEvent = function(e) {
+        if(that.params['closeOnDocument']){
+            var target = cm.getEventTarget(e);
+            if(!cm.isParent(nodes['container'], target, true)){
+                close();
+            }
+        }
     };
 
     var clearResizeInterval = function(){
