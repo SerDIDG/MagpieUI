@@ -344,20 +344,22 @@ cm.merge = function(o1, o2){
     return o;
 };
 
-cm.extend = function(o1, o2, deep){
+cm.extend = function(o1, o2, deep, clone){
     if(!o1){
         return o2;
     }
     if(!o2){
         return o1;
     }
+    deep = cm.isUndefined(deep) ? false : deep;
+    clone = cm.isUndefined(clone) ? true : clone;
     var o;
     if(cm.isArray(o1)){
         o = o1.concat(o2);
         return o;
     }
     if(cm.isObject(o1)){
-        o = cm.clone(o1);
+        o = clone ? cm.clone(o1) : o1;
         cm.forEach(o2, function(item, key){
             if(deep){
                 o[key] = cm.extend(o[key], item);

@@ -219,6 +219,7 @@ function(params){
             'container' : that.nodes.fields,
             'render' : true,
             'renderName' : null,
+            'renderEvents' : true,
             'renderErrorMessage' : that.params.showValidationMessages
         }, params);
         params = cm.merge(cm.clone(field, true), params);
@@ -245,15 +246,17 @@ function(params){
             params.inputController = params.constructorController = cm.isFunction(params.fieldController.getController) && params.fieldController.getController();
 
             // Events
-            params.fieldController.addEvent('onBlur', function(field){
-                fieldBlurEvent(field, params);
-            });
-            params.fieldController.addEvent('onChange', function(field){
-                fieldChangeEvent(field, params);
-            });
-            params.fieldController.addEvent('onInput', function(field){
-                fieldInputEvent(field, params);
-            });
+            if (params.renderEvents) {
+                params.fieldController.addEvent('onBlur', function(field){
+                    fieldBlurEvent(field, params);
+                });
+                params.fieldController.addEvent('onChange', function(field){
+                    fieldChangeEvent(field, params);
+                });
+                params.fieldController.addEvent('onInput', function(field){
+                    fieldInputEvent(field, params);
+                });
+            }
 
             // Save processed origin data to compare before send
             // Use clone to prevent linking
@@ -503,7 +506,8 @@ function(params){
         ){
             if(type === 'sendPath' && !cm.isEmpty(field.sendPath)){
                 var path = cm.objectFormPath(field.sendPath, value, '');
-                o = cm.merge(o, path);
+                // Use extend instead of merge, because merge will make deep copy of objects without custom properties
+                o = cm.extend(o, path, true, false);
             }else{
                 o[name] = value;
             }
