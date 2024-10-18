@@ -2667,6 +2667,17 @@ cm.replaceClass = function(node, oldClass, newClass, useHack){
     return cm.addClass(cm.removeClass(node, oldClass, useHack), newClass, useHack);
 };
 
+cm.clearClass = function(node){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    var classes = node.classList;
+    while (classes.length > 0) {
+        classes.remove(classes.item(0));
+    }
+    return node;
+};
+
 cm.hasClass = cm.isClass = function(node, cssClass){
     var classes;
     if(!cm.isNode(node)){
