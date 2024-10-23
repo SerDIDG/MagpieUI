@@ -538,7 +538,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             that.wasFocus = that.isFocus;
         }
         if (e.type === 'click' && !that.wasFocus) {
-            that.focus();
+            that.focus(true);
         }
     };
 
@@ -842,9 +842,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
-    classProto.focus = function(){
+    classProto.focus = function(selection){
         var that = this;
-        that.components.controller && cm.isFunction(that.components.controller.focus) && that.components.controller.focus();
+        that.components.controller && cm.isFunction(that.components.controller.focus) && that.components.controller.focus(selection);
         return that;
     };
 

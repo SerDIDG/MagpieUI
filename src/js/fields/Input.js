@@ -206,7 +206,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             if (that.params.type !== 'textarea') {
                 cm.preventDefault(e);
                 that.setValue();
-                that.nodes.content.input.blur();
+                that.blur();
                 that.triggerEvent('onEnterPress', that.value);
             }
 
@@ -217,7 +217,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             ) {
                 cm.preventDefault(e);
                 that.setValue();
-                that.nodes.content.input.blur();
+                that.blur();
                 that.triggerEvent('onEnterPress', that.value);
             }
         }
@@ -265,9 +265,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         }
         if (e.type === 'click') {
             if (!that.wasFocus) {
-                var value = that.nodes.content.input.value;
-                that.nodes.content.input.setSelectionRange(0, value.length);
-                that.focus();
+                that.focus(true);
             }
             that.triggerEvent('onIconClick');
         }
@@ -366,8 +364,12 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     /******* PUBLIC *******/
 
-    classProto.focus = function() {
+    classProto.focus = function(selection) {
         var that = this;
+        if (selection === true) {
+            var value = that.nodes.content.input.value;
+            that.nodes.content.input.setSelectionRange(0, value.length);
+        }
         that.nodes.content.input.focus();
         return that;
     };

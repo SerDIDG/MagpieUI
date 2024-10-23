@@ -13,6 +13,7 @@ cm.define('Com.Autocomplete', {
         'onEnable',
         'onDisable',
         'onClickSelect',
+        'onEnterPress',
         'onAbort',
         'onError',
         'onRenderListStart',
@@ -100,6 +101,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         that.isAjax = false;
         that.ajaxParams = {};
         that.requestDelay = null;
+        that.clickTarget = null;
 
         that.registeredItems = [];
         that.suggestionItem = null;
@@ -231,10 +233,11 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.afterBlur = function() {
         var that = this;
-        if (!that.isOpen) {
+        if (!that.isOwnNode(that.clickTarget)) {
             that.clearAction();
+            that.hide();
         }
-        that.hide();
+        that.clickTarget = null;
         that.triggerEvent('onBlur', that.value);
     };
 
@@ -271,6 +274,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                     that.clearAction();
                     that.hide();
                 }
+                that.triggerEvent('onEnterPress');
                 break;
 
             // Arrow Up
@@ -318,8 +322,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.afterBodyClick = function(e) {
         var that = this;
-        var target = cm.getEventTarget(e);
-        if (!that.isOwnNode(target)) {
+        that.clickTarget = cm.getEventTarget(e);
+        if (!that.isOwnNode(that.clickTarget)) {
             that.clearAction();
             that.hide();
         }
@@ -972,9 +976,19 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         return that;
     };
 
-    classProto.focus = function() {
+    classProto.focus = function(selection) {
         var that = this;
+        if (selection === true) {
+            var value = that.params.node.value;
+            that.params.node.setSelectionRange(0, value.length);
+        }
         that.params.node.focus();
+        return that;
+    };
+
+    classProto.blur = function() {
+        var that = this;
+        that.params.node.blur();
         return that;
     };
 

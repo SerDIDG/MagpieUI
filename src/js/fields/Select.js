@@ -23,7 +23,8 @@ cm.define('Com.Select', {
         'onChange',
         'onReset',
         'onFocus',
-        'onBlur'
+        'onBlur',
+        'onIconClick',
     ],
     'params' : {
         'select' : null,                        // Deprecated, use 'node' parameter instead.
@@ -83,7 +84,9 @@ function(params){
 
     that.disabled = false;
     that.isOpen = false;
-    that.wasOpen = false;
+    that.isFocus = false;
+    that.wasFocus = false;
+    that.clickTarget = null;
     that.isDestructed = null;
 
     /* *** CLASS FUNCTIONS *** */
@@ -306,10 +309,15 @@ function(params){
 
     var afterClick = function(e) {
         if (e.type === 'mousedown') {
-            that.wasOpen = that.isOpen;
+            that.wasFocus = that.isFocus;
         }
-        if (e.type === 'click' && !that.wasOpen) {
-            that.focus();
+        if (e.type === 'click') {
+            if (that.wasFocus) {
+               that.toggleMenu(false);
+            } else {
+                that.focus();
+            }
+            that.triggerEvent('onIconClick');
         }
     };
 
@@ -322,12 +330,17 @@ function(params){
                 scrollToItem(options[active]);
             }
         }
+        that.isFocus = true;
         that.triggerEvent('onFocus', active);
     };
 
     var afterBlur = function() {
+        if (!that.isOwnNode(that.clickTarget)) {
+            that.toggleMenu(false);
+        }
+        that.isFocus = false;
+        that.clickTarget = null;
         cm.removeClass(nodes['container'], 'active');
-        that.toggleMenu(false);
         that.triggerEvent('onBlur', active);
     };
 
@@ -380,8 +393,8 @@ function(params){
     };
 
     var afterBodyClick = function(e) {
-        var target = cm.getEventTarget(e);
-        if (!that.isOwnNode(target)) {
+        that.clickTarget = cm.getEventTarget(e);
+        if (!that.isOwnNode(that.clickTarget)) {
             that.toggleMenu(false);
         }
     };
