@@ -30,6 +30,7 @@ cm.define('Com.AbstractFormField', {
         'form' : false,
         'outputValueType' : 'auto',      // 'auto' | 'raw' | 'text' | 'option'
         'inputValueType' : 'auto',       // 'auto' | 'unset'
+        'validateValueType' : 'auto',
         'value' : null,
         'values': null,
         'defaultValue' : null,
@@ -152,6 +153,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.onValidateParams = function(){
         var that = this;
         that.validateParamsValue();
+
         // Validate
         that.nodeTagName = that.params.node.tagName.toLowerCase();
         that.fieldName = that.params.formName + '[' + that.params.name + ']';
@@ -163,41 +165,21 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         ){
             that.params.placeholder = [that.params.placeholder, that.msg('asterisk.char')].join(' ');
         }
+        if(that.params.validateValueType === 'auto'){
+            that.params.validateValueType = that.params.outputValueType;
+        }
+
         // Validate options
         if(!cm.isEmpty(that.params.options)){
             that.params.options = that.callbacks.convert(that, that.params.options);
         }
-        // Constructor params
-        that.params.constructorParams.id = that.params.id;
-        that.params.constructorParams.name = that.params.name;
-        that.params.constructorParams.fieldName = that.fieldName;
-        that.params.constructorParams.visibleName = that.params.visibleName;
-        that.params.constructorParams.renderName = that.params.renderName;
-        that.params.constructorParams.options = !cm.isEmpty(that.params.options) ? that.params.options : that.params.constructorParams.options;
-        that.params.constructorParams.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
-        that.params.constructorParams.defaultValue = that.params.defaultValue;
-        that.params.constructorParams.values = that.params.values;
-        that.params.constructorParams.required = that.params.required;
-        that.params.constructorParams.renderRequiredMessage = that.params.renderRequiredMessage;
-        that.params.constructorParams.validate = that.params.validate;
-        that.params.constructorParams.disabled = that.params.disabled;
-        that.params.constructorParams.checked = that.params.checked;
-        that.params.constructorParams.minLength = that.params.minLength;
-        that.params.constructorParams.maxLength = that.params.maxLength;
-        that.params.constructorParams.min = that.params.min;
-        that.params.constructorParams.max = that.params.max;
-        that.params.constructorParams.multiple = that.params.multiple;
-        that.params.constructorParams.placeholder = !that.params.showPlaceholderAbove ? that.params.placeholder : '';
-        that.params.constructorParams.autocomplete = that.params.autocomplete;
-        that.params.constructorParams.title = that.params.title;
-        that.params.constructorParams.ajax = that.params.ajax;
+
+        // Validate input constructor params
+        that.params.constructorParams = cm.merge(that.validateConstructorParams(), that.params.constructorParams);
+
         // Components
-        that.params.helpParams.title = that.params.label;
-        that.params.helpParams.content = that.params.help;
-        that.params.helpParams.name = that.params.name;
-        that.params.helpParams.type = that.params.helpType;
-        that.params.helpParams.align = that.params.helpAlign;
         that.components.form = that.params.form;
+
         // Ajax
         if(that.params.preload && !cm.isEmpty(that.params.ajax) && !cm.isEmpty(that.params.ajax.url)){
             that.isAjax = true;
@@ -226,6 +208,52 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
         }
         return value;
+    };
+
+    classProto.validateConstructorParams = function() {
+        var that = this;
+        var params = {};
+        var options = [
+            'id',
+            'title',
+            'name',
+            'visibleName',
+            'renderName',
+            'defaultValue',
+            'values',
+            'options',
+            'required',
+            'renderRequiredMessage',
+            'validate',
+            'disabled',
+            'checked',
+            'minLength',
+            'maxLength',
+            'min',
+            'max',
+            'multiple',
+            'autocomplete',
+            'ajax'
+        ];
+        cm.forEach(options, function(item){
+            if(typeof that.params[item] !== 'undefined'){
+                params[item] = that.params[item];
+            }
+        });
+
+        params.fieldName = that.fieldName;
+        params.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
+        params.placeholder = !that.params.showPlaceholderAbove ? that.params.placeholder : '';
+
+        // Help params
+        params.helpParams = {
+            title: that.params.label,
+            content: that.params.help,
+            name: that.params.name,
+            type: that.params.helpType,
+            align: that.params.helpAlign,
+        };
+        return params;
     };
 
     /******* VIEW - MODEL *******/
@@ -602,7 +630,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             form: that.components.form,
             valid: true,
             message: null,
-            value: that.get(),
+            value: that.get(that.params.validateValueType),
             required: false,
             silent: false,
             triggerEvents: true,

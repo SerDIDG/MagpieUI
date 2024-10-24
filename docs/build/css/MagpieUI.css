@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.82.2 (2024-10-23 10:34) ************ */
+/*! ************ MagpieUI v3.82.3 (2024-10-24 13:03) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4387,8 +4387,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.82.2');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.82.2') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.82.2') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.82.2') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.82.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.82.3');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.82.3') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.82.3') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.82.3') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.82.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -16241,8 +16241,7 @@ ul.pt__field__hint li:before {
 .pt__menu {
   touch-action: none;
 }
-.pt__menu:hover > .pt__menu-dropdown,
-.pt__menu:active > .pt__menu-dropdown {
+.pt__menu:is(:hover, :active, :focus-within) > .pt__menu-dropdown {
   visibility: visible;
   opacity: 1;
   transition: all 100ms ease-in-out 0ms;

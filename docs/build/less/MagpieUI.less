@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.82.2 (2024-10-23 10:34) ************ */
+/*! ************ MagpieUI v3.82.3 (2024-10-24 13:03) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.82.2';
+@CmVersion: '3.82.3';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -14321,8 +14321,7 @@ ul.pt__field__hint {
 .pt__menu {
     touch-action: none;
 
-    &:hover,
-    &:active {
+    &:is(:hover, :active, :focus-within) {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--show;
         }

@@ -94,12 +94,15 @@ function(params){
             // Set events
             if(that.params['eventNode'] === 'button'){
                 cm.addClass(that.nodes['container'], 'has-hover-icon');
-                cm.addEvent(that.nodes['button'], 'click', that.toggle);
+                that.nodes['button'].setAttribute('tabindex', '0');
+                cm.click.add(that.nodes['button'], that.toggle);
             }else{
-                cm.addEvent(that.nodes['titleContainer'], 'click', that.toggle);
+                that.nodes['titleContainer'].setAttribute('tabindex', '0');
+                cm.click.add(that.nodes['titleContainer'], that.toggle);
             }
         }else{
-            cm.addEvent(that.nodes['button'], 'click', that.toggle);
+            that.nodes['button'].setAttribute('tabindex', '0');
+            cm.click.add(that.nodes['button'], that.toggle);
         }
         // Animation
         that.animations['target'] = new cm.Animation(that.nodes['target']);

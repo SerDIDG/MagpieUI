@@ -141,8 +141,7 @@
 .pt__menu {
     touch-action: none;
 
-    &:hover,
-    &:active {
+    &:is(:hover, :active, :focus-within) {
         > .pt__menu-dropdown {
             .pt__menu-dropdown--show;
         }
