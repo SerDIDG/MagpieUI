@@ -1157,7 +1157,8 @@ cm.isCenterButton = function(e){
 cm.debounce = function(func, wait, immediate){
     var timeout, result;
     return function(){
-        var context = this, args = arguments;
+        var context = this,
+            args = arguments;
         var later = function(){
             timeout = null;
             if(!immediate){
@@ -1179,7 +1180,7 @@ cm.onScrollStart = function(node, handler){
         scrollEnd = function(){
             worked = false;
         },
-        helper = cm.debounce(scrollEnd, 300),
+        helper = cm.debounce(scrollEnd, 100),
         scrollEvent = function(){
             !worked && handler();
             worked = true;
@@ -1194,7 +1195,7 @@ cm.onScrollStart = function(node, handler){
 };
 
 cm.onScrollEnd = function(node, handler){
-    var helper = cm.debounce(handler, 300);
+    var helper = cm.debounce(handler, 100);
     cm.addEvent(node, 'scroll', helper);
     return {
         'remove' : function(){

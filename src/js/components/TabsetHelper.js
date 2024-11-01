@@ -15,6 +15,8 @@ cm.define('Com.TabsetHelper', {
         'onTabRemove',
         'onTabRemoveEnd',
         'onLabelTarget',
+        'onUnsetStart',
+        'onUnset',
         'onRequestStart',
         'onRequestEnd',
         'onRequestError',
@@ -643,6 +645,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.unset = function(){
         var that = this;
+        that.triggerEvent('onUnsetStart');
         that.unsetTab(that.current);
         // Reset
         if(that.params['toggleOnHashChange']){
@@ -650,6 +653,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         }
         that.current = null;
         that.previous = null;
+        that.triggerEvent('onUnset');
         return that;
     };
 

@@ -142,9 +142,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             'location' : that.prepareHref(route.route, route.parameters),
             'match' : [],
             'params' : cm.merge({
+                'processRoute' : true,
                 'pushState' : true,
                 'replaceState' : false,
-                'processStateRoute' : true
             }, params)
         };
         // Check hash
@@ -166,7 +166,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             window.history.pushState(state, '', state.location);
         }
         // Process route
-        that.processRoute(state);
+        if(state.params.processRoute){
+            that.processRoute(state);
+        }
         // Process hash
         if(!cm.isEmpty(state.hash)){
             window.location.hash = state.hash;
@@ -607,7 +609,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         params = cm.merge({
             urlParams: null,
             captures: null,
-            assignLocation: false
+            assignLocation: false,
+            replaceLocation: false,
         }, params);
         // Get route item
         var routeItem = that.get(route);
@@ -618,7 +621,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
         var url = that.getURL(route, hash, urlParams);
         // Assign new location or push/replace history state
-        if(params.assignLocation){
+        if(params.replaceLocation) {
+            window.history.replaceState(that.current.state, '', url);
+        }else if(params.assignLocation){
             window.location.assign(url);
         }else{
             that.setURL(url, hash, params);
