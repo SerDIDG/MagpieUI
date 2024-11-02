@@ -226,10 +226,10 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         if (cm.isEmpty(item.icon)) {
             item.icon = that.params.contentIcon;
         }
-        if (cm.isEmpty(item.values.checked)) {
-            item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
+        if (cm.isUndefined(item.values.checked)) {
+            item.values.checked = !cm.isUndefined(item.value) ? item.value : true;
         }
-        if (cm.isEmpty(item.values.unchecked)) {
+        if (cm.isUndefined(item.values.unchecked)) {
             item.values.unchecked = false;
         }
 
