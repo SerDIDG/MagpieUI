@@ -1,0 +1,22 @@
+// /* ******* SCREEN TYPES ******* */
+
+@CmScreen-Tablet: 1024px;
+@CmScreen-TabletPortrait: 768px;
+@CmScreen-Mobile: 640px;
+@CmScreen-MobilePortrait: 480px;
+@CmScreen-XSmall: 375px;
+
+// /* ******* BREAKPOINTS ******* */
+
+@CmMedia-Laptop-Up: 1400px;
+@CmMedia-Laptop-Down: (1400px - 1px);
+@CmMedia-Desktop-Up: @CmScreen-Tablet;
+@CmMedia-Desktop-Down: (@CmScreen-Tablet - 1px);
+@CmMedia-Tablet-Up: (@CmScreen-TabletPortrait + 1px);
+@CmMedia-Tablet-Down: @CmScreen-TabletPortrait;
+@CmMedia-Mobile-Up: (@CmScreen-Mobile + 1px);
+@CmMedia-Mobile-Down: @CmScreen-Mobile;
+@CmMedia-Small-Up: (@CmScreen-MobilePortrait + 1px);
+@CmMedia-Small-Down: @CmScreen-MobilePortrait;
+@CmMedia-XSmall-Up: (@CmScreen-XSmall + 1px);
+@CmMedia-XSmall-Down: @CmScreen-XSmall;

@@ -50,21 +50,13 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.82.5';
+@CmVersion: '3.83.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
 
 @CmPath-Images: '../img';
 @CmPath-Fonts: '../fonts';
-
-// /* ******* SCREEN TYPES ******* */
-
-@CmScreen-Tablet: 1024px;
-@CmScreen-TabletPortrait: 768px;
-@CmScreen-Mobile: 640px;
-@CmScreen-MobilePortrait: 480px;
-@CmScreen-XSmall: 375px;
 
 // /* ******* SIZES ******* */
 
@@ -113,6 +105,7 @@
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Top: 0 -2px 5px rgba(0,0,0,0.15);
+@CmUI-Shadow-TopSmall: 0 -1px 2px rgba(0,0,0,0.15);
 @CmUI-Shadow-Bottom: 0 2px 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
 @CmUI-Shadow-BottomSmall: 0 1px 2px rgba(0,0,0,0.15);
@@ -1037,6 +1030,29 @@
 // /* ************************************************ */
 // /* ******* VENDORS ******* */
 // /* ************************************************ */
+
+// /* ******* SCREEN TYPES ******* */
+
+@CmScreen-Tablet: 1024px;
+@CmScreen-TabletPortrait: 768px;
+@CmScreen-Mobile: 640px;
+@CmScreen-MobilePortrait: 480px;
+@CmScreen-XSmall: 375px;
+
+// /* ******* BREAKPOINTS ******* */
+
+@CmMedia-Laptop-Up: 1400px;
+@CmMedia-Laptop-Down: (1400px - 1px);
+@CmMedia-Desktop-Up: @CmScreen-Tablet;
+@CmMedia-Desktop-Down: (@CmScreen-Tablet - 1px);
+@CmMedia-Tablet-Up: (@CmScreen-TabletPortrait + 1px);
+@CmMedia-Tablet-Down: @CmScreen-TabletPortrait;
+@CmMedia-Mobile-Up: (@CmScreen-Mobile + 1px);
+@CmMedia-Mobile-Down: @CmScreen-Mobile;
+@CmMedia-Small-Up: (@CmScreen-MobilePortrait + 1px);
+@CmMedia-Small-Down: @CmScreen-MobilePortrait;
+@CmMedia-XSmall-Up: (@CmScreen-XSmall + 1px);
+@CmMedia-XSmall-Down: @CmScreen-XSmall;
 
 // /* ************************************************ */
 // /* ******* DOCS ******* */

@@ -112,6 +112,46 @@ var cm = {
         'Elements' : {}
     };
 
+/* ******* BREAKPOINTS ******* */
+
+cm.getBreakpoints = function() {
+    return {
+        desktop: cm._config.screenTablet,
+        desktopUp: cm._config.screenTablet,
+        desktopDown: (cm._config.screenTablet - 1),
+        tablet: cm._config.screenTabletPortrait,
+        tabletUp: (cm._config.screenTabletPortrait + 1),
+        tabletDown: cm._config.screenTabletPortrait,
+        mobile: cm._config.screenMobile,
+        mobileUp: (cm._config.screenMobile + 1),
+        mobileDown: cm._config.screenMobile,
+        small: cm._config.screenMobilePortrait,
+        smallUp: (cm._config.screenMobilePortrait + 1),
+        smallDown: cm._config.screenMobilePortrait,
+        xSmall: cm._config.screenXSmall,
+        xSmallUp: (cm._config.screenXSmall + 1),
+        xSmallDown: cm._config.screenXSmall,
+    };
+};
+
+cm.getBreakpoint = function() {
+    var pageSize = cm._pageSize || cm.getPageSize();
+    var breakpoints = [];
+    cm.forEach(cm._breakpoints, function(breakpoint, name) {
+        if (name.indexOf('Up') > -1 && pageSize.winWidth >= breakpoint) {
+            breakpoints.push(name);
+        }
+        if (name.indexOf('Down') > -1 && pageSize.winWidth <= breakpoint) {
+            breakpoints.push(name);
+        }
+    });
+    return breakpoints;
+};
+
+cm.isBreakpoint = function(name) {
+    return cm.inArray(cm._breakpoint, name);
+};
+
 /* ******* CHECK SUPPORT ******* */
 
 cm.isFileReader = (function(){return 'FileReader' in window;})();
