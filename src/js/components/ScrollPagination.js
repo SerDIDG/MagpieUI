@@ -34,6 +34,7 @@ cm.define('Com.ScrollPagination', {
         'perPage' : 0,                                              // 0 - render all data in one page
         'startPage' : 1,                                            // Start page
         'startPageToken' : '',
+        'startOffset' : 0,
         'pageCount' : 0,                                            // Render only count of pages. 0 - infinity
         'useToken' : false,
         'autoSend' : true,
@@ -260,7 +261,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             '%perPage%' : that.params['perPage'],
             '%limit%' : that.params['perPage'],
             '%page%' : that.page,
-            '%offset%' : (that.page - 1) * that.params['perPage'],
+            '%offset%' : (that.page - 1) * that.params['perPage'] + that.params['startOffset'],
             '%token%' : that.pageToken,
             '%baseUrl%' : cm._baseUrl
         });
@@ -268,7 +269,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             '%perPage%' : that.params['perPage'],
             '%limit%' : that.params['perPage'],
             '%page%' : that.page,
-            '%offset%' : (that.page - 1) * that.params['perPage'],
+            '%offset%' : (that.page - 1) * that.params['perPage'] + that.params['startOffset'],
             '%token%' : that.pageToken,
             '%baseUrl%' : cm._baseUrl
         });

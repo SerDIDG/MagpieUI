@@ -264,17 +264,20 @@ function(params){
         // Render
         if(item['access'] && group && !group.items[item['name']]){
             // Structure
-            item['node'] = cm.node(item['tagName'], item['attr']);
-            // Styles
-            cm.addClass(item['node'], 'button');
-            cm.addClass(item['node'], ['button', item['type']].join('-'));
-            cm.addClass(item['node'], item['className']);
+            if (!cm.isNode(item['node'])) {
+                item['node'] = cm.node(item['tagName'], item['attr']);
+                // Styles
+                cm.addClass(item['node'], 'button');
+                cm.addClass(item['node'], ['button', item['type']].join('-'));
+                cm.addClass(item['node'], item['className']);
+                // Label and title
+                item['node'].innerHTML = item['label'];
+                item['node'].setAttribute('title', item['title']);
+                item['node'].setAttribute('aria-label', item['title']);
+            }
+            // States
             item['disabled'] && cm.addClass(item['node'], 'button-disabled');
             item['hidden'] && cm.addClass(item['container'], 'is-hidden');
-            // Label and title
-            item['node'].innerHTML = item['label'];
-            item['node'].setAttribute('title', item['title']);
-            item['node'].setAttribute('aria-label', item['title']);
             // Callbacks
             if(item['constructor']){
                 cm.getConstructor(item['constructor'], function(classConstructor){
@@ -285,7 +288,7 @@ function(params){
                     );
                 });
             }else{
-                cm.addEvent(item['node'], 'click', function(e){
+                cm.click.add(item['node'], function(e){
                     item['preventDefault'] && cm.preventDefault(e);
                     !item['disabled'] && item['callback'](e, item);
                 });
