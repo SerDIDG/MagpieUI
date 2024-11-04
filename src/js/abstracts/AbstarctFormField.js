@@ -177,6 +177,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         // Validate input constructor params
         that.params.constructorParams = cm.merge(that.validateConstructorParams(), that.params.constructorParams);
 
+        // Validate help params
+        that.params.helpParams = cm.merge(that.validateHelpParams(), that.params.helpParams);
+
         // Components
         that.components.form = that.params.form;
 
@@ -245,15 +248,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         params.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
         params.placeholder = !that.params.showPlaceholderAbove ? that.params.placeholder : '';
 
-        // Help params
-        params.helpParams = {
+        return params;
+    };
+
+    classProto.validateHelpParams = function() {
+        var that = this;
+        return {
             title: that.params.label,
             content: that.params.help,
             name: that.params.name,
             type: that.params.helpType,
             align: that.params.helpAlign,
         };
-        return params;
     };
 
     /******* VIEW - MODEL *******/
