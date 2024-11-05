@@ -383,26 +383,39 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         that.requestDelay && clearTimeout(that.requestDelay);
         that.abort();
 
-        // Clear input
-        if (that.params.clearOnEmpty) {
-            var item = that.getItemAction(that.value);
-            var value = that.params.node.value;
-            if (!item || item.text !== value) {
+        // Set value form input
+        var text = that.params.node.value;
+        var item = that.getItemAction(null, text);
+        if (item) {
+            // If registered item exists, set their value
+            if (that.value !== item.value) {
+                that.set(item, true);
+            }
+        } else {
+            // Reset input if value is empty
+            if (that.params.clearOnEmpty || cm.isEmpty(text)) {
                 that.clear();
+            } else {
+                that.set(text, true);
             }
         }
     };
 
-    classProto.getItemAction = function(value) {
+    classProto.getItemAction = function(value, text) {
         var that = this;
 
         // Get stored item
-        if (that.rawValue && that.rawValue.value === value) {
-            return that.rawValue
+        if (that.rawValue) {
+            if (
+                (!cm.isUndefined(value) && value === that.rawValue.value) ||
+                (!cm.isEmpty(text) && text === that.rawValue.text)
+            ) {
+                return that.rawValue
+            }
         }
 
         // Get form items list
-        var item = that.getRegisteredItem(value);
+        var item = that.getRegisteredItem(value, text);
         if (item) {
             return item.data;
         }
@@ -886,13 +899,25 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         });
     };
 
-    classProto.getRegisteredItem = function(value) {
+    classProto.getRegisteredItem = function(value, text) {
         var that = this;
-        if (!value) {
+        return that.registeredItems.find(function(regItem) {
+            if (!cm.isUndefined(value)) {
+                return regItem.data.value === value;
+            }
+            if (!cm.isEmpty(text)) {
+                return regItem.data.text === text;
+            }
+        });
+    };
+
+    classProto.getRegistered = function(text) {
+        var that = this;
+        if (!text) {
             return;
         }
         return that.registeredItems.find(function(regItem) {
-            return regItem.data.value === value;
+            return regItem.data.text === text;
         });
     };
 
@@ -903,9 +928,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         that.value = null;
         that.rawValue = null;
         that.valueText = null;
-        if (that.params.clearOnEmpty) {
-            that.params.node.value = '';
-        }
+        that.params.node.value = '';
 
         // Trigger events
         if (triggerEvents) {
