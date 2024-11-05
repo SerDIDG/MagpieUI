@@ -911,16 +911,6 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         });
     };
 
-    classProto.getRegistered = function(text) {
-        var that = this;
-        if (!text) {
-            return;
-        }
-        return that.registeredItems.find(function(regItem) {
-            return regItem.data.text === text;
-        });
-    };
-
     classProto.reset = classProto.clear = function(triggerEvents) {
         var that = this;
         triggerEvents = typeof triggerEvents === 'undefined' ? true : triggerEvents;
