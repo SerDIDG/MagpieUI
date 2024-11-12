@@ -61,7 +61,7 @@ cm.define('Com.TabsetHelper', {
     }
 },
 function() {
-    Com.AbstractController.apply(that, this);
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, classProto, classInherit) {
