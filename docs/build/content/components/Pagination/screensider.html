@@ -45,9 +45,9 @@
                                         cm.Node('a', {
                                                 'class' : 'inner',
                                                 'target' : '_blank',
-                                                'href' : ['http://screensider.com', item['id']].join('/')
+                                                'href' : ['https://screensider.com', item['id']].join('/')
                                             },
-                                            cm.Node('img', {'class' : 'descr', 'src' : ['http://screensider.com/images/albums/', item['album_id'] ,'/', item['filename'] ,'-top.jpg'].join('')}),
+                                            cm.Node('img', {'class' : 'descr', 'src' : ['https://screensider.com/images/albums/', item['album_id'] ,'/', item['filename'] ,'-top.jpg'].join('')}),
                                             cm.Node('div', {'class' : 'title'},
                                                 cm.Node('div', {'class' : 'inner'}, item['album_name'])
                                             )
@@ -72,7 +72,7 @@
                         'perPage' : 10,
                         'ajax' : {
                             'type' : 'jsonp',
-                            'url' : 'http://screensider.com/ajax.php',
+                            'url' : 'https://screensider.com/ajax.php',
                             'params' : {
                                 'screens' : 1,
                                 'id' : 'index',
