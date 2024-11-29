@@ -175,6 +175,23 @@
         }
     }
 
+    &.is-flex {
+        ul {
+            li {
+                display: flex;
+
+                .l {
+                    min-width: 0;
+                    flex: auto;
+                }
+
+                .r {
+                    flex: none;
+                }
+            }
+        }
+    }
+
     &.is-inline {
         ul {
             .clearfix;
