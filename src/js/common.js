@@ -569,24 +569,32 @@ cm.arraySort = function(a, key, dir, clone){
     switch(dir){
         case 'asc':
             newA.sort(function(a, b){
-                if(key){
-                    return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
-                }else{
-                    return (a < b) ? 1 : ((a > b) ? -1 : 0);
-                }
+                return cm.arraySortAsc(a, b, key);
             });
             break;
         case 'desc' :
             newA.sort(function(a, b){
-                if(key){
-                    return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
-                }else{
-                    return (a < b) ? -1 : ((a > b) ? 1 : 0);
-                }
+                return cm.arraySortDesc(a, b, key);
             });
             break;
     }
     return newA;
+};
+
+cm.arraySortAsc = function(a, b, key) {
+    if(key){
+        return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
+    }else{
+        return (a < b) ? 1 : ((a > b) ? -1 : 0);
+    }
+};
+
+cm.arraySortDesc = function(a, b, key) {
+    if(key){
+        return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
+    }else{
+        return (a < b) ? -1 : ((a > b) ? 1 : 0);
+    }
 };
 
 cm.arrayParseFloat = function(a){
