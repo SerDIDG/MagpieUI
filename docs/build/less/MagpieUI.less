@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.85.0 (2024-11-30 03:41) ************ */
+/*! ************ MagpieUI v3.86.0 (2024-12-02 20:36) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.85.0';
+@CmVersion: '3.86.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -19386,6 +19386,12 @@ ul.pt__field__hint {
         min-height: @CmForm-FieldHeight;
         padding: @CmIndent-XXXSmall;
         cursor: default;
+    }
+
+    .checkbox {
+        margin: 0 @CmIndent-XXSmall 0 @PtListingItems-PaddingX;
+        vertical-align: baseline;
+        pointer-events: none;
     }
 
     .pt__listing-items {

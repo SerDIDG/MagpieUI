@@ -501,6 +501,7 @@ function(params){
             'textNode': null,
             'classes': [],
             'style': null,
+            'renderCheckbox': false,
         }, item);
 
         // Validate
@@ -540,6 +541,12 @@ function(params){
             cm.appendChild(item['textNode'], item['link']);
         } else {
             item['link'].innerHTML = item['text'];
+        }
+
+        // Checkbox
+        if (item['renderCheckbox']) {
+            item['checkbox'] = cm.node('input', {'classes': 'checkbox', 'type': that.params['multiple'] ? 'checkbox' : 'radio', 'aria-hidden': true});
+            cm.insertFirst(item['checkbox'], item['link']);
         }
 
         // States styles
@@ -678,6 +685,9 @@ function(params){
     var setOption = function(option){
         option['option'].selected = true;
         option['selected'] = true;
+        if (option['checkbox']) {
+            option['checkbox'].checked = true;
+        }
         cm.addClass(option['node'], 'active');
     };
 
@@ -690,6 +700,9 @@ function(params){
         // Deselect option
         option['option'].selected = false;
         option['selected'] = false;
+        if (option['checkbox']) {
+            option['checkbox'].checked = false;
+        }
         cm.removeClass(option['node'], 'active');
     };
 
@@ -867,7 +880,18 @@ function(params){
     };
 
     that.getSelectedOption = that.getValueOption = function(){
-        return that.getOption(active);
+        if (cm.isArray(active)) {
+            var values = [];
+            cm.forEach(active, value => {
+                var option = that.getOption(value);
+                if (option) {
+                    values.push(option);
+                }
+            });
+            return values;
+        } else {
+            return that.getOption(active);
+        }
     };
 
     that.getOptions = that.getOptionsAll = that.getAllOptions = function(){
