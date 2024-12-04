@@ -531,6 +531,13 @@ cm.arrayRemove = function(a, item){
     return a;
 };
 
+cm.arrayClear = function(a){
+    while(a.length > 0){
+        a.pop();
+    }
+    return a;
+};
+
 cm.arrayAdd = function(a, item, move){
     if(move){
         a = cm.arrayRemove(a, item);
