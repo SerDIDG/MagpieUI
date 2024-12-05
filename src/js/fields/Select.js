@@ -48,8 +48,8 @@ cm.define('Com.Select', {
         'defaultValue' : null,
         'disabled' : false,
         'id' : null,
-        'className' : '',
-        'inputClassName' : '',
+        'className' : [],
+        'inputClassName' : [],
         'tabindex' : null,
         'icons' : {
             'arrow' : 'icon default linked'
@@ -133,6 +133,12 @@ function(params){
 
     var validateParams = function(){
         that.triggerEvent('onValidateParamsStart');
+        // Validate CSS classes
+        if (cm.isEmpty(that.params['className'])) {
+            that.params['className'] = [];
+        } else if (cm.isString(that.params['className'])) {
+            that.params['className'] = [that.params['className']];
+        }
         // ToDo: Deprecated legacy parameter
         if(cm.isObject(that.params['Com.Tooltip'])){
             that.params.tooltip.constructorParams = cm.merge(that.params.tooltip.constructorParams, that.params['Com.Tooltip']);
@@ -146,9 +152,11 @@ function(params){
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
             that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
-            that.params['className'] = that.params['node'].className || that.params['className'];
             that.params['tabindex'] = that.params['node'].getAttribute('tabindex') || that.params['tabindex'];
             that.params['id'] = that.params['node'].id || that.params['id'];
+            // Merge CSS classes
+            var classList = Array.from(that.params['node'].classList);
+            that.params['className'] = cm.merge(that.params['className'], classList);
         }
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');

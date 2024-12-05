@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.87.0 (2024-12-04 17:31) ************ */
+/*! ************ MagpieUI v3.87.1 (2024-12-05 23:12) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4387,8 +4387,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.87.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.87.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.87.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.87.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.87.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.87.1');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.87.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.87.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.87.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.87.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -22265,7 +22265,30 @@ html.ie9 .com__palette .b-range {
   pointer-events: none;
 }
 .com__select-multi .pt__listing-items > ul {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: auto;
   max-height: 114px;
+}
+html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul {
+  scrollbar-width: thin;
+}
+html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-scrollbar-track {
+  background-color: hsla(0, 0%, 98%, 0.5);
+  border-radius: 3px;
+}
+html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-scrollbar-thumb {
+  background-color: hsl(0, 0%, 86%);
+  background-clip: padding-box;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(0, 0%, 80%);
 }
 .com__select-multi.is-max .pt__listing-items > ul {
   height: 114px;
