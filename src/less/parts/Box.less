@@ -209,19 +209,35 @@
     }
 
     &.is-flex {
+        .clearfix-none;
         display: flex;
         align-items: center;
+        gap: @CmIndent-Medium;
 
         > .l {
+            margin: 0;
             float: none;
             flex: auto;
             overflow: visible;
         }
 
         > .r {
+            margin: 0;
             float: none;
             flex: none;
             align-self: flex-start;
+        }
+
+        &.is-box {
+            flex-direction: column;
+
+            > .l {
+                align-self: initial;
+            }
+
+            > .r {
+                align-self: initial;
+            }
         }
     }
 }
