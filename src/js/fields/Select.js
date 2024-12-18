@@ -105,7 +105,6 @@ function(params){
         setEvents();
         // Set selected option
         if(that.params['multiple']){
-            active = [];
             if(!cm.isEmpty(that.params['value']) && cm.isArray(that.params['value'])){
                 cm.forEach(that.params['value'], function(item){
                     if(options[item]){
@@ -157,6 +156,9 @@ function(params){
             // Merge CSS classes
             var classList = Array.from(that.params['node'].classList);
             that.params['className'] = cm.merge(that.params['className'], classList);
+        }
+        if(that.params['multiple']){
+            active = [];
         }
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
