@@ -3387,6 +3387,7 @@ cm.scrollTo = function(node, parent, params, callback){
         'behavior' : 'smooth',
         'block' : 'start',
         'top' : 'auto',
+        'scrollPadding' : 'auto',
         'duration' : cm._config.animDuration,
         'callback' : cm.isFunction(callback) ? callback : function(){},
     }, params);
@@ -3396,7 +3397,12 @@ cm.scrollTo = function(node, parent, params, callback){
     }
     // Calculate top value
     if(params['top'] === 'auto'){
-        var scrollPadding = cm.getStyle(parentNode, 'scroll-padding-top', true) || 0;
+        var scrollPadding = 0;
+        if (params['scrollPadding'] === 'auto') {
+            scrollPadding = cm.getStyle(parentNode, 'scroll-padding-top', true) || 0;
+        } else if (cm.isNumber(params['scrollPadding'])) {
+            scrollPadding = params['scrollPadding'];
+        }
         var nodeOffsetTop = (params['type'] === 'docScrollTop' ? cm.getY(node) : node.offsetTop) - scrollPadding;
         switch(params['block']){
             case 'end':
