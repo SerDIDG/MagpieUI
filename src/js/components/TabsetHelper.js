@@ -316,7 +316,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             item = that.items[id];
         if (item && that.current !== id) {
             that.isInitial = isInitial;
-            that.triggerEvent('onTabChangeStart', item);
+            that.tabChangeStart(item);
             // Hide previous tab
             that.unsetTab(that.current);
             // Show new tab
@@ -448,6 +448,11 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     /*** SHOW / HIDE ***/
+
+    classProto.tabChangeStart = function(item) {
+        var that = this;
+        that.triggerEvent('onTabChangeStart', item);
+    };
 
     classProto.tabShowEnd = function(item, params) {
         var that = this;
