@@ -3,6 +3,7 @@ cm.define('Com.TabsetHelper', {
     events: [
         'onTabChangeStart',
         'onTabChange',
+        'onTabChangeEnd',
         'onTabShowStart',
         'onTabShow',
         'onTabShowProcess',
@@ -456,17 +457,36 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.tabShowEnd = function(item, params) {
         var that = this;
-        if (item.id === that.current) {
-            cm.customEvent.trigger(item.tab.container, 'redraw', {
-                direction: 'child',
-                self: false
-            });
+        if (item.id !== that.current) {
+            return;
+        }
+
+        // Validate params
+        params = cm.merge({
+            redrawContent: true,
+            triggerEvents: true,
+        }, params);
+
+        if (params.redrawContent) {
+            that.redrawTabContent(item);
+        }
+
+        if (params.triggerEvents) {
             that.triggerEvent('onTabShow', item, params);
             that.triggerEvent('onTabShowEnd', item, params);
             if (that.current !== that.previous) {
                 that.triggerEvent('onTabChange', item, params);
+                that.triggerEvent('onTabChangeEnd', item, params);
             }
         }
+    };
+
+    classProto.redrawTabContent = function(item) {
+        var that = this;
+        cm.customEvent.trigger(item.tab.container, 'redraw', {
+            direction: 'child',
+            self: false
+        });
     };
 
     /******* SELECT *******/

@@ -37,7 +37,7 @@ cm.define('Com.Tabset2', {
         switchManually: false,                                   // Change tab manually, not implemented yet
         animateSwitch: true,
         animateHeight: true,
-        animateDuration: 300,
+        animateDuration: 'cm._config.animateDuration',
         calculateMaxHeight: false,                               // ToDo: implement
 
         /* AJAX */
@@ -385,12 +385,20 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             return;
         }
 
-        var args = arguments;
+        // Validate params
+        params = cm.merge({
+            redrawContent: true,
+            triggerEvents: true,
+        }, params);
+
         var previous = that.previous;
         var previousItem = that.items[previous];
 
         if(previousItem && previousItem.id !== item.id){
             if(that.params.animateSwitch){
+                // Redraw tab content before animation ends
+                that.redrawTabContent(item);
+
                 if(that.params.animateHeight){
                     that.nodes.contentUL.style.height = item.tab.inner.offsetHeight + 'px';
                 }
@@ -400,19 +408,20 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
                     that.nodes.contentUL.style.overflow = '';
                     that.nodes.contentUL.style.height = '';
 
-                    // Call parent method
-                    classInherit.prototype.tabShowEnd.apply(that, args);
+                    // Call parent method, but disable redrawing tab content
+                    params.redrawContent = false;
+                    classInherit.prototype.tabShowEnd.call(that, item, params);
                 }, that.params.animateDuration);
             }else{
                 previousItem.tab.container.hidden = true;
                 previousItem.tab.container.style.display = 'none';
 
                 // Call parent method
-                classInherit.prototype.tabShowEnd.apply(that, args);
+                classInherit.prototype.tabShowEnd.call(that, item, params);
             }
         }else{
             // Call parent method
-            classInherit.prototype.tabShowEnd.apply(that, args);
+            classInherit.prototype.tabShowEnd.call(that, item, params);
         }
     };
 
