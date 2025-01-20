@@ -411,7 +411,7 @@ function(params){
         // Event
         cm.click.add(item.nodes.button, function(event){
             cm.preventDefault(event);
-            that.direction = item.index <= that.current ? next: 'prev';
+            that.direction = item.index <= that.current ? 'next' : 'prev';
             set(item.index);
         });
     };
