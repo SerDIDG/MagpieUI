@@ -440,7 +440,7 @@ function(params){
             // Set image
             if(!current.isImageSet && !cm.isEmpty(current.image)){
                 current.isImageSet = true;
-                current.nodes.container.style.backgroundImage = 'url(' + current.image + ')';
+                current.nodes.container.style.backgroundImage = 'url("' + current.image + '")';
             }
             // Set active slide
             if(that.params.buttons){
