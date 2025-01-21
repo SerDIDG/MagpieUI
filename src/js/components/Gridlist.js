@@ -560,6 +560,7 @@ function(params){
             class: '',		             // Item css class
             target: '_blank',            // Link target, for type="url|icon"
             rel: null,                   // Link rel, for type="url|icon"
+            tagName: 'td',
             wrap: false,                 // Wrap cell values in div
             textOverflow: null,          // Overflow long text to single line
             showTitle: null,             // Show title on hover
@@ -785,7 +786,7 @@ function(params){
 
         // Structure
         row.nodes.container.appendChild(
-            item.nodes.container = cm.node('td', {classes: config.classes})
+            item.nodes.container = cm.node(config.tagName, {classes: config.classes})
         );
 
         // Text overflow
