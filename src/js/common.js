@@ -2162,7 +2162,7 @@ cm.setInputMinLength = function(input, minLength, min){
     if(cm.isNode(input)){
         var value = 0;
         if(input.type === 'number'){
-            value = min || minLength ? ('1' + '0'.repeat(minLength - 1)) : 0;
+            value = min || (minLength ? Math.pow(10, minLength - 1) : 0);
             if(value){
                 input.min = value;
             }
@@ -2174,6 +2174,13 @@ cm.setInputMinLength = function(input, minLength, min){
         }
     }
     return input;
+};
+
+cm.getMinMax = function(value, min, max, minLength, maxLength) {
+    value = parseFloat(value);
+    min = min || (minLength ? Math.pow(10, minLength - 1) : 0);
+    max = max || (maxLength ? '9'.repeat(maxLength) : Infinity);
+    return Math.min(Math.max(parseFloat(value), min), max);
 };
 
 cm.constraintsPattern = function(pattern, match, message){

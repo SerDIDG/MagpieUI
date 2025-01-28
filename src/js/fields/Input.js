@@ -15,6 +15,7 @@ cm.define('Com.Input', {
         'type': 'text',
         'inputmode': null,
         'trimValue': true,
+        'limitValue' : true,
         'inputClasses': [],
         'lazy': false,
         'delay': 'cm._config.requestDelay',
@@ -54,7 +55,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.inputKeyUpHanlder = that.inputKeyUp.bind(that);
         that.inputKeyPressHanlder = that.inputKeyPress.bind(that);
         that.iconEventHanlder = that.iconEvent.bind(that);
-        
+
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -325,6 +326,23 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     /*** DATA VALUE ***/
 
+    classProto.validateValueHelper = function(value){
+        var that = this;
+
+        // Trim value
+        if(!cm.isEmpty(value)){
+            if (that.params.trimValue && cm.isString(value)) {
+                value = value.trim();
+            }
+            if (that.params.limitValue && that.params.type === 'number') {
+                value = cm.getMinMax(value, that.params.min, that.params.max, that.params.minLength, that.params.maxLength);
+            }
+        }
+
+        // Call parent method
+        return classInherit.prototype.validateValueHelper.call(that, value);
+    };
+
     classProto.lazyValue = function(triggerEvents) {
         var that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
@@ -337,9 +355,6 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.setValue = function(triggerEvents) {
         var that = this,
             value = that.nodes.content.input.value;
-        if (that.params.trimValue) {
-            value = value.trim();
-        }
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.set(value, triggerEvents);
         return that;
@@ -348,9 +363,6 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.selectValue = function(triggerEvents) {
         var that = this,
             value = that.nodes.content.input.value;
-        if (that.params.trimValue) {
-            value = value.trim();
-        }
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.selectAction(value, triggerEvents);
         return that;
