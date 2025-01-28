@@ -1138,9 +1138,9 @@ cm.onReady = function(handler, logMessage){
         called = true;
         if(logMessage){
             cm.errorLog({
-                'type' : 'common',
-                'name' : 'cm.onReady',
-                'message' : ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
+                type: 'common',
+                name: 'cm.onReady',
+                message: ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
             });
         }
         handler();

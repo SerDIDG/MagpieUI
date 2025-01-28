@@ -236,10 +236,15 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.validateParams = function(){
         var that = this;
         that.triggerEvent('onValidateParamsStart');
-        that.triggerEvent('onValidateParams');
-        that.triggerEvent('onValidateParamsProcess');
+        that.validateParamsHandler();
         that.triggerEvent('onValidateParamsEnd');
         return that;
+    };
+
+    classProto.validateParamsHandler = function(){
+        var that = this;
+        that.triggerEvent('onValidateParams');
+        that.triggerEvent('onValidateParamsProcess');
     };
 
     classProto.render = function(){
@@ -290,6 +295,13 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
     classProto.setEvents = function(){
         var that = this;
         that.triggerEvent('onSetEventsStart');
+        that.setEventsHandler();
+        that.triggerEvent('onSetEventsEnd');
+        return that;
+    };
+
+    classProto.setEventsHandler = function() {
+        var that = this;
         // Windows events
         that.params['resizeEvent'] && cm.addEvent(that.params['resizeNode'], 'resize', that.resizeHandler);
         that.params['scrollEvent'] && cm.addEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
@@ -301,13 +313,18 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             cm.customEvent.add(that.getStackNode(), 'destruct', that.destructHandler);
             that.triggerEvent('onSetCustomEvents');
         }
-        that.triggerEvent('onSetEventsEnd');
-        return that;
     };
 
     classProto.unsetEvents = function(){
         var that = this;
         that.triggerEvent('onUnsetEventsStart');
+        that.unsetEventsHandler();
+        that.triggerEvent('onUnsetEventsEnd');
+        return that;
+    };
+
+    classProto.unsetEventsHandler = function(){
+        var that = this;
         // Windows events
         that.params['resizeEvent'] && cm.removeEvent(that.params['resizeNode'], 'resize', that.resizeHandler);
         that.params['scrollEvent'] && cm.removeEvent(that.params['scrollNode'], 'scroll', that.scrollHandler);
@@ -319,8 +336,6 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);
             that.triggerEvent('onUnsetCustomEvents');
         }
-        that.triggerEvent('onUnsetEventsEnd');
-        return that;
     };
 
     classProto.constructCollector = function(node){
