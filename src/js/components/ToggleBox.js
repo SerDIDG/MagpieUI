@@ -91,15 +91,15 @@ function(params) {
             // Append title
             that.setTitle(that.params.title);
 
+            // Append structure before the content for cases where the toggle box wraps the content inside
+            that.embedStructure(that.nodes.container);
+
             // Append content
             if (that.params.content) {
                 that.setContent(that.params.content);
             } else {
                 that.setContent(that.params.node);
             }
-
-            // Append
-            that.embedStructure(that.nodes.container);
         }
 
         // Set events

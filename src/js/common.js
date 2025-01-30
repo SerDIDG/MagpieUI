@@ -393,16 +393,14 @@ cm.extend = function(o1, o2, deep, clone){
     }
     deep = cm.isUndefined(deep) ? false : deep;
     clone = cm.isUndefined(clone) ? true : clone;
-    var o;
     if(cm.isArray(o1)){
-        o = o1.concat(o2);
-        return o;
+        return o1.concat(o2);
     }
     if(cm.isObject(o1)){
-        o = clone ? cm.clone(o1) : o1;
+        var o = clone ? cm.clone(o1) : o1;
         cm.forEach(o2, function(item, key){
             if(deep){
-                o[key] = cm.extend(o[key], item);
+                o[key] = cm.extend(o[key], item, deep, clone);
             }else{
                 o[key] = item;
             }
@@ -1819,91 +1817,91 @@ cm.strToHTML = function(str){
 cm.getNodes = function(container, marker){
     container = container || document.body;
     marker = marker || 'data-node';
-    var nodes = {},
+    var accumulator = {},
         processedNodes = [];
 
-    var separation = function(node, obj, processedObj){
-        var attrData = node.getAttribute(marker),
-            separators = attrData? attrData.split('|') : [],
-            altProcessedObj;
+    var separation = function(node, accumulatorObj, processedObj){
+        var path = node.getAttribute(marker),
+            pathItems = path? path.split('|') : [],
+            tempProcessedObj;
 
-        cm.forEach(separators, function(separator){
-            altProcessedObj = [];
-            if(separator.indexOf('.') === -1){
-                process(node, separator, obj, altProcessedObj);
+        cm.forEach(pathItems, function(item){
+            tempProcessedObj = [];
+            if(item.indexOf('.') === -1){
+                process(node, item, accumulatorObj, tempProcessedObj);
             }else{
-                pathway(node, separator, altProcessedObj);
+                pathway(node, item, tempProcessedObj);
             }
-            cm.forEach(altProcessedObj, function(node){
+            cm.forEach(tempProcessedObj, function(node){
                 processedObj.push(node);
             });
         });
     };
 
-    var pathway = function(node, attr, processedObj){
-        var separators = attr? attr.split('.') : [],
-            obj = nodes;
-        cm.forEach(separators, function(separator, i){
-            if(i === 0 && cm.isEmpty(separator)){
-                obj = nodes;
-            }else if((i + 1) === separators.length){
-                process(node, separator, obj, processedObj);
+    var pathway = function(node, path, processedObj){
+        var pathItems = path? path.split('.') : [],
+            accumulatorObj = accumulator;
+        cm.forEach(pathItems, function(item, i){
+            if(i === 0 && cm.isEmpty(item)){
+                accumulatorObj = accumulator;
+            }else if((i + 1) === pathItems.length){
+                process(node, item, accumulatorObj, processedObj);
             }else{
-                if(!obj[separator]){
-                    obj[separator] = {};
+                if(!accumulatorObj[item]){
+                    accumulatorObj[item] = {};
                 }
-                obj = obj[separator];
+                accumulatorObj = accumulatorObj[item];
             }
         });
     };
 
-    var process = function(node, attr, obj, processedObj){
-        var separators = attr? attr.split(':') : [],
+    var process = function(node, path, accumulatorObj, processedObj){
+        var pathItems = path? path.split(':') : [],
             childNodes;
-        if(separators.length === 1){
-            obj[separators[0]] = node;
-        }else if(separators.length === 2 || separators.length === 3){
-            if(separators[1] === '[]'){
-                if(!obj[separators[0]]){
-                    obj[separators[0]] = [];
+        if(pathItems.length === 1){
+            accumulatorObj[pathItems[0]] = node;
+        }else if(pathItems.length === 2 || pathItems.length === 3){
+            if(pathItems[1] === '[]'){
+                if(!accumulatorObj[pathItems[0]]){
+                    accumulatorObj[pathItems[0]] = [];
                 }
                 childNodes = {};
-                if(separators[2]){
-                    childNodes[separators[2]] = node;
+                if(pathItems[2]){
+                    childNodes[pathItems[2]] = node;
                 }
                 find(node, childNodes, processedObj);
-                obj[separators[0]].push(childNodes);
-            }else if(separators[1] === '[&]'){
-                if(!obj[separators[0]]){
-                    obj[separators[0]] = [];
+                accumulatorObj[pathItems[0]].push(childNodes);
+            }else if(pathItems[1] === '[&]'){
+                if(!accumulatorObj[pathItems[0]]){
+                    accumulatorObj[pathItems[0]] = [];
                 }
-                obj[separators[0]].push(node);
-            }else if(separators[1] === '{}'){
-                if(!obj[separators[0]]){
-                    obj[separators[0]] = {};
+                accumulatorObj[pathItems[0]].push(node);
+            }else if(pathItems[1] === '{}'){
+                if(!accumulatorObj[pathItems[0]]){
+                    accumulatorObj[pathItems[0]] = {};
                 }
-                if(separators[2]){
-                    obj[separators[0]][separators[2]] = node;
+                if(pathItems[2]){
+                    accumulatorObj[pathItems[0]][pathItems[2]] = node;
                 }
-                find(node, obj[separators[0]], processedObj);
+                find(node, accumulatorObj[pathItems[0]], processedObj);
             }
         }
         processedObj.push(node);
     };
 
-    var find = function(container, obj, processedObj){
-        var sourceNodes = container.querySelectorAll('[' + marker +']');
-        cm.forEach(sourceNodes, function(node){
+    var find = function(container, accumulatorObj, processedObj){
+        var childNodes = container.querySelectorAll('[' + marker +']');
+        cm.forEach(childNodes, function(node){
             if(!cm.inArray(processedObj, node)){
-                separation(node, obj, processedObj);
+                separation(node, accumulatorObj, processedObj);
             }
         });
     };
 
-    separation(container, nodes, processedNodes);
-    find(container, nodes, processedNodes);
+    separation(container, accumulator, processedNodes);
+    find(container, accumulator, processedNodes);
 
-    return nodes;
+    return accumulator;
 };
 
 cm.processDataAttributes = function(node, name, vars){
@@ -2180,7 +2178,7 @@ cm.getMinMax = function(value, min, max, minLength, maxLength) {
     value = parseFloat(value);
     min = min || (minLength ? Math.pow(10, minLength - 1) : 0);
     max = max || (maxLength ? '9'.repeat(maxLength) : Infinity);
-    return Math.min(Math.max(parseFloat(value), min), max);
+    return Math.min(Math.max(value, min), max);
 };
 
 cm.constraintsPattern = function(pattern, match, message){

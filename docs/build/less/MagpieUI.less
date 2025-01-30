@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.89.1 (2025-01-28 23:50) ************ */
+/*! ************ MagpieUI v3.89.2 (2025-01-30 23:00) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.89.1';
+@CmVersion: '3.89.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5055,6 +5055,9 @@ span.CodeMirror-selectedtext { background: none; }
 @CmForm-FieldTitleWidthSpaceless: 128px;
 @CmForm-FieldInnerIndent: (@CmForm-FieldIndent / 2);
 @CmForm-FieldSmallWidth: 210px;
+@CmForm-Field-AdaptiveUp: @CmMedia-Mobile-Up;
+@CmForm-Field-AdaptiveDown: @CmMedia-Mobile-Down;
+
 @CmForm-HintGap: @CmSize-XXXSmall;
 @CmForm-ButtonsIndent: @CmIndent-XSmall;
 @CmForm-IconsIndent: @CmIndent-XXSmall;
@@ -11718,7 +11721,7 @@ ul.pt__field__hint {
 
 /* ******* PART: FIELD: ADAPTIVE ******* */
 
-@media only screen and (max-width: @CmScreen-Mobile) {
+@media only screen and (max-width: @CmForm-Field-AdaptiveDown) {
 
     html.is-adaptive {
         .pt__field {

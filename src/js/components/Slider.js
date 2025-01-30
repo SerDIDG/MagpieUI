@@ -27,6 +27,7 @@ cm.define('Com.Slider', {
         customEvents: true,
         renderStructure: false,
         isEditing: false,
+        items: [],
         time: 500,                   // Fade time
         delay: 4000,                 // Delay before slide will be changed
         slideshow: true,             // Turn on / off slideshow
@@ -125,7 +126,7 @@ function(params){
         that.params.direction = {forward: 1, backward: 1, random: 1}[that.params.direction] ? that.params.direction : 'forward';
         that.params.effect = Com.SliderEffects[that.params.effect] ? that.params.effect : 'fade';
         that.params.transition = {smooth: 1, simple: 1, acceleration: 1, inhibition: 1}[that.params.transition] ? that.params.transition : 'smooth';
-        that.params.height = {auto: 1, max: 1, slide: 1}[that.params.height] ? that.params.height : 'auto';
+        that.params.height = cm.inArray(['auto', 'max', 'slide'], that.params.height) ? that.params.height : 'auto';
         if(that.params.minHeight && isNaN(that.params.minHeight)){
             minHeightDimension = getDimension(that.params.minHeight);
             that.params.minHeight = parseFloat(that.params.minHeight);
@@ -226,7 +227,9 @@ function(params){
                 )
             )
         );
+
         // Embed
+        that.params.node = that.nodes.container;
         that.embedStructure(that.nodes.container);
     };
 
