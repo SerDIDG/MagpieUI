@@ -244,6 +244,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
         });
 
+        params.field = that;
         params.fieldName = that.fieldName;
         params.value = !cm.isEmpty(that.params.dataValue) ? that.params.dataValue : that.params.value;
         params.placeholder = !that.params.showPlaceholderAbove ? that.params.placeholder : '';

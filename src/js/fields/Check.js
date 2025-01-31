@@ -13,6 +13,8 @@ cm.define('Com.Check', {
         },
         contentIcon: null,
 
+        help: null,
+        helpType: 'tooltip',
         helpConstructor: 'Com.HelpBubble',
         helpParams: {
             renderStructure: true,
@@ -210,12 +212,13 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         var that = this;
         item = cm.merge({
             nodes: {},
+            textNodes: {},
             value: null,
             text: '',
             hint: null,
             icon: null,
-            help: null,
-            helpType: 'tooltip',
+            help: that.params.help,
+            helpType: that.params.helpType,
             values: {
                 checked: null,
                 unchecked: null,
@@ -252,6 +255,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
                 classes: 'label',
                 innerHTML: item.text,
             });
+            item.textNodes = cm.getNodes(item.nodes.label);
             cm.appendChild(item.nodes.label, item.nodes.container);
         }
 
@@ -278,21 +282,38 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Help Bubble
         if (!cm.isEmpty(item.help)) {
-            item.helpParams = cm.merge(that.params.helpParams, {
-                title: item.label,
-                content: item.help,
-                name: that.params.name,
-                type: item.nodes.helpType,
-                container: item.nodes.container,
-            });
-            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
-                item.helpController = new classConstructor(item.helpParams);
-            });
+            that.renderHelp(item);
         }
 
         // Push
         that.inputs.push(item);
         return item.nodes.container;
+    };
+
+    classProto.renderHelp = function(item) {
+        var that = this;
+
+        // Validate params
+        item.helpParams = cm.merge(that.params.helpParams, {
+            name: that.params.name,
+            content: item.help,
+            type: item.helpType,
+            container: item.nodes.container,
+        });
+
+        // Find help button target in the text nodes if exists
+        if (item.textNodes && item.textNodes.helpButton) {
+            item.helpParams.nodes = {
+                button: item.textNodes.helpButton,
+            };
+            item.helpParams.renderStructure = false;
+            item.helpParams.embedStructureOnRender = false;
+        }
+
+        // Render component
+        cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+            item.helpController = new classConstructor(item.helpParams);
+        });
     };
 
     /*** DATA VALUE ***/

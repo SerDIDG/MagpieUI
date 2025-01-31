@@ -7,6 +7,7 @@ cm.define('Com.DialogContainer', {
         'container' : 'document.body',
         'destructOnClose' : false,
         'renderTitle' : true,
+        'titleAlign' : 'left',
         'renderHelp' : false,
         'renderButtons' : false,
         'renderButtonsPositions' : false,
@@ -46,6 +47,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         }
         that.params['constructorParams']['showTitle'] = that.params['renderTitle'];
         that.params['constructorParams']['showHelp'] = that.params['renderHelp'];
+        that.params['constructorParams']['titleAlign'] = that.params['titleAlign'];
     };
 
     classProto.constructController = function(classObject){

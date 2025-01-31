@@ -4,7 +4,9 @@ cm.define('Com.HelpBubble', {
         'renderStructure' : false,
         'embedStructureOnRender' : false,
         'controllerEvents' : true,
+        'target' : null,
         'title' : null,
+        'titleAlign' : 'left',
         'content' : cm.node('span'),
         'type' : 'tooltip',                             // tooltip | container
         'showIcon' : true,
@@ -65,14 +67,19 @@ cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classP
             that.nodes['label'] = cm.node('span', {'class' : 'label'}, that.params['title']);
             cm.appendChild(that.nodes['label'], that.nodes['button']);
         }
-        // Set Content
-        that.set(that.params['content']);
     };
 
     classProto.renderViewModel = function(){
         var that = this;
+
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
+        // Set Content
+        if (!cm.isEmpty(that.params['content'])) {
+            that.set(that.params['content']);
+        }
+
         // Init Placeholder
         switch(that.params['type']){
             case 'container':
@@ -82,6 +89,7 @@ cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classP
                         cm.merge(that.params['containerParams'], {
                             'node' : that.nodes['button'],
                             'title' : that.params['title'],
+                            'titleAlign' : that.params['titleAlign'],
                             'content' : that.nodes['content']
                         })
                     );
@@ -104,6 +112,10 @@ cm.getConstructor('Com.HelpBubble', function(classConstructor, className, classP
 
     classProto.set = function(node){
         var that = this;
+        if (!cm.isNode(that.nodes['content'])) {
+            that.nodes['content'] = cm.node('div');
+        }
+
         cm.clearNode(that.nodes['content']);
         if(cm.isString(node) || cm.isNumber(node)){
             that.nodes['content'].innerHTML = node;
