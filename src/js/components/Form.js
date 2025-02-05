@@ -725,6 +725,11 @@ function(params){
             fieldMessage,
             fieldLabel,
             messages = [];
+
+        // Filter errors data
+        errors = that.callbacks.filterErrors(that, errors);
+
+        // Render error messages
         cm.forEach(errors, function(item, key){
             // Get field
             fieldName = item && item.field ? item.field : key;
@@ -752,6 +757,10 @@ function(params){
             }
         });
         return messages;
+    };
+
+    that.callbacks.filterErrors = function(that, errors){
+        return errors;
     };
 
     that.callbacks.renderErrorMessage = function(that, field, message, label){
@@ -867,7 +876,7 @@ function(params){
             // Save
             that.fields[name] = field;
         }
-        return that;
+        return field;
     };
 
     that.removeField = function(name){
