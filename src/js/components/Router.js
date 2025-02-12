@@ -543,7 +543,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if(cm.isEmpty(route)){
             return;
         }
-        // Check route type
+        // Check a route type
         var item = that.get(route);
         if(item){
             if(item.type === 'external'){
@@ -620,21 +620,26 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Get route url
         var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
         var url = that.getURL(route, hash, urlParams);
+        that.setURL(url, hash, params);
+        return that;
+    };
+
+    classProto.setURL = function(url, hash, params){
+        var that = this;
+        // Validate params
+        params = cm.merge({
+            assignLocation: false,
+            replaceLocation: false,
+        }, params);
         // Assign new location or push/replace history state
         if(params.replaceLocation) {
             window.history.replaceState(that.current.state, '', url);
         }else if(params.assignLocation){
             window.location.assign(url);
         }else{
-            that.setURL(url, hash, params);
+            var route = that.prepareRoute(url);
+            that.pushRoute(route, params);
         }
-        return that;
-    };
-
-    classProto.setURL = function(url, hash, params){
-        var that = this;
-        var route = that.prepareRoute(url);
-        that.pushRoute(route, params);
         return that;
     };
 
