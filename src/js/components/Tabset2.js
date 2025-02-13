@@ -16,6 +16,7 @@ cm.define('Com.Tabset2', {
         active: null,
         setInitialTab: true,                                     // Set possible initial tab even if "active" is not defined
         setInitialTabImmediately: true,                          // Set initial tab without animation
+        hidePreviousTab: ['onTabShowEnd', 'onUnset'],
         processTabs: false,
 
         /* TABS */
@@ -403,8 +404,10 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
                     that.nodes.contentUL.style.height = item.tab.inner.offsetHeight + 'px';
                 }
                 previousItem.switchInt = setTimeout(function(){
-                    previousItem.tab.container.hidden = true;
-                    previousItem.tab.container.style.display = 'none';
+                    // Hide previous tab
+                    that.tabHideEnd(previousItem, {action: 'onTabShowEnd'});
+
+                    // Unset animation styles
                     that.nodes.contentUL.style.overflow = '';
                     that.nodes.contentUL.style.height = '';
 
@@ -413,8 +416,8 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
                     classInherit.prototype.tabShowEnd.call(that, item, params);
                 }, that.params.animateDuration);
             }else{
-                previousItem.tab.container.hidden = true;
-                previousItem.tab.container.style.display = 'none';
+                // Hide previous tab
+                that.tabHideEnd(previousItem, {action: 'onTabShowEnd'});
 
                 // Call parent method
                 classInherit.prototype.tabShowEnd.call(that, item, params);
@@ -422,6 +425,20 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         }else{
             // Call parent method
             classInherit.prototype.tabShowEnd.call(that, item, params);
+        }
+    };
+
+    classProto.tabHideEnd = function(item, params) {
+        var that = this;
+        if (
+            that.params.hidePreviousTab === true ||
+            cm.inArray(that.params.hidePreviousTab, params.action)
+        ) {
+            item.tab.container.hidden = true;
+            item.tab.container.style.display = 'none';
+
+            // Call parent method
+            classInherit.prototype.tabHideEnd.apply(that, arguments);
         }
     };
 

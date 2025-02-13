@@ -84,8 +84,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
 
     classProto.onInitComponentsStart = function(){
         var that = this;
-        cm.getConstructor(that.params['fileReaderConstructor'], function(classObject){
-            that.components['validator'] = new classObject(that.params['fileReaderParams']);
+        cm.getConstructor(that.params['fileReaderConstructor'], function(classConstructor){
+            that.components['validator'] = new classConstructor(that.params['fileReaderParams']);
         });
     };
 
@@ -128,16 +128,16 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
-        cm.getConstructor(that.params['fileReaderConstructor'], function(classObject){
-            that.components['reader'] = new classObject(that.params['fileReaderParams']);
+        cm.getConstructor(that.params['fileReaderConstructor'], function(classConstructor){
+            that.components['reader'] = new classConstructor(that.params['fileReaderParams']);
             that.components['reader'].addEvent('onReadSuccess', function(my, item){
                 that.set(item, true);
             });
         });
         // Init Dropzone
         if(that.params['dropzone']){
-            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
-                that.components['dropzone'] = new classObject(
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classConstructor){
+                that.components['dropzone'] = new classConstructor(
                     cm.merge(that.params['dropzoneParams'], {
                         'disabled' : that.params['disabled'],
                         'container' : that.nodes['content']['inner'],
@@ -151,8 +151,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }
         // Init File Manager
         if(that.params['fileManager']){
-            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.components['fileManager'] = new classObject(
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classConstructor){
+                that.components['fileManager'] = new classConstructor(
                     cm.merge(that.params['fileManagerParams'], {
                         'node' : that.nodes['content']['browseFileManager']
                     })
@@ -164,8 +164,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         }
         // Init File Uploader
         if(that.params['fileUploader']){
-            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
-                that.components['fileUploader'] = new classObject(
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classConstructor){
+                that.components['fileUploader'] = new classConstructor(
                     cm.merge(that.params['fileUploaderParams'], {
                         'node' : that.nodes['content']['browseFileUploader']
                     })

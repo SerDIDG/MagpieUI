@@ -494,8 +494,8 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
     classProto.renderController = function(){
         var that = this;
         if(that.params.constructor){
-            cm.getConstructor(that.params.constructor, function(classObject){
-                that.components.controller = new classObject(
+            cm.getConstructor(that.params.constructor, function(classConstructor){
+                that.components.controller = new classConstructor(
                     cm.merge(that.params.constructorParams, {
                         'node' : that.nodes.contentInput,
                         'form' : that.components.form,

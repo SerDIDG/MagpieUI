@@ -45,8 +45,8 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
 
         // Init Preview
         if (that.params.preview) {
-            cm.getConstructor(that.params.previewConstructor, function(classObject) {
-                that.components.preview = new classObject(
+            cm.getConstructor(that.params.previewConstructor, function(classConstructor) {
+                that.components.preview = new classConstructor(
                     cm.merge(that.params.previewParams, {
                         node: that.nodes.content.previewButton
                     })

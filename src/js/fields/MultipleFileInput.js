@@ -103,8 +103,8 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         // Call parent method - renderViewModel
         _inherit.prototype.renderViewModel.apply(that, arguments);
         // Init FilerReader
-        cm.getConstructor('Com.FileReader', function(classObject, className){
-            that.myComponents['reader'] = new classObject(that.params[className]);
+        cm.getConstructor('Com.FileReader', function(classConstructor, className){
+            that.myComponents['reader'] = new classConstructor(that.params[className]);
             that.myComponents['reader'].addEvent('onReadSuccess', function(my, item){
                 that.addItem({'value' : item}, {
                     'triggerEvents' : true
@@ -113,8 +113,8 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         });
         // Init Dropzone
         if(that.params['dropzone']){
-            cm.getConstructor(that.params['dropzoneConstructor'], function(classObject){
-                that.myComponents['dropzone'] = new classObject(
+            cm.getConstructor(that.params['dropzoneConstructor'], function(classConstructor){
+                that.myComponents['dropzone'] = new classConstructor(
                     cm.merge(that.params['dropzoneParams'], {
                         'container' : that.nodes['inner'],
                         'target' : that.nodes['holder']
@@ -127,8 +127,8 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         }
         // Init File Manager
         if(that.params['showToolbar'] && that.params['fileManager']){
-            cm.getConstructor(that.params['fileManagerConstructor'], function(classObject){
-                that.myComponents['fileManager'] = new classObject(
+            cm.getConstructor(that.params['fileManagerConstructor'], function(classConstructor){
+                that.myComponents['fileManager'] = new classConstructor(
                     cm.merge(that.params['fileManagerParams'], {
                         'node' : that.nodes['toolbar']['browseFileManager']
                     })
@@ -140,8 +140,8 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
         }
         // Init File Uploader
         if(that.params['showToolbar'] && that.params['fileUploader']){
-            cm.getConstructor(that.params['fileUploaderConstructor'], function(classObject){
-                that.myComponents['fileUploader'] = new classObject(
+            cm.getConstructor(that.params['fileUploaderConstructor'], function(classConstructor){
+                that.myComponents['fileUploader'] = new classConstructor(
                     cm.merge(that.params['fileUploaderParams'], {
                         'node' : that.nodes['toolbar']['browseFileUploader']
                     })

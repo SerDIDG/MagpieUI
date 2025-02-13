@@ -189,9 +189,9 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         var that = this;
     };
 
-    classProto.constructController = function(classObject){
+    classProto.constructController = function(classConstructor){
         var that = this;
-        return new classObject(
+        return new classConstructor(
             that.constructControllerParams(that.params.constructorParams)
         );
     };
@@ -298,9 +298,9 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
         });
     };
 
-    classProto.constructPlaceholder = function(classObject){
+    classProto.constructPlaceholder = function(classConstructor){
         var that = this;
-        return new classObject(
+        return new classConstructor(
             cm.merge(that.params.placeholderParams, {
                 opener: that,
                 content: that.nodes.placeholder

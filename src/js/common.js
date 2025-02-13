@@ -1705,20 +1705,28 @@ cm.firstEl = function(node){
     return node;
 };
 
-cm.insertFirst = function(node, target){
-    if(cm.isNode(node) && cm.isNode(target)){
-        if(target.firstChild){
+cm.insertFirst = function(node, target, reAppend){
+    reAppend = cm.isUndefined(reAppend) ? true : reAppend;
+    if(!cm.isNode(node) || !cm.isNode(target)){
+        return node;
+    }
+    if(target.firstChild){
+        var isAppended = cm.isParent(target, node);
+        if (reAppend || !isAppended || (isAppended && node !== target.firstChild)) {
             cm.insertBefore(node, target.firstChild);
-        }else{
-            cm.appendChild(node, target);
         }
+    }else{
+        cm.appendChild(node, target, reAppend);
     }
     return node;
 };
 
 cm.insertLast = cm.appendChild = function(node, target, reAppend){
     reAppend = cm.isUndefined(reAppend) ? true : reAppend;
-    if(cm.isNode(node) && cm.isNode(target) && (reAppend || !cm.isParent(target, node))){
+    if(!cm.isNode(node) || !cm.isNode(target)){
+        return node;
+    }
+    if(reAppend || !cm.isParent(target, node)){
         target.appendChild(node);
     }
     return node;
@@ -3302,7 +3310,7 @@ cm.getBodyScrollTop = function(){
     return Math.max(
         document.documentElement.scrollTop,
         document.body.scrollTop,
-        window.pageYOffset,
+        window.scrollY,
         0
     );
 };
@@ -3311,7 +3319,7 @@ cm.getBodyScrollLeft = function(){
     return Math.max(
         document.documentElement.scrollLeft,
         document.body.scrollLeft,
-        window.pageXOffset,
+        window.scrollWidth,
         0
     );
 };
@@ -3320,6 +3328,7 @@ cm.getBodyScrollHeight = function(){
     return Math.max(
         document.documentElement.scrollHeight,
         document.body.scrollHeight,
+        window.scrollHeight,
         0
     );
 };
@@ -4674,7 +4683,7 @@ cm.defineHelper = function(name, data, handler){
         'events' : [],
         'extend' : false
     }, data);
-    // Create class extend object
+    // Create a class extend object
     that.build = {
         'constructor' : handler,
         '_raw' : cm.clone(data),

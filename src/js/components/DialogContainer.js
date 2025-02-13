@@ -50,9 +50,9 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
         that.params['constructorParams']['titleAlign'] = that.params['constructorParams']['titleAlign'] || that.params['titleAlign'];
     };
 
-    classProto.constructController = function(classObject){
+    classProto.constructController = function(classConstructor){
         var that = this;
-        return new classObject(
+        return new classConstructor(
             cm.merge(that.params['constructorParams'], {
                 'opener' : that,
                 'container' : that.params['container'],
