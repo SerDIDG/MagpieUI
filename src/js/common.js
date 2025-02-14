@@ -3328,7 +3328,6 @@ cm.getBodyScrollWidth = function(){
     return Math.max(
         document.documentElement.scrollWidth,
         document.body.scrollWidth,
-        window.scrollWidth,
         0
     );
 };
@@ -3337,7 +3336,6 @@ cm.getBodyScrollHeight = function(){
     return Math.max(
         document.documentElement.scrollHeight,
         document.body.scrollHeight,
-        window.scrollHeight,
         0
     );
 };
@@ -3393,7 +3391,7 @@ cm.scrollTo = function(node, parent, params, callback){
     if(!cm.isNode(node)){
         return null;
     }
-    // If parent not specified - scroll window
+    // If parent didn't specify - scroll the window
     parent = !cm.isUndefined(parent) ? parent : window;
     // Variables
     var parentNode = cm.isWindow(parent) ? cm.getDocumentHtml() : parent,
