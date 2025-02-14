@@ -3319,6 +3319,15 @@ cm.getBodyScrollLeft = function(){
     return Math.max(
         document.documentElement.scrollLeft,
         document.body.scrollLeft,
+        window.scrollX,
+        0
+    );
+};
+
+cm.getBodyScrollWidth = function(){
+    return Math.max(
+        document.documentElement.scrollWidth,
+        document.body.scrollWidth,
         window.scrollWidth,
         0
     );
