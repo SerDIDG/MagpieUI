@@ -11,6 +11,7 @@ cm.define('Com.Notifications', {
         'embedStructure' : 'append',
         'iconClasses' : ['icon', 'small', 'linked'],
         'closable' : true,
+        'items': [],
         'Com.ToggleBox' : {
             'toggleTitle' : false,
             'className' : null,
@@ -38,9 +39,14 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.renderView = function(){
         var that = this;
+
+        // Structure
         that.nodes['container'] = cm.node('div', {'classes' : 'com__notifications is-hidden'},
             that.nodes['list'] = cm.node('ul')
         );
+
+        // Render items
+        cm.forEach(that.params.items, that.add.bind(that));
     };
 
     classProto.clear = function(){
