@@ -817,7 +817,7 @@ Mod['Stack'] = {
                 'name' : name,
                 'node' : node,
                 'class' : that, // ToDo: Deprecated
-                'classObject': that,
+                'classInstance': that,
                 'className' : that._name['full']
             };
             that._stack.push(that._stackItem);
@@ -838,7 +838,7 @@ Mod['Stack'] = {
         name = cm.isNumber(name) ? name.toString() : name;
         callback = cm.isFunction(callback) ? callback : function(){};
         if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
-            callback(item['classObject'], item, name);
+            callback(item['classInstance'], item, name);
             return true;
         }
         return false;
@@ -851,7 +851,7 @@ Mod['Stack'] = {
         cm.forEach(that._stack, function(item){
             if((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))){
                 items.push(item);
-                callback(item['classObject'], item, name);
+                callback(item['classInstance'], item, name);
             }
         });
         return items;

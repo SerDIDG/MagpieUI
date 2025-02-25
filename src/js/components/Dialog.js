@@ -138,7 +138,7 @@ function(params){
 
     var render = function(){
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__dialog', 'role' : 'dialog'},
+        nodes['container'] = cm.node('div', {'class' : 'com__dialog', 'role' : 'dialog', 'aria-modal': 'true'},
             nodes['bg'] = cm.node('div', {'class' : 'bg'}),
             nodes['window'] = cm.node('div', {'class' : 'com__dialog__window window'},
                 nodes['windowInner'] = cm.node('div', {'class' : 'inner'})

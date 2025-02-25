@@ -1,28 +1,34 @@
 cm.define('Com.Menu', {
     extend: 'Com.AbstractController',
+    events: [
+        'onShow',
+        'onHide',
+    ],
     params: {
         controllerEvents: true,
         renderStructure: false,
         embedStructureOnRender: false,
         embedStructure: 'append',
 
-        iconClasses: ['cm-i', 'cm-i__chevron-down', 'xx-small'],
-        targetEvent: 'hover',
+        targetEvent: 'click',
         top: 'targetHeight',
         left: 0,
         adaptiveFrom: null,
         adaptiveTop: null,
         adaptiveLeft: null,
         minWidth: 'targetWidth',
+        iconClasses: ['cm-i', 'cm-i__chevron-down', 'xx-small'],
 
-        tooltipConstructor: 'Com.Tooltip',
-        tooltipParams: {
-            className: 'com__menu-tooltip',
-            targetEvent: 'hover',
-            hideOnReClick: true,
-            theme: null,
-            hold: true,
-            delay: 'cm._config.hideDelay',
+        tooltip: {
+            constructor: 'Com.Tooltip',
+            constructorParams: {
+                className: 'com__menu-tooltip',
+                targetEvent: 'click',
+                hideOnReClick: true,
+                theme: null,
+                hold: true,
+                delay: 0,
+            },
         },
     },
     strings: {
@@ -35,7 +41,7 @@ function(params) {
 
 cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, classInherit) {
     classProto.construct = function() {
-        var that = this;
+        const that = this;
 
         // Variables
         that.nodes = {
@@ -48,16 +54,17 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     };
 
     classProto.validateParams = function(){
-        var that = this;
+        const that = this;
         that.triggerEvent('onValidateParamsStart');
 
         // ToDo: deprecated legacy parameter
         if (!cm.isEmpty(that.params.event)) {
             that.params.targetEvent = that.params.event;
         }
+        that.triggerEvent('onValidateParamsProcess');
 
         // Tooltip parameters
-        var tooltipParams = [
+        const tooltipParams = [
             'targetEvent',
             'minWidth',
             'top',
@@ -66,19 +73,18 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             'adaptiveTop',
             'adaptiveLeft',
         ];
-        cm.forEach(tooltipParams, function(item) {
+        cm.forEach(tooltipParams, item => {
             if (typeof that.params[item] !== 'undefined') {
-                that.params.tooltipParams[item] = that.params[item];
+                that.params.tooltip.constructorParams[item] = that.params[item];
             }
         });
 
         that.triggerEvent('onValidateParams');
-        that.triggerEvent('onValidateParamsProcess');
         that.triggerEvent('onValidateParamsEnd');
     };
 
     classProto.renderView = function() {
-        var that = this;
+        const that = this;
 
         // Structure
         that.nodes.container = cm.node('a', {classes: ['com__menu', 'com__menu--link'], title: that.msg('label'), role: 'button', tabindex: '0'},
@@ -93,23 +99,27 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     };
 
     classProto.renderViewModel = function() {
-        var that = this;
+        const that = this;
 
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Tooltip
-        cm.getConstructor(that.params.tooltipConstructor, function(classConstructor) {
+        cm.getConstructor(that.params.tooltip.constructor, classConstructor => {
             that.components.tooltip = new classConstructor(
-                cm.merge(that.params.tooltipParams, {
+                cm.merge(that.params.tooltip.constructorParams, {
                     target: that.nodes.container || that.nodes.button,
                     content: that.nodes.target,
                     events: {
                         onShowStart: function() {
                             cm.addClass(that.nodes.button, 'active');
+                            that.components.tooltip.focus();
+                            that.triggerEvent('onShow');
                         },
                         onHideStart: function() {
                             cm.removeClass(that.nodes.button, 'active');
+                            that.nodes.button.focus();
+                            that.triggerEvent('onHide');
                         },
                     },
                 })
@@ -120,19 +130,19 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     /******** PUBLIC ********/
 
     classProto.show = function() {
-        var that = this;
+        const that = this;
         that.components.tooltip && that.components.tooltip.show();
         return that;
     };
 
     classProto.hide = function() {
-        var that = this;
+        const that = this;
         that.components.tooltip && that.components.tooltip.hide();
         return that;
     };
 
     classProto.getNodes = function(key) {
-        var that = this;
+        const that = this;
         return that.nodes[key] || that.nodes;
     };
 });

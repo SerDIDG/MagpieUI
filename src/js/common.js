@@ -4870,11 +4870,11 @@ cm.Finder = function(className, name, parentNode, callback, params){
         }
     };
 
-    var watcher = function(classObject){
-        classObject.removeEvent(params['event'], watcher);
-        var isSame = classObject.isAppropriateToStack(name, parentNode, callback);
+    var watcher = function(classInstance){
+        classInstance.removeEvent(params['event'], watcher);
+        var isSame = classInstance.isAppropriateToStack(name, parentNode, callback);
         if(isSame && !params['multiple'] && isEventBind){
-            that.remove(classObject._constructor);
+            that.remove(classInstance._constructor);
         }
     };
 

@@ -172,11 +172,11 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.renderController = function(){
         var that = this;
-        cm.getConstructor(that.params.constructor, function(classObject){
+        cm.getConstructor(that.params.constructor, function(classConstructor){
             that.triggerEvent('onRenderControllerStart', arguments);
             // Construct
             that.renderControllerView();
-            that.components.controller = that.constructController(classObject);
+            that.components.controller = that.constructController(classConstructor);
             // Events
             that.triggerEvent('onRenderControllerProcess', that.components.controller);
             that.renderControllerEvents();
@@ -285,11 +285,11 @@ cm.getConstructor('Com.AbstractContainer', function(classConstructor, className,
 
     classProto.renderPlaceholder = function(){
         var that = this;
-        cm.getConstructor(that.params.placeholderConstructor, function(classObject){
+        cm.getConstructor(that.params.placeholderConstructor, function(classConstructor){
             that.triggerEvent('onRenderPlaceholderStart', arguments);
             // Construct
             that.renderPlaceholderView();
-            that.components.placeholder = that.constructPlaceholder(classObject);
+            that.components.placeholder = that.constructPlaceholder(classConstructor);
             that.renderPlaceholderButtons();
             // Events
             that.triggerEvent('onRenderPlaceholderProcess', that.components.placeholder);

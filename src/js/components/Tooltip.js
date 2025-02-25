@@ -1,11 +1,11 @@
 cm.define('Com.Tooltip', {
-    'modules' : [
+    'modules': [
         'Params',
         'Events',
         'Langs',
         'Stack'
     ],
-    'events' : [
+    'events': [
         'onValidateParams',
         'onRender',
         'onShowStart',
@@ -15,53 +15,53 @@ cm.define('Com.Tooltip', {
         'onHide',
         'onHideEnd'
     ],
-    'params' : {
-        'customEvents' : true,
-        'controllerEvents' : false,
-        'name' : '',
-        'target' : cm.node('div'),
-        'targetEvent' : 'hover',                        // hover | click | none
-        'hideOnReClick' : false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent' : 'click'
-        'hideOnSelfClick' : false,                      // Hide tooltip when clicked on own content
-        'hideOnOut' : true,                             // Hide content when clicked / mouseover outside own content
-        'autoHide' : false,
-        'autoHideDelay' : 'cm._config.autoHideDelay',
-        'hold' : false,                                 // After close hold content in specified node from 'holdTarget' parameter
-        'holdTarget' : false,
-        'preventClickEvent' : false,                    // Prevent default click event on the target, requires setting value 'targetEvent' : 'click'
-        'positionTarget' : false,                       // Override target node for calculation position and dimensions
-        'top' : 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
-        'left' : 0,                                     // Supported properties: targetWidth, selfWidth, screenWidth, number
-        'width' : 'auto',                               // Supported properties: targetWidth, screenWidth, auto, number
-        'height' : 'auto',
-        'minWidth' : 0,
-        'adaptiveFrom' : null,
-        'adaptiveTop' : null,
-        'adaptiveLeft' : null,
-        'adaptiveWidth' : null,
-        'adaptiveHeight' : null,
-        'scroll' : 'auto',                              // auto, scroll, visible
-        'duration' : 'cm._config.animDurationShort',
-        'delay' : 0,
-        'resizeInterval' : 5,
-        'disabled' : false,
-        'position' : 'absolute',
-        'className' : '',
-        'theme' : 'theme-default',
-        'animate' : false,
-        'arrow' : false,
-        'adaptive' : true,
-        'adaptiveX' : true,
-        'adaptiveY' : true,
-        'title' : '',
-        'titleTag' : 'h3',
-        'content' : cm.node('div'),
-        'container' : 'document.body'
-    }
+    'params': {
+        'customEvents': true,
+        'controllerEvents': false,
+        'name': '',
+        'target': cm.node('div'),
+        'targetEvent': 'hover',                        // hover | click | none
+        'hideOnReClick': false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent': 'click'
+        'hideOnSelfClick': false,                      // Hide tooltip when clicked on own content
+        'hideOnOut': true,                             // Hide content when clicked / mouseover outside own content
+        'autoHide': false,
+        'autoHideDelay': 'cm._config.autoHideDelay',
+        'hold': false,                                 // After close hold content in specified node from 'holdTarget' parameter
+        'holdTarget': false,
+        'preventClickEvent': false,                    // Prevent default click event on the target, requires setting value 'targetEvent': 'click'
+        'positionTarget': false,                       // Override target node for calculation position and dimensions
+        'top': 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
+        'left': 0,                                     // Supported properties: targetWidth, selfWidth, screenWidth, number
+        'width': 'auto',                               // Supported properties: targetWidth, screenWidth, auto, number
+        'height': 'auto',
+        'minWidth': 0,
+        'adaptiveFrom': null,
+        'adaptiveTop': null,
+        'adaptiveLeft': null,
+        'adaptiveWidth': null,
+        'adaptiveHeight': null,
+        'scroll': 'auto',                              // auto, scroll, visible
+        'duration': 'cm._config.animDurationShort',
+        'delay': 0,
+        'resizeInterval': 5,
+        'disabled': false,
+        'position': 'absolute',
+        'className': '',
+        'theme': 'theme-default',
+        'animate': false,
+        'arrow': false,
+        'adaptive': true,
+        'adaptiveX': true,
+        'adaptiveY': true,
+        'title': '',
+        'titleTag': 'h3',
+        'content': cm.node('div'),
+        'container': 'document.body',
+    },
 },
-function(params){
+function(params) {
     var that = this;
-    
+
     that.nodes = {};
     that.container = null;
     that.animation = null;
@@ -76,190 +76,196 @@ function(params){
     that.isWindowEvent = false;
     that.disabled = false;
 
-    var init = function(){
+    var init = function() {
         // Bind context
         that.windowEventHandler = windowEvent.bind(that);
         that.targetEventHandler = targetEvent.bind(that);
         that.destructHandler = that.destruct.bind(that);
+
         // Params
-        that.params['controllerEvents'] && bindControllerEvents();
+        that.params.controllerEvents && bindControllerEvents();
         that.setParams(params);
-        that.convertEvents(that.params['events']);
+        that.convertEvents(that.params.events);
         validateParams();
         render();
-        that.addToStack(that.nodes['container']);
+        that.addToStack(that.nodes.container);
         setMiscEvents();
         that.triggerEvent('onRender');
     };
 
-    var bindControllerEvents = function(){
-        cm.forEach(that._raw['events'], function(name){
-            if(!that[name]){
-                that[name] = function(){};
+    var bindControllerEvents = function() {
+        cm.forEach(that._raw.events, function(name) {
+            if (!that[name]) {
+                that[name] = function() {};
             }
-            if(!that[name + 'Handler']){
-                that[name + 'Handler'] = that[name].bind(that);
+            if (!that[`${name}Handler`]) {
+                that[`${name}Handler`] = that[name].bind(that);
             }
-            that.addEvent(name, that[name + 'Handler']);
+            that.addEvent(name, that[`${name}Handler`]);
         });
     };
 
-    var validateParams = function(){
-        that.setContainer(that.params['container'] || that.params['holdTarget'] || that.params['target']);
-        if(!that.params['adaptive']){
-            that.params['adaptiveX'] = false;
-            that.params['adaptiveY'] = false;
+    var validateParams = function() {
+        that.setContainer(that.params.container || that.params.holdTarget || that.params.target);
+        if (!cm.isArray(that.params.targetEvent)) {
+            that.params.targetEvent = [that.params.targetEvent];
         }
-        that.params['position'] = cm.inArray(['absolute', 'fixed'], that.params['position'])? that.params['position'] : 'absolute';
+        if (!that.params.adaptive) {
+            that.params.adaptiveX = false;
+            that.params.adaptiveY = false;
+        }
+        that.params.position = cm.inArray(['absolute', 'fixed'], that.params.position) ? that.params.position : 'absolute';
         that.triggerEvent('onValidateParams');
     };
 
-    var render = function(){
+    var render = function() {
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'com__tooltip', 'role' : 'tooltip'},
-            that.nodes['inner'] = cm.node('div', {'class' : 'inner'},
-                that.nodes['content'] = cm.node('div', {'class' : 'scroll'})
+        that.nodes.container = cm.node('div', {'class': 'com__tooltip', 'role': 'tooltip'},
+            that.nodes.inner = cm.node('div', {'class': 'inner'},
+                that.nodes.content = cm.node('div', {'class': 'scroll'})
             )
         );
-        cm.isString(that.params['scroll']) && cm.addClass(that.nodes['content'], ['is', that.params['scroll']].join('-'));
+        cm.isString(that.params.scroll) && cm.addClass(that.nodes.content, ['is', that.params.scroll].join('-'));
         // Add position style
-        that.nodes['container'].style.position = that.params['position'];
-        // Add theme css class
-        !cm.isEmpty(that.params['theme']) && cm.addClass(that.nodes['container'], that.params['theme']);
-        !cm.isEmpty(that.params['animate']) && cm.addClass(that.nodes['container'], ['animate', that.params['animate']].join('--'));
-        !cm.isEmpty(that.params['arrow']) && cm.addClass(that.nodes['container'], ['arrow', that.params['arrow']].join('--'));
-        // Add css class
-        !cm.isEmpty(that.params['className']) && cm.addClass(that.nodes['container'], that.params['className']);
+        that.nodes.container.style.position = that.params.position;
+        // Add theme CSS class
+        !cm.isEmpty(that.params.theme) && cm.addClass(that.nodes.container, that.params.theme);
+        !cm.isEmpty(that.params.animate) && cm.addClass(that.nodes.container, ['animate', that.params.animate].join('--'));
+        !cm.isEmpty(that.params.arrow) && cm.addClass(that.nodes.container, ['arrow', that.params.arrow].join('--'));
+        // Add CSS class
+        !cm.isEmpty(that.params.className) && cm.addClass(that.nodes.container, that.params.className);
         // Set title
-        renderTitle(that.params['title']);
+        renderTitle(that.params.title);
         // Embed content
-        renderContent(that.params['content']);
+        renderContent(that.params.content);
         // Disabled / Enabled
-        if(that.params['disabled']){
+        if (that.params.disabled) {
             that.disable();
-        }else{
+        } else {
             that.enable();
         }
     };
 
-    var renderTitle = function(title){
-        cm.remove(that.nodes['title']);
-        if(!cm.isEmpty(title)){
-            that.nodes['title'] = cm.node('div', {'class' : 'title'},
-                cm.node(that.params['titleTag'], title)
+    var renderTitle = function(title) {
+        cm.remove(that.nodes.title);
+        if (!cm.isEmpty(title)) {
+            that.nodes.title = cm.node('div', {'class': 'title'},
+                cm.node(that.params.titleTag, title)
             );
-            cm.insertFirst(that.nodes['title'], that.nodes['inner']);
+            cm.insertFirst(that.nodes.title, that.nodes.inner);
         }
     };
 
-    var renderContent = function(node){
-        cm.clearNode(that.nodes['content']);
-        if(node){
-            that.nodes['content'].appendChild(node);
+    var renderContent = function(node) {
+        cm.clearNode(that.nodes.content);
+        if (node) {
+            that.nodes.content.appendChild(node);
         }
     };
 
-    var setMiscEvents = function(){
+    var setMiscEvents = function() {
         // Init animation
-        that.animation = new cm.Animation(that.nodes['container']);
-        // Hide on self click
-        if(that.params['hideOnSelfClick']){
-            cm.addEvent(that.nodes['container'], 'click', function(){
+        that.animation = new cm.Animation(that.nodes.container);
+
+        // Hide on self-click
+        if (that.params.hideOnSelfClick) {
+            cm.addEvent(that.nodes.container, 'click', function() {
                 that.hide();
             });
         }
+
         // Add custom events
-        if(that.params['customEvents']){
+        if (that.params.customEvents) {
             cm.customEvent.add(that.getStackNode(), 'destruct', that.destructHandler);
         }
         setTargetEvent();
     };
 
-    var targetEvent = function(event){
-        if(that.params['targetEvent'] === 'click' && that.params['preventClickEvent']) {
+    var targetEvent = function(event) {
+        if (cm.inArray(that.params.targetEvent, 'click') && that.params.preventClickEvent) {
             cm.preventDefault(event);
         }
-        if(!that.disabled){
-            if(that.isShow && that.params['targetEvent'] === 'click' && that.params['hideOnReClick']){
+        if (!that.disabled) {
+            if (that.isShow && cm.inArray(that.params.targetEvent, 'click') && that.params.hideOnReClick) {
                 hide();
-            }else{
+            } else {
                 show();
             }
         }
     };
 
-    var setTargetEvent = function(){
+    var setTargetEvent = function() {
         // Hold
-        if(that.params['hold']){
-            var holdTarget = that.params['holdTarget'] || that.params['target'];
-            cm.appendChild(that.nodes['container'], holdTarget);
+        if (that.params.hold) {
+            var holdTarget = that.params.holdTarget || that.params.target;
+            cm.appendChild(that.nodes.container, holdTarget);
         }
+
         // Event
-        switch(that.params['targetEvent']){
-            case 'hover' :
-                cm.addEvent(that.params['target'], 'mouseover', that.targetEventHandler, true);
-                break;
-            case 'click' :
-                cm.click.add(that.params['target'], that.targetEventHandler, true);
-                break;
+        if (cm.inArray(that.params.targetEvent, 'hover')) {
+            cm.addEvent(that.params.target, 'mouseover', that.targetEventHandler, true);
+        }
+        if (cm.inArray(that.params.targetEvent, 'click')) {
+            cm.click.add(that.params.target, that.targetEventHandler, true);
         }
     };
 
-    var removeTargetEvent = function(){
-        switch(that.params['targetEvent']){
-            case 'hover' :
-                cm.removeEvent(that.params['target'], 'mouseover', that.targetEventHandler, true);
-                break;
-            case 'click' :
-                cm.click.remove(that.params['target'], that.targetEventHandler, true);
-                break;
+    var removeTargetEvent = function() {
+        if (cm.inArray(that.params.targetEvent, 'hover')) {
+            cm.removeEvent(that.params.target, 'mouseover', that.targetEventHandler, true);
+        }
+        if (cm.inArray(that.params.targetEvent, 'click')) {
+            cm.click.remove(that.params.target, that.targetEventHandler, true);
         }
     };
 
-    var show = function(immediately){
-        if((!that.isShow && !that.isShowProcess) || that.isHideProcess){
+    var show = function(immediately) {
+        if ((!that.isShow && !that.isShowProcess) || that.isHideProcess) {
             that.isShowProcess = true;
             setWindowEvent();
+
             // Show Handler
             clearDelayInterval();
             clearAutoHideInterval();
-            if(immediately){
+            if (immediately) {
                 showHandler(immediately);
-            }else if(that.params['delay'] && !that.isHideProcess){
-                that.delayInterval = setTimeout(showHandler, that.params['delay']);
-            }else{
+            } else if (that.params.delay && !that.isHideProcess) {
+                that.delayInterval = setTimeout(showHandler, that.params.delay);
+            } else {
                 showHandler();
             }
         }
-        // Reset autohide delay
-        if(that.isShow && !that.isShowProcess){
+
+        // Reset auto hide delay
+        if (that.isShow && !that.isShowProcess) {
             autoHideHandler();
         }
     };
 
-    var showHandler = function(immediately){
+    var showHandler = function(immediately) {
         // Append
-        that.container.appendChild(that.nodes['container']);
-        that.nodes['container'].style.display = 'block';
+        that.container.appendChild(that.nodes.container);
+        that.nodes.container.style.display = 'block';
         resizeHelper();
         that.triggerEvent('onShowStart');
+
         // Animate
-        cm.replaceClass(that.nodes['container'], 'id-hide', 'is-show', true);
-        if(immediately || !that.params['duration']){
+        cm.replaceClass(that.nodes.container, 'id-hide', 'is-show', true);
+        if (immediately || !that.params.duration) {
             showHandlerEnd();
-        }else{
+        } else {
             that.animation.stop();
             that.animation.go({
-                'style' : {'opacity' : 1},
-                'duration' : that.params['duration'],
-                'anim' : 'smooth',
-                'onStop' : showHandlerEnd
+                style: {opacity: 1},
+                duration: that.params.duration,
+                anim: 'smooth',
+                onStop: showHandlerEnd
             });
         }
     };
 
-    var showHandlerEnd = function(){
-        that.nodes['container'].style.opacity = 1;
+    var showHandlerEnd = function() {
+        that.nodes.container.style.opacity = 1;
         that.isShow = true;
         that.isShowProcess = false;
         that.isHideProcess = false;
@@ -268,47 +274,49 @@ function(params){
         that.triggerEvent('onShowEnd');
     };
 
-    var hide = function(immediately){
-        if((that.isShow || that.isShowProcess) && !that.isHideProcess){
+    var hide = function(immediately) {
+        if ((that.isShow || that.isShowProcess) && !that.isHideProcess) {
             that.isHideProcess = true;
+
             // Hide Handler
             clearDelayInterval();
             clearAutoHideInterval();
-            if(immediately){
+            if (immediately) {
                 hideHandler(immediately);
-            }else if(that.params['delay'] && !that.isShowProcess){
-                that.delayInterval = setTimeout(hideHandler, that.params['delay']);
-            }else{
+            } else if (that.params.delay && !that.isShowProcess) {
+                that.delayInterval = setTimeout(hideHandler, that.params.delay);
+            } else {
                 hideHandler(false);
             }
         }
     };
 
-    var hideHandler = function(immediately){
+    var hideHandler = function(immediately) {
         that.triggerEvent('onHideStart');
+
         // Animate
-        cm.replaceClass(that.nodes['container'], 'is-show', 'id-hide', true);
-        if(immediately || !that.params['duration']){
+        cm.replaceClass(that.nodes.container, 'is-show', 'id-hide', true);
+        if (immediately || !that.params.duration) {
             hideHandlerEnd();
-        }else{
+        } else {
             that.animation.go({
-                'style' : {'opacity' : 0},
-                'duration' : that.params['duration'],
-                'anim' : 'smooth',
-                'onStop' : hideHandlerEnd
+                style: {opacity: 0},
+                duration: that.params.duration,
+                anim: 'smooth',
+                onStop: hideHandlerEnd
             });
         }
     };
 
-    var hideHandlerEnd = function(){
+    var hideHandlerEnd = function() {
         clearResizeInterval();
         removeWindowEvent();
-        that.nodes['container'].style.display = 'none';
-        if(that.params['hold']){
-            var holdTarget = that.params['holdTarget'] || that.params['target'];
-            cm.appendChild(that.nodes['container'], holdTarget);
-        }else{
-            cm.remove(that.nodes['container']);
+        that.nodes.container.style.display = 'none';
+        if (that.params.hold) {
+            var holdTarget = that.params.holdTarget || that.params.target;
+            cm.appendChild(that.nodes.container, holdTarget);
+        } else {
+            cm.remove(that.nodes.container);
         }
         that.isShow = false;
         that.isShowProcess = false;
@@ -317,58 +325,60 @@ function(params){
         that.triggerEvent('onHideEnd');
     };
 
-    var autoHideHandler = function(){
-        if(that.params['autoHide']){
+    var autoHideHandler = function() {
+        if (that.params.autoHide) {
             clearAutoHideInterval();
-            that.autoHideInterval = setTimeout(hide, that.params['autoHideDelay']);
+            that.autoHideInterval = setTimeout(hide, that.params.autoHideDelay);
         }
     };
 
-    var resizeHelper = function(){
+    var resizeHelper = function() {
         resize();
         clearResizeInterval();
-        that.resizeInterval = setTimeout(resizeHelper, that.params['resizeInterval']);
+        that.resizeInterval = setTimeout(resizeHelper, that.params.resizeInterval);
     };
 
-    var resize = function(){
-        var target = that.params['positionTarget'] || that.params['target'],
-            targetWidth =  target.offsetWidth,
+    var resize = function() {
+        var target = that.params.positionTarget || that.params.target,
+            targetWidth = target.offsetWidth,
             targetHeight = target.offsetHeight,
-            selfHeight = that.nodes['container'].offsetHeight,
-            selfWidth = that.nodes['container'].offsetWidth,
+            selfHeight = that.nodes.container.offsetHeight,
+            selfWidth = that.nodes.container.offsetWidth,
             pageSize = cm.getPageSize(),
-            screenWidth = pageSize['winWidth'],
-            screenHeight = pageSize['winHeight'],
+            screenWidth = pageSize.winWidth,
+            screenHeight = pageSize.winHeight,
             scrollTop = cm.getScrollTop(window),
             scrollLeft = cm.getScrollLeft(window),
-            paramsTop = that.params['top'],
-            paramsLeft = that.params['left'],
-            paramsWidth = that.params['width'],
-            paramsHeight = that.params['height'];
+            paramsTop = that.params.top,
+            paramsLeft = that.params.left,
+            paramsWidth = that.params.width,
+            paramsHeight = that.params.height;
+
         // Validate
-        if(!cm.isEmpty(that.params['adaptiveFrom']) && that.params['adaptiveFrom'] >= screenWidth){
-            paramsTop = !cm.isEmpty(that.params['adaptiveTop']) ? that.params['adaptiveTop'] : paramsTop;
-            paramsLeft = !cm.isEmpty(that.params['adaptiveLeft']) ? that.params['adaptiveLeft'] : paramsLeft;
-            paramsWidth = !cm.isEmpty(that.params['adaptiveWidth']) ? that.params['adaptiveWidth'] : paramsWidth;
-            paramsHeight = !cm.isEmpty(that.params['adaptiveHeight']) ? that.params['adaptiveHeight'] : paramsHeight;
+        if (!cm.isEmpty(that.params.adaptiveFrom) && that.params.adaptiveFrom >= screenWidth) {
+            paramsTop = !cm.isEmpty(that.params.adaptiveTop) ? that.params.adaptiveTop : paramsTop;
+            paramsLeft = !cm.isEmpty(that.params.adaptiveLeft) ? that.params.adaptiveLeft : paramsLeft;
+            paramsWidth = !cm.isEmpty(that.params.adaptiveWidth) ? that.params.adaptiveWidth : paramsWidth;
+            paramsHeight = !cm.isEmpty(that.params.adaptiveHeight) ? that.params.adaptiveHeight : paramsHeight;
         }
+
         // Calculate size
-        (function(){
+        (function() {
             var width = 0,
                 height = 0,
                 minWidth = 0;
-            if(that.params['minWidth'] !== 'auto'){
+            if (that.params.minWidth !== 'auto') {
                 minWidth = eval(
-                    that.params['minWidth']
+                    that.params.minWidth
                         .toString()
                         .replace('targetWidth', targetWidth)
                         .replace('screenWidth', screenWidth)
                         .replace('selfWidth', selfWidth)
                 );
                 minWidth = Math.min(screenWidth, minWidth);
-                that.nodes['container'].style.minWidth =  [minWidth, 'px'].join('');
+                that.nodes.container.style.minWidth = [minWidth, 'px'].join('');
             }
-            if(paramsWidth !== 'auto'){
+            if (paramsWidth !== 'auto') {
                 width = eval(
                     paramsWidth
                         .toString()
@@ -378,11 +388,11 @@ function(params){
                 );
                 width = Math.max(minWidth, width);
                 width = Math.min(screenWidth, width);
-                if(width !== selfWidth){
-                    that.nodes['container'].style.width =  [width, 'px'].join('');
+                if (width !== selfWidth) {
+                    that.nodes.container.style.width = [width, 'px'].join('');
                 }
             }
-            if(paramsHeight !== 'auto'){
+            if (paramsHeight !== 'auto') {
                 height = eval(
                     paramsHeight
                         .toString()
@@ -391,13 +401,14 @@ function(params){
                         .replace('selfHeight', selfHeight)
                 );
                 height = Math.min(screenHeight, height);
-                that.nodes['content'].style.maxHeight =  [height, 'px'].join('');
+                that.nodes.content.style.maxHeight = [height, 'px'].join('');
             }
-            selfWidth = that.nodes['container'].offsetWidth;
-            selfHeight = that.nodes['container'].offsetHeight;
+            selfWidth = that.nodes.container.offsetWidth;
+            selfHeight = that.nodes.container.offsetHeight;
         })();
+
         // Calculate position
-        (function(){
+        (function() {
             var top = cm.getRealY(target),
                 topAdd = eval(
                     paramsTop
@@ -406,7 +417,7 @@ function(params){
                         .replace('screenHeight', screenHeight)
                         .replace('selfHeight', selfHeight)
                 ),
-                left =  cm.getRealX(target),
+                left = cm.getRealX(target),
                 leftAdd = eval(
                     paramsLeft
                         .toString()
@@ -416,8 +427,9 @@ function(params){
                 ),
                 positionTop,
                 positionLeft;
+
             // Calculate adaptive or static vertical position
-            if(that.params['adaptiveY']){
+            if (that.params.adaptiveY) {
                 positionTop = Math.max(
                     Math.min(
                         ((top + topAdd + selfHeight > screenHeight)
@@ -428,11 +440,12 @@ function(params){
                     ),
                     0
                 );
-            }else{
+            } else {
                 positionTop = top + topAdd;
             }
+
             // Calculate adaptive or static horizontal position
-            if(that.params['adaptiveX']){
+            if (that.params.adaptiveX) {
                 positionLeft = Math.max(
                     Math.min(
                         ((left + leftAdd + selfWidth > screenWidth)
@@ -443,157 +456,158 @@ function(params){
                     ),
                     0
                 );
-            }else{
+            } else {
                 positionLeft = left + leftAdd;
             }
+
             // Fix scroll position for absolute
-            if(that.params['position'] === 'absolute'){
-                if(that.container === document.body){
+            if (that.params.position === 'absolute') {
+                if (that.container === document.body) {
                     positionTop += scrollTop;
                     positionLeft += scrollLeft;
-                }else{
+                } else {
                     positionTop -= cm.getRealY(that.container);
                     positionLeft -= cm.getRealX(that.container);
                 }
             }
             positionTop = Math.round(positionTop);
             positionLeft = Math.round(positionLeft);
+
             // Apply styles
-            if(positionTop !== that.nodes['container'].offsetTop){
-                that.nodes['container'].style.top =  [positionTop, 'px'].join('');
+            if (positionTop !== that.nodes.container.offsetTop) {
+                that.nodes.container.style.top = [positionTop, 'px'].join('');
             }
-            if(positionLeft !== that.nodes['container'].offsetLeft){
-                that.nodes['container'].style.left = [positionLeft, 'px'].join('');
+            if (positionLeft !== that.nodes.container.offsetLeft) {
+                that.nodes.container.style.left = [positionLeft, 'px'].join('');
             }
         })();
     };
 
-    var setWindowEvent = function(){
-        if(that.params['hideOnOut'] && !that.isWindowEvent){
+    var setWindowEvent = function() {
+        if (that.params.hideOnOut && !that.isWindowEvent) {
             that.isWindowEvent = true;
-            switch(that.params['targetEvent']){
-                case 'hover' :
-                    cm.addEvent(window, 'mousemove', that.windowEventHandler);
-                    break;
-                case 'click' :
-                default :
-                    cm.addEvent(window, 'mousedown', that.windowEventHandler);
-                    break;
+            if (cm.inArray(that.params.targetEvent, 'hover')) {
+                cm.addEvent(window, 'mousemove', that.windowEventHandler);
+            }
+            if (cm.inArray(that.params.targetEvent, 'click')) {
+                cm.addEvent(window, 'mousedown', that.windowEventHandler);
             }
         }
     };
 
-    var removeWindowEvent = function(){
-        if(that.params['hideOnOut'] && that.isWindowEvent){
+    var removeWindowEvent = function() {
+        if (that.params.hideOnOut && that.isWindowEvent) {
             that.isWindowEvent = false;
-            switch(that.params['targetEvent']){
-                case 'hover' :
-                    cm.removeEvent(window, 'mousemove', that.windowEventHandler);
-                    break;
-                case 'click' :
-                default :
-                    cm.removeEvent(window, 'mousedown', that.windowEventHandler);
-                    break;
+            if (cm.inArray(that.params.targetEvent, 'hover')) {
+                cm.removeEvent(window, 'mousemove', that.windowEventHandler);
+            }
+            if (cm.inArray(that.params.targetEvent, 'click')) {
+                cm.removeEvent(window, 'mousedown', that.windowEventHandler);
             }
         }
     };
 
-    var windowEvent = function(e){
+    var windowEvent = function(e) {
         var target = cm.getEventTarget(e);
-        if(!cm.isParent(that.nodes['container'], target, true) && !cm.isParent(that.params['target'], target, true)){
+        if (!cm.isParent(that.nodes.container, target, true) && !cm.isParent(that.params.target, target, true)) {
             hide(false);
-        }else{
+        } else {
             show(true);
         }
     };
 
-    var clearResizeInterval = function(){
+    var clearResizeInterval = function() {
         that.resizeInterval && clearTimeout(that.resizeInterval);
         that.resizeInterval = null;
     };
 
-    var clearDelayInterval = function(){
+    var clearDelayInterval = function() {
         that.delayInterval && clearTimeout(that.delayInterval);
         that.delayInterval = null;
     };
 
-    var clearAutoHideInterval = function(){
+    var clearAutoHideInterval = function() {
         that.autoHideInterval && clearTimeout(that.autoHideInterval);
         that.autoHideInterval = null;
     };
 
     /* ******* MAIN ******* */
 
-    that.setTitle = function(title){
+    that.setTitle = function(title) {
         renderTitle(title);
         return that;
     };
 
-    that.setContent = function(node){
+    that.setContent = function(node) {
         renderContent(node);
         return that;
     };
 
-    that.setTarget = function(node){
+    that.setTarget = function(node) {
         removeTargetEvent();
-        that.params['target'] = node || cm.node('div');
-        if(!that.params['container']){
-            that.setContainer(that.params['holdTarget'] || that.params['target']);
+        that.params.target = node || cm.node('div');
+        if (!that.params.container) {
+            that.setContainer(that.params.holdTarget || that.params.target);
         }
         setTargetEvent();
         return that;
     };
 
-    that.setContainer = function(node){
-        if(cm.isNode(node)){
+    that.setContainer = function(node) {
+        if (cm.isNode(node)) {
             that.container = node;
         }
         return that;
     };
 
-    that.show = function(immediately){
+    that.show = function(immediately) {
         show(immediately);
         return that;
     };
 
-    that.hide = function(immediately){
+    that.hide = function(immediately) {
         hide(immediately);
         return that;
     };
 
-    that.disable = function(){
+    that.disable = function() {
         that.disabled = true;
         return that;
     };
 
-    that.enable = function(){
+    that.enable = function() {
         that.disabled = false;
         return that;
     };
 
-    that.scrollToNode = function(node){
-        if(cm.isNode(node) && cm.isParent(that.nodes['content'], node)){
-            that.nodes['content'].scrollTop = node.offsetTop - that.nodes['content'].offsetTop;
+    that.focus = function() {
+        that.nodes.container.focus();
+        return that;
+    };
+
+    that.scrollToNode = function(node) {
+        if (cm.isNode(node) && cm.isParent(that.nodes.content, node)) {
+            that.nodes.content.scrollTop = node.offsetTop - that.nodes.content.offsetTop;
         }
         return that;
     };
 
-    that.isOwnNode = function(node){
-        return cm.isParent(that.nodes['container'], node, true);
+    that.isOwnNode = function(node) {
+        return cm.isParent(that.nodes.container, node, true);
     };
 
-    that.remove = function(){
+    that.remove = function() {
         hide(true);
         removeTargetEvent();
         return that;
     };
 
-    that.destruct = function(){
-        if(!that.isDestructed){
+    that.destruct = function() {
+        if (!that.isDestructed) {
             that.isDestructed = true;
             cm.customEvent.trigger(that.getStackNode(), 'destruct', {
-                'direction' : 'child',
-                'self' : false
+                direction: 'child',
+                self: false
             });
             cm.customEvent.remove(that.getStackNode(), 'destruct', that.destructHandler);
             that.removeFromStack();
@@ -603,7 +617,7 @@ function(params){
     };
 
     // Deprecated
-    that.getNodes = function(key){
+    that.getNodes = function(key) {
         return that.nodes[key] || that.nodes;
     };
 

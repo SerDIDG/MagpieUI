@@ -1,163 +1,140 @@
-Com['Scroll'] = function(o){
-    var that = this,
-        config = cm.merge({
-            'node' : cm.node('div'),
-            'step' : 15,
-            'time' : 50,
-            'duration' : 300,
-            'nodes' : {},
-            'events' : {}
-        }, o),
-        API = {
-            'onScroll' : [],
-            'onScrollStart' : [],
-            'onScrollEnd' : []
-        },
-        nodes = {
-            'left' : cm.node('div'),
-            'right' : cm.node('div'),
-            'up' : cm.node('div'),
-            'down' : cm.node('div'),
-            'scroll' : cm.node('div')
-        },
-        anim,
-        animInterval,
-        top,
-        left;
+cm.define('Com.Scroll', {
+    extend: 'Com.AbstractController',
+    events: [
+        'onScroll',
+        'onScrollStart',
+        'onScrollEnd',
+    ],
+    params: {
+        controllerEvents: true,
+        renderStructure: false,
+        embedStructureOnRender: false,
 
-    var init = function(){
-        convertEvents(config['events']);
-        getNodes(config['node'], 'ComScroll');
-        render();
+        step: 15,
+        time: 50,
+        duration: 300,
+    },
+},
+function() {
+    Com.AbstractController.apply(this, arguments);
+});
+
+cm.getConstructor('Com.Scroll', function(classConstructor, className, classProto, classInherit) {
+    classProto.construct = function () {
+        const that = this;
+
+        // Pre-define nodes
+        that.nodes = {
+            left: cm.node('div'),
+            right: cm.node('div'),
+            up: cm.node('div'),
+            down: cm.node('div'),
+            scroll: cm.node('div'),
+        };
+
+        // Call parent method
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
-    var render = function(){
+    classProto.renderViewModel = function() {
+        const that = this;
+        // Call parent method
+        classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Init animation
-        anim = new cm.Animation(nodes['scroll']);
-        // Reset
-        nodes['scroll'].scrollTop = 0;
-        nodes['scroll'].scrollLeft = 0;
-        // Events
-        cm.addEvent(nodes['up'], 'mousedown', startMoveUp);
-        cm.addEvent(nodes['up'], 'mouseup', endAnimation);
-        cm.addEvent(nodes['up'], 'mouseout', endAnimation);
-        cm.addEvent(nodes['down'], 'mousedown', startMoveDown);
-        cm.addEvent(nodes['down'], 'mouseup', endAnimation);
-        cm.addEvent(nodes['down'], 'mouseout', endAnimation);
-        cm.addEvent(nodes['left'], 'mousedown', startMoveLeft);
-        cm.addEvent(nodes['left'], 'mouseup', endAnimation);
-        cm.addEvent(nodes['left'], 'mouseout', endAnimation);
-        cm.addEvent(nodes['right'], 'mousedown', startMoveRight);
-        cm.addEvent(nodes['right'], 'mouseup', endAnimation);
-        cm.addEvent(nodes['right'], 'mouseout', endAnimation);
+        that.components.animation = new cm.Animation(that.nodes.scroll);
+        
+        // Reset scroll
+        that.nodes.scroll.scrollTop = 0;
+        that.nodes.scroll.scrollLeft = 0;
+        
+        // Add target events
+        cm.addEvent(that.nodes.up, 'mousedown', that.startMoveUp.bind(that));
+        cm.addEvent(that.nodes.up, 'mouseup', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.up, 'mouseout', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.down, 'mousedown', that.startMoveDown.bind(that));
+        cm.addEvent(that.nodes.down, 'mouseup', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.down, 'mouseout', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.left, 'mousedown', that.startMoveLeft.bind(that));
+        cm.addEvent(that.nodes.left, 'mouseup', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.left, 'mouseout', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.right, 'mousedown', that.startMoveRight.bind(that));
+        cm.addEvent(that.nodes.right, 'mouseup', that.endAnimation.bind(that));
+        cm.addEvent(that.nodes.right, 'mouseout', that.endAnimation.bind(that));
     };
 
-    var startMoveUp = function(){
-        endAnimation();
-        animInterval = setInterval(moveUp, config['time']);
-        moveUp();
+    /******* DIRECTIONS *******/
+
+    classProto.startMoveUp = function(){
+        const that = this;
+        that.endAnimation();
+        that.animationInterval = setInterval(that.moveUp.bind(that), that.params.time);
+        that.moveUp();
     };
 
-    var startMoveDown = function(){
-        endAnimation();
-        animInterval = setInterval(moveDown, config['time']);
-        moveDown();
+    classProto.startMoveDown = function(){
+        const that = this;
+        that.endAnimation();
+        that.animationInterval = setInterval(that.moveDown.bind(that), that.params.time);
+        that.moveDown();
     };
 
-    var startMoveLeft = function(){
-        endAnimation();
-        animInterval = setInterval(moveLeft, config['time']);
-        moveLeft();
+    classProto.startMoveLeft = function(){
+        const that = this;
+        that.endAnimation();
+        that.animationInterval = setInterval(that.moveLeft.bind(that), that.params.time);
+        that.moveLeft();
     };
 
-    var startMoveRight = function(){
-        endAnimation();
-        animInterval = setInterval(moveRight, config['time']);
-        moveRight();
+    classProto.startMoveRight = function(){
+        const that = this;
+        that.endAnimation();
+        that.animationInterval = setInterval(that.moveRight.bind(that), that.params.time);
+        that.moveRight();
     };
 
-    var endAnimation = function(){
-        animInterval && clearInterval(animInterval);
+    classProto.endAnimation = function(){
+        const that = this;
+        that.animationInterval && clearInterval(that.animationInterval);
     };
 
-    var moveUp = function(){
-        top = Math.max((nodes['scroll'].scrollTop - config['step']), 0);
-        anim.go({'style' : {'scrollTop' : top}, 'duration' : config['time'], 'amim' : 'simple'});
+    classProto.moveUp = function(){
+        const that = this;
+        const top = Math.max((that.nodes.scroll.scrollTop - that.params.step), 0);
+        that.components.animation.go({style: {scrollTop: top}, duration: that.params.time, anim: 'simple'});
     };
 
-    var moveDown = function(){
-        top = Math.min((nodes['scroll'].scrollTop + config['step']), (nodes['scroll'].scrollHeight - nodes['scroll'].offsetHeight));
-        anim.go({'style' : {'scrollTop' : top}, 'duration' : config['time'], 'amim' : 'simple'});
+    classProto.moveDown = function(){
+        const that = this;
+        const top = Math.min((that.nodes.scroll.scrollTop + that.params.step), (that.nodes.scroll.scrollHeight - that.nodes.scroll.offsetHeight));
+        that.components.animation.go({style: {scrollTop: top}, duration: that.params.time, anim: 'simple'});
     };
 
-    var moveLeft = function(){
-        left = Math.max((nodes['scroll'].scrollLeft - config['step']), 0);
-        anim.go({'style' : {'scrollLeft' : left}, 'duration' : config['time'], 'amim' : 'simple'});
+    classProto.moveLeft = function(){
+        const that = this;
+        const left = Math.max((that.nodes.scroll.scrollLeft - that.params.step), 0);
+        that.components.animation.go({style: {scrollLeft: left}, duration: that.params.time, anim: 'simple'});
     };
 
-    var moveRight = function(){
-        left = Math.min((nodes['scroll'].scrollLeft + config['step']), (nodes['scroll'].scrollWidth - nodes['scroll'].offsetWidth));
-        anim.go({'style' : {'scrollLeft' : left}, 'duration' : config['time'], 'amim' : 'simple'});
+    classProto.moveRight = function(){
+        const that = this;
+        const left = Math.min((that.nodes.scroll.scrollLeft + that.params.step), (that.nodes.scroll.scrollWidth - that.nodes.scroll.offsetWidth));
+        that.components.animation.go({style: {scrollLeft: left}, duration: that.params.time, anim: 'simple'});
     };
 
-    /* *** MISC FUNCTIONS *** */
+    /******* PUBLIC *******/
 
-    var convertEvents = function(o){
-        cm.forEach(o, function(item, key){
-            if(API[key] && typeof item == 'function'){
-                API[key].push(item);
-            }
-        });
-    };
-
-    var getNodes = function(container, marker){
-        if(container){
-            var sourceNodes = {};
-            if(marker){
-                sourceNodes = cm.getNodes(container)[marker] || {};
-            }else{
-                sourceNodes = cm.getNodes(container);
-            }
-            nodes = cm.merge(nodes, sourceNodes);
-        }
-        nodes = cm.merge(nodes, config['nodes']);
-    };
-
-    var executeEvent = function(event, params){
-        API[event].forEach(function(item){
-            item(that, params || {});
-        });
-    };
-
-    /* ******* MAIN ******* */
-
-    that.scrollY = function(num){
-        var top = Math.max(Math.min(num, nodes['scroll'].scrollHeight - nodes['scroll'].offsetHeight), 0);
-        anim.go({'style' : {'scrollTop' : top}, 'duration' : config['duration'], 'amim' : 'smooth'});
+    classProto.scrollY = function(num){
+        const that = this;
+        const top = Math.max(Math.min(num, that.nodes.scroll.scrollHeight - that.nodes.scroll.offsetHeight), 0);
+        that.components.animation.go({style: {scrollTop: top}, duration: that.params.duration, anim: 'smooth'});
         return that;
     };
 
-    that.scrollX = function(num){
-        var left = Math.max(Math.min(num, nodes['scroll'].scrollWidth - nodes['scroll'].offsetWidth), 0);
-        anim.go({'style' : {'scrollLeft' : left}, 'duration' : config['duration'], 'amim' : 'smooth'});
+    classProto.scrollX = function(num){
+        const that = this;
+        const left = Math.max(Math.min(num, that.nodes.scroll.scrollWidth - that.nodes.scroll.offsetWidth), 0);
+        that.components.animation.go({style: {scrollLeft: left}, duration: that.params.duration, anim: 'smooth'});
         return that;
     };
-
-    that.addEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event].push(handler);
-        }
-        return that;
-    };
-
-    that.removeEvent = function(event, handler){
-        if(API[event] && typeof handler == 'function'){
-            API[event] = API[event].filter(function(item){
-                return item != handler;
-            });
-        }
-        return that;
-    };
-
-    init();
-};
+});

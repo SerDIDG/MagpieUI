@@ -49,7 +49,7 @@ cm.define('Com.Gridlist', {
         sort: true,
         sortBy: 'id',                                            // Default sort by key in array
         orderBy: 'ASC',
-        groupBy: false,                                          // Render child rows after parent, (WIP - doesn't work checking / uncheking rows and statuses for now)
+        groupBy: false,                                          // Render child rows after parent, (WIP - doesn't work checking / unchecking rows and statuses for now)
 
         // Visibility
         adaptive: false,
@@ -106,9 +106,6 @@ cm.define('Com.Gridlist', {
         },
 
         // Components
-        'Com.GridlistHelper': {
-            customEvents: false
-        },
         autoSend: true,
         paginationConstructor: 'Com.Pagination',
         paginationParams: {
@@ -117,24 +114,31 @@ cm.define('Com.Gridlist', {
             animateSwitch: true,
             animatePrevious: true
         },
+
+        'Com.GridlistHelper': {
+            customEvents: false
+        },
         'Com.Toolbar': {
             embedStructure: 'append'
         },
-        menuConstructor: 'Com.Menu',
-        menuParams: {
-            renderStructure: true,
-            embedStructureOnRender: true,
-            left: '-(selfWidth-targetWidth)',
-            className: ['com__menu--gridlist'],
-        }
+
+        menu: {
+            constructor: 'Com.Menu',
+            constructorParams: {
+                renderStructure: true,
+                embedStructureOnRender: true,
+                className: ['com__menu--gridlist'],
+                left: '-(selfWidth-targetWidth)',
+            },
+        },
     },
     strings: {
         counter: 'Count: %count%',
         check_all: 'Check all',
         uncheck_all: 'Uncheck all',
         empty: 'No items',
-        actions: 'Actions'
-    }
+        actions: 'Actions',
+    },
 },
 function(params){
     var that = this;
@@ -972,15 +976,23 @@ function(params){
         item.nodes.node = cm.node('div', {classes: item.classes});
 
         // Render menu component
-        cm.getConstructor(that.params.menuConstructor, function(classConstructor){
-            item.component = new classConstructor(
-                cm.merge(that.params.menuParams, {
-                    container: item.nodes.node
+        cm.getConstructor(that.params.menu.constructor, function(classConstructor){
+            item.controller = new classConstructor(
+                cm.merge(that.params.menu.constructorParams, {
+                    container: item.nodes.node,
+                    events: {
+                        onShow: function() {
+                            cm.addClass(row.nodes.container, 'highlight');
+                        },
+                        onHide: function() {
+                            cm.removeClass(row.nodes.container, 'highlight');
+                        },
+                    },
                 })
             );
 
             // Get items container
-            item.nodes.itemsList = item.nodes.actionsList = item.component.getNodes('holder');
+            item.nodes.itemsList = item.nodes.actionsList = item.controller.getNodes('holder');
 
             // Render items
             item.actions = renderCellActionItems(config, row, item, 'actions');
@@ -1002,22 +1014,21 @@ function(params){
                 classes: [],
                 attr: {},
                 events: {},
-                preventDefault: null,
+                preventDefault: config.preventDefault,
                 dataKey: 'data',
                 dataPath: null,
                 constructor: false,
                 constructorParams: {},
                 callback: null,
             }, actionItem);
-            // Validate
-            actionItem.preventDefault = cm.isBoolean(actionItem.preventDefault) ? actionItem.preventDefault : config.preventDefault;
+
             // Check access
             var isDataEmpty = !cm.isArray(item.data) || cm.isEmpty(actionItem.name);
             var isInDataArray = cm.isArray(item.data) && cm.inArray(item.data, actionItem.name);
             if(actionItem.access && (isDataEmpty || isInDataArray)){
                 renderCellActionItem(config, row, item, actionItem);
             }
-            // Export
+
             items.push(actionItem);
         });
         return items;
@@ -1050,7 +1061,7 @@ function(params){
 
         if(actionItem.constructor){
             cm.getConstructor(actionItem.constructor, function(classConstructor){
-                actionItem['_constructorParams'] = cm.merge(actionItem.constructorParams, {
+                actionItem._constructorParams = cm.merge(actionItem.constructorParams, {
                     node: actionItem.node,
                     rowItem: row,
                     cellItem: item,
@@ -1059,13 +1070,13 @@ function(params){
                 });
                 actionItem.controller = new classConstructor(actionItem['_constructorParams']);
                 actionItem.controller.addEvent('onRenderControllerEnd', function(){
-                    item.component && item.component.hide(false);
+                    item.controller?.hide(false);
                 });
             });
         }else{
             cm.click.add(actionItem.node, function(e){
                 actionItem.preventDefault && cm.preventDefault(e);
-                item.component.hide(false);
+                item.controller?.hide(false);
                 cm.isFunction(actionItem.callback) && actionItem.callback(e, actionItem, row);
             });
         }
@@ -1077,7 +1088,7 @@ function(params){
 
     /*** HELPING FUNCTIONS ***/
 
-    var resetTable = function(container){
+    var resetTable = function(){
         cm.customEvent.trigger(that.nodes.table, 'destruct', {
             direction: 'child',
             self: false

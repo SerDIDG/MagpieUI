@@ -53,7 +53,7 @@ cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, clas
         o = cm.merge({
             'type' : 'controller',  // controller | input
             'className' : null,
-            'classObject' : null,
+            'classInstance' : null,
             'name' : null,
             'container' : null,
             'node' : null,
@@ -62,9 +62,9 @@ cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, clas
         // Find by type
         switch(o['type']){
             case 'controller':
-                new cm.Finder(o['className'], o['name'], o['container'], function(classObject){
+                new cm.Finder(o['className'], o['name'], o['container'], function(classInstance){
                     var item = cm.merge(o, {
-                        'classObject' : classObject
+                        'classInstance' : classInstance
                     });
                     parent.push(item);
                     that.toggle();
@@ -101,7 +101,7 @@ cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, clas
         cm.forEach(o, function(item){
             switch(item['type']){
                 case 'controller':
-                    item['classObject'] && cm.isFunction(item['classObject'].enable) && item['classObject'].enable();
+                    item['classInstance'] && cm.isFunction(item['classInstance'].enable) && item['classInstance'].enable();
                     break;
                 case 'input':
                     if(cm.isNode(item['node'])){
@@ -119,7 +119,7 @@ cm.getConstructor('Com.CheckTrigger', function(classConstructor, className, clas
         cm.forEach(o, function(item){
             switch(item['type']){
                 case 'controller':
-                    item['classObject'] && cm.isFunction(item['classObject'].disable) && item['classObject'].disable();
+                    item['classInstance'] && cm.isFunction(item['classInstance'].disable) && item['classInstance'].disable();
                     break;
                 case 'input':
                     if(cm.isNode(item['node'])){

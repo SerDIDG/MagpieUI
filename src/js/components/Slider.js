@@ -42,6 +42,7 @@ cm.define('Com.Slider', {
 
         pauseOnHover: true,
         pauseOnScroll: true,
+        setInitial: true,            // Boolean: auto mode | number: slide index | string: random
         setOnClick: false,
         fadePrevious: false,         // Fade out previous slide, needed when using transparency slides
 
@@ -128,13 +129,23 @@ function (params) {
     };
 
     var validateParams = function () {
+        // Check if slider in the editing mode
         if (cm.isNode(that.params.node)) {
             that.params.name = that.params.node.getAttribute('name') || that.params.name;
             that.isEditing = cm.hasClass(that.params.node, 'is-editing');
         }
+
+        // Validate available effects and slideshow params
         that.params.effect = Com.SliderEffects[that.params.effect] ? that.params.effect : 'fade';
         that.params.transition = cm.inArray(['smooth', 'simple', 'acceleration', 'inhibition'], that.params.transition) ? that.params.transition : 'smooth';
         that.params.direction = cm.inArray(['forward', 'backward', 'random'], that.params.direction) ? that.params.direction : 'forward';
+
+        // Show a first slide randomly when a slideshow direction is "random"
+        if (that.params.setInitial === true && that.params.direction === 'random') {
+            that.params.setInitial = 'random';
+        }
+
+        // Calculate height params
         that.params.height = cm.inArray(['auto', 'max', 'slide'], that.params.height) ? that.params.height : 'auto';
         if (that.params.minHeight && isNaN(that.params.minHeight)) {
             minHeightDimension = getDimension(that.params.minHeight);
@@ -251,7 +262,6 @@ function (params) {
         );
 
         // Embed
-        //that.params.node = that.nodes.container;
         that.embedStructure(that.nodes.container);
     };
 
@@ -286,7 +296,8 @@ function (params) {
             return;
         }
 
-        that.nodes.ComScroll = cm.getNodes(that.nodes.container).ComScroll;
+        // ToDo: fix data-nodes for gallery layout / slider layout views
+        that.nodes.ComScroll = cm.getNodes(that.params.node).ComScroll;
         cm.getConstructor(that.params.scroller.constructor, function (classConstructor) {
             components.scroll = new classConstructor(
                 cm.merge(that.params.scroller.constructorParams, {
@@ -388,6 +399,7 @@ function (params) {
 
         // Attributes
         item.nodes.container.setAttribute('aria-hidden', true);
+        cm.addClass(item.nodes.container, 'is-ready');
 
         // Bar
         if (that.params.hasBar) {
@@ -414,7 +426,7 @@ function (params) {
             cm.appendChild(item.nodes.container, that.nodes.slidesInner);
         }
 
-        // Push to items array
+        // Push to the items array
         that.items.push(item);
         that.itemsLength = that.items.length;
     };
@@ -497,7 +509,7 @@ function (params) {
                     self: false
                 });
             });
-            // Recalculate slider height dependence of height type
+            // Recalculate slider height dependence of a height type
             calculateHeight();
         }
     };
@@ -578,7 +590,7 @@ function (params) {
     /* *** HELPERS *** */
 
     var resizeHandler = function () {
-        // Recalculate slider height dependence of height type
+        // Recalculate slider height dependence of a height type
         calculateHeight();
         // Pause slider when in not in screen range
         scrollPauseHandler();
@@ -656,6 +668,18 @@ function (params) {
         return that;
     };
 
+    that.setInitial = function(index) {
+        if (cm.isNumber(index)) {
+            index = that.items[index] ? index : 0;
+        } else if (cm.isString(index) && index === 'random') {
+            index = cm.rand(0, (that.items.length - 1));
+        } else {
+            index = 0;
+        }
+        that.set(index);
+        return that;
+    };
+
     that.get = function (index) {
         return that.items[index] ? that.items[index] : null;
     };
@@ -706,8 +730,8 @@ function (params) {
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes.slides, ['effect', that.effect].join('-'));
         // Reset slide
-        if (that.items[0]) {
-            set(0);
+        if (that.params.setInitial !== false && !cm.isEmpty(that.params.setInitial)) {
+            that.setInitial(that.params.setInitial);
         }
         // Recalculate slider height
         calculateHeight();
@@ -729,7 +753,7 @@ Com.SliderEffects = {};
 /* *** NONE *** */
 
 Com.SliderEffects.none = function (slider, current, previous, callback) {
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (slider.itemsLength > 1 && current !== previous) {
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
             previous.nodes.container.style.display = 'none';
@@ -745,7 +769,7 @@ Com.SliderEffects.none = function (slider, current, previous, callback) {
 /* *** DEV *** */
 
 Com.SliderEffects.edit = function (slider, current, previous, callback) {
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (slider.itemsLength > 1 && current !== previous) {
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
             previous.nodes.container.style.display = 'none';
@@ -753,9 +777,7 @@ Com.SliderEffects.edit = function (slider, current, previous, callback) {
         }
         current.nodes.container.setAttribute('aria-hidden', false);
         current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.opacity = 1;
         current.nodes.container.style.display = 'block';
-        current.nodes.container.style.left = 0;
     }
     callback();
 };
@@ -765,7 +787,16 @@ Com.SliderEffects.edit = function (slider, current, previous, callback) {
 Com.SliderEffects.fade = function (slider, current, previous, callback) {
     var hide = function (item) {
         item.nodes.container.style.display = 'none';
-        cm.setOpacity(item.nodes.container, 0);
+        item.nodes.container.style.zIndex = 1;
+        item.nodes.container.style.opacity = 0;
+        item.nodes.container.setAttribute('aria-hidden', true);
+    };
+
+    var show = function (item) {
+        item.nodes.container.style.zIndex = 2;
+        item.nodes.container.style.opacity = 1;
+        item.nodes.container.style.display = 'block';
+        item.nodes.container.setAttribute('aria-hidden', false);
     };
 
     if (slider.itemsLength > 1 && previous && current !== previous) {
@@ -791,6 +822,7 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
         // Set visible new slide and animate it
         current.nodes.container.setAttribute('aria-hidden', false);
         current.nodes.container.style.zIndex = 2;
+        current.nodes.container.style.opacity = 0;
         current.nodes.container.style.display = 'block';
         current.anim.go({
             style: {opacity: 1},
@@ -799,6 +831,7 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
             onStop: callback
         });
     } else {
+        show(current);
         callback();
     }
 };
@@ -808,7 +841,16 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
 Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
     var hide = function (item) {
         item.nodes.container.style.display = 'none';
-        cm.setOpacity(item.nodes.container, 0);
+        item.nodes.container.style.zIndex = 1;
+        item.nodes.container.style.opacity = 0;
+        item.nodes.container.setAttribute('aria-hidden', true);
+    };
+
+    var show = function (item) {
+        item.nodes.container.style.zIndex = 2;
+        item.nodes.container.style.opacity = 1;
+        item.nodes.container.style.display = 'block';
+        item.nodes.container.setAttribute('aria-hidden', false);
     };
 
     if (slider.itemsLength > 1 && previous && current !== previous) {
@@ -828,6 +870,7 @@ Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
         // Set visible new slide and animate it
         current.nodes.container.setAttribute('aria-hidden', false);
         current.nodes.container.style.zIndex = 2;
+        current.nodes.container.style.opacity = 0;
         current.nodes.container.style.display = 'block';
         current.anim.go({
             style: {opacity: 1},
@@ -836,6 +879,7 @@ Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
             onStop: callback
         });
     } else {
+        show(current);
         callback();
     }
 };
@@ -858,6 +902,13 @@ Com.SliderEffects.push = function (slider, current, previous, callback) {
 /* *** PULL *** */
 
 Com.SliderEffects.pull = function (slider, current, previous, callback) {
+    var show = function (item) {
+        item.nodes.container.style.zIndex = 2;
+        item.nodes.container.style.left = 0;
+        item.nodes.container.style.display = 'block';
+        item.nodes.container.setAttribute('aria-hidden', false);
+    };
+
     if (slider.itemsLength > 1 && previous && current !== previous) {
         // Hide previous slide
         if (previous) {
@@ -889,6 +940,7 @@ Com.SliderEffects.pull = function (slider, current, previous, callback) {
             onStop: callback
         });
     } else {
+        show(current);
         callback();
     }
 };
@@ -896,6 +948,13 @@ Com.SliderEffects.pull = function (slider, current, previous, callback) {
 /* *** PULL OVERLAP *** */
 
 Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callback) {
+    var show = function (item) {
+        item.nodes.container.style.zIndex = 2;
+        item.nodes.container.style.left = 0;
+        item.nodes.container.style.display = 'block';
+        item.nodes.container.setAttribute('aria-hidden', false);
+    };
+
     if (slider.itemsLength > 1 && previous && current !== previous) {
         // Hide previous slide
         if (previous) {
@@ -922,6 +981,7 @@ Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callbac
             onStop: callback
         });
     } else {
+        show(current);
         callback();
     }
 };
@@ -929,6 +989,13 @@ Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callbac
 /* *** PULL PARALLAX *** */
 
 Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callback) {
+    var show = function (item) {
+        item.nodes.container.style.zIndex = 2;
+        item.nodes.container.style.left = 0;
+        item.nodes.container.style.display = 'block';
+        item.nodes.container.setAttribute('aria-hidden', false);
+    };
+
     if (slider.itemsLength > 1 && previous && current !== previous) {
         // Hide previous slide
         if (previous) {
@@ -960,11 +1027,19 @@ Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callba
             onStop: callback
         });
     } else {
+        show(current);
         callback();
     }
 };
 
 Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, callback) {
+    var show = function (item) {
+        item.nodes.container.style.zIndex = 2;
+        cm.setCSSTranslate(item.nodes.container, '0%', 0, 0);
+        item.nodes.container.style.display = 'block';
+        item.nodes.container.setAttribute('aria-hidden', false);
+    };
+
     if (slider.itemsLength > 1 && previous && current !== previous) {
         // Hide previous slide
         if (previous) {
@@ -1000,6 +1075,7 @@ Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, ca
             onStop: callback
         });
     } else {
+        show(current);
         callback();
     }
 };

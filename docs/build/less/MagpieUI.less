@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.91.0 (2025-02-18 08:30) ************ */
+/*! ************ MagpieUI v3.92.0 (2025-02-25 18:41) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.91.0';
+@CmVersion: '3.92.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -12475,7 +12475,8 @@ ul.pt__field__hint {
                 background-color: @PtGridlist-Cell-DefaultBackground;
             }
 
-            &:hover {
+            &:hover,
+            &.highlight {
                 background-color: @PtGridlist-Cell-HoverBackground;
 
                 th, td {
@@ -19476,7 +19477,7 @@ ul.pt__field__hint {
                     z-index: 1;
                     .mx__position(0,0,0,0);
 
-                    &:first-child {
+                    &:not(.is-ready):first-child {
                         display: block;
                         z-index: 2;
                     }
@@ -19628,7 +19629,7 @@ ul.pt__field__hint {
                 display: none;
                 position: relative;
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
 
@@ -19649,7 +19650,7 @@ ul.pt__field__hint {
                 display: none;
                 position: relative;
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
 
@@ -19668,7 +19669,7 @@ ul.pt__field__hint {
                 opacity: 0;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     opacity: 1;
                 }
@@ -19684,7 +19685,7 @@ ul.pt__field__hint {
                 opacity: 0;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     opacity: 1;
                 }
@@ -19711,7 +19712,7 @@ ul.pt__field__hint {
                 position: absolute;
                 .mx__position(0, auto, auto, 100%);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     left: 0;
                 }
@@ -19726,7 +19727,7 @@ ul.pt__field__hint {
                 position: absolute;
                 .mx__position(0, auto, auto, 100%);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     left: 0;
                 }
@@ -19741,7 +19742,7 @@ ul.pt__field__hint {
                 position: absolute;
                 .mx__position(0, auto, auto, 100%);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     left: 0;
                 }
@@ -19756,7 +19757,7 @@ ul.pt__field__hint {
                 position: absolute;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
             }
@@ -19770,7 +19771,7 @@ ul.pt__field__hint {
                 position: absolute;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
             }

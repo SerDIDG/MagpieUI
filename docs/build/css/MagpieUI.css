@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.91.0 (2025-02-18 08:30) ************ */
+/*! ************ MagpieUI v3.92.0 (2025-02-25 18:41) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4387,8 +4387,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.91.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.91.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.91.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.91.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.91.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.92.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.92.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.92.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.92.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.92.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12334,11 +12334,14 @@ ul.pt__field__hint li:before {
 .pt__gridlist tbody tr td {
   background-color: transparent;
 }
-.pt__gridlist tbody tr:hover {
+.pt__gridlist tbody tr:hover,
+.pt__gridlist tbody tr.highlight {
   background-color: hsl(210, 70%, 95%);
 }
 .pt__gridlist tbody tr:hover th,
-.pt__gridlist tbody tr:hover td {
+.pt__gridlist tbody tr.highlight th,
+.pt__gridlist tbody tr:hover td,
+.pt__gridlist tbody tr.highlight td {
   background-color: hsl(210, 70%, 95%);
 }
 .pt__gridlist tbody tr:active {
@@ -12574,11 +12577,14 @@ ul.pt__field__hint li:before {
 .pt__gridlist.has-background tbody tr td {
   background-color: transparent;
 }
-.pt__gridlist.has-background tbody tr:hover {
+.pt__gridlist.has-background tbody tr:hover,
+.pt__gridlist.has-background tbody tr.highlight {
   background-color: hsl(210, 70%, 95%);
 }
 .pt__gridlist.has-background tbody tr:hover th,
-.pt__gridlist.has-background tbody tr:hover td {
+.pt__gridlist.has-background tbody tr.highlight th,
+.pt__gridlist.has-background tbody tr:hover td,
+.pt__gridlist.has-background tbody tr.highlight td {
   background-color: hsl(210, 70%, 95%);
 }
 .pt__gridlist.has-background tbody tr:active {
@@ -17688,11 +17694,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.has-content-bg .pt__gridlist tbody tr td {
   background-color: transparent;
 }
-.com__togglebox.has-content-bg .pt__gridlist tbody tr:hover {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr:hover,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.highlight {
   background-color: hsl(210, 70%, 95%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr:hover th,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr:hover td {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.highlight th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr:hover td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.highlight td {
   background-color: hsl(210, 70%, 95%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr:active {
@@ -20230,11 +20239,14 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__gridlist.has-background .pt__gridlist tbody tr td {
   background-color: transparent;
 }
-.com__gridlist.has-background .pt__gridlist tbody tr:hover {
+.com__gridlist.has-background .pt__gridlist tbody tr:hover,
+.com__gridlist.has-background .pt__gridlist tbody tr.highlight {
   background-color: hsl(210, 70%, 95%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr:hover th,
-.com__gridlist.has-background .pt__gridlist tbody tr:hover td {
+.com__gridlist.has-background .pt__gridlist tbody tr.highlight th,
+.com__gridlist.has-background .pt__gridlist tbody tr:hover td,
+.com__gridlist.has-background .pt__gridlist tbody tr.highlight td {
   background-color: hsl(210, 70%, 95%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr:active {
@@ -22367,7 +22379,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: 0;
   left: 0;
 }
-.com__slider > .inner > .slides > ul > li:first-child {
+.com__slider > .inner > .slides > ul > li:not(.is-ready):first-child {
   display: block;
   z-index: 2;
 }
@@ -22454,7 +22466,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   display: none;
   position: relative;
 }
-.com__slider > .inner > .slides.effect-none > ul > li:first-child {
+.com__slider > .inner > .slides.effect-none > ul > li:not(.is-ready):first-child {
   display: block;
 }
 .com__slider > .inner > .slides.effect-none > ul > li > .slide-area {
@@ -22470,7 +22482,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   display: none;
   position: relative;
 }
-.com__slider > .inner > .slides.effect-edit > ul > li:first-child {
+.com__slider > .inner > .slides.effect-edit > ul > li:not(.is-ready):first-child {
   display: block;
 }
 .com__slider > .inner > .slides.effect-edit > ul > li > .slide-area {
@@ -22485,7 +22497,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 0;
 }
-.com__slider > .inner > .slides.effect-fade > ul > li:first-child {
+.com__slider > .inner > .slides.effect-fade > ul > li:not(.is-ready):first-child {
   display: block;
   opacity: 1;
 }
@@ -22498,7 +22510,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 0;
 }
-.com__slider > .inner > .slides.effect-fade-out > ul > li:first-child {
+.com__slider > .inner > .slides.effect-fade-out > ul > li:not(.is-ready):first-child {
   display: block;
   opacity: 1;
 }
@@ -22532,7 +22544,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 100%;
 }
-.com__slider > .inner > .slides.effect-pull > ul > li:first-child {
+.com__slider > .inner > .slides.effect-pull > ul > li:not(.is-ready):first-child {
   display: block;
   left: 0;
 }
@@ -22544,7 +22556,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 100%;
 }
-.com__slider > .inner > .slides.effect-pull-overlap > ul > li:first-child {
+.com__slider > .inner > .slides.effect-pull-overlap > ul > li:not(.is-ready):first-child {
   display: block;
   left: 0;
 }
@@ -22556,7 +22568,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 100%;
 }
-.com__slider > .inner > .slides.effect-pull-parallax > ul > li:first-child {
+.com__slider > .inner > .slides.effect-pull-parallax > ul > li:not(.is-ready):first-child {
   display: block;
   left: 0;
 }
@@ -22568,7 +22580,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 0;
 }
-.com__slider > .inner > .slides.effect-pull-parallax-css > ul > li:first-child {
+.com__slider > .inner > .slides.effect-pull-parallax-css > ul > li:not(.is-ready):first-child {
   display: block;
 }
 .com__slider > .inner > .slides.effect-custom > ul > li {
@@ -22579,7 +22591,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   bottom: auto;
   left: 0;
 }
-.com__slider > .inner > .slides.effect-custom > ul > li:first-child {
+.com__slider > .inner > .slides.effect-custom > ul > li:not(.is-ready):first-child {
   display: block;
 }
 .com__slider.is-adaptive-content > .inner {

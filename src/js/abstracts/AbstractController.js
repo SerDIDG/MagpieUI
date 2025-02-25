@@ -345,8 +345,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             if(that.params['collector']){
                 that.params['collector'].construct(node);
             }else{
-                cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.construct(node);
+                cm.find('Com.Collector', null, null, function(classInstance){
+                    classInstance.construct(node);
                 });
             }
         }
@@ -360,8 +360,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
             if(that.params['collector']){
                 that.params['collector'].destruct(node);
             }else{
-                cm.find('Com.Collector', null, null, function(classObject){
-                    classObject.destruct(node);
+                cm.find('Com.Collector', null, null, function(classInstance){
+                    classInstance.destruct(node);
                 });
             }
         }
