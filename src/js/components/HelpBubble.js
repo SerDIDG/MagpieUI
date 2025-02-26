@@ -7,13 +7,14 @@ cm.define('Com.HelpBubble', {
         'target' : null,
         'title' : null,
         'titleAlign' : 'left',
-        'content' : cm.node('span'),
+        'content' : null,
         'type' : 'tooltip',                             // tooltip | container
         'showIcon' : true,
         'showLabel' : false,
         'tooltipConstructor' : 'Com.Tooltip',
         'tooltipParams' : {
-            'className' : 'com__help-bubble__tooltip'
+            'hold' : true,
+            'className' : 'com__help-bubble__tooltip',
         },
         'containerConstructor' : 'Com.DialogContainer',
         'containerParams' : {
