@@ -29,14 +29,14 @@ cm.define('Com.Slider', {
         isEditing: false,
 
         time: 500,                   // Fade time
-        delay: 4000,                 // Delay before slide will be changed
+        delay: 4000,                 // Delay between slides, 0 - stop slideshow
         effect: 'fade',              // none | edit | fade | fade-out | push | pull | pull-parallax | pull-overlap
         transition: 'smooth',        // smooth | simple | acceleration | inhibition
         height: 'auto',              // auto | max | slide
         minHeight: 48,               // Set min-height of slider, work with calculateMaxHeight parameter
 
         items: [],
-        slideshow: true,             // Turn on / off slideshow
+        slideshow: true,             // Enable \ disable slideshow
         cycle: true,
         direction: 'forward',        // Slideshow direction: forward | backward | random
 
@@ -143,6 +143,11 @@ function (params) {
         // Show a first slide randomly when a slideshow direction is "random"
         if (that.params.setInitial === true && that.params.direction === 'random') {
             that.params.setInitial = 'random';
+        }
+
+        // Disable slideshow when delay between slides is 0 or less (for some reason)
+        if (!that.params.delay || that.params.delay <= 0) {
+            that.params.slideshow = false;
         }
 
         // Calculate height params
@@ -556,7 +561,7 @@ function (params) {
             slideshowInterval = setTimeout(function () {
                 switch (that.params.direction) {
                     case 'random':
-                        set(cm.rand(0, (that.items.length - 1)));
+                        set(that.getRandomIndex());
                         break;
 
                     case 'backward':
@@ -672,7 +677,7 @@ function (params) {
         if (cm.isNumber(index)) {
             index = that.items[index] ? index : 0;
         } else if (cm.isString(index) && index === 'random') {
-            index = cm.rand(0, (that.items.length - 1));
+            index = that.getRandomIndex();
         } else {
             index = 0;
         }
@@ -682,6 +687,17 @@ function (params) {
 
     that.get = function (index) {
         return that.items[index] ? that.items[index] : null;
+    };
+
+    that.getRandomIndex = function () {
+        if (that.items.length <= 1) {
+            return 0;
+        }
+        var index = 0;
+        do {
+            index = cm.rand(0, that.items.length - 1);
+        } while (index === that.current);
+        return index;
     };
 
     that.next = function () {
@@ -723,14 +739,19 @@ function (params) {
     };
 
     that.setEffect = function (effect) {
+        // Reset slider
+        that.current = null;
+        that.previous = null;
         // Reset slides styles after previous effect
         cm.removeClass(that.nodes.slides, ['effect', that.effect].join('-'));
         resetStyles();
         // Set new effect
         that.effect = Com.SliderEffects[effect] ? effect : 'fade';
         cm.addClass(that.nodes.slides, ['effect', that.effect].join('-'));
-        // Reset slide
-        if (that.params.setInitial !== false && !cm.isEmpty(that.params.setInitial)) {
+        // Set initial slide
+        if (that.isEditing) {
+            that.setInitial(0);
+        } else if (that.params.setInitial !== false) {
             that.setInitial(that.params.setInitial);
         }
         // Recalculate slider height
