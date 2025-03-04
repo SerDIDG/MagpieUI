@@ -16,6 +16,7 @@ cm.define('Com.Input', {
         'inputmode': null,
         'trimValue': true,
         'limitValue' : true,
+        'constraints' : {},
         'inputClasses': [],
         'lazy': false,
         'delay': 'cm._config.requestDelay',
@@ -59,6 +60,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
+    };
+
+    classProto.onValidateParamsStart = function() {
+        var that = this;
+
+        // Validate input \ change constraints
+        cm.forEach(that.params.constraints, (handlers, eventName) => {
+            cm.forEach(handlers, handler => that.addConstraint(eventName, handler));
+        });
     };
 
     classProto.onEnable = function() {
@@ -292,52 +302,69 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     classProto.addConstraint = function(eventName, handler) {
         var that = this;
+        if (!that.constraints[eventName]) {
+            that.constraints[eventName] = [];
+        }
         if (cm.isFunction(handler)) {
-            that.constraints[eventName] = handler;
+            that.constraints[eventName] = cm.arrayAdd(that.constraints[eventName], handler);
         }
         return that;
     };
 
     classProto.removeConstraint = function(eventName, handler) {
         var that = this;
-        that.constraints[eventName] = null;
+        if (!that.constraints[eventName]) {
+            that.constraints[eventName] = [];
+        }
+        if (cm.isFunction(handler)) {
+            that.constraints[eventName] = cm.arrayRemove(that.constraints[eventName], handler);
+        }
         return that;
     };
 
     classProto.execConstraint = function(eventName, triggerEvents) {
-        var that = this,
-            selectionStart,
-            value,
-            valueBounded;
+        var that = this;
+        if (!that.constraints[eventName]) {
+            return that;
+        }
+
+        // Execute event handlers
+        cm.forEach(that.constraints[eventName], handler => that.execConstraintHelper(handler));
+
+        // Trigger events
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
-        if (cm.isFunction(that.constraints[eventName])) {
-            selectionStart = that.nodes.content.input.selectionStart;
-            value = that.nodes.content.input.value;
-            valueBounded = that.constraints[eventName](value);
-            
-            // Set bounded value
-            that.nodes.content.input.value = that.constraints[eventName](value);
-            
-            // Restore caret position
-            if (value.indexOf(valueBounded) > -1 || value === valueBounded) {
-                that.nodes.content.input.setSelectionRange(selectionStart, selectionStart);
-            } else {
-                that.nodes.content.input.setSelectionRange(that.selectionStartInitial, that.selectionStartInitial);
-            }
-            
-            // Trigger events
-            if (triggerEvents) {
-                switch (eventName) {
-                    case 'onInput':
-                        that.selectValue(true);
-                        break;
-                    case 'onChange':
-                        that.setValue(true);
-                        break;
-                }
+        if (triggerEvents) {
+            switch (eventName) {
+                case 'onInput':
+                    that.selectValue(true);
+                    break;
+                case 'onChange':
+                    that.setValue(true);
+                    break;
             }
         }
         return that;
+    };
+
+    classProto.execConstraintHelper = function(handler) {
+        const that = this;
+        if (!cm.isFunction(handler)) {
+            return;
+        }
+
+        const selectionStart = that.nodes.content.input.selectionStart;
+        const value = that.nodes.content.input.value;
+        const valueBounded = handler(value);
+
+        // Set bounded value
+        that.nodes.content.input.value = valueBounded;
+
+        // Restore caret position
+        if (value.indexOf(valueBounded) > -1 || value === valueBounded) {
+            that.nodes.content.input.setSelectionRange(selectionStart, selectionStart);
+        } else {
+            that.nodes.content.input.setSelectionRange(that.selectionStartInitial, that.selectionStartInitial);
+        }
     };
 
     /*** DATA VALUE ***/
