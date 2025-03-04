@@ -21,6 +21,7 @@ cm.define('Com.Input', {
         'delay': 'cm._config.requestDelay',
         'icon': null,
         'iconTitle': null,
+        'iconEvents': true,
         'iconInsertMethod': 'appendChild',
         'autoResize': false,
         'enterPressBehavior': false,
@@ -122,10 +123,11 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
         // Icon
         if (that.params.icon) {
+            cm.addClass(nodes.container, 'has-icon');
             if (cm.isNode(that.params.icon)) {
                 nodes.icon = that.params.icon
             } else {
-                nodes.icon = cm.node('div', {classes: that.params.icon});
+                nodes.icon = that.renderIconView();
             }
             if (!cm.isEmpty(that.params.iconTitle)) {
                 nodes.icon.title = that.params.iconTitle;
@@ -188,8 +190,22 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.addEvent(that.nodes.content.input, 'keydown', that.inputKeyDownHanlder);
         cm.addEvent(that.nodes.content.input, 'keyup', that.inputKeyUpHanlder);
         cm.addEvent(that.nodes.content.input, 'keypress', that.inputKeyPressHanlder);
-        cm.addEvent(that.nodes.content.icon, 'mousedown', that.iconEventHanlder);
-        cm.addEvent(that.nodes.content.icon, 'click', that.iconEventHanlder);
+        if (that.params.iconEvents) {
+            cm.addEvent(that.nodes.content.icon, 'mousedown', that.iconEventHanlder);
+            cm.addEvent(that.nodes.content.icon, 'click', that.iconEventHanlder);
+        }
+    };
+
+    /*** ICON ***/
+
+    classProto.renderIconView = function() {
+        var that = this;
+        return cm.node('div', {classes: that.params.icon});
+    };
+
+    classProto.getIcon = function() {
+        var that = this;
+        return that.nodes.content.icon;
     };
 
     /*** EVENTS ***/
