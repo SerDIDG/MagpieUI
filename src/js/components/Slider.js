@@ -774,46 +774,42 @@ Com.SliderEffects = {};
 /* *** NONE *** */
 
 Com.SliderEffects.none = function (slider, current, previous, callback) {
-    if (slider.itemsLength > 1 && current !== previous) {
-        if (previous) {
-            previous.nodes.container.setAttribute('aria-hidden', true);
-            previous.nodes.container.style.display = 'none';
-            previous.nodes.container.style.zIndex = 1;
-        }
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.display = 'block';
+    if (previous && current !== previous) {
+        previous.nodes.container.setAttribute('aria-hidden', true);
+        previous.nodes.container.style.display = 'none';
+        previous.nodes.container.style.zIndex = 1;
     }
+    current.nodes.container.setAttribute('aria-hidden', false);
+    current.nodes.container.style.zIndex = 2;
+    current.nodes.container.style.display = 'block';
     callback();
 };
 
 /* *** DEV *** */
 
 Com.SliderEffects.edit = function (slider, current, previous, callback) {
-    if (slider.itemsLength > 1 && current !== previous) {
-        if (previous) {
-            previous.nodes.container.setAttribute('aria-hidden', true);
-            previous.nodes.container.style.display = 'none';
-            previous.nodes.container.style.zIndex = 1;
-        }
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.display = 'block';
+    if (previous && current !== previous) {
+        previous.nodes.container.setAttribute('aria-hidden', true);
+        previous.nodes.container.style.display = 'none';
+        previous.nodes.container.style.zIndex = 1;
     }
+    current.nodes.container.setAttribute('aria-hidden', false);
+    current.nodes.container.style.zIndex = 2;
+    current.nodes.container.style.display = 'block';
     callback();
 };
 
 /* *** FADE *** */
 
 Com.SliderEffects.fade = function (slider, current, previous, callback) {
-    var hide = function (item) {
+    const hide = (item) => {
         item.nodes.container.style.display = 'none';
         item.nodes.container.style.zIndex = 1;
         item.nodes.container.style.opacity = 0;
         item.nodes.container.setAttribute('aria-hidden', true);
     };
 
-    var show = function (item) {
+    const show = (item) => {
         item.nodes.container.style.zIndex = 2;
         item.nodes.container.style.opacity = 1;
         item.nodes.container.style.display = 'block';
@@ -830,21 +826,15 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
                     style: {opacity: 0},
                     duration: slider.params.time,
                     anim: slider.params.transition,
-                    onStop: function () {
-                        hide(previous);
-                    }
+                    onStop: () => hide(previous),
                 });
             } else {
-                setTimeout(function () {
-                    hide(previous);
-                }, slider.params.time);
+                setTimeout(() => hide(previous), slider.params.time);
             }
         }
         // Set visible new slide and animate it
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
+        show(current);
         current.nodes.container.style.opacity = 0;
-        current.nodes.container.style.display = 'block';
         current.anim.go({
             style: {opacity: 1},
             duration: slider.params.time,
@@ -860,14 +850,14 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
 /* *** FADE *** */
 
 Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
-    var hide = function (item) {
+    const hide = (item) => {
         item.nodes.container.style.display = 'none';
         item.nodes.container.style.zIndex = 1;
         item.nodes.container.style.opacity = 0;
         item.nodes.container.setAttribute('aria-hidden', true);
     };
 
-    var show = function (item) {
+    const show = (item) => {
         item.nodes.container.style.zIndex = 2;
         item.nodes.container.style.opacity = 1;
         item.nodes.container.style.display = 'block';
@@ -883,16 +873,12 @@ Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
                 style: {opacity: 0},
                 duration: slider.params.time,
                 anim: slider.params.transition,
-                onStop: function () {
-                    hide(previous);
-                }
+                onStop: () => hide(previous),
             });
         }
         // Set visible new slide and animate it
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
+        show(current);
         current.nodes.container.style.opacity = 0;
-        current.nodes.container.style.display = 'block';
         current.anim.go({
             style: {opacity: 1},
             duration: slider.params.time,
@@ -908,7 +894,7 @@ Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
 /* *** PUSH *** */
 
 Com.SliderEffects.push = function (slider, current, previous, callback) {
-    if (previous) {
+    if (previous && current !== previous) {
         previous.nodes.container.setAttribute('aria-hidden', true);
     }
     current.nodes.container.setAttribute('aria-hidden', false);
@@ -923,7 +909,14 @@ Com.SliderEffects.push = function (slider, current, previous, callback) {
 /* *** PULL *** */
 
 Com.SliderEffects.pull = function (slider, current, previous, callback) {
-    var show = function (item) {
+    const hide = (item) => {
+        item.nodes.container.style.zIndex = 1;
+        item.nodes.container.style.left = '100%';
+        item.nodes.container.style.display = 'none';
+        item.nodes.container.setAttribute('aria-hidden', true);
+    };
+
+    const show = (item) => {
         item.nodes.container.style.zIndex = 2;
         item.nodes.container.style.left = 0;
         item.nodes.container.style.display = 'block';
@@ -939,16 +932,11 @@ Com.SliderEffects.pull = function (slider, current, previous, callback) {
                 style: {left: slider.direction === 'next' ? '-100%' : '100%'},
                 duration: slider.params.time,
                 anim: slider.params.transition,
-                onStop: function () {
-                    previous.nodes.container.style.display = 'none';
-                    previous.nodes.container.style.left = '100%';
-                }
+                onStop: () => hide(previous),
             });
         }
         // Set visible new slide and animate it
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.display = 'block';
+        show(current);
         if (slider.direction === 'next') {
             current.nodes.container.style.left = '100%';
         } else if (slider.direction === 'prev') {
@@ -969,7 +957,14 @@ Com.SliderEffects.pull = function (slider, current, previous, callback) {
 /* *** PULL OVERLAP *** */
 
 Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callback) {
-    var show = function (item) {
+    const hide = (item) => {
+        item.nodes.container.style.zIndex = 1;
+        item.nodes.container.style.left = '100%';
+        item.nodes.container.style.display = 'none';
+        item.nodes.container.setAttribute('aria-hidden', true);
+    };
+
+    const show = (item) => {
         item.nodes.container.style.zIndex = 2;
         item.nodes.container.style.left = 0;
         item.nodes.container.style.display = 'block';
@@ -981,15 +976,10 @@ Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callbac
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
             previous.nodes.container.style.zIndex = 1;
-            setTimeout(function () {
-                previous.nodes.container.style.display = 'none';
-                previous.nodes.container.style.left = '100%';
-            }, slider.params.time);
+            setTimeout(() => hide(previous), slider.params.time);
         }
         // Set visible new slide and animate it
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.display = 'block';
+        show(current);
         if (slider.direction === 'next') {
             current.nodes.container.style.left = '100%';
         } else if (slider.direction === 'prev') {
@@ -1010,7 +1000,14 @@ Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callbac
 /* *** PULL PARALLAX *** */
 
 Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callback) {
-    var show = function (item) {
+    const hide = (item) => {
+        item.nodes.container.style.zIndex = 1;
+        item.nodes.container.style.left = '100%';
+        item.nodes.container.style.display = 'none';
+        item.nodes.container.setAttribute('aria-hidden', true);
+    };
+
+    const show = (item) => {
         item.nodes.container.style.zIndex = 2;
         item.nodes.container.style.left = 0;
         item.nodes.container.style.display = 'block';
@@ -1026,16 +1023,11 @@ Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callba
                 style: {left: slider.direction === 'next' ? '-50%' : '50%'},
                 duration: slider.params.time,
                 anim: slider.params.transition,
-                onStop: function () {
-                    previous.nodes.container.style.display = 'none';
-                    previous.nodes.container.style.left = '100%';
-                }
+                onStop: () => hide(previous),
             });
         }
         // Set visible new slide and animate it
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.display = 'block';
+        show(current);
         if (slider.direction === 'next') {
             current.nodes.container.style.left = '100%';
         } else if (slider.direction === 'prev') {
@@ -1054,7 +1046,14 @@ Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callba
 };
 
 Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, callback) {
-    var show = function (item) {
+    const hide = (item) => {
+        item.nodes.container.style.zIndex = 1;
+        cm.setCSSTranslate(item.nodes.container, '100%', 0, 0);
+        item.nodes.container.style.display = 'none';
+        item.nodes.container.setAttribute('aria-hidden', true);
+    };
+
+    const show = (item) => {
         item.nodes.container.style.zIndex = 2;
         cm.setCSSTranslate(item.nodes.container, '0%', 0, 0);
         item.nodes.container.style.display = 'block';
@@ -1072,16 +1071,11 @@ Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, ca
                 },
                 duration: slider.params.time,
                 delayOut: 30,
-                onStop: function () {
-                    previous.nodes.container.style.display = 'none';
-                    cm.setCSSTranslate(previous.nodes.container, '100%', 0, 0);
-                }
+                onStop: () => hide(previous),
             });
         }
         // Set visible new slide and animate it
-        current.nodes.container.setAttribute('aria-hidden', false);
-        current.nodes.container.style.zIndex = 2;
-        current.nodes.container.style.display = 'block';
+        show(current);
         if (slider.direction === 'next') {
             cm.setCSSTranslate(current.nodes.container, '100%', 0, 0);
         } else if (slider.direction === 'prev') {
@@ -1102,6 +1096,13 @@ Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, ca
 };
 
 Com.SliderEffects.custom = function (slider, current, previous, callback) {
+    const show = (item) => {
+        cm.addClass(item.nodes.container, 'active', true);
+        cm.removeClass(item.nodes.container, 'show', true);
+        cm.removeClass(item.nodes.container, slider.direction, true);
+        item.nodes.container.setAttribute('aria-hidden', false);
+    };
+
     if (slider.itemsLength > 1 && current !== previous) {
         // Hide previous
         if (previous) {
@@ -1114,12 +1115,9 @@ Com.SliderEffects.custom = function (slider, current, previous, callback) {
             cm.addClass(current.nodes.container, 'show');
             cm.addClass(current.nodes.container, slider.direction);
         }
-        current.nodes.container.setAttribute('aria-hidden', false);
-        cm.addClass(current.nodes.container, 'active', true);
-        cm.removeClass(current.nodes.container, 'show', true);
-        cm.removeClass(current.nodes.container, slider.direction, true);
+        show(current);
         // Delays
-        setTimeout(function () {
+        setTimeout( () => {
             // Previous
             if (previous) {
                 cm.removeClass(previous.nodes.container, slider.direction);
@@ -1129,6 +1127,7 @@ Com.SliderEffects.custom = function (slider, current, previous, callback) {
             callback();
         }, slider.params.time);
     } else {
+        show(current);
         callback();
     }
 };

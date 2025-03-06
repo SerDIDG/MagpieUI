@@ -203,26 +203,29 @@ function(params){
     /* *** TABLE RENDER FUNCTION *** */
 
     var render = function(){
-        // Container
+        // Structure
         that.nodes.container = cm.node('div', {classes: 'com__gridlist'});
-        // Add css class
+
+        // Add CSS class
         cm.addClass(that.nodes.container, that.params.className);
         if(that.params.adaptive){
             cm.addClass(that.nodes.container, 'is-adaptive');
         }
+
         // Append
         that.embedStructure(that.nodes.container);
+
         // Render bulk actions
         if(that.params.showBulkActions && that.params.actions.length){
             renderBulkActions();
         }
+
         // Render table page
         renderInitialTable();
+
         // Add custom event
         if(that.params.customEvents){
-            cm.customEvent.add(that.params.node, 'redraw', function(){
-                that.redraw();
-            });
+            cm.customEvent.add(that.params.node, 'redraw', () => that.redraw());
         }
     };
 
