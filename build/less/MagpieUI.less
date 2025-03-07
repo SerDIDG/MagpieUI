@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.93.1 (2025-03-06 18:28) ************ */
+/*! ************ MagpieUI v3.93.2 (2025-03-07 04:13) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.93.1';
+@CmVersion: '3.93.2';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -12229,11 +12229,14 @@ ul.pt__field__hint {
         .mx__background-clip(padding-box);
 
         > .inner {
-            .cm__text-overflow;
             display: block;
             position: relative;
             word-wrap: normal;
             text-decoration: none;
+
+            &.is-nowrap {
+                .cm__text-nowrap;
+            }
         }
 
         &.pull-left {
@@ -12500,7 +12503,8 @@ ul.pt__field__hint {
                     background-color: @PtGridlist-Cell-SuccessBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-SuccessHoverBackground;
 
                     th, td {
@@ -12517,7 +12521,8 @@ ul.pt__field__hint {
                     background-color: @PtGridlist-Cell-DangerBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-DangerHoverBackground;
 
                     th, td {
@@ -12533,7 +12538,8 @@ ul.pt__field__hint {
                     background-color: @PtGridlist-Cell-WarningBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-WarningHoverBackground;
 
                     th, td {
@@ -12549,7 +12555,8 @@ ul.pt__field__hint {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-ActiveHoverBackground;
 
                     th, td {

@@ -798,10 +798,10 @@ function(params){
 
         // Text overflow
         if(config.wrap || config.textOverflow){
-            item.nodes.inner = cm.node('div', {classes: 'wrap'});
+            item.nodes.inner = cm.node('div', {classes: 'inner'});
             item.nodes.container.appendChild(item.nodes.inner);
             if(config.textOverflow) {
-                cm.addClass(item.nodes.inner, 'inner');
+                cm.addClass(item.nodes.inner, 'is-nowrap');
             }
         }else{
             item.nodes.inner = item.nodes.container;

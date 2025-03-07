@@ -767,11 +767,11 @@ function (params) {
     init();
 });
 
-/* ******* SLIDER EFFECTS ******* */
+/******* SLIDER EFFECTS *******/
 
 Com.SliderEffects = {};
 
-/* *** NONE *** */
+/*** NONE ***/
 
 Com.SliderEffects.none = function (slider, current, previous, callback) {
     if (previous && current !== previous) {
@@ -785,7 +785,7 @@ Com.SliderEffects.none = function (slider, current, previous, callback) {
     callback();
 };
 
-/* *** DEV *** */
+/*** EDIT ***/
 
 Com.SliderEffects.edit = function (slider, current, previous, callback) {
     if (previous && current !== previous) {
@@ -799,7 +799,7 @@ Com.SliderEffects.edit = function (slider, current, previous, callback) {
     callback();
 };
 
-/* *** FADE *** */
+/*** FADE ***/
 
 Com.SliderEffects.fade = function (slider, current, previous, callback) {
     const hide = (item) => {
@@ -816,7 +816,7 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous slide
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
@@ -832,7 +832,8 @@ Com.SliderEffects.fade = function (slider, current, previous, callback) {
                 setTimeout(() => hide(previous), slider.params.time);
             }
         }
-        // Set visible new slide and animate it
+        
+        // Show new slide and animate it
         show(current);
         current.nodes.container.style.opacity = 0;
         current.anim.go({
@@ -864,7 +865,7 @@ Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous slide
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
@@ -876,7 +877,7 @@ Com.SliderEffects['fade-out'] = function (slider, current, previous, callback) {
                 onStop: () => hide(previous),
             });
         }
-        // Set visible new slide and animate it
+        // Show new slide and animate it
         show(current);
         current.nodes.container.style.opacity = 0;
         current.anim.go({
@@ -923,7 +924,7 @@ Com.SliderEffects.pull = function (slider, current, previous, callback) {
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous slide
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
@@ -935,7 +936,8 @@ Com.SliderEffects.pull = function (slider, current, previous, callback) {
                 onStop: () => hide(previous),
             });
         }
-        // Set visible new slide and animate it
+
+        // Show new slide and animate it
         show(current);
         if (slider.direction === 'next') {
             current.nodes.container.style.left = '100%';
@@ -971,14 +973,15 @@ Com.SliderEffects['pull-overlap'] = function (slider, current, previous, callbac
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous slide
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
             previous.nodes.container.style.zIndex = 1;
             setTimeout(() => hide(previous), slider.params.time);
         }
-        // Set visible new slide and animate it
+
+        // Show new slide and animate it
         show(current);
         if (slider.direction === 'next') {
             current.nodes.container.style.left = '100%';
@@ -1014,7 +1017,7 @@ Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callba
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous slide
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
@@ -1026,7 +1029,8 @@ Com.SliderEffects['pull-parallax'] = function (slider, current, previous, callba
                 onStop: () => hide(previous),
             });
         }
-        // Set visible new slide and animate it
+
+        // Show new slide and animate it
         show(current);
         if (slider.direction === 'next') {
             current.nodes.container.style.left = '100%';
@@ -1060,7 +1064,7 @@ Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, ca
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && previous && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous slide
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);
@@ -1074,7 +1078,8 @@ Com.SliderEffects['pull-parallax-css'] = function (slider, current, previous, ca
                 onStop: () => hide(previous),
             });
         }
-        // Set visible new slide and animate it
+
+        // Show new slide and animate it
         show(current);
         if (slider.direction === 'next') {
             cm.setCSSTranslate(current.nodes.container, '100%', 0, 0);
@@ -1103,7 +1108,7 @@ Com.SliderEffects.custom = function (slider, current, previous, callback) {
         item.nodes.container.setAttribute('aria-hidden', false);
     };
 
-    if (slider.itemsLength > 1 && current !== previous) {
+    if (previous && current !== previous) {
         // Hide previous
         if (previous) {
             previous.nodes.container.setAttribute('aria-hidden', true);

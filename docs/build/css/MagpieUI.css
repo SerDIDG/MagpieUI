@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.93.1 (2025-03-06 18:28) ************ */
+/*! ************ MagpieUI v3.93.2 (2025-03-07 04:13) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4387,8 +4387,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.93.1');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.93.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.93.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.93.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.93.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.93.2');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.93.2') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.93.2') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.93.2') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.93.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12362,13 +12362,19 @@ ul.pt__field__hint li:before {
   background-color: hsl(120, 60%, 91%);
 }
 .pt__gridlist tbody tr.success:hover,
-.pt__gridlist tbody tr.valid:hover {
+.pt__gridlist tbody tr.valid:hover,
+.pt__gridlist tbody tr.success.highlight,
+.pt__gridlist tbody tr.valid.highlight {
   background-color: hsl(120, 60%, 86%);
 }
 .pt__gridlist tbody tr.success:hover th,
 .pt__gridlist tbody tr.valid:hover th,
+.pt__gridlist tbody tr.success.highlight th,
+.pt__gridlist tbody tr.valid.highlight th,
 .pt__gridlist tbody tr.success:hover td,
-.pt__gridlist tbody tr.valid:hover td {
+.pt__gridlist tbody tr.valid:hover td,
+.pt__gridlist tbody tr.success.highlight td,
+.pt__gridlist tbody tr.valid.highlight td {
   background-color: hsl(120, 60%, 86%);
 }
 .pt__gridlist tbody tr.danger,
@@ -12382,13 +12388,19 @@ ul.pt__field__hint li:before {
   background-color: hsl(0, 65%, 91%);
 }
 .pt__gridlist tbody tr.danger:hover,
-.pt__gridlist tbody tr.invalid:hover {
+.pt__gridlist tbody tr.invalid:hover,
+.pt__gridlist tbody tr.danger.highlight,
+.pt__gridlist tbody tr.invalid.highlight {
   background-color: hsl(0, 65%, 86%);
 }
 .pt__gridlist tbody tr.danger:hover th,
 .pt__gridlist tbody tr.invalid:hover th,
+.pt__gridlist tbody tr.danger.highlight th,
+.pt__gridlist tbody tr.invalid.highlight th,
 .pt__gridlist tbody tr.danger:hover td,
-.pt__gridlist tbody tr.invalid:hover td {
+.pt__gridlist tbody tr.invalid:hover td,
+.pt__gridlist tbody tr.danger.highlight td,
+.pt__gridlist tbody tr.invalid.highlight td {
   background-color: hsl(0, 65%, 86%);
 }
 .pt__gridlist tbody tr.warning {
@@ -12398,11 +12410,14 @@ ul.pt__field__hint li:before {
 .pt__gridlist tbody tr.warning td {
   background-color: hsl(38, 70%, 91%);
 }
-.pt__gridlist tbody tr.warning:hover {
+.pt__gridlist tbody tr.warning:hover,
+.pt__gridlist tbody tr.warning.highlight {
   background-color: hsl(38, 70%, 86%);
 }
 .pt__gridlist tbody tr.warning:hover th,
-.pt__gridlist tbody tr.warning:hover td {
+.pt__gridlist tbody tr.warning.highlight th,
+.pt__gridlist tbody tr.warning:hover td,
+.pt__gridlist tbody tr.warning.highlight td {
   background-color: hsl(38, 70%, 86%);
 }
 .pt__gridlist tbody tr.active {
@@ -12412,11 +12427,14 @@ ul.pt__field__hint li:before {
 .pt__gridlist tbody tr.active td {
   background-color: hsl(210, 70%, 91%);
 }
-.pt__gridlist tbody tr.active:hover {
+.pt__gridlist tbody tr.active:hover,
+.pt__gridlist tbody tr.active.highlight {
   background-color: hsl(210, 70%, 86%);
 }
 .pt__gridlist tbody tr.active:hover th,
-.pt__gridlist tbody tr.active:hover td {
+.pt__gridlist tbody tr.active.highlight th,
+.pt__gridlist tbody tr.active:hover td,
+.pt__gridlist tbody tr.active.highlight td {
   background-color: hsl(210, 70%, 86%);
 }
 .pt__gridlist table {
@@ -12436,13 +12454,16 @@ ul.pt__field__hint li:before {
 }
 .pt__gridlist td > .inner,
 .pt__gridlist th > .inner {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   display: block;
   position: relative;
   word-wrap: normal;
   text-decoration: none;
+}
+.pt__gridlist td > .inner.is-nowrap,
+.pt__gridlist th > .inner.is-nowrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .pt__gridlist td.pull-left,
 .pt__gridlist th.pull-left {
@@ -12605,13 +12626,19 @@ ul.pt__field__hint li:before {
   background-color: hsl(120, 60%, 91%);
 }
 .pt__gridlist.has-background tbody tr.success:hover,
-.pt__gridlist.has-background tbody tr.valid:hover {
+.pt__gridlist.has-background tbody tr.valid:hover,
+.pt__gridlist.has-background tbody tr.success.highlight,
+.pt__gridlist.has-background tbody tr.valid.highlight {
   background-color: hsl(120, 60%, 86%);
 }
 .pt__gridlist.has-background tbody tr.success:hover th,
 .pt__gridlist.has-background tbody tr.valid:hover th,
+.pt__gridlist.has-background tbody tr.success.highlight th,
+.pt__gridlist.has-background tbody tr.valid.highlight th,
 .pt__gridlist.has-background tbody tr.success:hover td,
-.pt__gridlist.has-background tbody tr.valid:hover td {
+.pt__gridlist.has-background tbody tr.valid:hover td,
+.pt__gridlist.has-background tbody tr.success.highlight td,
+.pt__gridlist.has-background tbody tr.valid.highlight td {
   background-color: hsl(120, 60%, 86%);
 }
 .pt__gridlist.has-background tbody tr.danger,
@@ -12625,13 +12652,19 @@ ul.pt__field__hint li:before {
   background-color: hsl(0, 65%, 91%);
 }
 .pt__gridlist.has-background tbody tr.danger:hover,
-.pt__gridlist.has-background tbody tr.invalid:hover {
+.pt__gridlist.has-background tbody tr.invalid:hover,
+.pt__gridlist.has-background tbody tr.danger.highlight,
+.pt__gridlist.has-background tbody tr.invalid.highlight {
   background-color: hsl(0, 65%, 86%);
 }
 .pt__gridlist.has-background tbody tr.danger:hover th,
 .pt__gridlist.has-background tbody tr.invalid:hover th,
+.pt__gridlist.has-background tbody tr.danger.highlight th,
+.pt__gridlist.has-background tbody tr.invalid.highlight th,
 .pt__gridlist.has-background tbody tr.danger:hover td,
-.pt__gridlist.has-background tbody tr.invalid:hover td {
+.pt__gridlist.has-background tbody tr.invalid:hover td,
+.pt__gridlist.has-background tbody tr.danger.highlight td,
+.pt__gridlist.has-background tbody tr.invalid.highlight td {
   background-color: hsl(0, 65%, 86%);
 }
 .pt__gridlist.has-background tbody tr.warning {
@@ -12641,11 +12674,14 @@ ul.pt__field__hint li:before {
 .pt__gridlist.has-background tbody tr.warning td {
   background-color: hsl(38, 70%, 91%);
 }
-.pt__gridlist.has-background tbody tr.warning:hover {
+.pt__gridlist.has-background tbody tr.warning:hover,
+.pt__gridlist.has-background tbody tr.warning.highlight {
   background-color: hsl(38, 70%, 86%);
 }
 .pt__gridlist.has-background tbody tr.warning:hover th,
-.pt__gridlist.has-background tbody tr.warning:hover td {
+.pt__gridlist.has-background tbody tr.warning.highlight th,
+.pt__gridlist.has-background tbody tr.warning:hover td,
+.pt__gridlist.has-background tbody tr.warning.highlight td {
   background-color: hsl(38, 70%, 86%);
 }
 .pt__gridlist.has-background tbody tr.active {
@@ -12655,11 +12691,14 @@ ul.pt__field__hint li:before {
 .pt__gridlist.has-background tbody tr.active td {
   background-color: hsl(210, 70%, 91%);
 }
-.pt__gridlist.has-background tbody tr.active:hover {
+.pt__gridlist.has-background tbody tr.active:hover,
+.pt__gridlist.has-background tbody tr.active.highlight {
   background-color: hsl(210, 70%, 86%);
 }
 .pt__gridlist.has-background tbody tr.active:hover th,
-.pt__gridlist.has-background tbody tr.active:hover td {
+.pt__gridlist.has-background tbody tr.active.highlight th,
+.pt__gridlist.has-background tbody tr.active:hover td,
+.pt__gridlist.has-background tbody tr.active.highlight td {
   background-color: hsl(210, 70%, 86%);
 }
 .pt__gridlist.has-background thead th,
@@ -17722,13 +17761,19 @@ ul.pt__field__hint li:before {
   background-color: hsl(120, 60%, 91%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.success:hover,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid:hover {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid:hover,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.success.highlight,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid.highlight {
   background-color: hsl(120, 60%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.success:hover th,
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.valid:hover th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.success.highlight th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid.highlight th,
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.success:hover td,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid:hover td {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid:hover td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.success.highlight td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.valid.highlight td {
   background-color: hsl(120, 60%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.danger,
@@ -17742,13 +17787,19 @@ ul.pt__field__hint li:before {
   background-color: hsl(0, 65%, 91%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.danger:hover,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid:hover {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid:hover,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.danger.highlight,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid.highlight {
   background-color: hsl(0, 65%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.danger:hover th,
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid:hover th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.danger.highlight th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid.highlight th,
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.danger:hover td,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid:hover td {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid:hover td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.danger.highlight td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.invalid.highlight td {
   background-color: hsl(0, 65%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.warning {
@@ -17758,11 +17809,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.warning td {
   background-color: hsl(38, 70%, 91%);
 }
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning:hover {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning:hover,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning.highlight {
   background-color: hsl(38, 70%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.warning:hover th,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning:hover td {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning.highlight th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning:hover td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.warning.highlight td {
   background-color: hsl(38, 70%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.active {
@@ -17772,11 +17826,14 @@ ul.pt__field__hint li:before {
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.active td {
   background-color: hsl(210, 70%, 91%);
 }
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.active:hover {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.active:hover,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.active.highlight {
   background-color: hsl(210, 70%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist tbody tr.active:hover th,
-.com__togglebox.has-content-bg .pt__gridlist tbody tr.active:hover td {
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.active.highlight th,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.active:hover td,
+.com__togglebox.has-content-bg .pt__gridlist tbody tr.active.highlight td {
   background-color: hsl(210, 70%, 86%);
 }
 .com__togglebox.has-content-bg .pt__gridlist thead th,
@@ -20267,13 +20324,19 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   background-color: hsl(120, 60%, 91%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.success:hover,
-.com__gridlist.has-background .pt__gridlist tbody tr.valid:hover {
+.com__gridlist.has-background .pt__gridlist tbody tr.valid:hover,
+.com__gridlist.has-background .pt__gridlist tbody tr.success.highlight,
+.com__gridlist.has-background .pt__gridlist tbody tr.valid.highlight {
   background-color: hsl(120, 60%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.success:hover th,
 .com__gridlist.has-background .pt__gridlist tbody tr.valid:hover th,
+.com__gridlist.has-background .pt__gridlist tbody tr.success.highlight th,
+.com__gridlist.has-background .pt__gridlist tbody tr.valid.highlight th,
 .com__gridlist.has-background .pt__gridlist tbody tr.success:hover td,
-.com__gridlist.has-background .pt__gridlist tbody tr.valid:hover td {
+.com__gridlist.has-background .pt__gridlist tbody tr.valid:hover td,
+.com__gridlist.has-background .pt__gridlist tbody tr.success.highlight td,
+.com__gridlist.has-background .pt__gridlist tbody tr.valid.highlight td {
   background-color: hsl(120, 60%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.danger,
@@ -20287,13 +20350,19 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   background-color: hsl(0, 65%, 91%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.danger:hover,
-.com__gridlist.has-background .pt__gridlist tbody tr.invalid:hover {
+.com__gridlist.has-background .pt__gridlist tbody tr.invalid:hover,
+.com__gridlist.has-background .pt__gridlist tbody tr.danger.highlight,
+.com__gridlist.has-background .pt__gridlist tbody tr.invalid.highlight {
   background-color: hsl(0, 65%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.danger:hover th,
 .com__gridlist.has-background .pt__gridlist tbody tr.invalid:hover th,
+.com__gridlist.has-background .pt__gridlist tbody tr.danger.highlight th,
+.com__gridlist.has-background .pt__gridlist tbody tr.invalid.highlight th,
 .com__gridlist.has-background .pt__gridlist tbody tr.danger:hover td,
-.com__gridlist.has-background .pt__gridlist tbody tr.invalid:hover td {
+.com__gridlist.has-background .pt__gridlist tbody tr.invalid:hover td,
+.com__gridlist.has-background .pt__gridlist tbody tr.danger.highlight td,
+.com__gridlist.has-background .pt__gridlist tbody tr.invalid.highlight td {
   background-color: hsl(0, 65%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.warning {
@@ -20303,11 +20372,14 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__gridlist.has-background .pt__gridlist tbody tr.warning td {
   background-color: hsl(38, 70%, 91%);
 }
-.com__gridlist.has-background .pt__gridlist tbody tr.warning:hover {
+.com__gridlist.has-background .pt__gridlist tbody tr.warning:hover,
+.com__gridlist.has-background .pt__gridlist tbody tr.warning.highlight {
   background-color: hsl(38, 70%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.warning:hover th,
-.com__gridlist.has-background .pt__gridlist tbody tr.warning:hover td {
+.com__gridlist.has-background .pt__gridlist tbody tr.warning.highlight th,
+.com__gridlist.has-background .pt__gridlist tbody tr.warning:hover td,
+.com__gridlist.has-background .pt__gridlist tbody tr.warning.highlight td {
   background-color: hsl(38, 70%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.active {
@@ -20317,11 +20389,14 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__gridlist.has-background .pt__gridlist tbody tr.active td {
   background-color: hsl(210, 70%, 91%);
 }
-.com__gridlist.has-background .pt__gridlist tbody tr.active:hover {
+.com__gridlist.has-background .pt__gridlist tbody tr.active:hover,
+.com__gridlist.has-background .pt__gridlist tbody tr.active.highlight {
   background-color: hsl(210, 70%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist tbody tr.active:hover th,
-.com__gridlist.has-background .pt__gridlist tbody tr.active:hover td {
+.com__gridlist.has-background .pt__gridlist tbody tr.active.highlight th,
+.com__gridlist.has-background .pt__gridlist tbody tr.active:hover td,
+.com__gridlist.has-background .pt__gridlist tbody tr.active.highlight td {
   background-color: hsl(210, 70%, 86%);
 }
 .com__gridlist.has-background .pt__gridlist thead th,

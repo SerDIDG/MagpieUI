@@ -21,11 +21,14 @@
         .mx__background-clip(padding-box);
 
         > .inner {
-            .cm__text-overflow;
             display: block;
             position: relative;
             word-wrap: normal;
             text-decoration: none;
+
+            &.is-nowrap {
+                .cm__text-nowrap;
+            }
         }
 
         &.pull-left {
@@ -292,7 +295,8 @@
                     background-color: @PtGridlist-Cell-SuccessBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-SuccessHoverBackground;
 
                     th, td {
@@ -309,7 +313,8 @@
                     background-color: @PtGridlist-Cell-DangerBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-DangerHoverBackground;
 
                     th, td {
@@ -325,7 +330,8 @@
                     background-color: @PtGridlist-Cell-WarningBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-WarningHoverBackground;
 
                     th, td {
@@ -341,7 +347,8 @@
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
                     background-color: @PtGridlist-Cell-ActiveHoverBackground;
 
                     th, td {

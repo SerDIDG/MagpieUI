@@ -329,8 +329,8 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
         that.responseData.callback = callback;
         that.filter();
         if(
-            status === 'success'
-            && (that.params.successOnEmptyData || !cm.isEmpty(that.responseData.data) || that.responseData.status)
+            status === 'success' &&
+            (that.params.successOnEmptyData || !cm.isEmpty(that.responseData.data) || that.responseData.status)
         ){
             that.success();
         }else{
