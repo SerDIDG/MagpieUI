@@ -91,10 +91,10 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         classInherit.prototype.setAttributes.apply(that, arguments);
 
         // Set accessible attributes
-        that.nodes.container.setAttributes('role', 'button');
-        that.nodes.container.setAttributes('tabindex', '0');
-        that.nodes.container.setAttributes('aria-haspopup', 'true');
-        that.nodes.container.setAttributes('aria-controls', 'menu');
+        that.nodes.container.setAttribute('role', 'button');
+        that.nodes.container.setAttribute('tabindex', '0');
+        that.nodes.container.setAttribute('aria-haspopup', 'true');
+        that.nodes.container.setAttribute('aria-controls', 'menu');
     };
 
     classProto.renderView = function() {
