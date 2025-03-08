@@ -28,6 +28,7 @@ cm.define('Com.Menu', {
                 theme: null,
                 hold: true,
                 delay: 0,
+                ariaRole: 'menu',
             },
         },
     },
@@ -83,14 +84,27 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         that.triggerEvent('onValidateParamsEnd');
     };
 
+    classProto.setAttributes = function(){
+        const that = this;
+
+        // Call parent method
+        classInherit.prototype.setAttributes.apply(that, arguments);
+
+        // Set accessible attributes
+        that.nodes.container.setAttributes('role', 'button');
+        that.nodes.container.setAttributes('tabindex', '0');
+        that.nodes.container.setAttributes('aria-haspopup', 'true');
+        that.nodes.container.setAttributes('aria-controls', 'menu');
+    };
+
     classProto.renderView = function() {
         const that = this;
 
         // Structure
-        that.nodes.container = cm.node('a', {classes: ['com__menu', 'com__menu--link'], title: that.msg('label'), role: 'button', tabindex: '0'},
+        that.nodes.container = cm.node('a', {classes: ['com__menu', 'com__menu--link'], title: that.msg('label')},
             cm.node('div', {classes: 'label'}, that.msg('label')),
             cm.node('div', {classes: that.params.iconClasses}),
-            that.nodes.target = cm.node('div', {classes: 'pt__menu'},
+            that.nodes.target = cm.node('div', {classes: ['pt__menu', 'pt__menu--tooltip']},
                 that.nodes.holder = cm.node('ul', {classes: 'pt__menu-dropdown'})
             )
         );

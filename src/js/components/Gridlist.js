@@ -1014,12 +1014,14 @@ function(params){
                 name: '',
                 label: '',
                 access: true,
+                status: null, // success | warning | danger
                 classes: [],
                 attr: {},
                 events: {},
                 preventDefault: config.preventDefault,
                 dataKey: 'data',
                 dataPath: null,
+                icon: null,
                 constructor: false,
                 constructorParams: {},
                 callback: null,
@@ -1054,7 +1056,19 @@ function(params){
         // Structure
         actionItem.container = cm.node('li',
             actionItem.node = cm.node('a', actionItem.attr, actionItem.label)
-        )
+        );
+
+        // Render icon
+        if (cm.isNode(actionItem.icon)) {
+            actionItem.icon = actionItem.icon.cloneNode(true);
+            cm.insertFirst(actionItem.icon, actionItem.node);
+            cm.addClass(actionItem.container, 'has-icon');
+        }
+
+        // Status
+        if (!cm.isEmpty(actionItem.status)) {
+            cm.addClass(actionItem.container, actionItem.status);
+        }
 
         // Set role action attributes if callback or controller provided
         if(actionItem.constructor || cm.isFunction(actionItem.callback)){

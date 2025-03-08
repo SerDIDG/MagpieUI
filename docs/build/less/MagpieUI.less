@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.93.2 (2025-03-07 04:13) ************ */
+/*! ************ MagpieUI v3.94.0 (2025-03-08 03:47) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.93.2';
+@CmVersion: '3.94.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5100,6 +5100,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtMenu-ItemIndentY: 2px;
 @PtMenu-ItemIndentX: @CmIndent-XSmall;
+@PtMenu-ItemGap: @CmIndent-XXSmall;
 @PtMenu-Item-Color: @CmFont-Base-Color;
 @PtMenu-Item-HoverColor: @CmColor-Font-LinkHover;
 @PtMenu-Item-ActiveColor: @CmColor-Font-LinkActive;
@@ -14284,10 +14285,11 @@ ul.pt__field__hint {
             white-space: nowrap;
             text-overflow: ellipsis;
             text-decoration: none;
-            color: @PtMenu-Item-Color;
+            color: inherit;
             .mx__transition(all, @CmUI-Transition-Duration);
 
-            &:hover {
+            &:hover,
+            &:focus-visible {
                 text-decoration: none;
                 color: @PtMenu-Item-HoverColor;
                 .mx__transition(all, @CmUI-Transition-DurationReverse);
@@ -14298,8 +14300,12 @@ ul.pt__field__hint {
             }
         }
 
-        &.has-icon {
-            .pt__menu__item--icon;
+        &:first-child {
+            margin-top: 0;
+
+            &:before {
+                display: none;
+            }
         }
 
         &:before {
@@ -14315,19 +14321,60 @@ ul.pt__field__hint {
             .mx__position(-@PtMenu-SeparatorSize, 0, auto, 0)
         }
 
-        &:first-child {
-            margin-top: 0;
-
-            &:before {
-                display: none;
-            }
-        }
-
         &:hover {
             z-index: 2;
 
             > ul {
                 .pt__menu-dropdown--show;
+            }
+        }
+
+        &.has-icon {
+            .pt__menu__item--icon;
+        }
+
+        &.success {
+            color: @CmColor-Success-DarkDefault;
+
+            > a {
+                &:hover,
+                &:focus-visible {
+                    color: @CmColor-Success-DarkHover;
+                }
+
+                &:active {
+                    color: @CmColor-Success-DarkActive;
+                }
+            }
+        }
+
+        &.warning {
+            color: @CmColor-Warning-DarkDefault;
+
+            > a {
+                &:hover,
+                &:focus-visible {
+                    color: @CmColor-Warning-DarkHover;
+                }
+
+                &:active {
+                    color: @CmColor-Warning-DarkActive;
+                }
+            }
+        }
+
+        &.danger {
+            color: @CmColor-Danger-DarkDefault;
+
+            > a {
+                &:hover,
+                &:focus-visible {
+                    color: @CmColor-Danger-DarkHover;
+                }
+
+                &:active {
+                    color: @CmColor-Danger-DarkActive;
+                }
             }
         }
     }
@@ -14418,6 +14465,7 @@ ul.pt__field__hint {
 .pt__menu__item--icon {
     > a {
         .display-flex;
+        gap: @PtMenu-ItemGap;
         white-space: nowrap;
         .mx__transition(all, @CmUI-Transition-Duration);
         .mx__align-items(center);
@@ -14429,18 +14477,6 @@ ul.pt__field__hint {
 
             img {
                 .cm__image-centered;
-            }
-        }
-
-        .title {
-            margin: 0 @CmIndent-XXSmall;
-
-            &:first-child {
-                margin-left: 0;
-            }
-
-            &:last-child {
-                margin-right: 0;
             }
         }
     }
@@ -18402,7 +18438,14 @@ ul.pt__field__hint {
     }
 }
 
-/* ******* COMPONENTS: MENU ******* */
+.pt__menu--tooltip {
+    .pt__menu-dropdown {
+        .pt__menu-dropdown--base;
+        .pt__menu-dropdown--position;
+        .pt__menu-dropdown--show;
+        position: static;
+    }
+}
 
 .com__menu {
     display: inline-flex;
@@ -18430,23 +18473,10 @@ ul.pt__field__hint {
     }
 }
 
-/* *** TOOLTIP *** */
-
-.com__tooltip {
-    &.com__menu-tooltip {
-        > .inner {
-            > .scroll {
-                overflow: visible;
-            }
-        }
-
-        .pt__menu {
-            .pt__menu-dropdown {
-                .pt__menu-dropdown--base;
-                .pt__menu-dropdown--position;
-                .pt__menu-dropdown--show;
-                position: static;
-            }
+.com__tooltip.com__menu-tooltip {
+    > .inner {
+        > .scroll {
+            overflow: visible;
         }
     }
 }

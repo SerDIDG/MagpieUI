@@ -1,4 +1,11 @@
-/* ******* COMPONENTS: MENU ******* */
+.pt__menu--tooltip {
+    .pt__menu-dropdown {
+        .pt__menu-dropdown--base;
+        .pt__menu-dropdown--position;
+        .pt__menu-dropdown--show;
+        position: static;
+    }
+}
 
 .com__menu {
     display: inline-flex;
@@ -26,23 +33,10 @@
     }
 }
 
-/* *** TOOLTIP *** */
-
-.com__tooltip {
-    &.com__menu-tooltip {
-        > .inner {
-            > .scroll {
-                overflow: visible;
-            }
-        }
-
-        .pt__menu {
-            .pt__menu-dropdown {
-                .pt__menu-dropdown--base;
-                .pt__menu-dropdown--position;
-                .pt__menu-dropdown--show;
-                position: static;
-            }
+.com__tooltip.com__menu-tooltip {
+    > .inner {
+        > .scroll {
+            overflow: visible;
         }
     }
 }

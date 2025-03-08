@@ -29,10 +29,11 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             text-decoration: none;
-            color: @PtMenu-Item-Color;
+            color: inherit;
             .mx__transition(all, @CmUI-Transition-Duration);
 
-            &:hover {
+            &:hover,
+            &:focus-visible {
                 text-decoration: none;
                 color: @PtMenu-Item-HoverColor;
                 .mx__transition(all, @CmUI-Transition-DurationReverse);
@@ -43,8 +44,12 @@
             }
         }
 
-        &.has-icon {
-            .pt__menu__item--icon;
+        &:first-child {
+            margin-top: 0;
+
+            &:before {
+                display: none;
+            }
         }
 
         &:before {
@@ -60,19 +65,60 @@
             .mx__position(-@PtMenu-SeparatorSize, 0, auto, 0)
         }
 
-        &:first-child {
-            margin-top: 0;
-
-            &:before {
-                display: none;
-            }
-        }
-
         &:hover {
             z-index: 2;
 
             > ul {
                 .pt__menu-dropdown--show;
+            }
+        }
+
+        &.has-icon {
+            .pt__menu__item--icon;
+        }
+
+        &.success {
+            color: @CmColor-Success-DarkDefault;
+
+            > a {
+                &:hover,
+                &:focus-visible {
+                    color: @CmColor-Success-DarkHover;
+                }
+
+                &:active {
+                    color: @CmColor-Success-DarkActive;
+                }
+            }
+        }
+
+        &.warning {
+            color: @CmColor-Warning-DarkDefault;
+
+            > a {
+                &:hover,
+                &:focus-visible {
+                    color: @CmColor-Warning-DarkHover;
+                }
+
+                &:active {
+                    color: @CmColor-Warning-DarkActive;
+                }
+            }
+        }
+
+        &.danger {
+            color: @CmColor-Danger-DarkDefault;
+
+            > a {
+                &:hover,
+                &:focus-visible {
+                    color: @CmColor-Danger-DarkHover;
+                }
+
+                &:active {
+                    color: @CmColor-Danger-DarkActive;
+                }
             }
         }
     }
@@ -163,6 +209,7 @@
 .pt__menu__item--icon {
     > a {
         .display-flex;
+        gap: @PtMenu-ItemGap;
         white-space: nowrap;
         .mx__transition(all, @CmUI-Transition-Duration);
         .mx__align-items(center);
@@ -174,18 +221,6 @@
 
             img {
                 .cm__image-centered;
-            }
-        }
-
-        .title {
-            margin: 0 @CmIndent-XXSmall;
-
-            &:first-child {
-                margin-left: 0;
-            }
-
-            &:last-child {
-                margin-right: 0;
             }
         }
     }

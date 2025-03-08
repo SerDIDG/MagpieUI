@@ -53,6 +53,7 @@ cm.define('Com.Tooltip', {
         'adaptive': true,
         'adaptiveX': true,
         'adaptiveY': true,
+        'ariaRole': 'tooltip',
         'title': '',
         'titleTag': 'h3',
         'content': cm.node('div'),
@@ -120,7 +121,7 @@ function(params) {
 
     var render = function() {
         // Structure
-        that.nodes.container = cm.node('div', {'class': 'com__tooltip', 'role': 'tooltip'},
+        that.nodes.container = cm.node('div', {'class': 'com__tooltip', 'role': that.params.ariaRole},
             that.nodes.inner = cm.node('div', {'class': 'inner'},
                 that.nodes.content = cm.node('div', {'class': 'scroll'})
             )
