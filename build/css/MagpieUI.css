@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.94.0 (2025-03-08 03:49) ************ */
+/*! ************ MagpieUI v3.95.0 (2025-03-08 23:30) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4387,8 +4387,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.94.0');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.94.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.94.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.94.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.94.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.95.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.95.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.95.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.95.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.95.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10849,13 +10849,12 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:active {
   color: hsl(210, 75%, 35%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:hover,
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:focus-visible {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:is(:hover, :focus-visible, .highlight) {
   text-decoration: none;
   color: hsl(210, 75%, 45%);
-  transition: all 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:active {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li > a:is(:active, .active) {
   color: hsl(210, 75%, 35%);
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li:first-child {
@@ -10919,31 +10918,28 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li.success {
   color: hsl(120, 65%, 42%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.success > a:hover,
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.success > a:focus-visible {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.success > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(120, 65%, 35%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.success > a:active {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.success > a:is(:active, .active) {
   color: hsl(120, 65%, 25%);
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li.warning {
   color: hsl(38, 75%, 52%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.warning > a:hover,
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.warning > a:focus-visible {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.warning > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(38, 75%, 45%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.warning > a:active {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.warning > a:is(:active, .active) {
   color: hsl(38, 75%, 35%);
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li.danger {
   color: hsl(0, 65%, 52%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.danger > a:hover,
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.danger > a:focus-visible {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.danger > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(0, 65%, 45%);
 }
-.pt__editable.is-editable > .menu .pt__menu-dropdown > li.danger > a:active {
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.danger > a:is(:active, .active) {
   color: hsl(0, 65%, 35%);
 }
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li > ul {
@@ -16064,9 +16060,9 @@ ul.pt__field__hint li:before {
 .pt__listing-items ul li > .text .icon.small {
   margin-top: 1px;
 }
-.pt__listing-items ul li > a:hover,
-.pt__listing-items ul li > .inner:hover,
-.pt__listing-items ul li > .text:hover {
+.pt__listing-items ul li > a:is(:hover, :focus-visible, .highlight),
+.pt__listing-items ul li > .inner:is(:hover, :focus-visible, .highlight),
+.pt__listing-items ul li > .text:is(:hover, :focus-visible, .highlight) {
   text-decoration: none;
   transition: all 100ms ease-in-out 0ms;
 }
@@ -16126,12 +16122,16 @@ ul.pt__field__hint li:before {
 .pt__listing-items ul li.sep {
   border-bottom: 1px solid hsl(0, 0%, 80%);
 }
-.pt__listing-items:not(.disabled) ul li > a:hover,
-.pt__listing-items:not(.disabled) ul li > .inner:hover {
+.pt__listing-items:not(.disabled) ul li > a:is(:hover, :focus-visible, .highlight),
+.pt__listing-items:not(.disabled) ul li > .inner:is(:hover, :focus-visible, .highlight) {
   background-color: hsl(0, 0%, 95%);
 }
-.pt__listing-items:not(.disabled) ul li.active > a:hover,
-.pt__listing-items:not(.disabled) ul li.active > .inner:hover {
+.pt__listing-items:not(.disabled) ul li > a:is(:active, .active),
+.pt__listing-items:not(.disabled) ul li > .inner:is(:active, .active) {
+  background-color: hsl(210, 70%, 91%);
+}
+.pt__listing-items:not(.disabled) ul li.active > a:is(:hover, :focus-visible, .highlight),
+.pt__listing-items:not(.disabled) ul li.active > .inner:is(:hover, :focus-visible, .highlight) {
   background-color: hsl(210, 70%, 86%);
 }
 .pt__listing-items.disabled ul li > a,
@@ -16189,13 +16189,12 @@ ul.pt__field__hint li:before {
 .pt__menu-dropdown--base > li > a:active {
   color: hsl(210, 75%, 35%);
 }
-.pt__menu-dropdown--base > li > a:hover,
-.pt__menu-dropdown--base > li > a:focus-visible {
+.pt__menu-dropdown--base > li > a:is(:hover, :focus-visible, .highlight) {
   text-decoration: none;
   color: hsl(210, 75%, 45%);
-  transition: all 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
 }
-.pt__menu-dropdown--base > li > a:active {
+.pt__menu-dropdown--base > li > a:is(:active, .active) {
   color: hsl(210, 75%, 35%);
 }
 .pt__menu-dropdown--base > li:first-child {
@@ -16259,31 +16258,28 @@ ul.pt__field__hint li:before {
 .pt__menu-dropdown--base > li.success {
   color: hsl(120, 65%, 42%);
 }
-.pt__menu-dropdown--base > li.success > a:hover,
-.pt__menu-dropdown--base > li.success > a:focus-visible {
+.pt__menu-dropdown--base > li.success > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(120, 65%, 35%);
 }
-.pt__menu-dropdown--base > li.success > a:active {
+.pt__menu-dropdown--base > li.success > a:is(:active, .active) {
   color: hsl(120, 65%, 25%);
 }
 .pt__menu-dropdown--base > li.warning {
   color: hsl(38, 75%, 52%);
 }
-.pt__menu-dropdown--base > li.warning > a:hover,
-.pt__menu-dropdown--base > li.warning > a:focus-visible {
+.pt__menu-dropdown--base > li.warning > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(38, 75%, 45%);
 }
-.pt__menu-dropdown--base > li.warning > a:active {
+.pt__menu-dropdown--base > li.warning > a:is(:active, .active) {
   color: hsl(38, 75%, 35%);
 }
 .pt__menu-dropdown--base > li.danger {
   color: hsl(0, 65%, 52%);
 }
-.pt__menu-dropdown--base > li.danger > a:hover,
-.pt__menu-dropdown--base > li.danger > a:focus-visible {
+.pt__menu-dropdown--base > li.danger > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(0, 65%, 45%);
 }
-.pt__menu-dropdown--base > li.danger > a:active {
+.pt__menu-dropdown--base > li.danger > a:is(:active, .active) {
   color: hsl(0, 65%, 35%);
 }
 .pt__menu-dropdown--position {
@@ -20785,13 +20781,12 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .pt__menu--tooltip .pt__menu-dropdown > li > a:active {
   color: hsl(210, 75%, 35%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li > a:hover,
-.pt__menu--tooltip .pt__menu-dropdown > li > a:focus-visible {
+.pt__menu--tooltip .pt__menu-dropdown > li > a:is(:hover, :focus-visible, .highlight) {
   text-decoration: none;
   color: hsl(210, 75%, 45%);
-  transition: all 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
 }
-.pt__menu--tooltip .pt__menu-dropdown > li > a:active {
+.pt__menu--tooltip .pt__menu-dropdown > li > a:is(:active, .active) {
   color: hsl(210, 75%, 35%);
 }
 .pt__menu--tooltip .pt__menu-dropdown > li:first-child {
@@ -20855,31 +20850,28 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .pt__menu--tooltip .pt__menu-dropdown > li.success {
   color: hsl(120, 65%, 42%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li.success > a:hover,
-.pt__menu--tooltip .pt__menu-dropdown > li.success > a:focus-visible {
+.pt__menu--tooltip .pt__menu-dropdown > li.success > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(120, 65%, 35%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li.success > a:active {
+.pt__menu--tooltip .pt__menu-dropdown > li.success > a:is(:active, .active) {
   color: hsl(120, 65%, 25%);
 }
 .pt__menu--tooltip .pt__menu-dropdown > li.warning {
   color: hsl(38, 75%, 52%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li.warning > a:hover,
-.pt__menu--tooltip .pt__menu-dropdown > li.warning > a:focus-visible {
+.pt__menu--tooltip .pt__menu-dropdown > li.warning > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(38, 75%, 45%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li.warning > a:active {
+.pt__menu--tooltip .pt__menu-dropdown > li.warning > a:is(:active, .active) {
   color: hsl(38, 75%, 35%);
 }
 .pt__menu--tooltip .pt__menu-dropdown > li.danger {
   color: hsl(0, 65%, 52%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li.danger > a:hover,
-.pt__menu--tooltip .pt__menu-dropdown > li.danger > a:focus-visible {
+.pt__menu--tooltip .pt__menu-dropdown > li.danger > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(0, 65%, 45%);
 }
-.pt__menu--tooltip .pt__menu-dropdown > li.danger > a:active {
+.pt__menu--tooltip .pt__menu-dropdown > li.danger > a:is(:active, .active) {
   color: hsl(0, 65%, 35%);
 }
 .pt__menu--tooltip .pt__menu-dropdown > li > ul {
@@ -22948,13 +22940,12 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
 .com__tabset__head-menu .pt__menu-dropdown > li > a:active {
   color: hsl(210, 75%, 35%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li > a:hover,
-.com__tabset__head-menu .pt__menu-dropdown > li > a:focus-visible {
+.com__tabset__head-menu .pt__menu-dropdown > li > a:is(:hover, :focus-visible, .highlight) {
   text-decoration: none;
   color: hsl(210, 75%, 45%);
-  transition: all 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
 }
-.com__tabset__head-menu .pt__menu-dropdown > li > a:active {
+.com__tabset__head-menu .pt__menu-dropdown > li > a:is(:active, .active) {
   color: hsl(210, 75%, 35%);
 }
 .com__tabset__head-menu .pt__menu-dropdown > li:first-child {
@@ -23018,31 +23009,28 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
 .com__tabset__head-menu .pt__menu-dropdown > li.success {
   color: hsl(120, 65%, 42%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li.success > a:hover,
-.com__tabset__head-menu .pt__menu-dropdown > li.success > a:focus-visible {
+.com__tabset__head-menu .pt__menu-dropdown > li.success > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(120, 65%, 35%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li.success > a:active {
+.com__tabset__head-menu .pt__menu-dropdown > li.success > a:is(:active, .active) {
   color: hsl(120, 65%, 25%);
 }
 .com__tabset__head-menu .pt__menu-dropdown > li.warning {
   color: hsl(38, 75%, 52%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li.warning > a:hover,
-.com__tabset__head-menu .pt__menu-dropdown > li.warning > a:focus-visible {
+.com__tabset__head-menu .pt__menu-dropdown > li.warning > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(38, 75%, 45%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li.warning > a:active {
+.com__tabset__head-menu .pt__menu-dropdown > li.warning > a:is(:active, .active) {
   color: hsl(38, 75%, 35%);
 }
 .com__tabset__head-menu .pt__menu-dropdown > li.danger {
   color: hsl(0, 65%, 52%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li.danger > a:hover,
-.com__tabset__head-menu .pt__menu-dropdown > li.danger > a:focus-visible {
+.com__tabset__head-menu .pt__menu-dropdown > li.danger > a:is(:hover, :focus-visible, .highlight) {
   color: hsl(0, 65%, 45%);
 }
-.com__tabset__head-menu .pt__menu-dropdown > li.danger > a:active {
+.com__tabset__head-menu .pt__menu-dropdown > li.danger > a:is(:active, .active) {
   color: hsl(0, 65%, 35%);
 }
 .com__tabset__head-menu .pt__menu-dropdown > li > ul {

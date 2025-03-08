@@ -358,12 +358,6 @@ cm.getConstructor('Com.Gridlist', function(classConstructor){
                             </dt>
                             <dd><code>Object</code>. Associative array of html attributes, value can contains variables, example %id%</dd>
                         </dl>
-                        <dl>
-                            <dt>
-                                <code><b>events</b></code>
-                            </dt>
-                            <dd><code>Object</code>. Associative array of dom events.</dd>
-                        </dl>
                     </dd>
                 </dl>
             </dd>
@@ -636,8 +630,8 @@ new Com.Gridlist({
         {'type' : 'text', 'key' : 'name', 'width' : '20%', 'title' : 'Name'},
         {'type' : 'text', 'key' : 'descr', 'width' : 'auto', 'title': 'Description'},
         {'type' : 'links', 'width' : '128', 'title' : 'Actions', 'links' : [
-            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'events' : {/* DOM Events */}},
-            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'events' : {/* DOM Events */}}
+            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'callback' : function(event, params){}},
+            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'callback' : function(event, params){}}
         ]}
     ]
 });</textarea>
@@ -675,8 +669,8 @@ new Com.Gridlist({
         {'type' : 'text', 'key' : 'name', 'width' : '20%', 'title' : 'Name'},
         {'type' : 'text', 'key' : 'descr', 'width' : 'auto', 'title': 'Description'},
         {'type' : 'actions', 'width' : '128', 'title' : 'Actions', 'actions' : [
-            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'callback' : function(){}},
-            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'callback' : function(){}}
+            {'label' : 'Edit', 'attr' : {'href' : '/edit/%id%'}, 'callback' : function(event, params){}},
+            {'label' : 'Remove', 'attr' : {'href' : '/remove/%id%'}, 'callback' : function(event, params){}}
         ]}
     ]
 });</textarea>

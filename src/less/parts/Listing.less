@@ -250,7 +250,7 @@
                     }
                 }
 
-                &:hover {
+                &:is(:hover, :focus-visible, .highlight) {
                     text-decoration: none;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
@@ -336,15 +336,19 @@
             li {
                 > a,
                 > .inner {
-                    &:hover {
+                    &:is(:hover, :focus-visible, .highlight) {
                         background-color: @CmColor-Secondary-LightHover;
+                    }
+
+                    &:is(:active, .active) {
+                        background-color: @CmColor-Primary-LightActive;
                     }
                 }
 
                 &.active {
                     > a,
                     > .inner {
-                        &:hover {
+                        &:is(:hover, :focus-visible, .highlight) {
                             background-color: @CmColor-Primary-LightActiveHover;
                         }
                     }

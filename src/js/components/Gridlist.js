@@ -122,13 +122,30 @@ cm.define('Com.Gridlist', {
             embedStructure: 'append'
         },
 
-        menu: {
+        actionsMenu: {
             constructor: 'Com.Menu',
             constructorParams: {
                 renderStructure: true,
                 embedStructureOnRender: true,
-                className: ['com__menu--gridlist'],
-                left: '-(selfWidth-targetWidth)',
+                modifiers: ['link', 'gridlist'],
+                tooltip: {
+                    enable: true,
+                    constructorParams: {
+                        left: '-(selfWidth-targetWidth)',
+                    },
+                },
+            },
+        },
+
+        linksMenu: {
+            constructor: 'Com.Menu',
+            constructorParams: {
+                renderStructure: false,
+                embedStructureOnRender: false,
+                modifiers: [],
+                tooltip: {
+                    enable: false,
+                },
             },
         },
     },
@@ -955,34 +972,54 @@ function(params){
     };
 
     var renderCellLinks = function(config, row, item){
-        // Config
+        // Validate config
         item.classes = ['pt__links', ['pull', config.linksParams.align].join('-'), config.class];
+
         // Structure
-        item.nodes.items = item.nodes.links = [];
         item.nodes.node = cm.node('div', {classes: item.classes},
             item.nodes.itemsList = item.nodes.linksList = cm.node('ul')
-        )
-        // Items
-        item.links = renderCellActionItems(config, row, item, 'links');
-        // Embed
-        if(item.nodes.links.length){
-            cm.appendChild(item.nodes.node, item.nodes.inner);
-        }
+        );
+
+        // Render menu component
+        cm.getConstructor(that.params.linksMenu.constructor, classConstructor => {
+            // Render items
+            item.links = renderCellActionItems(config, row, item, 'links');
+
+            // Render controller
+            item.controller = new classConstructor(
+                cm.merge(that.params.linksMenu.constructorParams, {
+                    items: item.links,
+                    nodes: {
+                        container: item.nodes.node,
+                        holder: item.nodes.itemsList,
+                    },
+                })
+            );
+
+            // Append
+            if(item.controller.getItems().length > 0){
+                cm.appendChild(item.nodes.node, item.nodes.inner);
+            }
+        });
     };
 
     var renderCellActions = function(config, row, item){
-        // Config
+        // Validate config
         item.classes = ['pt__links', ['pull', config.actionsParams.align].join('-'), config.class];
 
         // Structure
-        item.nodes.items = item.nodes.actions = [];
         item.nodes.node = cm.node('div', {classes: item.classes});
 
         // Render menu component
-        cm.getConstructor(that.params.menu.constructor, function(classConstructor){
+        cm.getConstructor(that.params.actionsMenu.constructor, classConstructor => {
+            // Render items
+            item.actions = renderCellActionItems(config, row, item, 'actions');
+
+            // Render controller
             item.controller = new classConstructor(
-                cm.merge(that.params.menu.constructorParams, {
+                cm.merge(that.params.actionsMenu.constructorParams, {
                     container: item.nodes.node,
+                    items: item.actions,
                     events: {
                         onShow: function() {
                             cm.addClass(row.nodes.container, 'highlight');
@@ -994,14 +1031,8 @@ function(params){
                 })
             );
 
-            // Get items container
-            item.nodes.itemsList = item.nodes.actionsList = item.controller.getNodes('holder');
-
-            // Render items
-            item.actions = renderCellActionItems(config, row, item, 'actions');
-
             // Append
-            if(item.nodes.actions.length > 0){
+            if(item.controller.getItems().length > 0){
                 cm.appendChild(item.nodes.node, item.nodes.inner);
             }
         });
@@ -1010,41 +1041,41 @@ function(params){
     var renderCellActionItems = function(config, row, item, list){
         var items = [];
         cm.forEach(config[list], function(actionItem, key){
-            actionItem = cm.merge({
-                name: '',
-                label: '',
-                access: true,
-                status: null, // success | warning | danger
-                classes: [],
-                attr: {},
-                events: {},
-                preventDefault: config.preventDefault,
-                dataKey: 'data',
-                dataPath: null,
-                icon: null,
-                constructor: false,
-                constructorParams: {},
-                callback: null,
-            }, actionItem);
-
-            // Check access
-            var isDataEmpty = !cm.isArray(item.data) || cm.isEmpty(actionItem.name);
-            var isInDataArray = cm.isArray(item.data) && cm.inArray(item.data, actionItem.name);
-            if(actionItem.access && (isDataEmpty || isInDataArray)){
-                renderCellActionItem(config, row, item, actionItem);
+            actionItem = renderCellActionItem(config, row, item, actionItem);
+            if (actionItem) {
+                items.push(actionItem);
             }
-
-            items.push(actionItem);
         });
         return items;
     }
 
     var renderCellActionItem = function(config, row, item, actionItem){
-        // Merge css classes
-        actionItem.attr.classes = cm.merge(actionItem.classes, actionItem.attr.classes);
+        // Validate action item
+        actionItem = cm.merge({
+            name: '',
+            label: '',
+            icon: null,
+            access: true,
+            status: null, // success | warning | danger
+            classes: [],
+            attr: {},
+            preventDefault: config.preventDefault,
+            dataKey: 'data',
+            dataPath: null,
+            constructor: false,
+            constructorParams: {},
+            callback: null,
+            callbackParams: {},
+        }, actionItem);
 
-        // Bind data to the html attributes if they provided.
-        // ToDo: deprecated it or refactor
+        // Check access
+        var isActionDataEmpty = !cm.isArray(item.data) || cm.isEmpty(actionItem.name);
+        var isInDataArray = cm.isArray(item.data) && cm.inArray(item.data, actionItem.name);
+        if (!actionItem.access || (!isActionDataEmpty && !isInDataArray)) {
+            return;
+        }
+
+        // Fill data in the HTML attributes if they provided
         cm.forEach(row.data, function(itemValue, itemKey){
             actionItem.attr = cm.replaceDeep(
                 actionItem.attr,
@@ -1053,54 +1084,20 @@ function(params){
             );
         });
 
-        // Structure
-        actionItem.container = cm.node('li',
-            actionItem.node = cm.node('a', actionItem.attr, actionItem.label)
-        );
-
-        // Render icon
-        if (cm.isNode(actionItem.icon)) {
-            actionItem.icon = actionItem.icon.cloneNode(true);
-            cm.insertFirst(actionItem.icon, actionItem.node);
-            cm.addClass(actionItem.container, 'has-icon');
-        }
-
-        // Status
-        if (!cm.isEmpty(actionItem.status)) {
-            cm.addClass(actionItem.container, actionItem.status);
-        }
-
-        // Set role action attributes if callback or controller provided
-        if(actionItem.constructor || cm.isFunction(actionItem.callback)){
-            actionItem.node.setAttribute('role', 'button');
-            actionItem.node.setAttribute('tabindex', 0);
-        }
-
+        // Set constructor callback parameters
+        const params = {
+            rowItem: row,
+            cellItem: item,
+            [actionItem.dataKey]: cm.reducePath(actionItem.dataPath, row.data),
+        };
         if(actionItem.constructor){
-            cm.getConstructor(actionItem.constructor, function(classConstructor){
-                actionItem._constructorParams = cm.merge(actionItem.constructorParams, {
-                    node: actionItem.node,
-                    rowItem: row,
-                    cellItem: item,
-                    actionItem: actionItem,
-                    [actionItem.dataKey]: cm.reducePath(actionItem.dataPath, row.data),
-                });
-                actionItem.controller = new classConstructor(actionItem['_constructorParams']);
-                actionItem.controller.addEvent('onRenderControllerEnd', function(){
-                    item.controller?.hide(false);
-                });
-            });
+            actionItem.constructorParams = cm.merge(actionItem.constructorParams, params);
         }else{
-            cm.click.add(actionItem.node, function(e){
-                actionItem.preventDefault && cm.preventDefault(e);
-                item.controller?.hide(false);
-                cm.isFunction(actionItem.callback) && actionItem.callback(e, actionItem, row);
-            });
+            actionItem.callbackParams = cm.merge(actionItem.callbackParams, params);
         }
 
         // Append
-        item.nodes.items.push(actionItem.node);
-        cm.appendChild(actionItem.container, item.nodes.itemsList);
+        return actionItem;
     };
 
     /*** HELPING FUNCTIONS ***/

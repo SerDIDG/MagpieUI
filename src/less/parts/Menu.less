@@ -32,14 +32,13 @@
             color: inherit;
             .mx__transition(all, @CmUI-Transition-Duration);
 
-            &:hover,
-            &:focus-visible {
+            &:is(:hover, :focus-visible, .highlight) {
                 text-decoration: none;
                 color: @PtMenu-Item-HoverColor;
-                .mx__transition(all, @CmUI-Transition-DurationReverse);
+                transition-duration: @CmUI-Transition-DurationReverse;
             }
 
-            &:active {
+            &:is(:active, .active) {
                 color: @PtMenu-Item-ActiveColor;
             }
         }
@@ -81,12 +80,11 @@
             color: @CmColor-Success-DarkDefault;
 
             > a {
-                &:hover,
-                &:focus-visible {
+                &:is(:hover, :focus-visible, .highlight) {
                     color: @CmColor-Success-DarkHover;
                 }
 
-                &:active {
+                &:is(:active, .active) {
                     color: @CmColor-Success-DarkActive;
                 }
             }
@@ -96,12 +94,11 @@
             color: @CmColor-Warning-DarkDefault;
 
             > a {
-                &:hover,
-                &:focus-visible {
+                &:is(:hover, :focus-visible, .highlight) {
                     color: @CmColor-Warning-DarkHover;
                 }
 
-                &:active {
+                &:is(:active, .active) {
                     color: @CmColor-Warning-DarkActive;
                 }
             }
@@ -111,12 +108,11 @@
             color: @CmColor-Danger-DarkDefault;
 
             > a {
-                &:hover,
-                &:focus-visible {
+                &:is(:hover, :focus-visible, .highlight) {
                     color: @CmColor-Danger-DarkHover;
                 }
 
-                &:active {
+                &:is(:active, .active) {
                     color: @CmColor-Danger-DarkActive;
                 }
             }

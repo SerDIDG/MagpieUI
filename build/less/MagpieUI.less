@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.94.0 (2025-03-08 03:49) ************ */
+/*! ************ MagpieUI v3.95.0 (2025-03-08 23:30) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4593,7 +4593,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.94.0';
+@CmVersion: '3.95.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -14129,7 +14129,7 @@ ul.pt__field__hint {
                     }
                 }
 
-                &:hover {
+                &:is(:hover, :focus-visible, .highlight) {
                     text-decoration: none;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
@@ -14215,15 +14215,19 @@ ul.pt__field__hint {
             li {
                 > a,
                 > .inner {
-                    &:hover {
+                    &:is(:hover, :focus-visible, .highlight) {
                         background-color: @CmColor-Secondary-LightHover;
+                    }
+
+                    &:is(:active, .active) {
+                        background-color: @CmColor-Primary-LightActive;
                     }
                 }
 
                 &.active {
                     > a,
                     > .inner {
-                        &:hover {
+                        &:is(:hover, :focus-visible, .highlight) {
                             background-color: @CmColor-Primary-LightActiveHover;
                         }
                     }
@@ -14288,14 +14292,13 @@ ul.pt__field__hint {
             color: inherit;
             .mx__transition(all, @CmUI-Transition-Duration);
 
-            &:hover,
-            &:focus-visible {
+            &:is(:hover, :focus-visible, .highlight) {
                 text-decoration: none;
                 color: @PtMenu-Item-HoverColor;
-                .mx__transition(all, @CmUI-Transition-DurationReverse);
+                transition-duration: @CmUI-Transition-DurationReverse;
             }
 
-            &:active {
+            &:is(:active, .active) {
                 color: @PtMenu-Item-ActiveColor;
             }
         }
@@ -14337,12 +14340,11 @@ ul.pt__field__hint {
             color: @CmColor-Success-DarkDefault;
 
             > a {
-                &:hover,
-                &:focus-visible {
+                &:is(:hover, :focus-visible, .highlight) {
                     color: @CmColor-Success-DarkHover;
                 }
 
-                &:active {
+                &:is(:active, .active) {
                     color: @CmColor-Success-DarkActive;
                 }
             }
@@ -14352,12 +14354,11 @@ ul.pt__field__hint {
             color: @CmColor-Warning-DarkDefault;
 
             > a {
-                &:hover,
-                &:focus-visible {
+                &:is(:hover, :focus-visible, .highlight) {
                     color: @CmColor-Warning-DarkHover;
                 }
 
-                &:active {
+                &:is(:active, .active) {
                     color: @CmColor-Warning-DarkActive;
                 }
             }
@@ -14367,12 +14368,11 @@ ul.pt__field__hint {
             color: @CmColor-Danger-DarkDefault;
 
             > a {
-                &:hover,
-                &:focus-visible {
+                &:is(:hover, :focus-visible, .highlight) {
                     color: @CmColor-Danger-DarkHover;
                 }
 
-                &:active {
+                &:is(:active, .active) {
                     color: @CmColor-Danger-DarkActive;
                 }
             }
