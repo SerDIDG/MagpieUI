@@ -335,7 +335,7 @@ function(params){
         if(optionsLength){
             cm.addClass(nodes['container'], 'active');
             that.toggleMenu(true);
-            // Scroll to active element
+            // Scroll to an active element
             if(active && options[active]){
                 scrollToItem(options[active]);
             }
@@ -366,39 +366,49 @@ function(params){
         cm.removeEvent(document, 'mousedown', afterBodyClick);
     };
 
-    var afterKeypress = function(e) {
-        if(optionsLength){
-            var item = options[active],
-                index = optionsList.indexOf(item),
-                option;
-            switch(e.keyCode){
-                case 38:
-                    cm.preventDefault(e);
-                    if(index - 1 >= 0){
-                        option = optionsList[index - 1];
-                    }else{
-                        option = optionsList[optionsLength - 1];
-                    }
-                    break;
+    var afterKeypress = function(event) {
+        if (optionsLength === 0) {
+            return;
+        }
 
-                case 40:
-                    cm.preventDefault(e);
-                    if(index + 1 < optionsLength){
-                        option = optionsList[index + 1];
-                    }else{
-                        option = optionsList[0];
-                    }
-                    break;
+        // Prevent default event
+        const keys = ['ArrowUp', 'ArrowDown', 'Home', 'End', 'Space', 'Enter'];
+        if (cm.inArray(keys, event.code)) {
+            event.preventDefault();
+        }
 
-                case 13:
-                    that.toggleMenu(false);
-                    break;
-            }
+        // Navigate item
+        const item = options[active];
+        const index = optionsList.indexOf(item);
+        let option;
 
-            if(option){
-                set(option, true);
-                scrollToItem(option);
-            }
+        switch(event.code){
+            case 'ArrowUp':
+                option = optionsList[(index - 1 + optionsLength) % optionsLength];
+                break;
+
+            case 'ArrowDown':
+                option = optionsList[(index + 1) % optionsLength];
+                break;
+
+            case 'Home':
+                option = optionsList[0];
+                break;
+
+            case 'End':
+                option = optionsList[optionsLength - 1];
+                break;
+
+            case 'Space':
+            case 'Enter':
+                that.toggleMenu(false);
+                break;
+        }
+
+        // Select and scroll to item
+        if (option) {
+            set(option, true);
+            scrollToItem(option);
         }
     };
 

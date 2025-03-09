@@ -26,8 +26,6 @@ cm.define('Com.Menu', {
             constructor: 'Com.Tooltip',
             constructorParams: {
                 className: 'com__menu-tooltip',
-                targetEvent: 'click',
-                hideOnReClick: true,
                 theme: null,
                 hold: true,
                 delay: 0,
@@ -39,6 +37,11 @@ cm.define('Com.Menu', {
                 adaptiveTop: null,
                 adaptiveLeft: null,
                 minWidth: 'targetWidth',
+
+                targetEvent: 'click',
+                preventClickEvent: true,
+                hideOnReClick: true,
+                hideOnOut: true,
             },
         },
     },
@@ -55,12 +58,14 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         const that = this;
 
         // Variables
-        that.items = [];
         that.nodes = {
             holder: cm.node('div'),
             button: cm.node('div'),
             target: cm.node('div'),
         };
+        that.items = [];
+        that.currentIndex = null;
+        that.previousIndex = null;
 
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
@@ -71,14 +76,6 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
         // Call parent method
         classInherit.prototype.setAttributes.apply(that, arguments);
-
-        // Set accessible attributes
-        if (that.params.tooltip.enable) {
-            that.nodes.button.setAttribute('role', 'button');
-            that.nodes.button.setAttribute('tabindex', '0');
-            that.nodes.button.setAttribute('aria-haspopup', 'true');
-            that.nodes.button.setAttribute('aria-controls', 'menu');
-        }
 
         // Set additional CSS classes
         cm.forEach(that.params.modifiers, modifier => {
@@ -110,30 +107,6 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         return cm.node('div', {classes: classes});
     };
 
-    classProto.renderTooltip = function() {
-        const that = this;
-        cm.getConstructor(that.params.tooltip.constructor, classConstructor => {
-            that.components.tooltip = new classConstructor(
-                cm.merge(that.params.tooltip.constructorParams, {
-                    target: that.nodes.container || that.nodes.button,
-                    content: that.nodes.target,
-                    events: {
-                        onShowStart: () => {
-                            cm.addClass(that.nodes.button, 'active');
-                            that.components.tooltip.focus();
-                            that.triggerEvent('onShow');
-                        },
-                        onHideStart: () => {
-                            cm.removeClass(that.nodes.button, 'active');
-                            that.nodes.button.focus();
-                            that.triggerEvent('onHide');
-                        },
-                    },
-                })
-            );
-        });
-    };
-
     classProto.renderViewModel = function() {
         const that = this;
 
@@ -146,6 +119,92 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         // Render tooltip
         if (that.params.tooltip.enable) {
             that.renderTooltip();
+        }
+    };
+
+    /******* TOOLTIP *******/
+
+    classProto.renderTooltip = function() {
+        const that = this;
+
+        // Render tooltip controller
+        cm.getConstructor(that.params.tooltip.constructor, classConstructor => {
+            that.components.tooltip = new classConstructor(
+                cm.merge(that.params.tooltip.constructorParams, {
+                    target: that.nodes.container || that.nodes.button,
+                    content: that.nodes.target,
+                    events: {
+                        onShowStart: () => that.afterShow(),
+                        onHideStart: () => that.afterHide(),
+                    },
+                })
+            );
+        });
+
+        // Set accessible attributes
+        that.nodes.button.setAttribute('role', 'button');
+        that.nodes.button.setAttribute('tabindex', '0');
+        that.nodes.button.setAttribute('aria-haspopup', 'true');
+        that.nodes.button.setAttribute('aria-controls', 'menu');
+        that.nodes.button.setAttribute('aria-expanded', 'false');
+
+        // Add arrow navigation listeners
+        cm.addEvent(that.nodes.button, 'blur', that.afterBlur.bind(that));
+        cm.addEvent(that.nodes.button, 'keydown', that.afterKeyPress.bind(that));
+    };
+
+    classProto.afterBlur = function() {
+        const that = this;
+        if (!that.components.tooltip.isOwnEventTarget()) {
+            that.hide();
+        }
+    };
+
+    classProto.afterShow = function() {
+        const that = this;
+        cm.addClass(that.nodes.button, 'active');
+        that.nodes.button.setAttribute('aria-expanded', 'true');
+        that.nodes.button.focus();
+        that.selectItem(0);
+        that.triggerEvent('onShow');
+    };
+
+    classProto.afterHide = function() {
+        const that = this;
+        cm.removeClass(that.nodes.button, 'active');
+        that.nodes.button.setAttribute('aria-expanded', 'false');
+        that.nodes.button.focus();
+        that.unselectItem(that.currentIndex);
+        that.triggerEvent('onHide');
+    };
+
+    classProto.afterKeyPress = function(event) {
+        const that = this;
+        if (!that.components.tooltip.isShow) {
+            return;
+        }
+
+        const keys = ['ArrowUp', 'ArrowDown', 'Home', 'End', 'Space', 'Enter'];
+        if (cm.inArray(keys, event.code)) {
+            event.preventDefault();
+        }
+
+        switch (event.code) {
+            case 'ArrowUp':
+                return that.selectItem((that.currentIndex - 1 + that.items.length) % that.items.length);
+
+            case 'ArrowDown':
+                return that.selectItem((that.currentIndex + 1) % that.items.length);
+
+            case 'Home':
+                return that.selectItem(0);
+
+            case 'End':
+                return that.selectItem(that.items.length - 1);
+
+            case 'Space':
+            case 'Enter':
+                return that.triggerItemAction(that.currentIndex);
         }
     };
 
@@ -219,6 +278,12 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             that.renderItemAction(item);
         }
 
+        // Add navigation listeners
+        if (that.params.tooltip.enable) {
+            cm.addEvent(item.nodes.link, 'mouseout', () => that.unselectItem(item), true);
+            cm.addEvent(item.nodes.link, 'mouseover', () => that.selectItem(item), true);
+        }
+
         // Append
         cm.appendChild(item.nodes.container, that.nodes.holder);
         that.items.push(item);
@@ -253,6 +318,48 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             }
             that.hide(false);
         });
+    };
+
+    classProto.triggerItemAction = function(item) {
+        const that = this;
+        if (cm.isNumber(item)) {
+            item = that.items[item];
+        }
+        if (!item) {
+            return;
+        }
+        cm.triggerEvent(item.nodes.link, 'click');
+    };
+
+    classProto.selectItem = function(item) {
+        const that = this;
+        if (cm.isNumber(item)) {
+            item = that.items[item];
+        }
+        if (!item) {
+            return;
+        }
+
+        // Unselect previous
+        that.unselectItem(that.currentIndex);
+
+        // Select current
+        that.currentIndex = cm.arrayIndex(that.items, item);
+        cm.addClass(item.nodes.link, 'highlight');
+    };
+
+    classProto.unselectItem = function(item) {
+        const that = this;
+        if (cm.isNumber(item)) {
+            item = that.items[item];
+        }
+        if (!item) {
+            return;
+        }
+
+        that.previousIndex = cm.arrayIndex(that.items, item);
+        that.currentIndex = null;
+        cm.removeClass(item.nodes.link, 'highlight');
     };
 
     /******** PUBLIC ********/

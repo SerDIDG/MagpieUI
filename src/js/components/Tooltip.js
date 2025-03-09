@@ -69,6 +69,7 @@ function(params) {
     that.delayInterval = null;
     that.resizeInterval = null;
     that.autoHideInterval = null;
+    that.lastEventTarget = null;
 
     that.isDestructed = false;
     that.isHideProcess = false;
@@ -487,6 +488,7 @@ function(params) {
     var setWindowEvent = function() {
         if (that.params.hideOnOut && !that.isWindowEvent) {
             that.isWindowEvent = true;
+            that.lastEventTarget = null;
             if (cm.inArray(that.params.targetEvent, 'hover')) {
                 cm.addEvent(window, 'mousemove', that.windowEventHandler);
             }
@@ -499,6 +501,7 @@ function(params) {
     var removeWindowEvent = function() {
         if (that.params.hideOnOut && that.isWindowEvent) {
             that.isWindowEvent = false;
+            that.lastEventTarget = null;
             if (cm.inArray(that.params.targetEvent, 'hover')) {
                 cm.removeEvent(window, 'mousemove', that.windowEventHandler);
             }
@@ -509,8 +512,8 @@ function(params) {
     };
 
     var windowEvent = function(e) {
-        var target = cm.getEventTarget(e);
-        if (!cm.isParent(that.nodes.container, target, true) && !cm.isParent(that.params.target, target, true)) {
+        that.lastEventTarget = cm.getEventTarget(e);
+        if (!cm.isParent(that.nodes.container, that.lastEventTarget, true) && !cm.isParent(that.params.target, that.lastEventTarget, true)) {
             hide(false);
         } else {
             show(true);
@@ -595,6 +598,10 @@ function(params) {
 
     that.isOwnNode = function(node) {
         return cm.isParent(that.nodes.container, node, true);
+    };
+
+    that.isOwnEventTarget = function() {
+        return cm.isParent(that.nodes.container, that.lastEventTarget, true);
     };
 
     that.remove = function() {
