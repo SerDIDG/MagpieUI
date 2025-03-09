@@ -184,27 +184,18 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             return;
         }
 
-        const keys = ['ArrowUp', 'ArrowDown', 'Home', 'End', 'Space', 'Enter'];
-        if (cm.inArray(keys, event.code)) {
+        const actions = {
+            'ArrowUp': () => that.selectItem((that.currentIndex - 1 + that.items.length) % that.items.length),
+            'ArrowDown': () => that.selectItem((that.currentIndex + 1) % that.items.length),
+            'Home': () => that.selectItem(0),
+            'End': () => that.selectItem(that.items.length - 1),
+            'Space': () => that.triggerItemAction(that.currentIndex),
+            'Enter': () => that.triggerItemAction(that.currentIndex),
+        };
+
+        if (actions[event.code]) {
             event.preventDefault();
-        }
-
-        switch (event.code) {
-            case 'ArrowUp':
-                return that.selectItem((that.currentIndex - 1 + that.items.length) % that.items.length);
-
-            case 'ArrowDown':
-                return that.selectItem((that.currentIndex + 1) % that.items.length);
-
-            case 'Home':
-                return that.selectItem(0);
-
-            case 'End':
-                return that.selectItem(that.items.length - 1);
-
-            case 'Space':
-            case 'Enter':
-                return that.triggerItemAction(that.currentIndex);
+            actions[event.code]();
         }
     };
 
