@@ -188,6 +188,8 @@ function(params){
         that.orderBy = that.params.orderBy;
         // ToDo: remove deprecated parameter name 'childBy'
         that.params.groupBy = !cm.isEmpty(that.params.childBy) ? that.params.childsBy : that.params.groupBy;
+        // Data
+        that.params.data ||= [];
         // Ajax
         if(!cm.isEmpty(that.params.ajax.url) && that.params.ajax.enable){
             that.isAjax = true;
