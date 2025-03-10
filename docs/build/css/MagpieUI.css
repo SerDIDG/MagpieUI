@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.96.1 (2025-03-09 05:47) ************ */
+/*! ************ MagpieUI v3.97.0 (2025-03-10 08:52) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4387,8 +4387,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.96.1');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.96.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.96.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.96.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.96.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.97.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.97.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.97.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.97.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.97.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -10915,6 +10915,9 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   bottom: 0;
   left: 0;
 }
+.pt__editable.is-editable > .menu .pt__menu-dropdown > li.is-hidden {
+  display: none;
+}
 .pt__editable.is-editable > .menu .pt__menu-dropdown > li.success {
   color: hsl(120, 65%, 42%);
 }
@@ -16255,6 +16258,9 @@ ul.pt__field__hint li:before {
   bottom: 0;
   left: 0;
 }
+.pt__menu-dropdown--base > li.is-hidden {
+  display: none;
+}
 .pt__menu-dropdown--base > li.success {
   color: hsl(120, 65%, 42%);
 }
@@ -20847,6 +20853,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   bottom: 0;
   left: 0;
 }
+.pt__menu--tooltip .pt__menu-dropdown > li.is-hidden {
+  display: none;
+}
 .pt__menu--tooltip .pt__menu-dropdown > li.success {
   color: hsl(120, 65%, 42%);
 }
@@ -23005,6 +23014,9 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   right: 0;
   bottom: 0;
   left: 0;
+}
+.com__tabset__head-menu .pt__menu-dropdown > li.is-hidden {
+  display: none;
 }
 .com__tabset__head-menu .pt__menu-dropdown > li.success {
   color: hsl(120, 65%, 42%);

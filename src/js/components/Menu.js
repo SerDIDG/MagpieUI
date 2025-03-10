@@ -89,7 +89,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         const that = this;
 
         // Structure
-        that.nodes.container = cm.node('a', {classes: 'com__menu', title: that.msg('label')},
+        that.nodes.container = cm.node('div', {classes: 'com__menu', title: that.msg('label')},
             cm.node('div', {classes: 'label'}, that.msg('label')),
             that.nodes.icon = that.renderIconView(),
             that.nodes.target = cm.node('div', {classes: ['pt__menu', 'pt__menu--tooltip']},
@@ -149,12 +149,21 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         that.nodes.button.setAttribute('aria-expanded', 'false');
 
         // Add arrow navigation listeners
+        cm.addEvent(that.nodes.button, 'focus', that.afterFocus.bind(that));
         cm.addEvent(that.nodes.button, 'blur', that.afterBlur.bind(that));
         cm.addEvent(that.nodes.button, 'keydown', that.afterKeyPress.bind(that));
     };
 
+    classProto.afterFocus = function() {
+        const that = this;
+        cm.addClass(that.nodes.button, 'highlight');
+        cm.addClass(that.nodes.icon, 'highlight');
+    };
+
     classProto.afterBlur = function() {
         const that = this;
+        cm.removeClass(that.nodes.button, 'highlight');
+        cm.removeClass(that.nodes.icon, 'highlight');
         if (!that.components.tooltip.isOwnEventTarget()) {
             that.hide();
         }
@@ -163,15 +172,17 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     classProto.afterShow = function() {
         const that = this;
         cm.addClass(that.nodes.button, 'active');
+        cm.addClass(that.nodes.icon, 'active');
         that.nodes.button.setAttribute('aria-expanded', 'true');
         that.nodes.button.focus();
-        that.selectItem(0);
+        that.selectItem(that.findFirstIndex());
         that.triggerEvent('onShow');
     };
 
     classProto.afterHide = function() {
         const that = this;
         cm.removeClass(that.nodes.button, 'active');
+        cm.removeClass(that.nodes.icon, 'active');
         that.nodes.button.setAttribute('aria-expanded', 'false');
         that.nodes.button.focus();
         that.unselectItem(that.currentIndex);
@@ -184,27 +195,71 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             return;
         }
 
+        // Get only a visible items list
+        const items = that.items.filter(item => !item.params.hidden);
+
+        // Define key actions
         const actions = {
-            'ArrowUp': () => that.selectItem((that.currentIndex - 1 + that.items.length) % that.items.length),
-            'ArrowDown': () => that.selectItem((that.currentIndex + 1) % that.items.length),
-            'Home': () => that.selectItem(0),
-            'End': () => that.selectItem(that.items.length - 1),
+            'ArrowUp': () => that.selectItem(that.findPreviousIndex(that.currentIndex)),
+            'ArrowDown': () => that.selectItem(that.findNextIndex(that.currentIndex)),
+            'Home': () => that.selectItem(that.findFirstIndex()),
+            'End': () => that.selectItem(that.findLastIndex()),
             'Space': () => that.triggerItemAction(that.currentIndex),
             'Enter': () => that.triggerItemAction(that.currentIndex),
         };
 
+        // Execute action
         if (actions[event.code]) {
             event.preventDefault();
             actions[event.code]();
         }
     };
 
+    /******* NAVIGATION *******/
+
+    classProto.findFirstIndex = function() {
+        const that = this;
+        const item = that.items.find(item => !item.params.hidden);
+        return cm.arrayIndex(that.items, item);
+    };
+
+    classProto.findLastIndex = function() {
+        const that = this;
+        const item = that.items.findLast(item => !item.params.hidden);
+        return cm.arrayIndex(that.items, item);
+    };
+
+    classProto.findPreviousIndex = function(index) {
+        const that = this;
+        const items = that.items.filter(item => !item.params.hidden);
+        const item = items[(index - 1 + items.length) % items.length];
+        return cm.arrayIndex(that.items, item);
+    };
+
+    classProto.findNextIndex = function(index) {
+        const that = this;
+        const items = that.items.filter(item => !item.params.hidden);
+        const item = items[(index - 1 + items.length) % items.length];
+        return cm.arrayIndex(that.items, item);
+    };
+
     /******* ITEMS *******/
+
+    classProto.reArrangeItems = function() {
+        const that = this;
+        cm.forEach(that.items, item => {
+            if (item.params.hidden) {
+                cm.remove(item.nodes.container);
+            } else {
+                cm.appendChild(item.nodes.container, that.nodes.holder);
+            }
+        });
+    };
 
     classProto.renderItems = function(items){
         const that = this;
         cm.forEach(items, item => that.renderItem(item));
-    }
+    };
 
     classProto.renderItem = function(params){
         const that = this;
@@ -216,6 +271,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             icon: null,
             access: true,
             status: null, // success | warning | danger
+            hidden: false,
             classes: [],
             attr: {},
             preventDefault: true,
@@ -223,6 +279,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             constructorParams: {},
             callback: null,
             callbackParams: {},
+            afterRender: null,
         }, that.params.item);
 
         // Validate item
@@ -262,6 +319,12 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             item.nodes.link.setAttribute('tabindex', 0);
         }
 
+        // Add navigation listeners
+        if (that.params.tooltip.enable) {
+            cm.addEvent(item.nodes.link, 'mouseout', () => that.unselectItem(item), true);
+            cm.addEvent(item.nodes.link, 'mouseover', () => that.selectItem(item), true);
+        }
+
         // Action
         if (item.params.constructor) {
             that.renderItemController(item);
@@ -269,14 +332,17 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             that.renderItemAction(item);
         }
 
-        // Add navigation listeners
-        if (that.params.tooltip.enable) {
-            cm.addEvent(item.nodes.link, 'mouseout', () => that.unselectItem(item), true);
-            cm.addEvent(item.nodes.link, 'mouseover', () => that.selectItem(item), true);
+        // After render callback
+        if (cm.isFunction(item.params.afterRender)) {
+            item.params.afterRender(item);
         }
 
         // Append
-        cm.appendChild(item.nodes.container, that.nodes.holder);
+        if (item.params.hidden) {
+            cm.addClass(item.nodes.container, 'is-hidden');
+        } else {
+            cm.appendChild(item.nodes.container, that.nodes.holder);
+        }
         that.items.push(item);
     };
 
@@ -313,9 +379,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
     classProto.triggerItemAction = function(item) {
         const that = this;
-        if (cm.isNumber(item)) {
-            item = that.items[item];
-        }
+        item = that.getItem(item);
         if (!item) {
             return;
         }
@@ -324,9 +388,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
     classProto.selectItem = function(item) {
         const that = this;
-        if (cm.isNumber(item)) {
-            item = that.items[item];
-        }
+        item = that.getItem(item);
         if (!item) {
             return;
         }
@@ -341,9 +403,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
     classProto.unselectItem = function(item) {
         const that = this;
-        if (cm.isNumber(item)) {
-            item = that.items[item];
-        }
+        item = that.getItem(item);
         if (!item) {
             return;
         }
@@ -351,6 +411,18 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         that.previousIndex = cm.arrayIndex(that.items, item);
         that.currentIndex = null;
         cm.removeClass(item.nodes.link, 'highlight');
+    };
+
+    classProto.toggleItemVisibility = function(item, value) {
+        const that = this;
+        item = that.getItem(item);
+        if (!item) {
+            return;
+        }
+
+        item.params.hidden = !value;
+        cm.toggleClass(item.nodes.container, 'is-hidden', !value);
+        that.reArrangeItems();
     };
 
     /******** PUBLIC ********/
@@ -371,6 +443,20 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         const that = this;
         that.renderItem(item);
         return that;
+    };
+
+    classProto.getItem = function(query) {
+        const that = this;
+        if (cm.isNumber(query)) {
+            return that.items[query];
+        }
+        if (cm.isString(query)) {
+            return that.items.find(entry => entry.params.name === query);
+        }
+        if (cm.isObject(query)) {
+            return query;
+        }
+        return null;
     };
 
     classProto.getItems = function() {
