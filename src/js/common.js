@@ -2278,24 +2278,32 @@ cm.decode = (function(){
 })();
 
 cm.copyToClipboard = function(text, callback){
-    var node, successful;
+    if (cm.isEmpty(text)) return;
 
-    if(cm.isEmpty(text)){
-        return;
+    const success = () => {
+        cm.isFunction(callback) && callback(true);
+    };
+
+    const error = () => {
+        cm.errorLog({type: 'error', name: 'cm.copyToClipboard', message: 'Unable to copy text to clipboard!'});
+        cm.isFunction(callback) && callback(false);
+    };
+
+    if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(success)
+            .catch(error);
+    } else {
+        const node = cm.node('textarea');
+        node.value = text;
+        cm.appendChild(node, document.body);
+
+        node.select();
+        const successful = document.execCommand('copy');
+        cm.remove(node);
+
+        successful ? success() : error();
     }
-
-    node = cm.node('textarea');
-    node.value = text;
-    cm.appendChild(node, document.body);
-
-    node.select();
-    successful = document.execCommand( 'copy' );
-    cm.remove(node);
-
-    if(!successful){
-        cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
-    }
-    cm.isFunction(callback) && callback(successful);
 };
 
 cm.share = function(data){
