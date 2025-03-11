@@ -191,24 +191,23 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
     classProto.afterKeyPress = function(event) {
         const that = this;
-        if (!that.components.tooltip.isShow) {
-            return;
-        }
+        if (!that.components.tooltip.isShow) return;
 
-        // Get only a visible items list
+        // Get visible items; exit if none
         const items = that.items.filter(item => !item.params.hidden);
+        if (!items.length) return;
 
-        // Define key actions
+        // Key actions map
         const actions = {
-            'ArrowUp': () => that.selectItem(that.findPreviousIndex(that.currentIndex)),
-            'ArrowDown': () => that.selectItem(that.findNextIndex(that.currentIndex)),
-            'Home': () => that.selectItem(that.findFirstIndex()),
-            'End': () => that.selectItem(that.findLastIndex()),
-            'Space': () => that.triggerItemAction(that.currentIndex),
-            'Enter': () => that.triggerItemAction(that.currentIndex),
+            ArrowUp: () => that.selectItem(that.findPreviousIndex(that.currentIndex)),
+            ArrowDown: () => that.selectItem(that.findNextIndex(that.currentIndex)),
+            Home: () => that.selectItem(that.findFirstIndex()),
+            End: () => that.selectItem(that.findLastIndex()),
+            Space: () => that.triggerItemAction(that.currentIndex),
+            Enter: () => that.triggerItemAction(that.currentIndex),
         };
 
-        // Execute action
+        // Execute action if key exists
         if (actions[event.code]) {
             event.preventDefault();
             actions[event.code]();
@@ -219,28 +218,38 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
     classProto.findFirstIndex = function() {
         const that = this;
-        const item = that.items.find(item => !item.params.hidden);
-        return cm.arrayIndex(that.items, item);
+        return that.items.findIndex(item => !item.params.hidden);
     };
 
     classProto.findLastIndex = function() {
         const that = this;
-        const item = that.items.findLast(item => !item.params.hidden);
-        return cm.arrayIndex(that.items, item);
+        return that.items.findLastIndex(item => !item.params.hidden);
     };
 
     classProto.findPreviousIndex = function(index) {
         const that = this;
-        const items = that.items.filter(item => !item.params.hidden);
-        const item = items[(index - 1 + items.length) % items.length];
-        return cm.arrayIndex(that.items, item);
+        if (!cm.isNumber(index)) {
+            return that.findLastIndex();
+        }
+
+        let previousIndex = (index - 1 + that.items.length) % that.items.length;
+        while (that.getItem(previousIndex).params.hidden) {
+            previousIndex = (previousIndex - 1 + that.items.length) % that.items.length;
+        }
+        return previousIndex;
     };
 
     classProto.findNextIndex = function(index) {
         const that = this;
-        const items = that.items.filter(item => !item.params.hidden);
-        const item = items[(index - 1 + items.length) % items.length];
-        return cm.arrayIndex(that.items, item);
+        if (!cm.isNumber(index)) {
+            return that.findFirstIndex();
+        }
+
+        let nextIndex = (index + 1) % that.items.length;
+        while (that.getItem(nextIndex).params.hidden) {
+            nextIndex = (nextIndex + 1) % that.items.length;
+        }
+        return nextIndex;
     };
 
     /******* ITEMS *******/
@@ -288,13 +297,11 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             params: cm.merge(defaultParams, params)
         };
 
+        // Check access
+        if (!item.params.access) return;
+
         // Validate params
         item.params.attr.classes = cm.merge(item.params.classes, item.params.attr.classes);
-
-        // Check access
-        if (!item.params.access) {
-            return;
-        }
 
         // Structure
         item.nodes.container = cm.node('li',
@@ -321,8 +328,8 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
         // Add navigation listeners
         if (that.params.tooltip.enable) {
-            cm.addEvent(item.nodes.link, 'mouseout', () => that.unselectItem(item), true);
-            cm.addEvent(item.nodes.link, 'mouseover', () => that.selectItem(item), true);
+            cm.addEvent(item.nodes.link, 'mouseenter', () => that.selectItem(item));
+            cm.addEvent(item.nodes.link, 'mouseleave', () => that.unselectItem(item));
         }
 
         // Action
@@ -380,18 +387,15 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     classProto.triggerItemAction = function(item) {
         const that = this;
         item = that.getItem(item);
-        if (!item) {
-            return;
-        }
+        if (!item) return;
+
         cm.triggerEvent(item.nodes.link, 'click');
     };
 
     classProto.selectItem = function(item) {
         const that = this;
         item = that.getItem(item);
-        if (!item) {
-            return;
-        }
+        if (!item) return;
 
         // Unselect previous
         that.unselectItem(that.currentIndex);
@@ -404,21 +408,19 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     classProto.unselectItem = function(item) {
         const that = this;
         item = that.getItem(item);
-        if (!item) {
-            return;
-        }
+        if (!item) return;
 
-        that.previousIndex = cm.arrayIndex(that.items, item);
-        that.currentIndex = null;
+        if (cm.arrayIndex(that.items, item) === that.currentIndex) {
+            that.previousIndex = that.currentIndex;
+            that.currentIndex = null;
+        }
         cm.removeClass(item.nodes.link, 'highlight');
     };
 
     classProto.toggleItemVisibility = function(item, value) {
         const that = this;
         item = that.getItem(item);
-        if (!item) {
-            return;
-        }
+        if (!item) return;
 
         item.params.hidden = !value;
         cm.toggleClass(item.nodes.container, 'is-hidden', !value);
