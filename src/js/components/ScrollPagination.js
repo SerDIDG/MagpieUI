@@ -218,7 +218,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.keyDownEvent = function(e){
         var that = this;
-        cm.handleKey(e, 'escape', function(){
+        cm.handleKey(e, 'Escape', function(){
             if(!that.isDisabled && !that.isProcess && !that.isFinalize && that.params.button.enable !== 'none'){
                 that.callbacks.showButton(that);
             }

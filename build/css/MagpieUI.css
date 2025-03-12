@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.97.3 (2025-03-11 05:29) ************ */
+/*! ************ MagpieUI v3.98.0 (2025-03-12 05:51) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4380,6 +4380,7 @@ span.CodeMirror-selectedtext {
 }
 :root {
   --cm-button--gap: 8px;
+  --cm-input--icon-gap: 6px;
   --pt-buttons--indent: 12px;
   --pt-buttons--box-indent: 16px;
   --pt-field--title-width: 156px;
@@ -4387,8 +4388,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.97.3');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.97.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.97.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.97.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.97.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.98.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.98.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.98.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.98.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.98.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -13431,7 +13432,7 @@ ul.pt__field__hint li:before {
 .pt__input input[type="password"]:not(:first-child),
 .pt__input textarea:not(:first-child),
 .pt__input select:not(:first-child) {
-  padding-left: 36px;
+  padding-left: calc(30px + var(--cm-input--icon-gap));
 }
 .pt__input .input:not(:last-child),
 .pt__input input[type="text"]:not(:last-child),
@@ -13444,7 +13445,7 @@ ul.pt__field__hint li:before {
 .pt__input input[type="password"]:not(:last-child),
 .pt__input textarea:not(:last-child),
 .pt__input select:not(:last-child) {
-  padding-right: 36px;
+  padding-right: calc(30px + var(--cm-input--icon-gap));
 }
 .pt__input .textarea,
 .pt__input textarea {
@@ -13494,31 +13495,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.is-less-indent .input:not(:first-child),
-.pt__input.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.is-less-indent textarea:not(:first-child),
-.pt__input.is-less-indent select:not(:first-child) {
-  padding-left: 30px;
+.pt__input.has-icon-before .input,
+.pt__input.has-icon-before input[type="text"],
+.pt__input.has-icon-before input[type="search"],
+.pt__input.has-icon-before input[type="email"],
+.pt__input.has-icon-before input[type="url"],
+.pt__input.has-icon-before input[type="tel"],
+.pt__input.has-icon-before input[type="number"],
+.pt__input.has-icon-before input[type="time"],
+.pt__input.has-icon-before input[type="password"],
+.pt__input.has-icon-before textarea,
+.pt__input.has-icon-before select {
+  padding-left: calc(30px + var(--cm-input--icon-gap));
 }
-.pt__input.is-less-indent .input:not(:last-child),
-.pt__input.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.is-less-indent textarea:not(:last-child),
-.pt__input.is-less-indent select:not(:last-child) {
-  padding-right: 30px;
+.pt__input.has-icon-after .input,
+.pt__input.has-icon-after input[type="text"],
+.pt__input.has-icon-after input[type="search"],
+.pt__input.has-icon-after input[type="email"],
+.pt__input.has-icon-after input[type="url"],
+.pt__input.has-icon-after input[type="tel"],
+.pt__input.has-icon-after input[type="number"],
+.pt__input.has-icon-after input[type="time"],
+.pt__input.has-icon-after input[type="password"],
+.pt__input.has-icon-after textarea,
+.pt__input.has-icon-after select {
+  padding-right: calc(30px + var(--cm-input--icon-gap));
+}
+.pt__input.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.is-icon-outside .input:not(:first-child),
 .pt__input.is-icon-outside input[type="text"]:not(:first-child),
@@ -13671,7 +13675,7 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless input[type="password"]:not(:first-child),
 .pt__input.is-borderless textarea:not(:first-child),
 .pt__input.is-borderless select:not(:first-child) {
-  padding-left: 38px;
+  padding-left: calc(32px + var(--cm-input--icon-gap));
 }
 .pt__input.is-borderless .input:not(:last-child),
 .pt__input.is-borderless input[type="text"]:not(:last-child),
@@ -13684,7 +13688,7 @@ ul.pt__field__hint li:before {
 .pt__input.is-borderless input[type="password"]:not(:last-child),
 .pt__input.is-borderless textarea:not(:last-child),
 .pt__input.is-borderless select:not(:last-child) {
-  padding-right: 38px;
+  padding-right: calc(32px + var(--cm-input--icon-gap));
 }
 .pt__input.is-borderless .textarea,
 .pt__input.is-borderless textarea {
@@ -13734,31 +13738,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.is-borderless.is-less-indent .input:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.is-borderless.is-less-indent textarea:not(:first-child),
-.pt__input.is-borderless.is-less-indent select:not(:first-child) {
-  padding-left: 32px;
+.pt__input.is-borderless.has-icon-before .input,
+.pt__input.is-borderless.has-icon-before input[type="text"],
+.pt__input.is-borderless.has-icon-before input[type="search"],
+.pt__input.is-borderless.has-icon-before input[type="email"],
+.pt__input.is-borderless.has-icon-before input[type="url"],
+.pt__input.is-borderless.has-icon-before input[type="tel"],
+.pt__input.is-borderless.has-icon-before input[type="number"],
+.pt__input.is-borderless.has-icon-before input[type="time"],
+.pt__input.is-borderless.has-icon-before input[type="password"],
+.pt__input.is-borderless.has-icon-before textarea,
+.pt__input.is-borderless.has-icon-before select {
+  padding-left: calc(32px + var(--cm-input--icon-gap));
 }
-.pt__input.is-borderless.is-less-indent .input:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.is-borderless.is-less-indent textarea:not(:last-child),
-.pt__input.is-borderless.is-less-indent select:not(:last-child) {
-  padding-right: 32px;
+.pt__input.is-borderless.has-icon-after .input,
+.pt__input.is-borderless.has-icon-after input[type="text"],
+.pt__input.is-borderless.has-icon-after input[type="search"],
+.pt__input.is-borderless.has-icon-after input[type="email"],
+.pt__input.is-borderless.has-icon-after input[type="url"],
+.pt__input.is-borderless.has-icon-after input[type="tel"],
+.pt__input.is-borderless.has-icon-after input[type="number"],
+.pt__input.is-borderless.has-icon-after input[type="time"],
+.pt__input.is-borderless.has-icon-after input[type="password"],
+.pt__input.is-borderless.has-icon-after textarea,
+.pt__input.is-borderless.has-icon-after select {
+  padding-right: calc(32px + var(--cm-input--icon-gap));
+}
+.pt__input.is-borderless.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
@@ -13911,7 +13918,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-large input[type="password"]:not(:first-child),
 .pt__input.size-large textarea:not(:first-child),
 .pt__input.size-large select:not(:first-child) {
-  padding-left: 36px;
+  padding-left: calc(30px + var(--cm-input--icon-gap));
 }
 .pt__input.size-large .input:not(:last-child),
 .pt__input.size-large input[type="text"]:not(:last-child),
@@ -13924,7 +13931,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-large input[type="password"]:not(:last-child),
 .pt__input.size-large textarea:not(:last-child),
 .pt__input.size-large select:not(:last-child) {
-  padding-right: 36px;
+  padding-right: calc(30px + var(--cm-input--icon-gap));
 }
 .pt__input.size-large .textarea,
 .pt__input.size-large textarea {
@@ -13974,31 +13981,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.size-large.is-less-indent .input:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.size-large.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.size-large.is-less-indent textarea:not(:first-child),
-.pt__input.size-large.is-less-indent select:not(:first-child) {
-  padding-left: 30px;
+.pt__input.size-large.has-icon-before .input,
+.pt__input.size-large.has-icon-before input[type="text"],
+.pt__input.size-large.has-icon-before input[type="search"],
+.pt__input.size-large.has-icon-before input[type="email"],
+.pt__input.size-large.has-icon-before input[type="url"],
+.pt__input.size-large.has-icon-before input[type="tel"],
+.pt__input.size-large.has-icon-before input[type="number"],
+.pt__input.size-large.has-icon-before input[type="time"],
+.pt__input.size-large.has-icon-before input[type="password"],
+.pt__input.size-large.has-icon-before textarea,
+.pt__input.size-large.has-icon-before select {
+  padding-left: calc(30px + var(--cm-input--icon-gap));
 }
-.pt__input.size-large.is-less-indent .input:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.size-large.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.size-large.is-less-indent textarea:not(:last-child),
-.pt__input.size-large.is-less-indent select:not(:last-child) {
-  padding-right: 30px;
+.pt__input.size-large.has-icon-after .input,
+.pt__input.size-large.has-icon-after input[type="text"],
+.pt__input.size-large.has-icon-after input[type="search"],
+.pt__input.size-large.has-icon-after input[type="email"],
+.pt__input.size-large.has-icon-after input[type="url"],
+.pt__input.size-large.has-icon-after input[type="tel"],
+.pt__input.size-large.has-icon-after input[type="number"],
+.pt__input.size-large.has-icon-after input[type="time"],
+.pt__input.size-large.has-icon-after input[type="password"],
+.pt__input.size-large.has-icon-after textarea,
+.pt__input.size-large.has-icon-after select {
+  padding-right: calc(30px + var(--cm-input--icon-gap));
+}
+.pt__input.size-large.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.size-large.is-icon-outside .input:not(:first-child),
 .pt__input.size-large.is-icon-outside input[type="text"]:not(:first-child),
@@ -14151,7 +14161,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless input[type="password"]:not(:first-child),
 .pt__input.size-large.is-borderless textarea:not(:first-child),
 .pt__input.size-large.is-borderless select:not(:first-child) {
-  padding-left: 38px;
+  padding-left: calc(32px + var(--cm-input--icon-gap));
 }
 .pt__input.size-large.is-borderless .input:not(:last-child),
 .pt__input.size-large.is-borderless input[type="text"]:not(:last-child),
@@ -14164,7 +14174,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-large.is-borderless input[type="password"]:not(:last-child),
 .pt__input.size-large.is-borderless textarea:not(:last-child),
 .pt__input.size-large.is-borderless select:not(:last-child) {
-  padding-right: 38px;
+  padding-right: calc(32px + var(--cm-input--icon-gap));
 }
 .pt__input.size-large.is-borderless .textarea,
 .pt__input.size-large.is-borderless textarea {
@@ -14214,31 +14224,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.size-large.is-borderless.is-less-indent .input:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent textarea:not(:first-child),
-.pt__input.size-large.is-borderless.is-less-indent select:not(:first-child) {
-  padding-left: 32px;
+.pt__input.size-large.is-borderless.has-icon-before .input,
+.pt__input.size-large.is-borderless.has-icon-before input[type="text"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="search"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="email"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="url"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="tel"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="number"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="time"],
+.pt__input.size-large.is-borderless.has-icon-before input[type="password"],
+.pt__input.size-large.is-borderless.has-icon-before textarea,
+.pt__input.size-large.is-borderless.has-icon-before select {
+  padding-left: calc(32px + var(--cm-input--icon-gap));
 }
-.pt__input.size-large.is-borderless.is-less-indent .input:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent textarea:not(:last-child),
-.pt__input.size-large.is-borderless.is-less-indent select:not(:last-child) {
-  padding-right: 32px;
+.pt__input.size-large.is-borderless.has-icon-after .input,
+.pt__input.size-large.is-borderless.has-icon-after input[type="text"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="search"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="email"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="url"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="tel"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="number"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="time"],
+.pt__input.size-large.is-borderless.has-icon-after input[type="password"],
+.pt__input.size-large.is-borderless.has-icon-after textarea,
+.pt__input.size-large.is-borderless.has-icon-after select {
+  padding-right: calc(32px + var(--cm-input--icon-gap));
+}
+.pt__input.size-large.is-borderless.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.size-large.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.size-large.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
@@ -14391,7 +14404,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge input[type="password"]:not(:first-child),
 .pt__input.size-xlarge textarea:not(:first-child),
 .pt__input.size-xlarge select:not(:first-child) {
-  padding-left: 52px;
+  padding-left: calc(46px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xlarge .input:not(:last-child),
 .pt__input.size-xlarge input[type="text"]:not(:last-child),
@@ -14404,7 +14417,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge input[type="password"]:not(:last-child),
 .pt__input.size-xlarge textarea:not(:last-child),
 .pt__input.size-xlarge select:not(:last-child) {
-  padding-right: 52px;
+  padding-right: calc(46px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xlarge .textarea,
 .pt__input.size-xlarge textarea {
@@ -14454,31 +14467,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.size-xlarge.is-less-indent .input:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.size-xlarge.is-less-indent textarea:not(:first-child),
-.pt__input.size-xlarge.is-less-indent select:not(:first-child) {
-  padding-left: 46px;
+.pt__input.size-xlarge.has-icon-before .input,
+.pt__input.size-xlarge.has-icon-before input[type="text"],
+.pt__input.size-xlarge.has-icon-before input[type="search"],
+.pt__input.size-xlarge.has-icon-before input[type="email"],
+.pt__input.size-xlarge.has-icon-before input[type="url"],
+.pt__input.size-xlarge.has-icon-before input[type="tel"],
+.pt__input.size-xlarge.has-icon-before input[type="number"],
+.pt__input.size-xlarge.has-icon-before input[type="time"],
+.pt__input.size-xlarge.has-icon-before input[type="password"],
+.pt__input.size-xlarge.has-icon-before textarea,
+.pt__input.size-xlarge.has-icon-before select {
+  padding-left: calc(46px + var(--cm-input--icon-gap));
 }
-.pt__input.size-xlarge.is-less-indent .input:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.size-xlarge.is-less-indent textarea:not(:last-child),
-.pt__input.size-xlarge.is-less-indent select:not(:last-child) {
-  padding-right: 46px;
+.pt__input.size-xlarge.has-icon-after .input,
+.pt__input.size-xlarge.has-icon-after input[type="text"],
+.pt__input.size-xlarge.has-icon-after input[type="search"],
+.pt__input.size-xlarge.has-icon-after input[type="email"],
+.pt__input.size-xlarge.has-icon-after input[type="url"],
+.pt__input.size-xlarge.has-icon-after input[type="tel"],
+.pt__input.size-xlarge.has-icon-after input[type="number"],
+.pt__input.size-xlarge.has-icon-after input[type="time"],
+.pt__input.size-xlarge.has-icon-after input[type="password"],
+.pt__input.size-xlarge.has-icon-after textarea,
+.pt__input.size-xlarge.has-icon-after select {
+  padding-right: calc(46px + var(--cm-input--icon-gap));
+}
+.pt__input.size-xlarge.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.size-xlarge.is-icon-outside .input:not(:first-child),
 .pt__input.size-xlarge.is-icon-outside input[type="text"]:not(:first-child),
@@ -14631,7 +14647,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless input[type="password"]:not(:first-child),
 .pt__input.size-xlarge.is-borderless textarea:not(:first-child),
 .pt__input.size-xlarge.is-borderless select:not(:first-child) {
-  padding-left: 54px;
+  padding-left: calc(48px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xlarge.is-borderless .input:not(:last-child),
 .pt__input.size-xlarge.is-borderless input[type="text"]:not(:last-child),
@@ -14644,7 +14660,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xlarge.is-borderless input[type="password"]:not(:last-child),
 .pt__input.size-xlarge.is-borderless textarea:not(:last-child),
 .pt__input.size-xlarge.is-borderless select:not(:last-child) {
-  padding-right: 54px;
+  padding-right: calc(48px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xlarge.is-borderless .textarea,
 .pt__input.size-xlarge.is-borderless textarea {
@@ -14694,31 +14710,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.size-xlarge.is-borderless.is-less-indent .input:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent textarea:not(:first-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent select:not(:first-child) {
-  padding-left: 48px;
+.pt__input.size-xlarge.is-borderless.has-icon-before .input,
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="text"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="search"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="email"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="url"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="tel"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="number"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="time"],
+.pt__input.size-xlarge.is-borderless.has-icon-before input[type="password"],
+.pt__input.size-xlarge.is-borderless.has-icon-before textarea,
+.pt__input.size-xlarge.is-borderless.has-icon-before select {
+  padding-left: calc(48px + var(--cm-input--icon-gap));
 }
-.pt__input.size-xlarge.is-borderless.is-less-indent .input:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent textarea:not(:last-child),
-.pt__input.size-xlarge.is-borderless.is-less-indent select:not(:last-child) {
-  padding-right: 48px;
+.pt__input.size-xlarge.is-borderless.has-icon-after .input,
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="text"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="search"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="email"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="url"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="tel"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="number"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="time"],
+.pt__input.size-xlarge.is-borderless.has-icon-after input[type="password"],
+.pt__input.size-xlarge.is-borderless.has-icon-after textarea,
+.pt__input.size-xlarge.is-borderless.has-icon-after select {
+  padding-right: calc(48px + var(--cm-input--icon-gap));
+}
+.pt__input.size-xlarge.is-borderless.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.size-xlarge.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.size-xlarge.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
@@ -14871,7 +14890,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge input[type="password"]:not(:first-child),
 .pt__input.size-xxlarge textarea:not(:first-child),
 .pt__input.size-xxlarge select:not(:first-child) {
-  padding-left: 68px;
+  padding-left: calc(62px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xxlarge .input:not(:last-child),
 .pt__input.size-xxlarge input[type="text"]:not(:last-child),
@@ -14884,7 +14903,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge input[type="password"]:not(:last-child),
 .pt__input.size-xxlarge textarea:not(:last-child),
 .pt__input.size-xxlarge select:not(:last-child) {
-  padding-right: 68px;
+  padding-right: calc(62px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xxlarge .textarea,
 .pt__input.size-xxlarge textarea {
@@ -14934,31 +14953,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.size-xxlarge.is-less-indent .input:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent textarea:not(:first-child),
-.pt__input.size-xxlarge.is-less-indent select:not(:first-child) {
-  padding-left: 62px;
+.pt__input.size-xxlarge.has-icon-before .input,
+.pt__input.size-xxlarge.has-icon-before input[type="text"],
+.pt__input.size-xxlarge.has-icon-before input[type="search"],
+.pt__input.size-xxlarge.has-icon-before input[type="email"],
+.pt__input.size-xxlarge.has-icon-before input[type="url"],
+.pt__input.size-xxlarge.has-icon-before input[type="tel"],
+.pt__input.size-xxlarge.has-icon-before input[type="number"],
+.pt__input.size-xxlarge.has-icon-before input[type="time"],
+.pt__input.size-xxlarge.has-icon-before input[type="password"],
+.pt__input.size-xxlarge.has-icon-before textarea,
+.pt__input.size-xxlarge.has-icon-before select {
+  padding-left: calc(62px + var(--cm-input--icon-gap));
 }
-.pt__input.size-xxlarge.is-less-indent .input:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent textarea:not(:last-child),
-.pt__input.size-xxlarge.is-less-indent select:not(:last-child) {
-  padding-right: 62px;
+.pt__input.size-xxlarge.has-icon-after .input,
+.pt__input.size-xxlarge.has-icon-after input[type="text"],
+.pt__input.size-xxlarge.has-icon-after input[type="search"],
+.pt__input.size-xxlarge.has-icon-after input[type="email"],
+.pt__input.size-xxlarge.has-icon-after input[type="url"],
+.pt__input.size-xxlarge.has-icon-after input[type="tel"],
+.pt__input.size-xxlarge.has-icon-after input[type="number"],
+.pt__input.size-xxlarge.has-icon-after input[type="time"],
+.pt__input.size-xxlarge.has-icon-after input[type="password"],
+.pt__input.size-xxlarge.has-icon-after textarea,
+.pt__input.size-xxlarge.has-icon-after select {
+  padding-right: calc(62px + var(--cm-input--icon-gap));
+}
+.pt__input.size-xxlarge.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.size-xxlarge.is-icon-outside .input:not(:first-child),
 .pt__input.size-xxlarge.is-icon-outside input[type="text"]:not(:first-child),
@@ -15111,7 +15133,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless input[type="password"]:not(:first-child),
 .pt__input.size-xxlarge.is-borderless textarea:not(:first-child),
 .pt__input.size-xxlarge.is-borderless select:not(:first-child) {
-  padding-left: 70px;
+  padding-left: calc(64px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xxlarge.is-borderless .input:not(:last-child),
 .pt__input.size-xxlarge.is-borderless input[type="text"]:not(:last-child),
@@ -15124,7 +15146,7 @@ ul.pt__field__hint li:before {
 .pt__input.size-xxlarge.is-borderless input[type="password"]:not(:last-child),
 .pt__input.size-xxlarge.is-borderless textarea:not(:last-child),
 .pt__input.size-xxlarge.is-borderless select:not(:last-child) {
-  padding-right: 70px;
+  padding-right: calc(64px + var(--cm-input--icon-gap));
 }
 .pt__input.size-xxlarge.is-borderless .textarea,
 .pt__input.size-xxlarge.is-borderless textarea {
@@ -15174,31 +15196,34 @@ ul.pt__field__hint li:before {
   bottom: auto;
   left: auto;
 }
-.pt__input.size-xxlarge.is-borderless.is-less-indent .input:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="text"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="search"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="email"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="url"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="tel"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="number"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="time"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="password"]:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent textarea:not(:first-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent select:not(:first-child) {
-  padding-left: 64px;
+.pt__input.size-xxlarge.is-borderless.has-icon-before .input,
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="text"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="search"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="email"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="url"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="tel"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="number"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="time"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before input[type="password"],
+.pt__input.size-xxlarge.is-borderless.has-icon-before textarea,
+.pt__input.size-xxlarge.is-borderless.has-icon-before select {
+  padding-left: calc(64px + var(--cm-input--icon-gap));
 }
-.pt__input.size-xxlarge.is-borderless.is-less-indent .input:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="text"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="search"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="email"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="url"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="tel"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="number"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="time"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent input[type="password"]:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent textarea:not(:last-child),
-.pt__input.size-xxlarge.is-borderless.is-less-indent select:not(:last-child) {
-  padding-right: 64px;
+.pt__input.size-xxlarge.is-borderless.has-icon-after .input,
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="text"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="search"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="email"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="url"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="tel"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="number"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="time"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after input[type="password"],
+.pt__input.size-xxlarge.is-borderless.has-icon-after textarea,
+.pt__input.size-xxlarge.is-borderless.has-icon-after select {
+  padding-right: calc(64px + var(--cm-input--icon-gap));
+}
+.pt__input.size-xxlarge.is-borderless.is-less-indent {
+  --cm-input--icon-gap: 0px;
 }
 .pt__input.size-xxlarge.is-borderless.is-icon-outside .input:not(:first-child),
 .pt__input.size-xxlarge.is-borderless.is-icon-outside input[type="text"]:not(:first-child),
@@ -22249,31 +22274,8 @@ html.ie9 .com__palette .b-range {
   z-index: 1;
   outline: none;
 }
-.com__select .pt__input .input:not(:first-child),
-.com__select .pt__input input[type="text"]:not(:first-child),
-.com__select .pt__input input[type="search"]:not(:first-child),
-.com__select .pt__input input[type="email"]:not(:first-child),
-.com__select .pt__input input[type="url"]:not(:first-child),
-.com__select .pt__input input[type="tel"]:not(:first-child),
-.com__select .pt__input input[type="number"]:not(:first-child),
-.com__select .pt__input input[type="time"]:not(:first-child),
-.com__select .pt__input input[type="password"]:not(:first-child),
-.com__select .pt__input textarea:not(:first-child),
-.com__select .pt__input select:not(:first-child) {
-  padding-left: 30px;
-}
-.com__select .pt__input .input:not(:last-child),
-.com__select .pt__input input[type="text"]:not(:last-child),
-.com__select .pt__input input[type="search"]:not(:last-child),
-.com__select .pt__input input[type="email"]:not(:last-child),
-.com__select .pt__input input[type="url"]:not(:last-child),
-.com__select .pt__input input[type="tel"]:not(:last-child),
-.com__select .pt__input input[type="number"]:not(:last-child),
-.com__select .pt__input input[type="time"]:not(:last-child),
-.com__select .pt__input input[type="password"]:not(:last-child),
-.com__select .pt__input textarea:not(:last-child),
-.com__select .pt__input select:not(:last-child) {
-  padding-right: 30px;
+.com__select .pt__input {
+  --cm-input--icon-gap: 0px;
 }
 .com__select .pt__input .icon.default {
   background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M10.939%2C16.425L4.575%2C10.061A1.5%2C1.5%2C0%2C1%2C1%2C6.7%2C7.939l5.3%2C5.3%2C5.3-5.3a1.5%2C1.5%2C0%2C1%2C1%2C2.121%2C2.121l-6.364%2C6.364A1.5%2C1.5%2C0%2C0%2C1%2C10.939%2C16.425Z%22%20%2F%3E%3C%2Fsvg%3E");
@@ -22322,7 +22324,7 @@ html.ie9 .com__palette .b-range {
   user-select: none;
 }
 .com__tooltip.com__select__tooltip > .inner > .scroll {
-  max-height: 114px;
+  max-height: 160px;
 }
 /* Select Multiple */
 .com__select-multi {
@@ -22436,7 +22438,7 @@ html.ie9 .com__palette .b-range {
   -webkit-overflow-scrolling: touch;
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 114px;
+  max-height: 160px;
 }
 html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul {
   scrollbar-width: thin;
@@ -22459,7 +22461,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul::-webkit-sc
   background-color: hsl(0, 0%, 80%);
 }
 .com__select-multi.is-max .pt__listing-items > ul {
-  height: 114px;
+  height: 160px;
 }
 .com__select-multi.disabled .inner {
   background-color: hsl(0, 0%, 98%);

@@ -530,7 +530,7 @@ function(params){
 
     var windowKeyEvent = function(e){
         // Close dialog when ESC key pressed
-        cm.handleKey(e, 'escape', function(){
+        cm.handleKey(e, 'Escape', function(){
             if(that.params['closeOnEsc'] && that.isFocus){
                 close();
             }

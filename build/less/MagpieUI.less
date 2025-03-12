@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.97.3 (2025-03-11 05:29) ************ */
+/*! ************ MagpieUI v3.98.0 (2025-03-12 05:51) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4543,6 +4543,7 @@ span.CodeMirror-selectedtext { background: none; }
 .svg__search { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M18.6%2C20.425L16.475%2C18.3A1.5%2C1.5%2C0%2C1%2C1%2C18.6%2C16.182L20.718%2C18.3A1.5%2C1.5%2C0%2C0%2C1%2C18.6%2C20.425Zm-11.667-4.6a7%2C7%2C0%2C1%2C1%2C9.9%2C0A7%2C7%2C0%2C0%2C1%2C6.929%2C15.828Zm8.485-8.485a5%2C5%2C0%2C1%2C0%2C0%2C7.071A5%2C5%2C0%2C0%2C0%2C15.414%2C7.343Z%22%20%2F%3E%3C%2Fsvg%3E"); }
 :root {
     --cm-button--gap: @CmButton-Gap;
+    --cm-input--icon-gap: @CmInput-IconGap;
 
     --pt-buttons--indent: @CmForm-ButtonsIndent;
     --pt-buttons--box-indent: @CmForm-FieldIndent;
@@ -4593,7 +4594,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.97.3';
+@CmVersion: '3.98.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5035,6 +5036,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmInput-DisabledBackground: @CmColor-Secondary-LightHighlight;
 @CmInput-DisableBorder: @CmColor-BorderDisabled;
 @CmInput-AccentColor: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, 40%);
+@CmInput-IconGap: @CmInput-Padding;
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
@@ -5152,6 +5154,7 @@ span.CodeMirror-selectedtext { background: none; }
 @PtListingItems-PaddingX: @PtList-PaddingX;
 @PtListingItems-Indent: @PtList-Indent;
 @PtListingItems-GroupIndent: @CmIndent-XSmall;
+@PtListingItems-ItemHeight: (@CmFont-Base-LineHeight + @PtListingItems-PaddingY * 2);
 
 // /* ******* LISTING COUNTERS ******* */
 
@@ -5536,13 +5539,12 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* SELECT ******* */
 
 @ComSelect-ListCount: 7;
-@ComSelect-MultiListCount: 5;
-@ComSelect-MultiListHeight: (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2);
-@ComSelect-MaxHeight: @ComSelect-MultiListCount * @ComSelect-MultiListHeight - @PtListingItems-Indent;
+@ComSelect-ListHeight: @ComSelect-ListCount * @PtListingItems-ItemHeight + (@ComSelect-ListCount - 1) * @PtListingItems-Indent;
 
 // /* ******* AUTOCOMPLETE ******* */
 
 @ComAutocomplete-ListCount: 7;
+@ComAutocomplete-ListHeight: @ComAutocomplete-ListCount * @PtListingItems-ItemHeight + (@ComAutocomplete-ListCount - 1) * @PtListingItems-Indent;
 
 // /* ******* TAGS INPUT ******* */
 
@@ -13242,18 +13244,18 @@ ul.pt__field__hint {
         }
     }
 
-    .pt__input--size(@CmForm-FieldHeight, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+    .pt__input--size(@CmForm-FieldHeight);
 
     &.size-large {
-        .pt__input--size(@CmSize-Large, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+        .pt__input--size(@CmSize-Large);
     }
 
     &.size-xlarge {
-        .pt__input--size(@CmSize-XLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+        .pt__input--size(@CmSize-XLarge);
     }
 
     &.size-xxlarge {
-        .pt__input--size(@CmSize-XXLarge, @CmInput-Padding, @CmBorder-Width, @CmFont-Base-LineHeight);
+        .pt__input--size(@CmSize-XXLarge);
     }
 
     &.is-icon-compact {
@@ -13274,18 +13276,24 @@ ul.pt__field__hint {
     }
 }
 
-.pt__input--size (@height: @CmForm-FieldHeight, @paddingX: @CmInput-Padding, @borderWidth: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight){
-    .pt__input--size-helper(@height, @paddingX, @borderWidth, @lineHeight);
+.pt__input--size (
+    @height: @CmForm-FieldHeight,
+    @paddingX: @CmInput-Padding,
+    @borderWidth: @CmBorder-Width,
+    @lineHeight: @CmFont-Base-LineHeight,
+    @gap: var(--cm-input--icon-gap)
+){
+    .pt__input--size-helper(@height, @paddingX, @borderWidth, @lineHeight, @gap);
 
     &.is-borderless {
-        .pt__input--size-helper(@height, @paddingX, 0px, @lineHeight);
+        .pt__input--size-helper(@height, @paddingX, 0px, @lineHeight, @gap);
     }
 }
 
-.pt__input--size-helper (@height, @paddingX, @borderWidth, @lineHeight) {
+.pt__input--size-helper (@height, @paddingX, @borderWidth, @lineHeight, @gap) {
     @iconSize: @height - @borderWidth * 2;
     @iconSizeDouble: @iconSize * 2;
-    @iconPadding: @iconSize + @paddingX;
+    @iconPadding: calc(@iconSize + @gap);
 
     min-height: @height;
 
@@ -13320,16 +13328,20 @@ ul.pt__field__hint {
         }
     }
 
-    &.is-less-indent {
+    &.has-icon-before {
         .input {
-            &:not(:first-child) {
-                padding-left: @iconSize;
-            }
-
-            &:not(:last-child) {
-                padding-right: @iconSize;
-            }
+            padding-left: @iconPadding;
         }
+    }
+
+    &.has-icon-after {
+        .input {
+            padding-right: @iconPadding;
+        }
+    }
+
+    &.is-less-indent {
+        --cm-input--icon-gap: 0px;
     }
 
     &.is-icon-outside {
@@ -16043,7 +16055,7 @@ ul.pt__field__hint {
         .mx__user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComAutocomplete-ListCount * (@CmFont-Base-LineHeight + @PtList-Indent + @PtList-PaddingY * 2) - @PtList-Indent;
+            max-height: @ComAutocomplete-ListHeight;
         }
     }
 }
@@ -19439,7 +19451,7 @@ ul.pt__field__hint {
         .mx__user-select(none);
 
         > .inner > .scroll {
-            max-height: @ComSelect-MaxHeight;
+            max-height: @ComSelect-ListHeight;
         }
     }
 }
@@ -19467,13 +19479,13 @@ ul.pt__field__hint {
         > ul {
             .cm__scroll--y-auto;
             .cm__scrollbar;
-            max-height: @ComSelect-MaxHeight;
+            max-height: @ComSelect-ListHeight;
         }
     }
 
     &.is-max {
         .pt__listing-items > ul {
-            height: @ComSelect-MaxHeight;
+            height: @ComSelect-ListHeight;
         }
     }
 

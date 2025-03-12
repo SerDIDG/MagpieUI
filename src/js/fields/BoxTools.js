@@ -121,7 +121,7 @@ cm.getConstructor('Com.BoxTools', function(classConstructor, className, classPro
         cm.addEvent(item['input'], 'blur', that.setValuesHandler);
         // Keypress events
         cm.addEvent(item['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
+            if(e.code === 'Enter'){
                 cm.preventDefault(e);
                 that.setValues();
                 item['input'].blur();

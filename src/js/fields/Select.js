@@ -34,6 +34,7 @@ cm.define('Com.Select', {
         'embedStructure' : 'replace',
         'customEvents' : true,
         'renderInBody' : true,                  // Render dropdowns in document.body, else they will be rendered in component container.
+        'renderHiddenContent' : true,
         'multiple' : false,                     // Render multiple select.
         'placeholder' : '',
         'showPlaceholderAbove' : false,
@@ -60,10 +61,12 @@ cm.define('Com.Select', {
             'constructorParams': {
                 'targetEvent' : 'none',
                 'hideOnOut' : true,
+                'hold' : true,
                 'className' : 'com__select__tooltip',
                 'width' : 'targetWidth',
                 'minWidth' : 'targetWidth',
-                'top' : cm._config.tooltipDown
+                'top' : cm._config.tooltipDown,
+                'ariaRole' : 'listbox',
             },
         },
     }
@@ -226,6 +229,7 @@ function(params){
                 )
             );
             if(that.params['showPlaceholderAbove']){
+                cm.addClass(nodes['scroll'], 'has-placeholder-sticky')
                 cm.addClass(nodes['placeholder'], ['sticky', 'placeholder-sticky']);
             }
             cm.appendChild(nodes['placeholder'], nodes['items']);
@@ -242,31 +246,45 @@ function(params){
     };
 
     var renderSingle = function(){
+        // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__select'},
-            nodes['hidden'] = cm.node('select', {'class' : 'display-none'}),
             nodes['target'] = cm.node('div', {'class' : 'pt__input'},
                 nodes['text'] = cm.node('input', {'type' : 'text', 'readOnly' : 'true'}),
-                nodes['arrow'] = cm.node('div', {'class' : that.params['icons']['arrow']})
+                nodes['arrow'] = cm.node('div', {'class' : that.params['icons']['arrow'], 'role' : 'combobox', 'aria-haspopup' : 'true', 'aria-controls' : 'listbox', 'aria-expanded' : 'false'}),
             ),
             nodes['scroll'] = cm.node('div', {'class' : 'pt__listing-items'},
-                nodes['items'] = cm.node('ul')
+                nodes['items'] = cm.node('ul', {'role' : 'listbox'})
             )
         );
+
+        // Attributes
         cm.addClass(nodes['target'], that.params['inputClassName']);
         if(!cm.isEmpty(that.params['id'])){
             nodes['text'].setAttribute('aria-describedby', that.params['id']);
         }
+
+        // Hidden select
+        nodes['hidden'] = cm.node('select', {'class' : 'display-none'});
+        if(that.params['renderHiddenContent']) {
+            cm.insertFirst(nodes['hidden'], nodes['container']);
+        }
     };
 
     var renderMultiple = function(){
+        // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__select-multi'},
-            nodes['hidden'] = cm.node('select', {'class' : 'display-none', 'multiple' : true}),
             nodes['inner'] = cm.node('div', {'class' : 'inner'},
                 nodes['scroll'] = cm.node('div', {'class' : 'pt__listing-items'},
-                    nodes['items'] = cm.node('ul')
+                    nodes['items'] = cm.node('ul', {'role' : 'listbox'})
                 )
             )
         );
+
+        // Hidden select
+        nodes['hidden'] = cm.node('select', {'class' : 'display-none', 'multiple' : true});
+        if(that.params['renderHiddenContent']) {
+            cm.insertFirst(nodes['hidden'], nodes['container']);
+        }
     };
 
     var setMiscEvents = function(){
@@ -284,6 +302,7 @@ function(params){
                         'container' : that.params['renderInBody']? document.body : nodes['container'],
                         'content' : nodes['scroll'],
                         'target' : nodes['target'],
+                        'holdTarget' : nodes['container'],
                         'disabled' : !optionsLength,
                         'events' : {
                             'onShowStart' : afterShow.bind(that),
@@ -356,59 +375,47 @@ function(params){
 
     var afterShow = function() {
         that.isOpen = true;
+        nodes['arrow'].setAttribute('aria-expanded', 'true');
         cm.addEvent(document, 'keydown', blockDocumentArrows);
         cm.addEvent(document, 'mousedown', afterBodyClick);
     };
 
     var afterHide = function() {
         that.isOpen = false;
+        nodes['arrow'].setAttribute('aria-expanded', 'false');
         cm.removeEvent(document, 'keydown', blockDocumentArrows);
         cm.removeEvent(document, 'mousedown', afterBodyClick);
     };
 
     var afterKeypress = function(event) {
-        if (optionsLength === 0) {
-            return;
-        }
+        // Get visible items; exit if none
+        const items = optionsList.filter(item => !item.disabled);
+        if (!items.length) return;
 
-        // Prevent default event
-        const keys = ['ArrowUp', 'ArrowDown', 'Home', 'End', 'Space', 'Enter'];
-        if (cm.inArray(keys, event.code)) {
+        // Key actions map
+        const actions = {
+            ArrowUp: (index) => findPreviousIndex(index),
+            ArrowDown: (index) => findNextIndex(index),
+            Home: () => findFirstIndex(),
+            End: () => findLastIndex(),
+        };
+
+        // Execute action if key exists
+        if (actions[event.code]) {
             event.preventDefault();
+            const currentIndex = optionsList.indexOf(options[active]);
+            const index = actions[event.code](currentIndex);
+            const option = optionsList[index];
+            if (option) {
+                set(option, true);
+                scrollToItem(option);
+            }
         }
 
-        // Navigate item
-        const item = options[active];
-        const index = optionsList.indexOf(item);
-        let option;
-
-        switch(event.code){
-            case 'ArrowUp':
-                option = optionsList[(index - 1 + optionsLength) % optionsLength];
-                break;
-
-            case 'ArrowDown':
-                option = optionsList[(index + 1) % optionsLength];
-                break;
-
-            case 'Home':
-                option = optionsList[0];
-                break;
-
-            case 'End':
-                option = optionsList[optionsLength - 1];
-                break;
-
-            case 'Space':
-            case 'Enter':
-                that.toggleMenu(false);
-                break;
-        }
-
-        // Select and scroll to item
-        if (option) {
-            set(option, true);
-            scrollToItem(option);
+        // Hide tooltip
+        if (['Enter', 'Space'].includes(event.code)) {
+            event.preventDefault();
+            that.toggleMenu(false);
         }
     };
 
@@ -417,6 +424,40 @@ function(params){
         if (!that.isOwnNode(that.clickTarget)) {
             that.toggleMenu(false);
         }
+    };
+
+    /******* NAVIGATION *******/
+
+    var findFirstIndex = function() {
+        return optionsList.findIndex(item => !item.disabled);
+    };
+
+    var findLastIndex = function() {
+        return optionsList.findLastIndex(item => !item.disabled);
+    };
+
+    var findPreviousIndex = function(index) {
+        if (!cm.isNumber(index)) {
+            return that.findLastIndex();
+        }
+
+        let previousIndex = (index - 1 + optionsLength) % optionsLength;
+        while (optionsList[previousIndex].disabled) {
+            previousIndex = (previousIndex - 1 + optionsLength) % optionsLength;
+        }
+        return previousIndex;
+    };
+
+    var findNextIndex = function(index) {
+        if (!cm.isNumber(index)) {
+            return that.findFirstIndex();
+        }
+
+        let nextIndex = (index + 1) % optionsLength;
+        while (optionsList[nextIndex].disabled) {
+            nextIndex = (nextIndex + 1) % optionsLength;
+        }
+        return nextIndex;
     };
 
     /******* COLLECTORS *******/
@@ -473,8 +514,8 @@ function(params){
 
         // Structure
         item['optgroup'] = cm.node('optgroup', {'label' : item['name']});
-        item['container'] = cm.node('li', {'class' : 'group'},
-            item['items'] = cm.node('ul', {'class' : 'pt__listing-items'})
+        item['container'] = cm.node('li', {'class' : 'group', 'role' : 'option'},
+            item['items'] = cm.node('ul', {'class' : 'pt__listing-items', 'role' : 'group'})
         );
         if(!cm.isEmpty(item['name'])){
             cm.addClass(item['container'], 'group-sticky');
@@ -552,7 +593,7 @@ function(params){
 
         // Structure
         item['option'] = cm.node('option', {'value' : item['value'], 'innerHTML' : item['text']});
-        item['node'] = cm.node('li', {'classes' : item['classes'], 'style' : item['style']},
+        item['node'] = cm.node('li', {'classes' : item['classes'], 'style' : item['style'], 'role' : 'option', 'aria-selected' : 'false'},
             item['link'] = cm.node('a', {'title' : cm.cutHTML(item['text'])})
         );
 
@@ -686,9 +727,7 @@ function(params){
     var setSingle = function(option){
         oldActive = active;
         active = !cm.isUndefined(option['value'])? option['value'] : option['text'];
-        optionsList.forEach(function(item){
-            cm.removeClass(item['node'], 'active');
-        });
+        optionsList.forEach(unsetOption);
         if(!option['placeholder'] || that.params['setPlaceholderText']) {
             if(option['group']){
                 nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' > ');
@@ -702,12 +741,23 @@ function(params){
         setOption(option);
     };
 
+    var unsetOption = function(option){
+        option['option'].selected = false;
+        option['selected'] = false;
+        if (option['checkbox']) {
+            option['checkbox'].checked = false;
+        }
+        option['node'].setAttribute('aria-selected', 'false');
+        cm.removeClass(option['node'], 'active');
+    };
+
     var setOption = function(option){
         option['option'].selected = true;
         option['selected'] = true;
         if (option['checkbox']) {
             option['checkbox'].checked = true;
         }
+        option['node'].setAttribute('aria-selected', 'true');
         cm.addClass(option['node'], 'active');
     };
 
@@ -718,12 +768,7 @@ function(params){
             return value != item;
         });
         // Deselect option
-        option['option'].selected = false;
-        option['selected'] = false;
-        if (option['checkbox']) {
-            option['checkbox'].checked = false;
-        }
-        cm.removeClass(option['node'], 'active');
+        unsetOption(option);
     };
 
     var onChange = function(){
@@ -735,6 +780,9 @@ function(params){
     /* *** DROPDOWN *** */
 
     var scrollToItem = function(option){
+        if(!components['menu'] || that.params['multiple']){
+            return;
+        }
         components['menu'].scrollToNode(option['node']);
     };
 

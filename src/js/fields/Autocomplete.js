@@ -71,7 +71,8 @@ cm.define('Com.Autocomplete', {
                 targetEvent: 'none',
                 width: 'targetWidth',
                 minWidth: 'targetWidth',
-                top: cm._config.tooltipDown
+                top: cm._config.tooltipDown,
+                ariaRole: 'listbox',
             },
         },
         
@@ -238,7 +239,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                 that.set(item, true);
             }
         } else {
-            // Reset input if value is empty
+            // Reset input if the value is empty
             if (that.params.clearOnEmpty || cm.isEmpty(text)) {
                 that.clear();
             } else if (that.params.preselectQuery && that.isAjax) {
@@ -263,12 +264,14 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
         var previousItem = that.registeredItems[that.selectedItemIndex];
         if (previousItem) {
+            previousItem.container.setAttribute('aria-selected', 'false');
             cm.removeClass(previousItem.container, 'active');
         }
 
         var item = that.registeredItems[index];
         if (item) {
             that.selectedItemIndex = index;
+            item.container.setAttribute('aria-selected', 'true');
             cm.addClass(item.container, 'active');
             that.components.tooltip.scrollToNode(item.container);
             that.setRegisteredItem(item);
@@ -289,12 +292,12 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             item = that.rawValue;
         }
 
-        // Get from items list
+        // Get from item list
         if (!item) {
             item = that.getRequestItem(value, text);
         }
 
-            // Get from params data list
+            // Get from a params data list
         if (!item) {
             item = that.getItem(value, text);
         }
@@ -334,56 +337,36 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         cm.removeEvent(document, 'mousedown', that.afterBodyClickHandler);
     };
 
-    classProto.afterKeypress = function(e) {
-        var that = this;
-        var listLength = that.registeredItems.length;
-        var listIndex;
-        switch (e.keyCode) {
-            // Enter
-            case 13:
-                cm.preventDefault(e);
-                if (that.suggestionItemFocus) {
-                    that.callbacks.listSuggestionItemEvent(that,  that.suggestionItem);
-                } else {
-                    that.hide();
-                    that.setInputAction();
-                }
-                that.triggerEvent('onEnterPress');
-                break;
+    classProto.afterKeypress = function(event) {
+        const that = this;
 
-            // Arrow Up
-            case 38:
-                cm.preventDefault(e);
-                if (listLength) {
-                    if (that.selectedItemIndex === null) {
-                        listIndex = listLength - 1;
-                    } else if (that.selectedItemIndex - 1 >= 0) {
-                        listIndex = that.selectedItemIndex - 1;
-                    } else {
-                        listIndex = listLength - 1;
-                    }
-                    that.setListAction(listIndex);
-                } else if (that.params.suggestion.enable) {
-                    that.callbacks.suggestionItemSelect(that,  that.suggestionItem);
-                }
-                break;
+        // Key actions map
+        const actions = {
+            ArrowUp: () => that.setListAction(that.findPreviousIndex(that.selectedItemIndex)),
+            ArrowDown: () => that.setListAction(that.findNextIndex(that.selectedItemIndex)),
+            Home: () => that.setListAction(that.findFirstIndex()),
+            End: () => that.setListAction(that.findLastIndex()),
+        };
 
-            // Arrow Down
-            case 40:
-                cm.preventDefault(e);
-                if (listLength) {
-                    if (that.selectedItemIndex === null) {
-                        listIndex = 0;
-                    } else if (that.selectedItemIndex + 1 < listLength) {
-                        listIndex = that.selectedItemIndex + 1;
-                    } else {
-                        listIndex = 0;
-                    }
-                    that.setListAction(listIndex);
-                } else if (that.params.suggestion.enable) {
-                    that.callbacks.suggestionItemSelect(that,  that.suggestionItem);
-                }
-                break;
+        // Execute action if key exists
+        if (actions[event.code]) {
+            event.preventDefault();
+            if (that.registeredItems.length) {
+                actions[event.code]();
+            } else {
+                that.callbacks.suggestionItemSelect(that,  that.suggestionItem);
+            }
+        }
+
+        // Set item
+        if (event.code === 'Enter') {
+            if (that.suggestionItemFocus) {
+                that.callbacks.listSuggestionItemEvent(that,  that.suggestionItem);
+            } else {
+                that.hide();
+                that.setInputAction();
+            }
+            that.triggerEvent('onEnterPress');
         }
     };
 
@@ -403,11 +386,39 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         }
     };
 
+    /******* NAVIGATION *******/
+
+    classProto.findFirstIndex = function() {
+        const that = this;
+        return 0;
+    };
+
+    classProto.findLastIndex = function() {
+        const that = this;
+        return that.registeredItems.length - 1;
+    };
+
+    classProto.findPreviousIndex = function(index) {
+        const that = this;
+        if (!cm.isNumber(index)) {
+            return that.findLastIndex();
+        }
+        return (index - 1 + that.registeredItems.length) % that.registeredItems.length;
+    };
+
+    classProto.findNextIndex = function(index) {
+        const that = this;
+        if (!cm.isNumber(index)) {
+            return that.findFirstIndex();
+        }
+        return (index + 1) % that.registeredItems.length;
+    };
+
     /******* REQUEST *******/
 
     classProto.request = function() {
-        var that = this;
-        var query = that.getInputValue();
+        const that = this;
+        const query = that.getInputValue();
 
         // Clear tooltip ajax/static delay and filtered items list
         that.valueText = query;
@@ -417,7 +428,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
         // Request
         if (that.params.showListOnEmpty || query.length >= that.params.minLength) {
-            var delay = that.params.showListOnEmpty && cm.isEmpty(query) ? 0 : that.params.delay;
+            const delay = that.params.showListOnEmpty && cm.isEmpty(query) ? 0 : that.params.delay;
             that.requestDelay = setTimeout(function() {
                 if (that.params.preloadData && !cm.isEmpty(that.requestData.data)) {
                     that.callbacks.data(that, {
@@ -596,7 +607,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.callbacks.renderListStructure = function(that, params) {
         var nodes = {};
         nodes.container = cm.node('div', {classes: that.params.classes.list},
-            nodes.items = cm.node('ul')
+            nodes.items = cm.node('ul', {role: 'listbox'})
         );
         return nodes;
     };
@@ -606,7 +617,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         item.nodes = that.callbacks.renderItemStructure(that, params, item);
         that.params.listItemNowrap && cm.addClass(item.nodes.container, 'is-nowrap');
         
-        // Highlight selected option
+        // Highlight a selected option
         if (that.value === item.data.value) {
             cm.addClass(item.nodes.container, 'active');
             that.selectedItemIndex = item.i;
@@ -621,7 +632,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.renderItemStructure = function(that, params, item) {
         var nodes = {};
-        nodes.container = cm.node('li', {classes: that.params.classes.listItem},
+        nodes.container = cm.node('li', {classes: that.params.classes.listItem, role: 'option', 'aria-selected': 'false'},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content', innerHTML: item.data.text})
             )
@@ -648,7 +659,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.callbacks.renderLoaderItemStructure = function(that, params) {
         // Structure
         var nodes = {};
-        nodes.container = cm.node('li', {classes: that.params.classes.listItem},
+        nodes.container = cm.node('li', {classes: that.params.classes.listItem, role: 'status'},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content'},
                     cm.node('span', {classes: 'icon small cm-ia__spinner'}),
@@ -718,7 +729,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.callbacks.renderListSuggestionItemStructure = function(that, item) {
         // Structure
         var nodes = {};
-        nodes.container = cm.node('li', {classes: that.params.classes.listItem},
+        nodes.container = cm.node('li', {classes: that.params.classes.listItem, role: 'option'},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content'},
                     cm.node('span', {classes: 'icon small add'}),

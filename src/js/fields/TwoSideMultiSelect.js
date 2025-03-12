@@ -210,7 +210,7 @@ cm.getConstructor('Com.TwoSideMultiSelect', function(classConstructor, className
     classProto.keyPressHelper = function(e){
         var that = this,
             target = cm.getElementAbove(e);
-        cm.handleKey(e, 'enter', function(e){
+        cm.handleKey(e, 'Enter', function(e){
             if(cm.isParent(that.nodes['content']['firstColumn'], target, true)){
                 cm.preventDefault(e);
                 that.moveToRight();

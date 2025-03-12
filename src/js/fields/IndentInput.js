@@ -47,7 +47,7 @@ cm.getConstructor('Com.IndentInput', function(classConstructor, className, class
         that.triggerEvent('onRenderContentProcess');
         cm.addEvent(nodes['input'], 'blur', that.setValueHandler);
         cm.addEvent(nodes['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
+            if(e.code === 'Enter'){
                 cm.preventDefault(e);
                 that.setValue();
                 nodes['input'].blur();

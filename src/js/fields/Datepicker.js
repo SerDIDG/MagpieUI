@@ -272,19 +272,19 @@ function(params){
     };
 
     var inputKeypressHandler = function(e){
-        if(cm.isKey(e, 'enter')){
+        if(e.code === 'Enter'){
             cm.preventDefault(e);
         }
     };
 
     var inputKeyHandler = function(e){
         var value = nodes['input'].value;
-        if(cm.isKey(e, 'enter')){
+        if(e.code === 'Enter'){
             cm.preventDefault(e);
             validateInputValue();
             components['menu'].hide(false);
         }
-        if(cm.isKey(e, 'delete')){
+        if(e.code === 'Delete'){
             if(cm.isEmpty(value)){
                 that.clear(true);
                 //components['menu'].hide(false);

@@ -516,9 +516,9 @@ cm.inArray = function(a, item){
         return a === item;
     }
     if(cm.isArray(a)){
-        return a.indexOf(item) > -1;
+        return a.includes(item);
     }
-    return false
+    return false;
 };
 
 cm.arrayRemove = function(a, item){
@@ -3747,42 +3747,20 @@ cm.removeCSSVariable = function(key, node){
 
 /* ******* VALIDATORS ******* */
 
-cm.keyCodeTable = {
-    8  : 'delete',
-    9  : 'tab',
-    13 : 'enter',
-    27 : 'escape',
-    32 : 'space',
-    35 : 'home',
-    36 : 'end',
-    37 : 'left',
-    38 : 'top',
-    39 : 'right',
-    40 : 'bottom',
-    46 : 'backspace'
+cm.isKey = function(){
+    cm.errorLog({type: 'error', name: 'cm.isKey', message: 'Deprecated!'});
 };
 
-cm.isKey = function(e, rules){
-    var keyCode = e.keyCode;
-    return cm.isKeyCode(keyCode, rules);
+cm.isKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.isKeyCode', message: 'Deprecated!'});
 };
 
-cm.isKeyCode = function(code, rules){
-    var isMath = false;
-    if(cm.isString(rules)){
-        rules = rules.split(/\s+/);
+cm.handleKey = function(event, codes, callback){
+    if (!cm.isArray(codes)) {
+        codes = [codes];
     }
-    cm.forEach(rules, function(rule){
-        if(cm.keyCodeTable[code] === rule){
-            isMath = true;
-        }
-    });
-    return isMath;
-};
-
-cm.handleKey = function(e, rules, callback){
-    if(!cm.isInputFocused() && cm.isKey(e, rules)){
-        callback && callback(e);
+    if(!cm.isInputFocused() && cm.inArray(codes, event.code)){
+        callback && callback(event);
     }
 };
 
@@ -3806,24 +3784,12 @@ cm.isFormInputFocused = function(){
     return tagName === 'input' &&  !/button|file/.test(el.type);
 };
 
-cm.allowKeyCode = function(code, rules){
-    var codes = [];
-    cm.forEach(cm.keyCodeTable, function(item, key){
-        if(cm.inArray(rules, item)){
-            codes.push(key);
-        }
-    });
-    return cm.inArray(codes, code.toString());
+cm.allowKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.allowKeyCode', message: 'Deprecated!'});
 };
 
-cm.disallowKeyCode = function(code, rules){
-    var codes = [];
-    cm.forEach(cm.keyCodeTable, function(item, key){
-        if(!cm.inArray(rules, item)){
-            codes.push(key);
-        }
-    });
-    return cm.inArray(codes, code.toString());
+cm.disallowKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.disallowKeyCode', message: 'Deprecated!'});
 };
 
 cm.charCodeIsDigit = function(code){

@@ -228,7 +228,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.triggerEvent('onInputStart', that.value);
 
         // Handle enter key
-        if (cm.isKeyCode(e.keyCode, 'enter')) {
+        if (e.code === 'Enter') {
             // For input
             if (that.params.type !== 'textarea') {
                 cm.preventDefault(e);
