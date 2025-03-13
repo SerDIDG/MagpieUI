@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.98.0 (2025-03-12 05:51) ************ */
+/*! ************ MagpieUI v3.98.1 (2025-03-13 11:15) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4388,8 +4388,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.98.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.98.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.98.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.98.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.98.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.98.1');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.98.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.98.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.98.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.98.1#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9478,18 +9478,18 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   align-items: flex-end;
 }
 .pt__buttons.is-box > .inner {
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  gap: var(--pt-buttons--box-indent);
 }
 .pt__buttons.is-box > .inner > .left,
 .pt__buttons.is-box > .inner > .right {
-  display: block;
   width: 100%;
-  margin: var(--pt-buttons--box-indent) 0 0 0;
-}
-.pt__buttons.is-box > .inner > .left:first-child,
-.pt__buttons.is-box > .inner > .right:first-child {
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  gap: var(--pt-buttons--box-indent);
 }
 .pt__buttons.is-box .button-alike,
 .pt__buttons.is-box .button,
@@ -9502,18 +9502,6 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__buttons.is-box input[type="reset"],
 .pt__buttons.is-box button {
   width: 100%;
-  margin: var(--pt-buttons--box-indent) 0 0 0;
-}
-.pt__buttons.is-box .button-alike:first-child,
-.pt__buttons.is-box .button:first-child,
-.pt__buttons.is-box .browse-button:first-child,
-.pt__buttons.is-box .cm__button-wrapper:first-child,
-.pt__buttons.is-box .com__menu:first-child,
-.pt__buttons.is-box .com__pagination__bar ul li a:first-child,
-.pt__buttons.is-box input[type="button"]:first-child,
-.pt__buttons.is-box input[type="submit"]:first-child,
-.pt__buttons.is-box input[type="reset"]:first-child,
-.pt__buttons.is-box button:first-child {
   margin: 0;
 }
 .pt__buttons.is-box-reverse > .inner {
@@ -9564,18 +9552,18 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   margin: 0;
 }
 .pt__buttons--box > .inner {
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  gap: var(--pt-buttons--box-indent);
 }
 .pt__buttons--box > .inner > .left,
 .pt__buttons--box > .inner > .right {
-  display: block;
   width: 100%;
-  margin: var(--pt-buttons--box-indent) 0 0 0;
-}
-.pt__buttons--box > .inner > .left:first-child,
-.pt__buttons--box > .inner > .right:first-child {
+  display: flex;
+  flex-direction: column;
   margin: 0;
+  gap: var(--pt-buttons--box-indent);
 }
 .pt__buttons--box .button-alike,
 .pt__buttons--box .button,
@@ -9588,18 +9576,6 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__buttons--box input[type="reset"],
 .pt__buttons--box button {
   width: 100%;
-  margin: var(--pt-buttons--box-indent) 0 0 0;
-}
-.pt__buttons--box .button-alike:first-child,
-.pt__buttons--box .button:first-child,
-.pt__buttons--box .browse-button:first-child,
-.pt__buttons--box .cm__button-wrapper:first-child,
-.pt__buttons--box .com__menu:first-child,
-.pt__buttons--box .com__pagination__bar ul li a:first-child,
-.pt__buttons--box input[type="button"]:first-child,
-.pt__buttons--box input[type="submit"]:first-child,
-.pt__buttons--box input[type="reset"]:first-child,
-.pt__buttons--box button:first-child {
   margin: 0;
 }
 .pt__buttons--box-reverse > .inner {
@@ -9632,18 +9608,18 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 /* ******* PARTS: BUTTONS: ADAPTIVE ******* */
 @media only screen and (max-width: 768px) {
   html.is-adaptive .pt__buttons.is-adaptive > .inner {
-    display: block;
+    display: flex;
+    flex-direction: column;
     margin: 0;
+    gap: var(--pt-buttons--box-indent);
   }
   html.is-adaptive .pt__buttons.is-adaptive > .inner > .left,
   html.is-adaptive .pt__buttons.is-adaptive > .inner > .right {
-    display: block;
     width: 100%;
-    margin: var(--pt-buttons--box-indent) 0 0 0;
-  }
-  html.is-adaptive .pt__buttons.is-adaptive > .inner > .left:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive > .inner > .right:first-child {
+    display: flex;
+    flex-direction: column;
     margin: 0;
+    gap: var(--pt-buttons--box-indent);
   }
   html.is-adaptive .pt__buttons.is-adaptive .button-alike,
   html.is-adaptive .pt__buttons.is-adaptive .button,
@@ -9656,18 +9632,6 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
   html.is-adaptive .pt__buttons.is-adaptive input[type="reset"],
   html.is-adaptive .pt__buttons.is-adaptive button {
     width: 100%;
-    margin: var(--pt-buttons--box-indent) 0 0 0;
-  }
-  html.is-adaptive .pt__buttons.is-adaptive .button-alike:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive .button:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive .browse-button:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive .cm__button-wrapper:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive .com__menu:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive .com__pagination__bar ul li a:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive input[type="button"]:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive input[type="submit"]:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive input[type="reset"]:first-child,
-  html.is-adaptive .pt__buttons.is-adaptive button:first-child {
     margin: 0;
   }
   html.is-adaptive .pt__buttons.is-adaptive-reverse > .inner {
