@@ -175,7 +175,13 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         cm.addClass(that.nodes.icon, 'active');
         that.nodes.button.setAttribute('aria-expanded', 'true');
         that.nodes.button.focus();
-        that.selectItem(that.findFirstIndex());
+
+        // Select the first available option if it was a keyboard event
+        const event = that.components.tooltip.getLastTargetEvent();
+        if (event?.type === 'keypress') {
+            that.selectItem(that.findFirstIndex());
+        }
+
         that.triggerEvent('onShow');
     };
 

@@ -14,6 +14,7 @@ cm.define('Com.HelpBubble', {
         'tooltipConstructor' : 'Com.Tooltip',
         'tooltipParams' : {
             'hold' : true,
+            'targetEvent' : ['click', 'hover'],
             'className' : 'com__help-bubble__tooltip',
         },
         'containerConstructor' : 'Com.DialogContainer',

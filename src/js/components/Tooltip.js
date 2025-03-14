@@ -20,6 +20,8 @@ cm.define('Com.Tooltip', {
         'controllerEvents': false,
         'name': '',
         'target': cm.node('div'),
+        'setTargetEvent': true,
+        'setWindowEvent': true,
         'targetEvent': 'hover',                        // hover | click | none
         'hideOnReClick': false,                        // Hide tooltip when re-clicking on the target, requires setting value 'targetEvent': 'click'
         'hideOnSelfClick': false,                      // Hide tooltip when clicked on own content
@@ -69,13 +71,14 @@ function(params) {
     that.delayInterval = null;
     that.resizeInterval = null;
     that.autoHideInterval = null;
-    that.lastEventTarget = null;
+    that.lastWindowEvent = null;
+    that.lastTargetEvent = null;
 
     that.isDestructed = false;
     that.isHideProcess = false;
     that.isShowProcess = false;
     that.isShow = false;
-    that.isWindowEvent = false;
+    that.isWindowEventSet = false;
     that.disabled = false;
 
     var init = function() {
@@ -92,6 +95,8 @@ function(params) {
         render();
         that.addToStack(that.nodes.container);
         setMiscEvents();
+        setHoldTarget();
+        setTargetEvent();
         that.triggerEvent('onRender');
     };
 
@@ -171,41 +176,45 @@ function(params) {
 
         // Hide on self-click
         if (that.params.hideOnSelfClick) {
-            cm.addEvent(that.nodes.container, 'click', function() {
-                that.hide();
-            });
+            cm.addEvent(that.nodes.container, 'click', () => that.hide());
         }
 
         // Add custom events
         if (that.params.customEvents) {
             cm.customEvent.add(that.getStackNode(), 'destruct', that.destructHandler);
         }
-        setTargetEvent();
+    };
+
+    var setHoldTarget = function() {
+        if (that.isShow) return;
+
+        that.nodes.container.style.display = 'none';
+        if (that.params.hold) {
+            const holdTarget = that.params.holdTarget || that.params.target;
+            cm.appendChild(that.nodes.container, holdTarget);
+        } else {
+            cm.remove(that.nodes.container);
+        }
     };
 
     var targetEvent = function(event) {
+        that.lastTargetEvent = event;
         if (cm.inArray(that.params.targetEvent, 'click') && that.params.preventClickEvent) {
             cm.preventDefault(event);
         }
-        if (!that.disabled) {
-            if (that.isShow && cm.inArray(that.params.targetEvent, 'click') && that.params.hideOnReClick) {
-                hide();
-            } else {
-                show();
-            }
+
+        if (that.isShow && cm.inArray(that.params.targetEvent, 'click') && that.params.hideOnReClick) {
+            hide();
+        } else {
+            show();
         }
     };
 
     var setTargetEvent = function() {
-        // Hold
-        if (that.params.hold) {
-            var holdTarget = that.params.holdTarget || that.params.target;
-            cm.appendChild(that.nodes.container, holdTarget);
-        }
+        if (!that.params.setTargetEvent) return;
 
-        // Event
         if (cm.inArray(that.params.targetEvent, 'hover')) {
-            cm.addEvent(that.params.target, 'mouseover', that.targetEventHandler, true);
+            cm.addEvent(that.params.target, 'mouseenter', that.targetEventHandler);
         }
         if (cm.inArray(that.params.targetEvent, 'click')) {
             cm.click.add(that.params.target, that.targetEventHandler, true);
@@ -213,15 +222,62 @@ function(params) {
     };
 
     var removeTargetEvent = function() {
+        if (!that.params.setTargetEvent) return;
+
         if (cm.inArray(that.params.targetEvent, 'hover')) {
-            cm.removeEvent(that.params.target, 'mouseover', that.targetEventHandler, true);
+            cm.removeEvent(that.params.target, 'mouseenter', that.targetEventHandler);
         }
         if (cm.inArray(that.params.targetEvent, 'click')) {
             cm.click.remove(that.params.target, that.targetEventHandler, true);
         }
     };
 
+    var windowEvent = function(event) {
+        that.lastWindowEvent = event;
+
+        const target = cm.getEventTarget(event);
+        if (
+            !cm.isParent(that.nodes.container, target, true) &&
+            !cm.isParent(that.params.target, target, true)
+        ) {
+            hide(false);
+        } else {
+            show(true);
+        }
+    };
+
+    var setWindowEvent = function() {
+        if (!that.params.hideOnOut || that.isWindowEventSet) return;
+
+        that.isWindowEventSet = true;
+        that.lastWindowEvent = null;
+        if (that.params.setWindowEvent) {
+            if (cm.inArray(that.params.targetEvent, 'hover')) {
+                cm.addEvent(window, 'mousemove', that.windowEventHandler);
+            }
+            if (cm.inArray(that.params.targetEvent, 'click')) {
+                cm.addEvent(window, 'pointerdown', that.windowEventHandler);
+            }
+        }
+    };
+
+    var removeWindowEvent = function() {
+        if (!that.params.hideOnOut || !that.isWindowEventSet) return;
+
+        that.isWindowEventSet = false;
+        that.lastWindowEvent = null;
+        if (that.params.setWindowEvent) {
+            if (cm.inArray(that.params.targetEvent, 'hover')) {
+                cm.removeEvent(window, 'mousemove', that.windowEventHandler);
+            }
+            if (cm.inArray(that.params.targetEvent, 'click')) {
+                cm.removeEvent(window, 'pointerdown', that.windowEventHandler);
+            }
+        }
+    };
+
     var show = function(immediately) {
+        if (that.disabled) return;
         if ((!that.isShow && !that.isShowProcess) || that.isHideProcess) {
             that.isShowProcess = true;
             setWindowEvent();
@@ -277,6 +333,7 @@ function(params) {
     };
 
     var hide = function(immediately) {
+        if (that.disabled) return;
         if ((that.isShow || that.isShowProcess) && !that.isHideProcess) {
             that.isHideProcess = true;
 
@@ -311,18 +368,12 @@ function(params) {
     };
 
     var hideHandlerEnd = function() {
-        clearResizeInterval();
-        removeWindowEvent();
-        that.nodes.container.style.display = 'none';
-        if (that.params.hold) {
-            var holdTarget = that.params.holdTarget || that.params.target;
-            cm.appendChild(that.nodes.container, holdTarget);
-        } else {
-            cm.remove(that.nodes.container);
-        }
         that.isShow = false;
         that.isShowProcess = false;
         that.isHideProcess = false;
+        clearResizeInterval();
+        removeWindowEvent();
+        setHoldTarget();
         that.triggerEvent('onHide');
         that.triggerEvent('onHideEnd');
     };
@@ -485,41 +536,6 @@ function(params) {
         })();
     };
 
-    var setWindowEvent = function() {
-        if (that.params.hideOnOut && !that.isWindowEvent) {
-            that.isWindowEvent = true;
-            that.lastEventTarget = null;
-            if (cm.inArray(that.params.targetEvent, 'hover')) {
-                cm.addEvent(window, 'mousemove', that.windowEventHandler);
-            }
-            if (cm.inArray(that.params.targetEvent, 'click')) {
-                cm.addEvent(window, 'mousedown', that.windowEventHandler);
-            }
-        }
-    };
-
-    var removeWindowEvent = function() {
-        if (that.params.hideOnOut && that.isWindowEvent) {
-            that.isWindowEvent = false;
-            that.lastEventTarget = null;
-            if (cm.inArray(that.params.targetEvent, 'hover')) {
-                cm.removeEvent(window, 'mousemove', that.windowEventHandler);
-            }
-            if (cm.inArray(that.params.targetEvent, 'click')) {
-                cm.removeEvent(window, 'mousedown', that.windowEventHandler);
-            }
-        }
-    };
-
-    var windowEvent = function(e) {
-        that.lastEventTarget = cm.getEventTarget(e);
-        if (!cm.isParent(that.nodes.container, that.lastEventTarget, true) && !cm.isParent(that.params.target, that.lastEventTarget, true)) {
-            hide(false);
-        } else {
-            show(true);
-        }
-    };
-
     var clearResizeInterval = function() {
         that.resizeInterval && clearTimeout(that.resizeInterval);
         that.resizeInterval = null;
@@ -553,6 +569,7 @@ function(params) {
         if (!that.params.container) {
             that.setContainer(that.params.holdTarget || that.params.target);
         }
+        setHoldTarget();
         setTargetEvent();
         return that;
     };
@@ -562,6 +579,11 @@ function(params) {
             that.container = node;
         }
         return that;
+    };
+
+    that.getLastTargetEvent = function() {
+        const that = this;
+        return that.lastTargetEvent;
     };
 
     that.show = function(immediately) {
@@ -601,7 +623,10 @@ function(params) {
     };
 
     that.isOwnEventTarget = function() {
-        return cm.isParent(that.nodes.container, that.lastEventTarget, true);
+        if (!that.lastWindowEvent) return;
+
+        const target = cm.getEventTarget(that.lastWindowEvent);
+        return cm.isParent(that.nodes.container, target, true);
     };
 
     that.remove = function() {

@@ -80,6 +80,8 @@ var cm = {
             'tooltipTop' : 'targetHeight + 4',
             'tooltipDown' : 'targetHeight + 4',
             'tooltipUp' : '- (selfHeight + 4)',
+            'tooltipLeft' : 'targetWidth + 4',
+            'tooltipRight' : '- (selfWidth + 4)',
             'fileExtensions' : {
                 'image' : 'jpg|jpeg|png|gif|bmp|tga|svg|tiff|webp',
                 'video' : 'avi|ogg|mpeg|mp4|m4a|m4b|mov|wmv|webm',
