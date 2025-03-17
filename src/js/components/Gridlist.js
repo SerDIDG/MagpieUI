@@ -427,8 +427,10 @@ function(params){
     var renderEmptiness = function(container, errors){
         errors = !cm.isEmpty(errors) ? errors : that.msg('empty');
         removeEmptiness(container);
-        that.nodes.empty = cm.node('div', {classes: 'cm__empty'}, errors);
-        cm.appendChild(that.nodes.empty, container);
+        if (that.params.renderEmptyMessage) {
+            that.nodes.empty = cm.node('div', {classes: 'cm__empty'}, errors);
+            cm.appendChild(that.nodes.empty, container);
+        }
         that.triggerEvent('onEmpty', {
             container: container,
             empty: that.nodes.empty,
@@ -1271,9 +1273,7 @@ function(params){
             if(that.params.renderEmptyTable){
                 renderTable(page.page, page.data, page.container);
             }
-            if(that.params.renderEmptyMessage){
-                renderEmptiness(page.container, page.message);
-            }
+            renderEmptiness(page.container, page.message);
         }
     };
 
