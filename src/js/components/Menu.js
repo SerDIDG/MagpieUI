@@ -39,7 +39,8 @@ cm.define('Com.Menu', {
                 minWidth: 'targetWidth',
 
                 targetEvent: 'click',
-                preventClickEvent: true,
+                preventDefault: true,
+                stopPropagation: true,
                 hideOnReClick: true,
                 hideOnOut: true,
             },
@@ -470,6 +471,11 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
     classProto.getItems = function() {
         const that = this;
         return that.items;
+    };
+
+    classProto.getContainer = function() {
+        const that = this;
+        return that.nodes.container;
     };
 
     classProto.getNodes = function(key) {

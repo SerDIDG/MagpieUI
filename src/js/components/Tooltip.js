@@ -30,6 +30,8 @@ cm.define('Com.Tooltip', {
         'autoHideDelay': 'cm._config.autoHideDelay',
         'hold': false,                                 // After close hold content in specified node from 'holdTarget' parameter
         'holdTarget': false,
+        'preventDefault': false,
+        'stopPropagation': false,
         'preventClickEvent': false,                    // Prevent default click event on the target, requires setting value 'targetEvent': 'click'
         'positionTarget': false,                       // Override target node for calculation position and dimensions
         'top': 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
@@ -199,6 +201,10 @@ function(params) {
 
     var targetEvent = function(event) {
         that.lastTargetEvent = event;
+        that.params.preventDefault && cm.preventDefault(event);
+        that.params.stopPropagation && cm.stopPropagation(event);
+
+        // ToDo: Legacy click preventDefault
         if (cm.inArray(that.params.targetEvent, 'click') && that.params.preventClickEvent) {
             cm.preventDefault(event);
         }
