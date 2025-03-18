@@ -290,6 +290,9 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             hidden: false,
             classes: [],
             attr: {},
+            data: null,
+            dataKey: 'data',
+            dataPath: null,
             preventDefault: true,
             constructor: false,
             constructorParams: {},
@@ -366,6 +369,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             const params = cm.merge(item.params.constructorParams, {
                 node: item.nodes.link,
                 actionItem: item,
+                [item.params.dataKey]: cm.reducePath(item.params.dataPath, item.params.data),
                 events: {
                     onRenderControllerEnd: () => that.hide(false),
                 },
@@ -384,6 +388,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
                 const params = cm.merge(item.params.callbackParams, {
                     node: item.nodes.link,
                     actionItem: item,
+                    [item.params.dataKey]: cm.reducePath(item.params.dataPath, item.params.data),
                 });
                 item.params.callback(event, params);
             }

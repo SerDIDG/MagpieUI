@@ -1064,6 +1064,7 @@ function(params){
             classes: [],
             attr: {},
             preventDefault: config.preventDefault,
+            data: row.data,
             dataKey: 'data',
             dataPath: null,
             constructor: false,
@@ -1092,7 +1093,6 @@ function(params){
         const params = {
             rowItem: row,
             cellItem: item,
-            [actionItem.dataKey]: cm.reducePath(actionItem.dataPath, row.data),
         };
         if(actionItem.constructor){
             actionItem.constructorParams = cm.merge(actionItem.constructorParams, params);

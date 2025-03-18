@@ -1352,12 +1352,16 @@ cm.dataURItoFile = function(dataURI, data) {
 cm.bufferToHEX = function(arrayBuffer){
     var byteArray = new Uint8Array(arrayBuffer),
         hexParts = [];
-    for(var i = 0; i < byteArray.length; i++){
+    for(var i = 0; i < byteArray.byteLength; i++){
         var hex = byteArray[i].toString(16),
             paddedHex = ('00' + hex).slice(-2);
         hexParts.push(paddedHex);
     }
     return hexParts.join('');
+};
+
+cm.bufferToBase64 = function(arrayBuffer){
+    return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 };
 
 /* ******* NODES ******* */
@@ -4151,7 +4155,7 @@ cm.cookieDate = function(days){
 cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
-            'type' : 'json',                                         // text | document | json | jsonp | blob
+            'type' : 'json',                                         // text | document | json | jsonp | blob | arraybuffer
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
             'paramsType' : 'uri',                                    // uri | json | form-data | none
             'uriConfig' : {},                                        // parameters for cm.obj2URI
