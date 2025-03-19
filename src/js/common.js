@@ -2312,11 +2312,11 @@ cm.copyToClipboard = function(text, callback){
     }
 };
 
-cm.share = function(data){
+cm.share = async function(data) {
     try {
-        navigator.share(data)
-    } catch(err) {
-        cm.errorLog({'type' : 'error', 'name' : 'cm.share', 'message' : 'Unable to share text!'});
+        await navigator.share(data)
+    } catch (err) {
+        cm.errorLog({'type': 'error', 'name': 'cm.share', 'message': `Unable to share text: ${err}`});
     }
 };
 
