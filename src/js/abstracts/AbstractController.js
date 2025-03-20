@@ -38,6 +38,7 @@ cm.define('Com.AbstractController', {
         'onRedraw',
         'onResize',
         'onScroll',
+        'onScrollUpdate',
         'onSetEvents',
         'onSetEventsStart',
         'onSetEventsProcess',
@@ -91,6 +92,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         // Variables
         that.isConstructed = false;
+        that.isScrollTicking = false;
         // Bind context to methods
         that.redrawHandler = that.redraw.bind(that);
         that.resizeHandler = that.resize.bind(that);
@@ -193,14 +195,28 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
 
     classProto.scroll = function(type){
         var that = this;
+
+        // General scroll events
         if(type === 'immediately'){
             that.triggerEvent('onScroll');
         }else{
-            animFrame(function(){
+            requestAnimationFrame(function(){
                 that.triggerEvent('onScroll');
             });
         }
+
+        // Optimized scroll events
+        if (!that.isScrollTicking) {
+            requestAnimationFrame(that.scrollUpdate.bind(that));
+        }
+        that.isScrollTicking = true;
         return that;
+    };
+
+    classProto.scrollUpdate = function(){
+        var that = this;
+        that.isScrollTicking = false;
+        that.triggerEvent('onScrollUpdate');
     };
 
     classProto.bindControllerEvents = function(){
