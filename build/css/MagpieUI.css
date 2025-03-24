@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.99.1 (2025-03-20 22:55) ************ */
+/*! ************ MagpieUI v3.99.2 (2025-03-24 22:54) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4388,8 +4388,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.99.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.99.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.99.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.99.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.99.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.99.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.99.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.99.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.99.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.99.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -21088,6 +21088,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__notifications > ul > li > .icon.small {
   margin-top: 1px;
 }
+.com__notifications > ul > li > .icon.small[class*="svg__close"] {
+  background-size: 18px;
+}
 .com__notifications > ul > li > .close {
   float: right;
   margin-left: 12px;
@@ -22287,8 +22290,31 @@ html.ie9 .com__palette .b-range {
   -webkit-user-select: none;
   user-select: none;
 }
-.com__tooltip.com__select__tooltip > .inner > .scroll {
+.com__tooltip.com__select__tooltip .pt__listing-items > ul {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+  overflow-y: auto;
   max-height: 160px;
+}
+html.is-scrollbar-visible .com__tooltip.com__select__tooltip .pt__listing-items > ul {
+  scrollbar-width: thin;
+}
+html.is-scrollbar-visible .com__tooltip.com__select__tooltip .pt__listing-items > ul::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+html.is-scrollbar-visible .com__tooltip.com__select__tooltip .pt__listing-items > ul::-webkit-scrollbar-track {
+  background-color: hsla(0, 0%, 98%, 0.5);
+  border-radius: 3px;
+}
+html.is-scrollbar-visible .com__tooltip.com__select__tooltip .pt__listing-items > ul::-webkit-scrollbar-thumb {
+  background-color: hsl(0, 0%, 86%);
+  background-clip: padding-box;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+html.is-scrollbar-visible .com__tooltip.com__select__tooltip .pt__listing-items > ul::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(0, 0%, 80%);
 }
 /* Select Multiple */
 .com__select-multi {

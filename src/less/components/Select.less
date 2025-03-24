@@ -38,8 +38,12 @@
     &.com__select__tooltip {
         .mx__user-select(none);
 
-        > .inner > .scroll {
-            max-height: @ComSelect-ListHeight;
+        .pt__listing-items {
+            > ul {
+                .cm__scroll--y-auto;
+                .cm__scrollbar;
+                max-height: @ComSelect-ListHeight;
+            }
         }
     }
 }

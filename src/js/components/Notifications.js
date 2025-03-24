@@ -23,10 +23,8 @@ cm.define('Com.Notifications', {
         'more' : 'Read more'
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractController.apply(that, arguments);
+function(){
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.Notifications', function(classConstructor, className, classProto, classInherit){

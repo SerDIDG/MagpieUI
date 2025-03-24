@@ -197,19 +197,17 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
 
         // General scroll events
-        if(type === 'immediately'){
-            that.triggerEvent('onScroll');
-        }else{
-            requestAnimationFrame(function(){
-                that.triggerEvent('onScroll');
-            });
-        }
+        that.triggerEvent('onScroll');
 
         // Optimized scroll events
-        if (!that.isScrollTicking) {
-            requestAnimationFrame(that.scrollUpdate.bind(that));
+        if (type === 'immediately') {
+            that.scrollUpdate();
+        } else {
+            if (!that.isScrollTicking) {
+                requestAnimationFrame(that.scrollUpdate.bind(that));
+            }
+            that.isScrollTicking = true;
         }
-        that.isScrollTicking = true;
         return that;
     };
 

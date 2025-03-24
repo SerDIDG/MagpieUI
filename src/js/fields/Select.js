@@ -1,6 +1,7 @@
-Com.Elements['Selects'] = {};
+// ToDo: Deprecated elements stack
+Com.Elements.Selects = {};
 
-Com['GetSelect'] = function(id){
+Com.GetSelect = id => {
     return Com.Elements.Selects[id] || null;
 };
 
@@ -62,6 +63,7 @@ cm.define('Com.Select', {
                 'targetEvent' : 'none',
                 'hideOnOut' : true,
                 'hold' : true,
+                'scroll' : false,
                 'className' : 'com__select__tooltip',
                 'width' : 'targetWidth',
                 'minWidth' : 'targetWidth',
@@ -730,7 +732,7 @@ function(params){
         optionsList.forEach(unsetOption);
         if(!option['placeholder'] || that.params['setPlaceholderText']) {
             if(option['group']){
-                nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' > ');
+                nodes['text'].value = [cm.decode(option['group']), cm.decode(option['text'])].join(' › ');
             }else{
                 nodes['text'].value = cm.decode(option['text']);
             }
