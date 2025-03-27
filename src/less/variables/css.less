@@ -7,4 +7,17 @@
 
     --pt-field--title-width: @CmForm-FieldTitleWidth;
     --pt-field--title-indent: @CmForm-FieldIndent;
+
+    // /******* SIZES *******/
+
+    --dvh-100: 100vh;
+    --svh-100: 100vh;
+
+    @supports(height: 100dvh) {
+        --dvh-100: 100dvh;
+    }
+
+    @supports(height: 100svh) {
+        --svh-100: 100svh;
+    }
 }

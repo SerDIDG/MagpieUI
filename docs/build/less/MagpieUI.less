@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.99.2 (2025-03-24 22:54) ************ */
+/*! ************ MagpieUI v3.100.0 (2025-03-27 03:29) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4550,6 +4550,19 @@ span.CodeMirror-selectedtext { background: none; }
 
     --pt-field--title-width: @CmForm-FieldTitleWidth;
     --pt-field--title-indent: @CmForm-FieldIndent;
+
+    // /******* SIZES *******/
+
+    --dvh-100: 100vh;
+    --svh-100: 100vh;
+
+    @supports(height: 100dvh) {
+        --dvh-100: 100dvh;
+    }
+
+    @supports(height: 100svh) {
+        --svh-100: 100svh;
+    }
 }
 
 
@@ -4594,7 +4607,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.99.2';
+@CmVersion: '3.100.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6239,6 +6252,14 @@ span.CodeMirror-selectedtext { background: none; }
     overflow: visible;
     white-space: normal;
     text-overflow: clip;
+}
+
+.cm__scroll-anchor--none {
+    overflow-anchor: none;
+
+    body {
+        overflow-anchor: none;
+    }
 }
 
 .cm__scroll {
@@ -16777,7 +16798,7 @@ ul.pt__field__hint {
     .mx__position(0, 0, 0, 0);
     .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
-    &:before {
+    &::before {
         height: 100%;
         display: inline-block;
         vertical-align: middle;
@@ -16796,6 +16817,18 @@ ul.pt__field__hint {
             position: fixed;
             z-index: 2;
             font-size: 0;
+        }
+    }
+
+    &.is-valign-top {
+        &::before {
+            vertical-align: top;
+        }
+    }
+
+    &.is-valign-bottom {
+        &::before {
+            vertical-align: bottom;
         }
     }
 
@@ -16888,6 +16921,7 @@ ul.pt__field__hint {
     }
 
     &.is-animate {
+        will-change: opacity, transform;
         opacity: 0;
         .mx__transform(scale(0.9)); // FixMe: Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
@@ -16896,6 +16930,10 @@ ul.pt__field__hint {
             opacity: 1;
             .mx__transform(scale(1)); // FixMe: Not working position fixed inside this block
             .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
+        }
+
+        @media (prefers-reduced-motion) {
+            transform: none !important;
         }
     }
 
@@ -19387,6 +19425,11 @@ ul.pt__field__hint {
     }
 
     &.is-loaded {
+        opacity: 1;
+    }
+
+    &.is-placeholder {
+        height: var(--svh-100);
         opacity: 1;
     }
 }

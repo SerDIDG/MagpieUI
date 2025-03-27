@@ -20,6 +20,7 @@ cm.define('Com.Dialog', {
     'params' : {
         'container' : 'document.body',
         'name' : '',
+
         'size' : 'auto',                // auto | fullscreen
         'width' : 700,                  // number, %, px
         'height' : 'auto',              // number, %, px, auto
@@ -30,8 +31,13 @@ cm.define('Com.Dialog', {
         'indentX' : 24,
         'animate' : false,
         'animateHeight' : false,
+        'adaptiveBreakpoint': 'tabletDown',
+        'adaptivePreset' : 'maximize',
         'theme' : 'theme-light',        // theme css class name, default: theme-default | theme-black | theme-light
-        'className' : '',               // custom css class name
+        'className' : '',
+        'classes': [],                  // custom CSS classes
+        'valign' : 'middle',            // top | middle | bottom
+
         'content' : cm.node('div'),
         'contentValign' : 'top',        // top, center, bottom
         'scroll' : true,                // content scroll
@@ -46,6 +52,7 @@ cm.define('Com.Dialog', {
         'closeOnDocument': false,
         'closeOnEsc' : true,
         'buttons' : false,
+
         'duration' : 'cm._config.animDuration',
         'autoOpen' : true,
         'appendOnRender' : false,
@@ -54,13 +61,35 @@ cm.define('Com.Dialog', {
         'documentScroll' : false,
 
         'presets': {
+            'default' : {
+                'width' : 700,
+                'height' : 'auto',
+                'minHeight' : 0,
+                'maxHeight' : 'auto',
+                'indentY' : 24,
+                'indentX' : 24,
+                'valign' : 'middle',
+                'classes' : [],
+            },
+            'adaptive' : {
+                'width' : '100%',
+                'height' : 'auto',
+                'minHeight' : 0,
+                'maxHeight' : 'auto',
+                'indentY' : 16,
+                'indentX' : 16,
+                'valign' : 'middle',
+                'classes' : [],
+            },
             'maximize' : {
                 'width' : '100%',
                 'height' : '100%',
                 'minHeight' : 0,
                 'maxHeight' : 'auto',
                 'indentX' : 0,
-                'indentY' : 0
+                'indentY' : 0,
+                'valign' : 'middle',
+                'classes': ['is-fullscreen'],
             },
         },
 
@@ -110,7 +139,7 @@ function(params){
     that.openInterval = null;
     that.resizeInterval = null;
     that.blinkingInterval = null;
-    that.originalSize = {};
+    that.originalPreset = {};
 
     var init = function(){
         getLESSVariables();
@@ -149,7 +178,7 @@ function(params){
             )
         );
         if(that.params['appendOnRender']){
-            that.params['container'].appendChild(nodes['container']);
+            cm.appendChild(nodes['container'], that.params['container']);
         }
 
         // Set params styles
@@ -157,20 +186,15 @@ function(params){
         nodes['window'].style.width = that.params['width'] + 'px';
 
         // Add CSS Classes
+        cm.addClass(nodes['container'], that.params['className']);
         cm.addClass(nodes['container'], that.params['theme']);
         cm.addClass(nodes['window'], that.params['theme']);
-        cm.addClass(nodes['container'], that.params['className']);
         if(that.params['animate']){
             cm.addClass(nodes['container'], 'is-animate');
             cm.addClass(nodes['window'], 'is-animate');
         }
-        if(that.params['size'] === 'full'){
-            cm.addClass(nodes['container'], 'is-full');
-            cm.addClass(nodes['window'], 'is-full');
-        }
-        if(that.params['titleReserve']){
-            cm.addClass(nodes['container'], 'is-title-reserve');
-            cm.addClass(nodes['window'], 'is-title-reserve');
+        if(cm.inArray(['top', 'center', 'bottom'], that.params['valign'])){
+            cm.addClass(nodes['container'], ['is-valign', that.params['valign']].join('-'));
         }
 
         // Render close button
@@ -217,17 +241,11 @@ function(params){
         renderHelp(that.params['help']);
 
         // Events
-        cm.addEvent(nodes['container'], 'mouseover', function(e){
-            var target = cm.getEventTarget(e);
-            if(cm.isParent(nodes['container'], target, true)){
-                that.isFocus = true;
-            }
+        cm.addEvent(nodes['container'], 'mouseenter', function(e){
+            that.isFocus = true;
         });
-        cm.addEvent(nodes['container'], 'mouseout', function(e){
-            var target = cm.getRelatedTarget(e);
-            if(!cm.isParent(nodes['container'], target, true)){
-                that.isFocus = false;
-            }
+        cm.addEvent(nodes['container'], 'mouseleave', function(e){
+            that.isFocus = false;
         });
 
         // Resize
@@ -237,6 +255,7 @@ function(params){
     var renderTitle = function(title){
         // Remove old nodes
         cm.remove(nodes['title']);
+
         // Set new title
         if(that.params['showTitle']){
             cm.removeClass(nodes['container'], 'has-no-title');
@@ -266,6 +285,10 @@ function(params){
             cm.addClass(nodes['container'], 'has-no-title');
             cm.addClass(nodes['window'], 'has-no-title');
         }
+
+        // Classes
+        cm.toggleClass(nodes['container'], 'is-title-reserve', that.params['titleReserve']);
+        cm.toggleClass(nodes['window'], 'is-title-reserve', that.params['titleReserve']);
     };
 
     var renderContent = function(node){
@@ -335,13 +358,13 @@ function(params){
     };
 
     var stateHelper = function(){
-        if(
-            /full|fullscreen/.test(that.params['size']) ||
-            cm.getPageSize('winWidth') <= cm._config.screenTabletPortrait
-        ){
-            that.maximize();
+        const adaptivePreset = that.params.presets[that.params.adaptivePreset];
+        if (cm.isBreakpoint(that.params.adaptiveBreakpoint) && adaptivePreset) {
+            that.setPreset(adaptivePreset);
+        }else if(/full|fullscreen/.test(that.params['size'])){
+            that.setPreset(that.params.presets.maximize);
         }else{
-            that.restore();
+            that.restorePreset();
         }
     };
 
@@ -367,6 +390,7 @@ function(params){
             minHeight,
             setHeight,
             setWidth;
+
         // Calculate available width / height
         AHeight = winHeight
             - (nodes['title'] && nodes['title'].offsetHeight || 0)
@@ -375,27 +399,28 @@ function(params){
             - cm.getIndentY(nodes['descr']);
         NAHeight = winHeight - AHeight;
         AWidth = winWidth;
+
         // Calculate min / max height
         if(that.params['maxHeight'] === 'auto'){
             maxHeight = AHeight;
         }else if(/%/.test(that.params['maxHeight'])){
             maxHeight = ((winHeight / 100) * parseFloat(that.params['maxHeight'])) - NAHeight;
+        }else if(/px/.test(that.params['maxHeight'])){
+            maxHeight = parseFloat(that.params['maxHeight']) - NAHeight;
         }else{
-            if(/px/.test(that.params['maxHeight'])){
-                that.params['maxHeight'] = parseFloat(that.params['maxHeight']);
-            }
             maxHeight = that.params['maxHeight'] - NAHeight;
         }
+
         if(that.params['minHeight'] === 'auto'){
             minHeight = 0;
         }else if(/%/.test(that.params['minHeight'])){
             minHeight = ((winHeight / 100) * parseFloat(that.params['minHeight'])) - NAHeight;
+        }else if(/px/.test(that.params['minHeight'])){
+            minHeight = parseFloat(that.params['minHeight']) - NAHeight;
         }else{
-            if(/px/.test(that.params['minHeight'])){
-                that.params['minHeight'] = parseFloat(that.params['minHeight']);
-            }
             minHeight = that.params['minHeight'] - NAHeight;
         }
+
         // Calculate height
         if(that.params['height'] === 'auto'){
             if(insetHeight < minHeight){
@@ -407,26 +432,29 @@ function(params){
             }
         }else if(/%/.test(that.params['height'])){
             setHeight = ((winHeight / 100) * parseFloat(that.params['height'])) - NAHeight;
+        }else if(/px/.test(that.params['height'])){
+            setHeight = parseFloat(that.params['height']) - NAHeight;
         }else{
-            if(/px/.test(that.params['height'])){
-                that.params['height'] = parseFloat(that.params['height']);
-            }
-            setHeight = that.params['height'] - NAHeight;
+            setHeight = that.params['height'] - NAHeight
         }
         setHeight = Math.min(
             Math.max(setHeight, minHeight, 0),
             AHeight
         );
+
         // Calculate width
         if(/%/.test(that.params['width'])){
             setWidth = ((winWidth / 100) * parseFloat(that.params['width']));
+        }else if(/px/.test(that.params['width'])){
+            setWidth = parseFloat(that.params['width']);
         }else{
-            if(/px/.test(that.params['width'])){
-                that.params['width'] = parseFloat(that.params['width']);
-            }
             setWidth = that.params['width'];
         }
         setWidth = Math.min(setWidth, AWidth);
+
+        // Set window margin
+        nodes['window'].style.margin = `${that.params.indentY}px ${that.params.indentX}px`;
+
         // Set window height
         if(windowHeight !== setHeight + NAHeight || contentHeight !== insetHeight){
             contentHeight = insetHeight;
@@ -435,11 +463,12 @@ function(params){
             }else if(that.params['scroll']){
                 cm.addClass(nodes['scroll'], 'is-scroll');
             }
-            nodes['scroll'].style.height = [setHeight, 'px'].join('');
+            nodes['scroll'].style.height = `${setHeight}px`;
         }
+
         // Set window width
         if(windowWidth !== setWidth){
-            nodes['window'].style.width = [setWidth, 'px'].join('');
+            nodes['window'].style.width = `${setWidth}px`;
         }
     };
 
@@ -455,8 +484,13 @@ function(params){
                 that.params['container'].appendChild(nodes['container']);
             }
             nodes['container'].style.display = 'block';
+
+            // Set preset and calculate sizes
+            cm.addClass(nodes['container'], 'cm__transition-disable', true);
             stateHelper();
             resizeHelper();
+            cm.removeClass(nodes['container'], 'cm__transition-disable', true);
+
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
                 cm.bodyScroll.add(nodes['container']);
@@ -560,15 +594,67 @@ function(params){
         that.resizeInterval && clearTimeout(that.resizeInterval);
     };
 
+    var debouncedBlinking = cm.debounce(() => {
+        cm.removeClass(nodes['container'], 'cm__transition-disable');
+    }, cm._config.animDuration);
+
     var preventBlinking = function() {
         cm.addClass(nodes['container'], 'cm__transition-disable');
-        that.blinkingInterval && clearTimeout(that.blinkingInterval);
-        that.blinkingInterval = setTimeout(function() {
-            cm.removeClass(nodes['container'], 'cm__transition-disable');
-        }, 30);
+        debouncedBlinking();
     };
 
-    /* ******* MAIN ******* */
+    /******* PRESETS *******/
+
+    that.setPreset = function(preset) {
+        // Reset preset classes and styles
+        that.clearPreset(that.params);
+
+        // Set params
+        cm.forEach(preset, function(value, key){
+            if (!that.isPresetSet) {
+                that.originalPreset[key] = that.params[key];
+            }
+            that.params[key] = value;
+        });
+
+        // Set classes and styles
+        that.applyPreset(that.params);
+
+        that.isPresetSet = true;
+        return that;
+    };
+
+    that.restorePreset = function() {
+        // Reset preset classes and styles
+        that.clearPreset(that.params);
+
+        // Set params
+        cm.forEach(that.originalPreset, function(value, key){
+            that.params[key] = value;
+        });
+
+        // Set classes and styles
+        that.applyPreset(that.params);
+
+        that.isPresetSet = false;
+        return that;
+    };
+
+    that.clearPreset = function(preset) {
+        cm.removeClass(nodes['container'], preset.classes);
+        cm.removeClass(nodes['window'], preset.classes);
+        cm.removeClass(nodes['container'], `is-valign-${preset.valign}`);
+    };
+
+    that.applyPreset = function(preset) {
+        cm.addClass(nodes['container'], preset.classes);
+        cm.addClass(nodes['window'], preset.classes);
+        if(cm.inArray(['top', 'center', 'bottom'], preset.valign)){
+            cm.addClass(nodes['container'], `is-valign-${preset.valign}`);
+        }
+    };
+
+    /******* MAIN *******/
 
     that.set = function(title, content, buttons){
         renderTitle(title);
@@ -632,42 +718,17 @@ function(params){
         return that;
     };
 
-    that.setPreset = function(preset) {
-        that.isPresetSet = true;
-        cm.forEach(preset, function(value, key){
-            if (!that.isPresetSet) {
-                that.originalSize[key] = that.params[key];
-            }
-            that.params[key] = value;
-        });
-        return that;
-    };
-
-    that.restorePreset = function() {
-        that.isPresetSet = false;
-        cm.forEach(that.originalSize, function(value, key){
-            that.params[key] = value;
-        });
-        return that;
-    };
-
     that.maximize = function(){
-        if(!that.isMaximize){
-            that.isMaximize = true;
-            that.setPreset(that.params.presets.maximize);
-            cm.addClass(nodes['container'], 'is-fullscreen');
-            cm.addClass(nodes['window'], 'is-fullscreen');
-        }
+        if (that.isMaximize) return;
+        that.isMaximize = true;
+        that.setPreset(that.params.presets.maximize);
         return that;
     };
 
     that.restore = function(){
-        if(that.isMaximize){
-            that.isMaximize = false;
-            that.restorePreset();
-            cm.removeClass(nodes['container'], 'is-fullscreen');
-            cm.removeClass(nodes['window'], 'is-fullscreen');
-        }
+        if (!that.isMaximize) return;
+        that.isMaximize = false;
+        that.restorePreset();
         return that;
     };
 

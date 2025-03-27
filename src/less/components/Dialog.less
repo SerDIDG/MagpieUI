@@ -11,7 +11,7 @@
     .mx__position(0, 0, 0, 0);
     .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
 
-    &:before {
+    &::before {
         height: 100%;
         display: inline-block;
         vertical-align: middle;
@@ -30,6 +30,18 @@
             position: fixed;
             z-index: 2;
             font-size: 0;
+        }
+    }
+
+    &.is-valign-top {
+        &::before {
+            vertical-align: top;
+        }
+    }
+
+    &.is-valign-bottom {
+        &::before {
+            vertical-align: bottom;
         }
     }
 
@@ -122,6 +134,7 @@
     }
 
     &.is-animate {
+        will-change: opacity, transform;
         opacity: 0;
         .mx__transform(scale(0.9)); // FixMe: Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
@@ -130,6 +143,10 @@
             opacity: 1;
             .mx__transform(scale(1)); // FixMe: Not working position fixed inside this block
             .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
+        }
+
+        @media (prefers-reduced-motion) {
+            transform: none !important;
         }
     }
 

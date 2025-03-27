@@ -150,8 +150,10 @@ cm.getBreakpoint = function() {
     return breakpoints;
 };
 
-cm.isBreakpoint = function(name) {
-    return cm.inArray(cm._breakpoint, name);
+cm.isBreakpoint = function(value) {
+    return cm.isArray(value)
+        ? value.some(breakpoint => cm.inArray(cm._breakpoint, breakpoint))
+        : cm.inArray(cm._breakpoint, value);
 };
 
 /* ******* CHECK SUPPORT ******* */
@@ -1208,6 +1210,17 @@ cm.removeIsolateScrolling = function(node){
 
 cm.isCenterButton = function(e){
     return e.button === 1;
+};
+
+cm.throttle = function (func, wait) {
+    let lastCall = 0;
+    return function (...args) {
+        const now = Date.now();
+        if (now - lastCall >= wait) {
+            lastCall = now;
+            func.apply(this, args);
+        }
+    };
 };
 
 cm.debounce = function(func, wait, immediate){
