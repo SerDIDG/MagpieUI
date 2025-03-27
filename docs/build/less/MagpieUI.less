@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.100.0 (2025-03-27 03:29) ************ */
+/*! ************ MagpieUI v3.101.0 (2025-03-27 19:23) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4607,7 +4607,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.100.0';
+@CmVersion: '3.101.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -18852,6 +18852,9 @@ ul.pt__field__hint {
 .com__pagination__bar {
     margin: @CmIndent-Medium 0;
     line-height: @CmForm-FieldHeight;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
     .mx__user-select(none);
 
     &:first-child {

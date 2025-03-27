@@ -10,6 +10,10 @@ cm.define('Com.ScrollPagination', {
         'onPageRenderEnd',
         'onPageShow',
         'onPageHide',
+        'onPlaceholderRender',
+        'onPlaceholderRenderEnd',
+        'onPlaceholderRemove',
+        'onPlaceholderRemoveEnd',
         'onEnd',
         'onFinalize',
         'onSetCount',
@@ -49,8 +53,12 @@ cm.define('Com.ScrollPagination', {
             class: 'com__scroll-pagination__page',
         },
         button: {
-            enable: true,                                        // true - always | once - show once after first loaded page | none - don't show
+            enable: true,                                        // true - always | once - show once after first loaded page | false - don't show | none - don't show even on ESK press
             classes: ['button', 'button-primary'],
+        },
+        placeholder: {
+            enable: false,                                       // true - always | auto - show starting from a second page | false - don't show
+            embedLoader: true,                                   // append loader node inside placeholder
         },
 
         responseCountKey: 'count',                               // Take items count from response
@@ -90,7 +98,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             loader: cm.node('div')
         };
 
-        that.pages = {};
+        that.pages = [];
         that.ajaxHandler = null;
         that.loaderDelay = null;
         that.setDelay = null;
@@ -250,6 +258,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     classProto.resetStyles = function() {
         const that = this;
 
+        // Remove placeholder
+        that.callbacks.removePlaceholder(that, that.currentPlaceholder);
+        that.currentPlaceholder = null;
+
         // Load More Button
         if (!that.params.button.enable || that.params.button.enable === 'none') {
             that.callbacks.hideButton(that);
@@ -258,7 +270,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         }
 
         // Hide Loader
-        cm.addClass(that.nodes.loader, 'is-hidden');
+        that.callbacks.hideLoader(that);
     };
 
     classProto.keyDownEvent = function(e) {
@@ -305,7 +317,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.checkForPlaceholder = function() {
         const that = this;
-        return !that.currentPlaceholder && !that.isButton && that.params.startPage !== that.page;
+        return (
+            that.params.placeholder.enable === true ||
+            (that.params.placeholder.enable === 'auto' && that.params.startPage !== that.page && !that.isButton)
+        );
     };
 
     /******* CALLBACKS *******/
@@ -477,11 +492,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             isRendered: true,
         };
 
-        // Clear container
-        if (that.page === that.params.startPage) {
-            that.clear();
-        }
-
         // Render page
         page.container = that.callbacks.renderContainer(that, page);
         that.pages[that.page] = page;
@@ -523,15 +533,20 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         // Render container
         placeholder.container = that.callbacks.renderContainer(that);
         cm.addClass(placeholder.container, 'is-placeholder');
+        that.triggerEvent('onPlaceholderRender', placeholder);
 
         // Append
         cm.appendChild(placeholder.container, that.nodes.pages);
+        that.triggerEvent('onPlaceholderRenderEnd', placeholder);
+
         return placeholder;
     };
 
     classProto.callbacks.removePlaceholder = function(that, placeholder) {
         if (!placeholder) return;
+        that.triggerEvent('onPlaceholderRemove', placeholder);
         cm.remove(placeholder.container);
+        that.triggerEvent('onPlaceholderRemoveEnd', placeholder);
     };
 
     /* *** HELPERS *** */
@@ -540,18 +555,22 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.isProcess = true;
 
         // Render space placeholder to prevent overflow-anchoring
+        if (that.currentPlaceholder) {
+            that.callbacks.removePlaceholder(that, that.currentPlaceholder);
+            that.currentPlaceholder = null;
+        }
         if (that.checkForPlaceholder()) {
             that.currentPlaceholder = that.callbacks.renderPlaceholder(that, config);
         }
 
         // Show Loader
         if (that.params.showLoader) {
+            if (that.currentPlaceholder && that.params.placeholder.embedLoader) {
+                cm.appendChild(that.nodes.bar, that.currentPlaceholder.container);
+            }
             if (that.isButton) {
                 that.callbacks.showLoader(that);
             } else {
-                if (that.currentPlaceholder) {
-                    cm.appendChild(that.nodes.bar, that.currentPlaceholder.container);
-                }
                 that.loaderDelay = setTimeout(() => that.callbacks.showLoader(that), that.params.loaderDelay);
             }
         }
@@ -647,7 +666,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if (that.isProcess) {
             that.abort();
         }
-        that.pages = {};
+        that.pages = [];
         that.page = null;
         that.pageToken = null;
         that.currentPage = null;
@@ -677,10 +696,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.clear = function() {
         const that = this;
-
-        // Remove placeholder
-        that.callbacks.removePlaceholder(that, that.currentPlaceholder);
-        that.currentPlaceholder = null;
 
         // Remove pages
         cm.forEach(that.pages, page => that.callbacks.removePage(that, page))
@@ -811,7 +826,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.isEmpty = function() {
         const that = this;
-        const page = that.pages.find(page => !page.isEmpty);
+        const page = that.pages.find(page => !page?.isEmpty);
         return !page;
     };
 
