@@ -327,34 +327,41 @@
 
 .pt__field-status {
     transition: all @CmUI-Transition-DurationLong ease-in-out;
+    color: var(--color);
 
     &.primary,
     &.accent {
-        .cm__color__primary;
+        --color: var(--cm-color--primary);
     }
 
     &.secondary {
-        .cm__color__secondary;
+        --color: var(--cm-color--secondary);
     }
 
     &.placeholder {
-        .cm__color__placeholder;
+        --color: var(--cm-color--placeholder);
     }
 
     &.hint {
-        .cm__color__hint;
+        --color: var(--cm-color--hint);
     }
 
     &.success {
-        .cm__color__success;
+        --color: var(--cm-color--success);
     }
 
     &.warning {
-        .cm__color__warning;
+        --color: var(--cm-color--warning);
     }
 
     &.danger {
-        .cm__color__danger;
+        --color: var(--cm-color--danger);
+    }
+
+    &.has-icon {
+        display: flex;
+        gap: @CmForm-IconsIndent;
+        align-items: center;
     }
 
     &.is-hidden {

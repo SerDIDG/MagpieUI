@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.101.0 (2025-03-27 19:23) ************ */
+/*! ************ MagpieUI v3.101.1 (2025-03-29 23:47) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4542,6 +4542,19 @@ span.CodeMirror-selectedtext { background: none; }
 .svg__scale-fill { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22scale-fill.svg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2235%22%20viewBox%3D%220%200%2036%2035%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%2C%20.cls-2%20%7B%20%20%20%20%20%20%20%20fill%3A%20%23fff%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.35%3B%20%20%20%20%20%20%7D%20%20%20%20%20%20.cls-2%20%7B%20%20%20%20%20%20%20%20opacity%3A%200.85%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20id%3D%22_2%22%20data-name%3D%222%22%20class%3D%22cls-1%22%20d%3D%22M35.875%2C42L32.313%2C32l-3.6%2C9.077-2-5.324L32.906%2C24%2C42%2C41.23V42H35.875ZM13.313%2C42H6V41.078l6.443-14.617%2C3.4%2C8.5Z%22%20transform%3D%22translate(-6%20-7)%22%2F%3E%20%20%3Cpath%20id%3D%22_1%22%20data-name%3D%221%22%20class%3D%22cls-2%22%20d%3D%22M21%2C20.615l7.705%2C20.462L32.313%2C32l3.563%2C10H13.313ZM35.274%2C11.01c0%2C2.207-1.063%2C4-2.373%2C4s-2.374-1.79-2.374-4%2C1.063-4%2C2.374-4S35.274%2C8.8%2C35.274%2C11.01Z%22%20transform%3D%22translate(-6%20-7)%22%2F%3E%3C%2Fsvg%3E"); }
 .svg__search { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%20%20%3Cdefs%3E%20%20%20%20%3Cstyle%3E%20%20%20%20%20%20.cls-1%20%7B%20%20%20%20%20%20%20%20fill%3A%20%235e5e5e%3B%20%20%20%20%20%20%20%20fill-rule%3A%20evenodd%3B%20%20%20%20%20%20%7D%20%20%20%20%3C%2Fstyle%3E%20%20%3C%2Fdefs%3E%20%20%3Cpath%20class%3D%22cls-1%22%20d%3D%22M18.6%2C20.425L16.475%2C18.3A1.5%2C1.5%2C0%2C1%2C1%2C18.6%2C16.182L20.718%2C18.3A1.5%2C1.5%2C0%2C0%2C1%2C18.6%2C20.425Zm-11.667-4.6a7%2C7%2C0%2C1%2C1%2C9.9%2C0A7%2C7%2C0%2C0%2C1%2C6.929%2C15.828Zm8.485-8.485a5%2C5%2C0%2C1%2C0%2C0%2C7.071A5%2C5%2C0%2C0%2C0%2C15.414%2C7.343Z%22%20%2F%3E%3C%2Fsvg%3E"); }
 :root {
+
+    // /******* COLORS *******/
+
+    --cm-color--primary: @CmColor-Primary-DarkDefault;
+    --cm-color--secondary: @CmColor-Secondary-DarkDefault;
+    --cm-color--placeholder: @CmColor-Font-Placeholder;
+    --cm-color--hint: @CmColor-Font-Hint;
+    --cm-color--success: @CmColor-Success-DarkDefault;
+    --cm-color--warning: @CmColor-Warning-DarkDefault;
+    --cm-color--danger: @CmColor-Danger-DarkDefault;
+
+    // /******* PARTS *******/
+
     --cm-button--gap: @CmButton-Gap;
     --cm-input--icon-gap: @CmInput-IconGap;
 
@@ -4607,7 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.101.0';
+@CmVersion: '3.101.1';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6558,31 +6571,31 @@ span.CodeMirror-selectedtext { background: none; }
 /* *** FONT COLORS *** */
 
 .cm__color__primary {
-    color: @CmColor-Primary-DarkDefault;
+    color: var(--cm-color--primary);
 }
 
 .cm__color__secondary {
-    color: @CmColor-Secondary-DarkDefault;
+    color: var(--cm-color--secondary);
 }
 
 .cm__color__placeholder {
-    color: @CmColor-Font-Placeholder;
+    color: var(--cm-color--placeholder);
 }
 
 .cm__color__hint {
-    color: @CmColor-Font-Hint;
+    color: var(--cm-color--hint);
 }
 
 .cm__color__success {
-    color: @CmColor-Success-DarkDefault;
+    color: var(--cm-color--success);
 }
 
 .cm__color__warning {
-    color: @CmColor-Warning-DarkDefault;
+    color: var(--cm-color--warning);
 }
 
 .cm__color__danger {
-    color: @CmColor-Danger-DarkDefault;
+    color: var(--cm-color--danger);
 }
 
 /* *** BACKGROUND COLORS *** */
@@ -11523,34 +11536,41 @@ button {
 
 .pt__field-status {
     transition: all @CmUI-Transition-DurationLong ease-in-out;
+    color: var(--color);
 
     &.primary,
     &.accent {
-        .cm__color__primary;
+        --color: var(--cm-color--primary);
     }
 
     &.secondary {
-        .cm__color__secondary;
+        --color: var(--cm-color--secondary);
     }
 
     &.placeholder {
-        .cm__color__placeholder;
+        --color: var(--cm-color--placeholder);
     }
 
     &.hint {
-        .cm__color__hint;
+        --color: var(--cm-color--hint);
     }
 
     &.success {
-        .cm__color__success;
+        --color: var(--cm-color--success);
     }
 
     &.warning {
-        .cm__color__warning;
+        --color: var(--cm-color--warning);
     }
 
     &.danger {
-        .cm__color__danger;
+        --color: var(--cm-color--danger);
+    }
+
+    &.has-icon {
+        display: flex;
+        gap: @CmForm-IconsIndent;
+        align-items: center;
     }
 
     &.is-hidden {
