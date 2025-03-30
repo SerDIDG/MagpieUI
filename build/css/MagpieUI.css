@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.101.1 (2025-03-29 23:47) ************ */
+/*! ************ MagpieUI v3.101.2 (2025-03-30 06:47) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.101.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.101.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.101.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.101.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.101.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.101.2');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.101.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.101.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.101.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.101.2#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -6582,7 +6582,14 @@ input[type="submit"]:hover,
 input[type="reset"]:hover,
 button:hover {
   text-decoration: none;
-  transition: background 100ms ease-in-out 0ms, color 100ms ease-in-out 0ms, box-shadow 100ms ease-in-out 0ms, border-color 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
+}
+.button:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+button:active {
+  transition-duration: 100ms;
 }
 .button:is(:hover, .hover),
 input[type="button"]:is(:hover, .hover),
@@ -21398,7 +21405,10 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 }
 .com__pagination__bar ul li a:hover {
   text-decoration: none;
-  transition: background 100ms ease-in-out 0ms, color 100ms ease-in-out 0ms, box-shadow 100ms ease-in-out 0ms, border-color 100ms ease-in-out 0ms;
+  transition-duration: 100ms;
+}
+.com__pagination__bar ul li a:active {
+  transition-duration: 100ms;
 }
 .com__pagination__bar ul li a:is(:hover, .hover) {
   background-color: hsl(210, 75%, 45%);

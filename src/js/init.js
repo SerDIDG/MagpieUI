@@ -13,6 +13,9 @@ cm.init = function(){
         checkScrollSize();
         checkType();
 
+        // Enable :active pseudo-class on iOS-based devices
+        cm.addEvent(document, 'touchstart', () => {}, false);
+
         // Events
         cm.addEvent(window, 'mousemove', getClientPosition);
         cm.addEvent(window, 'resize', resizeAction);

@@ -3416,20 +3416,20 @@ cm.bodyScroll = (function(){
 })();
 
 cm.scrollTo = function(node, parent, params, callback){
-    if(!cm.isNode(node)){
-        return null;
-    }
+    if (!cm.isNode(node)) return;
+
     // If parent didn't specify - scroll the window
     parent = !cm.isUndefined(parent) ? parent : window;
+
     // Variables
     var parentNode = cm.isWindow(parent) ? cm.getDocumentHtml() : parent,
         scrollHeight = cm.getScrollHeight(parentNode),
         scrollOffsetHeight = cm.getScrollOffsetHeight(parentNode),
         scrollMax = cm.getScrollTopMax(parentNode);
+
     // Do not process when parent scroll's height match parent's offset height
-    if(scrollHeight === scrollOffsetHeight){
-        return node;
-    }
+    if (scrollHeight === scrollOffsetHeight) return node;
+
     // Validate
     params = cm.merge({
         'type' : 'auto',
@@ -3440,10 +3440,12 @@ cm.scrollTo = function(node, parent, params, callback){
         'duration' : cm._config.animDuration,
         'callback' : cm.isFunction(callback) ? callback : function(){},
     }, params);
+
     // Check type
     if(params['type'] === 'auto'){
         params['type'] = (cm.isWindow(parent) || parent === document.body) ? 'docScrollTop' : 'scrollTop';
     }
+
     // Calculate top value
     if(params['top'] === 'auto'){
         var scrollPadding = 0;
@@ -3468,6 +3470,7 @@ cm.scrollTo = function(node, parent, params, callback){
                 break;
         }
     }
+
     // Animate
     if(params['behavior'] === 'instant'){
         cm.setScrollTop(parent, params['top']);

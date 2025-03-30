@@ -28,7 +28,11 @@
 
     &:hover {
         text-decoration: none;
-        .mx__transition(background color box-shadow border-color, @CmUI-Transition-DurationReverse);
+        transition-duration: @CmUI-Transition-DurationReverse;
+    }
+
+    &:active {
+        transition-duration: @CmUI-Transition-DurationReverse;
     }
 
     .button.button-primary;

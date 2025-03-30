@@ -26,6 +26,7 @@ cm.define('Com.Dialog', {
         'height' : 'auto',              // number, %, px, auto
         'minHeight' : 0,                // number, %, auto, not applicable when using height
         'maxHeight' : 'auto',           // number, %, auto, not applicable when using height
+        'heightBasis' : 'dialog',       // dialog | content
         'position' : 'fixed',
         'indentY' : 24,
         'indentX' : 24,
@@ -66,6 +67,7 @@ cm.define('Com.Dialog', {
                 'height' : 'auto',
                 'minHeight' : 0,
                 'maxHeight' : 'auto',
+                'heightBasis' : 'dialog',
                 'indentY' : 24,
                 'indentX' : 24,
                 'valign' : 'middle',
@@ -76,6 +78,7 @@ cm.define('Com.Dialog', {
                 'height' : 'auto',
                 'minHeight' : 0,
                 'maxHeight' : 'auto',
+                'heightBasis' : 'dialog',
                 'indentY' : 16,
                 'indentX' : 16,
                 'valign' : 'middle',
@@ -86,6 +89,7 @@ cm.define('Com.Dialog', {
                 'height' : '100%',
                 'minHeight' : 0,
                 'maxHeight' : 'auto',
+                'heightBasis' : 'dialog',
                 'indentX' : 0,
                 'indentY' : 0,
                 'valign' : 'middle',
@@ -397,7 +401,7 @@ function(params){
             - (nodes['buttons'] && nodes['buttons'].offsetHeight || 0)
             - cm.getIndentY(nodes['windowInner'])
             - cm.getIndentY(nodes['descr']);
-        NAHeight = winHeight - AHeight;
+        NAHeight = that.params['heightBasis'] === 'dialog' ? winHeight - AHeight : 0;
         AWidth = winWidth;
 
         // Calculate min / max height
@@ -671,6 +675,11 @@ function(params){
     that.setContent = function(content){
         renderContent(content);
         return that;
+    };
+
+    that.scrollContentTo = function(params){
+        if (!that.params['scroll']) return;
+        cm.scrollTo(nodes['scroll'], nodes['scroll'], params);
     };
 
     that.setButtons = function(buttons){
