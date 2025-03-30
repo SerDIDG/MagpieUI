@@ -3324,14 +3324,12 @@ cm.getScrollTopMax = function(node){
     return 0;
 };
 
-cm.setBodyScrollTop = function(num){
-    document.documentElement.scrollTop = num;
-    document.body.scrollTop = num;
+cm.setBodyScrollTop = function(top){
+    window.scrollTo({top});
 };
 
-cm.setBodyScrollLeft = function(num){
-    document.documentElement.scrollLeft = num;
-    document.body.scrollLeft = num;
+cm.setBodyScrollLeft = function(left){
+    window.scrollTo({left});
 };
 
 cm.getBodyScrollTop = function(){
