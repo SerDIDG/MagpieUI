@@ -3168,9 +3168,19 @@ cm.getCurrentStyle = function(obj, name, dimension){
         case 'color':
         case 'backgroundColor':
         case 'borderColor':
-            var val = cm.getCSSStyle(obj, name);
+        case 'metaColor':
+            var val;
+            if (name === 'metaColor') {
+                val = obj.getAttribute('content');
+            } else {
+                val = cm.getCSSStyle(obj, name);
+            }
             if(val.match(/rgb/i)){
-                return val = val.match(/\d+/g), [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
+                val = val.match(/\d+/g);
+                return [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
+            }
+            if(val.match(/hsl/i)){
+                return cm.hsl2rgb.apply(this, cm.strToHsl(val));
             }
             return cm.hex2rgb(val.match(/[\w\d]+/)[0]);
 
@@ -3212,7 +3222,7 @@ cm.hex2rgb = function(hex){
 cm.rgb2hex = function(r, g, b){
     var rgb = [r, g, b];
     for(var i in rgb){
-        rgb[i] = Number(rgb[i]).toString(16);
+        rgb[i] = Math.round(Number(rgb[i])).toString(16);
         if(rgb[i] == '0'){
             rgb[i] = '00';
         }else if(rgb[i].length === 1){
@@ -3220,6 +3230,39 @@ cm.rgb2hex = function(r, g, b){
         }
     }
     return '#' + rgb.join('');
+};
+
+cm.strToHsl = function(value) {
+    return value.match(/[\d.]+/g).map((v, i) => {
+        v = Number(v);
+        if (!v) return 0;
+        if (i === 0) return v / 360;
+        return v / 100;
+    });
+};
+
+cm.hsl2rgb = function(h,s,l){
+    let r, g, b;
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = cm.hueToRgb(p, q, h + 1/3);
+        g = cm.hueToRgb(p, q, h);
+        b = cm.hueToRgb(p, q, h - 1/3);
+    }
+    const round = val => Math.min(Math.floor(val * 256), 255);
+    return [round(r), round(g), round(b)];
+};
+
+cm.hueToRgb = function(p, q, t) {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
 };
 
 cm.styleStrToKey = function(line){
@@ -3897,15 +3940,20 @@ cm.Animation = function(o){
     var setProperties = function(progress, delta, properties, duration){
         if(progress <= 1){
             properties.forEach(function(item){
-                var val = item['old'] + (item['new'] - item['old']) * delta(progress);
+                const val = item['old'] + (item['new'] - item['old']) * delta(progress);
 
                 if(item['name'] === 'opacity'){
                     cm.setOpacity(obj, val);
                 }else if(/color/i.test(item['name'])){
-                    var r = parseInt((item['new'][0] - item['old'][0]) * delta(progress) + item['old'][0]);
-                    var g = parseInt((item['new'][1] - item['old'][1]) * delta(progress) + item['old'][1]);
-                    var b = parseInt((item['new'][2] - item['old'][2]) * delta(progress) + item['old'][2]);
-                    obj.style[properties[i]['name']] = cm.rgb2hex(r, g, b);
+                    const r = parseInt((item['new'][0] - item['old'][0]) * delta(progress) + item['old'][0]);
+                    const g = parseInt((item['new'][1] - item['old'][1]) * delta(progress) + item['old'][1]);
+                    const b = parseInt((item['new'][2] - item['old'][2]) * delta(progress) + item['old'][2]);
+                    const color = cm.rgb2hex(r, g, b);
+                    if (item['name'] === 'metaColor') {
+                        obj.setAttribute('content', color);
+                    } else {
+                        obj.style[item['name']] = color;
+                    }
                 }else if(/scrollLeft|scrollTop/.test(item['name'])){
                     obj[item['name']] = val;
                 }else if(/x1|x2|y1|y2/.test(item['name'])){
@@ -3922,7 +3970,12 @@ cm.Animation = function(o){
             if(item['name'] === 'opacity'){
                 cm.setOpacity(obj, item['new']);
             }else if(/color/i.test(item['name'])){
-                obj.style[item['name']] = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
+                const color = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
+                if (item['name'] === 'metaColor') {
+                    obj.setAttribute('content', color);
+                } else {
+                    obj.style[item['name']] = color;
+                }
             }else if(/scrollLeft|scrollTop/.test(item['name'])){
                 obj[item['name']] = item['new'];
             }else if(/x1|x2|y1|y2/.test(item['name'])){
@@ -3941,9 +3994,11 @@ cm.Animation = function(o){
             if(/rgb/i.test(value)){
                 var rgb = value.match(/\d+/g);
                 return [parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2])];
-            }else{
-                return cm.hex2rgb(value.match(/[\w\d]+/)[0]);
             }
+            if(/hsl/i.test(value)){
+                return cm.hsl2rgb.apply(this, cm.strToHsl(value));
+            }
+            return cm.hex2rgb(value.match(/[\w\d]+/)[0]);
         }
         return value.replace(/[^\-0-9\.]/g, '');
     };
@@ -3964,6 +4019,14 @@ cm.Animation = function(o){
             delta = animationMethod[args.anim] || animationMethod['simple'],
             properties = [],
             start = Date.now();
+
+        if (!cm.isNumber(args.duration)) {
+            let durationStr = args.duration.toString();
+            args.duration = durationStr.includes('s')
+                ? parseFloat(durationStr) * (durationStr.includes('ms') ? 1 : 1000)
+                : parseInt(durationStr);
+        }
+
         for(var name in args.style){
             var value = args.style[name].toString();
             var dimension = cm.getStyleDimension(value);
@@ -3978,6 +4041,7 @@ cm.Animation = function(o){
             processes[i] = false;
         }
         processes[pId] = true;
+
         // Run process
         (function process(){
             var processId = pId;
@@ -3987,7 +4051,7 @@ cm.Animation = function(o){
             }
             var now = Date.now() - start;
             var progress = now / args.duration;
-            if(setProperties(progress, delta, properties, args['duration'])){
+            if(setProperties(progress, delta, properties, args.duration)){
                 delete processes[processId];
                 args.onStop && args.onStop();
             }else{
