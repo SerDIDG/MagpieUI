@@ -3466,6 +3466,7 @@ cm.scrollTo = function(node, parent, params, callback){
     var parentNode = cm.isWindow(parent) ? cm.getDocumentHtml() : parent,
         scrollHeight = cm.getScrollHeight(parentNode),
         scrollOffsetHeight = cm.getScrollOffsetHeight(parentNode),
+        scrollTop = cm.getScrollTop(parentNode),
         scrollMax = cm.getScrollTopMax(parentNode);
 
     // Do not process when parent scroll's height match parent's offset height
@@ -3478,6 +3479,7 @@ cm.scrollTo = function(node, parent, params, callback){
         'block' : 'start',
         'top' : 'auto',
         'scrollPadding' : 'auto',
+        'direction' : 'both',   // up | down | both
         'duration' : cm._config.animDuration,
         'callback' : cm.isFunction(callback) ? callback : function(){},
     }, params);
@@ -3510,6 +3512,14 @@ cm.scrollTo = function(node, parent, params, callback){
                 params['top'] = Math.max(Math.min(nodeOffsetTop, scrollMax), 0);
                 break;
         }
+    }
+
+    // Check a direction
+    if (
+        params.direction === 'up' && scrollTop < params.top ||
+        params.direction === 'down' && scrollTop > params.top
+    ) {
+        return node;
     }
 
     // Animate
