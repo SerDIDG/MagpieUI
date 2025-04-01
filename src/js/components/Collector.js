@@ -59,11 +59,7 @@ function(params){
             nodes.push(parentNode);
         }
         // Search for nodes in specified node
-        nodes = nodes.concat(
-            cm.clone(
-                cm.getByAttr(that.params['attribute'], name, parentNode)
-            )
-        );
+        nodes = [...nodes, ...cm.getByAttr(that.params['attribute'], name, parentNode)];
         return nodes;
     };
 

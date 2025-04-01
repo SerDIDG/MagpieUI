@@ -369,7 +369,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             const params = cm.merge(item.params.constructorParams, {
                 node: item.nodes.link,
                 actionItem: item,
-                [item.params.dataKey]: cm.reducePath(item.params.dataPath, item.params.data),
+                [item.params.dataKey]: that.getItemActionData(item, item.params.constructorParams),
                 events: {
                     onRenderControllerEnd: () => that.hide(false),
                 },
@@ -388,12 +388,17 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
                 const params = cm.merge(item.params.callbackParams, {
                     node: item.nodes.link,
                     actionItem: item,
-                    [item.params.dataKey]: cm.reducePath(item.params.dataPath, item.params.data),
+                    [item.params.dataKey]: that.getItemActionData(item, item.params.callbackParams),
                 });
                 item.params.callback(event, params);
             }
             that.hide(false);
         });
+    };
+
+    classProto.getItemActionData = function(item, actionParams) {
+        const data = cm.reducePath(item.params.dataPath, item.params.data);
+        return actionParams[item.params.dataKey] || data;
     };
 
     classProto.triggerItemAction = function(item) {
