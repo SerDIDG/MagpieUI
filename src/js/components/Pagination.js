@@ -496,9 +496,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         var dots = false;
         // Previous page buttons
         that.callbacks.renderBarArrow(that, item, {
-            'text' : '<',
             'title' : that.msg('bar.prev'),
-            'className' : 'prev',
+            'classes' : ['prev'],
+            'linkClasses' : ['cm-i__chevron-left', 'has-icon'],
             'callback' : that.prevHanlder
         });
         // Page buttons
@@ -530,9 +530,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         });
         // Next page buttons
         that.callbacks.renderBarArrow(that, item, {
-            'text' : '>',
             'title' : that.msg('bar.next'),
-            'className' : 'next',
+            'classes' : ['next'],
+            'linkClasses' : ['cm-i__chevron-right', 'has-icon'],
             'callback' : that.nextHanlder
         });
     };
@@ -541,12 +541,13 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         params = cm.merge({
             'text' : '',
             'title' : '',
-            'className' : '',
+            'classes' : [],
+            'linkClasses': [],
             'callback' : function(){}
         }, params);
         // Structure
-        params['container'] = cm.node('li', {'class' : params['className']},
-            params['link'] = cm.node('a', {'role': 'button', 'tabindex': '0', 'title' : params['title']}, params['text'])
+        params['container'] = cm.node('li', {'class': params['classes']},
+            params['link'] = cm.node('a', {'class': params['linkClasses'], 'role': 'button', 'tabindex': '0', 'title': params['title']}, params['text'])
         );
         // Events
         cm.click.add(params['link'], function(event){
@@ -615,6 +616,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
 
     /* ******* PUBLIC ******* */
 
+    // ToDo: rewrite: add soft rebuild when current page is exist
     classProto.rebuild = function(params){
         var that = this;
         // Cleanup

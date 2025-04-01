@@ -26,8 +26,9 @@ cm.define('Com.Autocomplete', {
         embedStructure: 'append',
 
         input: null,                                             // Deprecated, use 'node' parameter instead.
-        node: cm.node('input', {type: 'text'}),                  // Html input node to decorate.
+        node: cm.node('input', {type: 'text'}),                  // HTML input node to decorate.
         target: false,                                           // HTML node.
+        holdTarget: null,                                        // Tooltip holder HTML node.
         container: 'document.body',                              // 'document.body', 'targetParent'
         name: '',
         minLength: 3,
@@ -193,6 +194,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                 cm.merge(that.params.tooltip.constructorParams, {
                     container: that.params.container,
                     target: that.params.target,
+                    holdTarget: that.getTooltipHoldTarget(),
                     events: {
                         onShowStart: that.afterShow.bind(that),
                         onHideStart: that.afterHide.bind(that),
@@ -251,6 +253,13 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
                 that.set(text, true);
             }
         }
+    };
+
+    classProto.getTooltipHoldTarget = function() {
+        var that = this;
+        if (cm.isNode(that.params.holdTarget)) return that.params.holdTarget;
+        if (that.params.target === that.params.node) return that.params.target.parentNode;
+        return that.params.target;
     };
 
     /******* LIST *******/

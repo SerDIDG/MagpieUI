@@ -36,6 +36,7 @@ cm.define('Com.Gridlist', {
         embedStructure: 'append',
         customEvents: true,
         destructOnRemove: false,
+        destructOnReset: true,
         name: '',
 
         // Data
@@ -1107,10 +1108,12 @@ function(params){
     /*** HELPING FUNCTIONS ***/
 
     var resetTable = function(){
-        cm.customEvent.trigger(that.nodes.table, 'destruct', {
-            direction: 'child',
-            self: false
-        });
+        if (that.params.destructOnReset) {
+            cm.customEvent.trigger(that.nodes.table, 'destruct', {
+                direction: 'child',
+                self: false
+            });
+        }
         that.unCheckAll();
         that.rows = [];
         that.checked = [];

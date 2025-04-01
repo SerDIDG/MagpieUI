@@ -398,8 +398,15 @@ function(params) {
     };
 
     var resize = function() {
-        var target = that.params.positionTarget || that.params.target,
-            targetWidth = target.offsetWidth,
+        var target = that.params.positionTarget || that.params.target;
+
+        // Hide tooltip if a target element is not visible
+        if (target.checkVisibility && !target.checkVisibility({contentVisibilityAuto: true})) {
+            return hide(true);
+        }
+
+        // Get target element position
+        var targetWidth = target.offsetWidth,
             targetHeight = target.offsetHeight,
             selfHeight = that.nodes.container.offsetHeight,
             selfWidth = that.nodes.container.offsetWidth,
