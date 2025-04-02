@@ -93,7 +93,8 @@ cm.define('Com.AbstractFormField', {
         'too_long' : 'Value should be less than %count% characters.',
         'asterisk' : {
             'char' : '*',
-            'title' : 'Required'
+            'title' : 'Required',
+            'ariaLabel' : '(required)',
         },
     }
 },
@@ -317,6 +318,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
     classProto.renderFiledLabel = function(){
         var that = this;
+
         // Label
         if(!cm.isEmpty(that.params.label)){
             that.nodes.labelText = cm.node('label');
@@ -330,8 +332,9 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
             cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
+
         // Required
-        that.nodes.required = cm.node('span', {'class' : 'required', 'title' : that.msg('asterisk.title')}, that.msg('asterisk.char'));
+        that.nodes.required = cm.node('span', {'class' : 'required', 'title' : that.msg('asterisk.title'), 'aria-label' : that.msg('asterisk.ariaLabel')}, that.msg('asterisk.char'));
         if(that.params.required && that.params.requiredAsterisk){
             cm.appendChild(that.nodes.required, that.nodes.labelText || that.nodes.label);
         }
@@ -354,6 +357,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             }
             cm.addEvent(nodes.icon, 'mousedown', that.iconEventHandler);
             cm.addEvent(nodes.icon, 'click', that.iconEventHandler);
+
             nodes.field = cm.node('div', {'class' : 'pt__input'}, nodes.input, nodes.icon);
             cm.addClass(nodes.field, that.params.inputClasses)
             cm.appendChild(nodes.field, nodes.container);
@@ -361,9 +365,15 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
 
         // Placeholder
         if(that.params.showPlaceholderAbove && !cm.isEmpty(that.params.placeholder)){
-            nodes.placeholder = cm.node('label', {'class' : 'placeholder', 'for' : that.fieldName},
+            nodes.placeholder = cm.node('label', {'class' : 'placeholder'},
                 nodes.placeholderLabel = cm.node('span', {'innerHTML' : that.params.placeholder})
             );
+            if(that.params.renderName){
+                nodes.placeholder.setAttribute('for', that.fieldName);
+            }
+            if(!cm.isEmpty(that.params.label)){
+                nodes.placeholder.setAttribute('aria-hidden', 'true');
+            }
             cm.appendChild(nodes.placeholder, nodes.container);
             cm.addClass(nodes.container, 'is-placeholder-above');
         }

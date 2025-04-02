@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.102.3 (2025-04-01 13:24) ************ */
+/*! ************ MagpieUI v3.102.4 (2025-04-02 07:27) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.102.3');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.102.3') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.102.3') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.102.3') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.102.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.102.4');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.102.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.102.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.102.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.102.4#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -4514,15 +4514,25 @@ span.CodeMirror-selectedtext {
   font-weight: 600;
 }
 /* ******* COMMON ******* */
-.cm__hidden {
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  border: 0;
-  padding: 0;
-  position: absolute;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
+.cm__hidden,
+.pt__field.is-no-label > dt,
+.pt__field.is-no-label > .field__title,
+.pt__field.is-box.is-no-label > dt,
+.pt__field.is-form-box.is-no-label > dt,
+.pt__field.is-box.is-no-label > .field__title,
+.pt__field.is-form-box.is-no-label > .field__title {
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  position: absolute !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
 }
 .cm__box {
   margin-bottom: 24px;
@@ -7087,6 +7097,14 @@ button.button-clear {
   border: none;
   color: hsl(210, 75%, 52%);
   cursor: default;
+}
+.button.button--medium,
+input[type="button"].button--medium,
+input[type="submit"].button--medium,
+input[type="reset"].button--medium,
+button.button--medium {
+  min-height: 24px;
+  padding: 3px 16px;
 }
 .button.button--large,
 input[type="button"].button--large,
@@ -11207,10 +11225,6 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__field.is-label-flex .com__help-bubble .com__help-bubble__title .icon {
   display: block;
 }
-.pt__field.is-no-label > dt,
-.pt__field.is-no-label > .field__title {
-  display: none;
-}
 .pt__field.is-no-label > dd,
 .pt__field.is-no-label > .field__descr {
   margin-left: 0;
@@ -11281,12 +11295,6 @@ html.is-scrollbar-visible .pt__box-code::-webkit-scrollbar-thumb:hover {
 .pt__field.is-box > .field__descr:last-child,
 .pt__field.is-form-box > .field__descr:last-child {
   margin: 0;
-}
-.pt__field.is-box.is-no-label > dt,
-.pt__field.is-form-box.is-no-label > dt,
-.pt__field.is-box.is-no-label > .field__title,
-.pt__field.is-form-box.is-no-label > .field__title {
-  display: none;
 }
 .pt__field.is-box.is-first > dt,
 .pt__field.is-form-box.is-first > dt,
@@ -21666,6 +21674,10 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   border: none;
   color: hsl(210, 75%, 52%);
   cursor: default;
+}
+.com__pagination__bar ul li a.button--medium {
+  min-height: 24px;
+  padding: 3px 16px;
 }
 .com__pagination__bar ul li a.button--large {
   min-height: 32px;

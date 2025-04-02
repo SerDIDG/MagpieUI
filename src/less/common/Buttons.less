@@ -345,6 +345,13 @@
 
     // /* *** SIZES *** */
 
+    &.button--medium {
+        @padding_calc: (@CmSize-Medium - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
+        min-height: @CmSize-Medium;
+        padding: @padding @CmIndent-Small;
+    }
+
     &.button--large {
         @padding_calc: (@CmSize-Large - @CmFont-Base-LineHeight) / 2;
         @padding: max(ceil((@padding_calc)), 0px);

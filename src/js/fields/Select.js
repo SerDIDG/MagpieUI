@@ -199,8 +199,12 @@ function(params){
         // Add class name
         cm.addClass(nodes['container'], that.params['className']);
         // Title
-        if(that.params['showTitleTag'] && that.params['title']){
-            nodes['container'].title = that.params['title'];
+        if(!cm.isEmpty(that.params['title'])){
+            if(that.params['showTitleTag']){
+                nodes['container'].title = that.params['title'];
+            }else{
+                nodes['container'].setAttribute('aria-label', that.params['title']);
+            }
         }
         // Tabindex
         if(cm.isNumber(that.params['tabindex'])){

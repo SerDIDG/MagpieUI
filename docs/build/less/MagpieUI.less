@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.102.3 (2025-04-01 13:24) ************ */
+/*! ************ MagpieUI v3.102.4 (2025-04-02 07:27) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4620,7 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.102.3';
+@CmVersion: '3.102.4';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5999,14 +5999,18 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 .cm__hidden {
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    border: 0;
-    padding: 0;
-    position: absolute;
-    overflow: hidden;
-    clip: rect(1px, 1px, 1px, 1px);
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    position: absolute !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
 }
 
 .cm__box {
@@ -8065,6 +8069,13 @@ select {
     }
 
     // /* *** SIZES *** */
+
+    &.button--medium {
+        @padding_calc: (@CmSize-Medium - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
+        min-height: @CmSize-Medium;
+        padding: @padding @CmIndent-Small;
+    }
 
     &.button--large {
         @padding_calc: (@CmSize-Large - @CmFont-Base-LineHeight) / 2;
@@ -11351,7 +11362,7 @@ button {
     &.is-no-label {
         > dt,
         > .field__title {
-            display: none;
+            &:extend(.cm__hidden);
         }
 
         > dd,
@@ -11423,7 +11434,7 @@ button {
         &.is-no-label {
             > dt,
             > .field__title {
-                display: none;
+                &:extend(.cm__hidden);
             }
         }
 

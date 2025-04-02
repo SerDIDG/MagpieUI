@@ -132,6 +132,8 @@ function(params){
         }
         that.components.year = new Com.Select({
             'container' : nodes['year'],
+            'title' : that.lang('Year'),
+            'showTitleTag' : false,
             'options' : that.options.year,
             'renderInBody' : that.params['renderSelectsInBody'],
             'events' : {
@@ -158,6 +160,8 @@ function(params){
         });
         that.components.month = new Com.Select({
             'container' : nodes['month'],
+            'title' : that.lang('Month'),
+            'showTitleTag' : false,
             'options' : that.options.month,
             'renderInBody' : that.params['renderSelectsInBody'],
             'events' : {
@@ -184,6 +188,8 @@ function(params){
         }
         that.components.day = new Com.Select({
             'container' : nodes['day'],
+            'title' : that.lang('Day'),
+            'showTitleTag' : false,
             'options' : that.options.day,
             'renderInBody' : that.params['renderSelectsInBody'],
             'events' : {
