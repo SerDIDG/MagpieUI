@@ -227,6 +227,8 @@ function(params){
         if(that.params['name']){
             nodes['hidden'].setAttribute('name', that.params['name']);
         }
+        // Prevent repopulating values on browser back action
+        nodes['hidden'].setAttribute('autocomplete', 'off');
         // Placeholder
         if(!cm.isEmpty(that.params['placeholder'])){
             nodes['placeholder'] = cm.node('li',
