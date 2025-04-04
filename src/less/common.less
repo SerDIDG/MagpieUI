@@ -222,54 +222,68 @@
 
 /* *** SCROLLBAR *** */
 
-.cm__scrollbar {
-    html.is-scrollbar-visible & {
+#cm__scrollbar() {
+    .--dark {
         scrollbar-width: thin;
 
-        &::-webkit-scrollbar {
-            width: @CmScrollBar-Size;
-            height: @CmScrollBar-Size;
-        }
+        @supports selector(::-webkit-scrollbar) {
+            &::-webkit-scrollbar {
+                width: @CmScrollBar-Size;
+                height: @CmScrollBar-Size;
+            }
 
-        &::-webkit-scrollbar-track {
-            background-color: @CmScrollBar-TrackBackground;
-            border-radius: @CmScrollBar-Radius;
-        }
+            &::-webkit-scrollbar-track {
+                background-color: @CmScrollBar-TrackBackground;
+                border-radius: @CmScrollBar-Radius;
+            }
 
-        &::-webkit-scrollbar-thumb {
-            background-color: @CmScrollBar-ThumbColor;
-            background-clip: padding-box;
-            border: 1px solid transparent;
-            border-radius: @CmScrollBar-Radius;
-        }
+            &::-webkit-scrollbar-thumb {
+                background-color: @CmScrollBar-ThumbColor;
+                background-clip: padding-box;
+                border: 1px solid transparent;
+                border-radius: @CmScrollBar-Radius;
+            }
 
-        &::-webkit-scrollbar-thumb:hover {
-            background-color: @CmScrollBar-ThumbColorHover;
+            &::-webkit-scrollbar-thumb:hover {
+                background-color: @CmScrollBar-ThumbColorHover;
+            }
         }
+    }
+
+    .--light {
+        scrollbar-width: thin;
+
+        @supports selector(::-webkit-scrollbar) {
+            &::-webkit-scrollbar {
+                width: @CmScrollBar-Size;
+                height: @CmScrollBar-Size;
+            }
+            &::-webkit-scrollbar-track {
+                background-color: @CmScrollBar-TrackBackground;
+                border-radius: @CmScrollBar-Radius;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: @CmScrollBar-Light-ThumbColor;
+                background-clip: padding-box;
+                border: 1px solid transparent;
+                border-radius: @CmScrollBar-Radius;
+            }
+            &::-webkit-scrollbar-thumb:hover {
+                background-color: @CmScrollBar-Light-ThumbColorHover;
+            }
+        }
+    }
+}
+
+.cm__scrollbar {
+    html.is-scrollbar-visible & {
+        #cm__scrollbar.--dark();
     }
 }
 
 .cm__scrollbar--light {
     html.is-scrollbar-visible & {
-        scrollbar-width: thin;
-
-        &::-webkit-scrollbar {
-            width: @CmScrollBar-Size;
-            height: @CmScrollBar-Size;
-        }
-        &::-webkit-scrollbar-track {
-            background-color: @CmScrollBar-TrackBackground;
-            border-radius: @CmScrollBar-Radius;
-        }
-        &::-webkit-scrollbar-thumb {
-            background-color: @CmScrollBar-Light-ThumbColor;
-            background-clip: padding-box;
-            border: 1px solid transparent;
-            border-radius: @CmScrollBar-Radius;
-        }
-        &::-webkit-scrollbar-thumb:hover {
-            background-color: @CmScrollBar-Light-ThumbColorHover;
-        }
+        #cm__scrollbar.--light();
     }
 }
 
