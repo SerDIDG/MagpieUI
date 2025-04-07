@@ -423,14 +423,14 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         if (!cm.isEmpty(response)) {
             that.callbacks.render(that, response);
         } else {
-            that.triggerEvent('onEmpty');
+            that.callbacks.renderEmpty(that);
             that.callbacks.finalize(that);
         }
     };
 
     classProto.callbacks.error = function(that, config) {
-        that.callbacks.finalize(that);
         that.triggerEvent('onError');
+        that.callbacks.finalize(that);
     };
 
     classProto.callbacks.abort = function(that, config) {
@@ -472,10 +472,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     /* *** RENDER *** */
 
-    classProto.callbacks.renderContainer = function(that, page) {
-        return cm.node(that.params.pageTag, that.params.pageAttributes);
-    };
-
     classProto.callbacks.render = function(that, data) {
         const scrollTop = cm.getScrollTop(that.params.scrollNode);
         const isScrollAtBottom = that.checkForScrollBottom();
@@ -485,7 +481,6 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
             page: that.page,
             token: that.pageToken,
             pages: that.nodes.pages,
-            container: cm.node(that.params.pageTag),
             data: data,
             isEmpty: false,
             isVisible: false,
@@ -515,6 +510,10 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.triggerEvent('onPageRenderEnd', page);
     };
 
+    classProto.callbacks.renderContainer = function(that, page) {
+        return cm.node(that.params.pageTag, that.params.pageAttributes);
+    };
+
     classProto.callbacks.renderPage = function(that, page) {
         if (!that.params.responseHTML) return;
         const nodes = cm.strToHTML(page.data);
@@ -528,7 +527,11 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
     };
 
     classProto.callbacks.renderPlaceholder = function(that, config) {
-        const placeholder = {};
+        const placeholder = {
+            page: that.page,
+            token: that.pageToken,
+            pages: that.nodes.pages,
+        };
 
         // Render container
         placeholder.container = that.callbacks.renderContainer(that);
@@ -547,6 +550,15 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
         that.triggerEvent('onPlaceholderRemove', placeholder);
         cm.remove(placeholder.container);
         that.triggerEvent('onPlaceholderRemoveEnd', placeholder);
+    };
+
+    classProto.callbacks.renderEmpty = function(that) {
+        const page = {
+            page: that.page,
+            token: that.pageToken,
+            pages: that.nodes.pages,
+        };
+        that.triggerEvent('onEmpty', page);
     };
 
     /* *** HELPERS *** */
@@ -826,7 +838,7 @@ cm.getConstructor('Com.ScrollPagination', function(classConstructor, className, 
 
     classProto.isEmpty = function() {
         const that = this;
-        const page = that.pages.find(page => !page?.isEmpty);
+        const page = that.pages.find(page => page?.isEmpty === false);
         return !page;
     };
 
