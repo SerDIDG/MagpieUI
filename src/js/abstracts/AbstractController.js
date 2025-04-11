@@ -92,8 +92,8 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         var that = this;
         // Variables
         that.isConstructed = false;
-        that.isScrollTicking = false;
         // Bind context to methods
+        that.scrollTickingHandler = cm.ticking();
         that.redrawHandler = that.redraw.bind(that);
         that.resizeHandler = that.resize.bind(that);
         that.scrollHandler = that.scroll.bind(that);
@@ -203,17 +203,13 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
         if (type === 'immediately') {
             that.scrollUpdate();
         } else {
-            if (!that.isScrollTicking) {
-                requestAnimationFrame(that.scrollUpdate.bind(that));
-            }
-            that.isScrollTicking = true;
+            that.scrollTickingHandler(that.scrollUpdate.bind(that));
         }
         return that;
     };
 
     classProto.scrollUpdate = function(){
         var that = this;
-        that.isScrollTicking = false;
         that.triggerEvent('onScrollUpdate');
     };
 

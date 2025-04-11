@@ -1212,6 +1212,34 @@ cm.isCenterButton = function(e){
     return e.button === 1;
 };
 
+cm.ticking = function() {
+    let isTicking = false;
+    return (callback) => {
+        if (isTicking) return;
+        isTicking = true;
+        animFrame(() => {
+            isTicking = false;
+            if (cm.isFunction(callback)) {
+                callback();
+            }
+        });
+    };
+};
+
+cm.throttleFrame = function(callback) {
+    let isTicking = false;
+    return (...args) => {
+        if (isTicking) return;
+        isTicking = true;
+        animFrame(() => {
+            isTicking = false;
+            if (cm.isFunction(callback)) {
+                callback.apply(this, args);
+            }
+        });
+    };
+};
+
 cm.throttle = function (func, wait) {
     let lastCall = 0;
     return function (...args) {
@@ -1730,14 +1758,12 @@ cm.insertFirst = function(node, target, reAppend){
     if(!cm.isNode(node) || !cm.isNode(target)){
         return node;
     }
-    if(target.firstChild){
-        var isAppended = cm.isParent(target, node);
-        if (reAppend || !isAppended || (isAppended && node !== target.firstChild)) {
-            cm.insertBefore(node, target.firstChild);
-        }
-    }else{
-        cm.appendChild(node, target, reAppend);
+    const isAppended = cm.isParent(target, node);
+    const isAlreadyFirst = isAppended && target.firstChild === node;
+    if (reAppend || !isAppended || !isAlreadyFirst) {
+        target.insertBefore(node, target.firstChild);
     }
+
     return node;
 };
 
@@ -1746,7 +1772,9 @@ cm.insertLast = cm.appendChild = function(node, target, reAppend){
     if(!cm.isNode(node) || !cm.isNode(target)){
         return node;
     }
-    if(reAppend || !cm.isParent(target, node)){
+    const isAppended = cm.isParent(target, node);
+    const isAlreadyLast = isAppended && target.lastChild === node;
+    if (reAppend || !isAppended || !isAlreadyLast) {
         target.appendChild(node);
     }
     return node;
@@ -2450,6 +2478,14 @@ cm.formatNumber = function(number, locale, params){
 
 cm.getPercentage = function(num, total){
     return num / total / 100;
+};
+
+cm.parseDuration = function(value) {
+    if (cm.isEmpty(value) || cm.isNumber(value)) return value;
+    const str = value.toString().trim().toLowerCase();
+    if (str.includes('ms')) return parseFloat(str);
+    if (str.includes('s')) return parseFloat(str) * 1000;
+    return parseFloat(str);
 };
 
 cm.rand = function(min, max){
@@ -3175,6 +3211,7 @@ cm.getCurrentStyle = function(obj, name, dimension){
             } else {
                 val = cm.getCSSStyle(obj, name);
             }
+            if (cm.isEmpty(val)) return;
             if(val.match(/rgb/i)){
                 val = val.match(/\d+/g);
                 return [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
@@ -3923,38 +3960,31 @@ var animFrame = (function(){
             };
 })();
 
-cm.Animation = function(o){
-    var that = this,
-        obj = o,
-        processes = [],
-        animationMethod = {
-            'random' : function(progress){
-                return (function(min, max){
-                    return Math.random() * (max - min) + min;
-                })(progress, 1);
-            },
-            'simple' : function(progress){
-                return progress;
-            },
-            'acceleration' : function(progress){
-                return Math.pow(progress, 3);
-            },
-            'inhibition' : function(progress){
-                return 1 - animationMethod.acceleration(1 - progress);
-            },
-            'smooth' : function(progress){
-                return (progress < 0.5) ? animationMethod.acceleration(2 * progress) / 2 : 1 - animationMethod.acceleration(2 * (1 - progress)) / 2;
-            }
-        };
+cm.Animation = function(o) {
+    const that = this;
+    const animationMethod = {
+        random: progress => ((min, max) => (Math.random() * (max - min) + min))(progress, 1),
+        simple: progress => progress,
+        linear: progress => progress,
+        acceleration: progress => Math.pow(progress, 3),
+        inhibition: progress => (1 - animationMethod.acceleration(1 - progress)),
+        smooth: progress => (
+            (progress < 0.5)
+                ? animationMethod.acceleration(2 * progress) / 2
+                : 1 - animationMethod.acceleration(2 * (1 - progress)) / 2
+        ),
+    };
+    const obj = o;
+    const processes = [];
 
-    var setProperties = function(progress, delta, properties, duration){
-        if(progress <= 1){
-            properties.forEach(function(item){
+    const setProperties = (progress, delta, properties, duration) => {
+        if (progress <= 1) {
+            properties.forEach(item => {
                 const val = item['old'] + (item['new'] - item['old']) * delta(progress);
 
-                if(item['name'] === 'opacity'){
+                if (item['name'] === 'opacity') {
                     cm.setOpacity(obj, val);
-                }else if(/color/i.test(item['name'])){
+                } else if (/color/i.test(item['name'])) {
                     const r = parseInt((item['new'][0] - item['old'][0]) * delta(progress) + item['old'][0]);
                     const g = parseInt((item['new'][1] - item['old'][1]) * delta(progress) + item['old'][1]);
                     const b = parseInt((item['new'][2] - item['old'][2]) * delta(progress) + item['old'][2]);
@@ -3964,181 +3994,189 @@ cm.Animation = function(o){
                     } else {
                         obj.style[item['name']] = color;
                     }
-                }else if(/scrollLeft|scrollTop/.test(item['name'])){
+                } else if (/scrollLeft|scrollTop/.test(item['name'])) {
                     obj[item['name']] = val;
-                }else if(/x1|x2|y1|y2/.test(item['name'])){
+                } else if (/x1|x2|y1|y2/.test(item['name'])) {
                     obj.setAttribute(item['name'], Math.round(val));
-                }else if(item['name'] === 'docScrollTop'){
+                } else if (item['name'] === 'docScrollTop') {
                     cm.setBodyScrollTop(val);
-                }else{
+                } else {
                     obj.style[item['name']] = Math.round(val) + item['dimension'];
                 }
             });
             return false;
         }
-        properties.forEach(function(item){
-            if(item['name'] === 'opacity'){
+        properties.forEach(item => {
+            if (item['name'] === 'opacity') {
                 cm.setOpacity(obj, item['new']);
-            }else if(/color/i.test(item['name'])){
+            } else if (/color/i.test(item['name'])) {
                 const color = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
                 if (item['name'] === 'metaColor') {
                     obj.setAttribute('content', color);
                 } else {
                     obj.style[item['name']] = color;
                 }
-            }else if(/scrollLeft|scrollTop/.test(item['name'])){
+            } else if (/scrollLeft|scrollTop/.test(item['name'])) {
                 obj[item['name']] = item['new'];
-            }else if(/x1|x2|y1|y2/.test(item['name'])){
+            } else if (/x1|x2|y1|y2/.test(item['name'])) {
                 obj.setAttribute(item['name'], item['new']);
-            }else if(item['name'] === 'docScrollTop'){
+            } else if (item['name'] === 'docScrollTop') {
                 cm.setBodyScrollTop(item['new']);
-            }else{
+            } else {
                 obj.style[item['name']] = item['new'] + item['dimension'];
             }
         });
         return true;
     };
 
-    var prepareEndPosition = function(name, value){
-        if(name.match(/color/i)){
-            if(/rgb/i.test(value)){
+    const prepareEndPosition = (name, value) => {
+        if (cm.isEmpty(value)) return;
+        if (name.match(/color/i)) {
+            if (/rgb/i.test(value)) {
                 var rgb = value.match(/\d+/g);
                 return [parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2])];
             }
-            if(/hsl/i.test(value)){
+            if (/hsl/i.test(value)) {
                 return cm.hsl2rgb.apply(this, cm.strToHsl(value));
             }
             return cm.hex2rgb(value.match(/[\w\d]+/)[0]);
         }
-        return value.replace(/[^\-0-9\.]/g, '');
+        return value.replace(/[^\-0-9.]/g, '');
     };
 
-    that.getTarget = function(){
-        return obj;
-    };
+    that.go = function(params) {
+        // Config
+        params= cm.merge({
+            style: {},
+            duration: 0,
+            easing: 'smooth',
+            onStop: function() {}
+        }, params);
 
-    that.go = function(){
-        var params = arguments[0],
-            args = cm.merge({
-                'style' : '',
-                'duration' : '',
-                'anim' : 'simple',
-                'onStop' : function(){}
-            }, params),
-            pId = 'animation_process_' + Math.random(),
-            delta = animationMethod[args.anim] || animationMethod['simple'],
-            properties = [],
-            start = Date.now();
+        // Validate
+        params.duration = cm.parseDuration(params.duration);
+        params.easing = params.anim || params.easing || 'smooth';
 
-        if (!cm.isNumber(args.duration)) {
-            let durationStr = args.duration.toString();
-            args.duration = durationStr.includes('s')
-                ? parseFloat(durationStr) * (durationStr.includes('ms') ? 1 : 1000)
-                : parseInt(durationStr);
-        }
+        const pId = `animation_process_${Math.random()}`;
+        const delta = cm.isFunction(params.easing) ? params.easing : (animationMethod[params.easing] || animationMethod.smooth);
+        const properties = [];
+        const start = Date.now();
 
-        for(var name in args.style){
-            var value = args.style[name].toString();
-            var dimension = cm.getStyleDimension(value);
+        for (const name in params.style) {
+            const value = params.style[name].toString();
+            const dimension = cm.getStyleDimension(value);
+            const newValue = prepareEndPosition(name, value);
+            if (cm.isEmpty(newValue)) return;
             properties.push({
-                'name' : name,
-                'new' : prepareEndPosition(name, value),
-                'dimension' : dimension,
-                'old' : cm.getCurrentStyle(obj, name, dimension)
+                name: name,
+                dimension: dimension,
+                new: newValue,
+                old: cm.getCurrentStyle(obj, name, dimension),
             });
         }
-        for(var i in processes){
-            processes[i] = false;
-        }
+
+        // Stop a previous process
+        that.stop();
+
+        // Run a new process
         processes[pId] = true;
 
-        // Run process
-        (function process(){
-            var processId = pId;
-            if(!processes[processId]){
+        const process = () => {
+            const processId = pId;
+            if (!processes[processId]) {
                 delete processes[processId];
                 return false;
             }
-            var now = Date.now() - start;
-            var progress = now / args.duration;
-            if(setProperties(progress, delta, properties, args.duration)){
+            const now = Date.now() - start;
+            const progress = now / params.duration;
+            if (setProperties(progress, delta, properties, params.duration)) {
                 delete processes[processId];
-                args.onStop && args.onStop();
-            }else{
+                params.onStop && params.onStop();
+            } else {
                 animFrame(process);
             }
-        })();
+        };
+        process();
+
         return that;
     };
 
-    that.stop = function(){
-        for(var i in processes){
+    that.stop = function() {
+        for (const i in processes) {
             processes[i] = false;
         }
         return that;
     };
+
+    that.getTarget = function() {
+        return obj;
+    };
 };
 
-cm.transition = function(node, params){
-    var rule = cm.getSupportedStyle('transition'),
-        transitions = [],
-        dimension;
+cm.transition = function(node, params) {
+    const rule = cm.getSupportedStyle('transition');
+    let transitions = [];
 
-    var init = function(){
-        // Merge params
+    const init = () => {
+        // Config
         params = cm.merge({
-            'properties' : {},
-            'duration' : 0,
-            'easing' : 'ease-in-out',
-            'delayIn' : 0,
-            'delayOut' : 0,
-            'immediately' : false,
-            'clear' : false,
-            'onStop' : function(){}
+            properties: {},
+            duration: 0,
+            easing: 'ease-in-out',
+            delayIn: 0,
+            delayOut: 0,
+            immediately: false,
+            clear: false,
+            onStop: function() {}
         }, params);
+
+        // Validate
+        params.duration = cm.parseDuration(params.duration);
+
         // Prepare styles
-        cm.forEach(params['properties'], function(value, key){
+        cm.forEach(params.properties, function(value, key) {
             key = cm.styleStrToKey(key);
-            transitions.push([key, params['duration'] + 'ms', params['easing']].join(' '));
+            transitions.push([key, `${params.duration}ms`, params.easing].join(' '));
         });
         transitions = transitions.join(', ');
+
         start();
     };
 
-    var start = function(){
+    const start = () => {
         // Prepare
-        cm.forEach(params['properties'], function(value, key){
+        cm.forEach(params.properties, (value, key) => {
             key = cm.styleStrToKey(key);
-            dimension = cm.getStyleDimension(value);
+            const dimension = cm.getStyleDimension(value);
             node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
         });
-        if(params['immediately']){
+        if (params.immediately) {
             set();
             end();
-        }else{
-            setTimeout(set, params['delayIn']);
-            setTimeout(end, params['duration'] + params['delayIn'] + params['delayOut']);
+        } else {
+            setTimeout(set, params.delayIn);
+            setTimeout(end, params.duration + params.delayIn + params.delayOut);
         }
     };
 
-    var set = function(){
+    const set = () => {
         node.style[rule] = transitions;
         // Set new styles
-        cm.forEach(params['properties'], function(value, key){
+        cm.forEach(params.properties, (value, key) => {
             key = cm.styleStrToKey(key);
             node.style[key] = value;
         });
     };
 
-    var end = function(){
-        node.style[rule]  = '';
-        if(params['clear']){
-            cm.forEach(params['properties'], function(value, key){
+    const end = () => {
+        node.style[rule] = '';
+        if (params.clear) {
+            cm.forEach(params.properties, (value, key) => {
                 key = cm.styleStrToKey(key);
                 node.style[key] = '';
             });
         }
-        params['onStop'](node);
+        params.onStop(node);
     };
 
     init();
