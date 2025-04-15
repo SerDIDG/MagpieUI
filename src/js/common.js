@@ -2476,8 +2476,8 @@ cm.formatNumber = function(number, locale, params){
     return new Intl.NumberFormat(locale, params).format(number);
 };
 
-cm.getPercentage = function(num, total){
-    return num / total / 100;
+cm.getPercentage = function(){
+    cm.errorLog({type: 'error', name: 'cm.getPercentage', message: 'Deprecated!'});
 };
 
 cm.parseDuration = function(value) {
@@ -3197,6 +3197,10 @@ cm.getCurrentStyle = function(obj, name, dimension){
             }
             return obj['offset' + Name];
 
+        case 'translateX':
+            var val = cm.getCSSTranslate(obj).x;
+            return cm.styleToNumber(val);
+
         case 'opacity':
             var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
             return (!isNaN(val)) ? val : 1;
@@ -3737,7 +3741,7 @@ cm.removeCSSRule = function(sheet, selector, index){
 };
 
 cm.setCSSTranslate = (function(){
-    var transform = cm.getSupportedStyle('transform');
+    const transform = cm.getSupportedStyle('transform');
     if(transform){
         return function(node, x, y, z, additional){
             x = !cm.isUndefined(x) && x !== 'auto' ? x : 0;
@@ -3758,8 +3762,18 @@ cm.setCSSTranslate = (function(){
     }
 })();
 
+cm.getCSSTranslate = function(node) {
+    const style = window.getComputedStyle(node)
+    const matrix = new DOMMatrixReadOnly(style.transform)
+    return {
+        x: matrix.m41,
+        y: matrix.m42,
+        z: matrix.m43,
+    };
+};
+
 cm.clearCSSTranslate = (function(){
-    var transform = cm.getSupportedStyle('transform');
+    const transform = cm.getSupportedStyle('transform');
     if(transform){
         return function(node){
             node.style[transform] = '';
@@ -3773,8 +3787,7 @@ cm.clearCSSTranslate = (function(){
 })();
 
 cm.setCSSTransitionDuration = (function(){
-    var rule = cm.getSupportedStyle('transition-duration');
-
+    const rule = cm.getSupportedStyle('transition-duration');
     return function(node, time){
         if(!rule){
             return node;
@@ -3973,6 +3986,7 @@ cm.Animation = function(o) {
                 ? animationMethod.acceleration(2 * progress) / 2
                 : 1 - animationMethod.acceleration(2 * (1 - progress)) / 2
         ),
+        easeInOutSine: progress => -(Math.cos(Math.PI * progress) - 1) / 2,
     };
     const obj = o;
     const processes = [];
@@ -4000,6 +4014,8 @@ cm.Animation = function(o) {
                     obj.setAttribute(item['name'], Math.round(val));
                 } else if (item['name'] === 'docScrollTop') {
                     cm.setBodyScrollTop(val);
+                } else if (item['name'] === 'translateX'){
+                    cm.setCSSTranslate(obj, Math.round(val) + item['dimension']);
                 } else {
                     obj.style[item['name']] = Math.round(val) + item['dimension'];
                 }
