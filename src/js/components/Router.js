@@ -121,8 +121,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.processLink = function(el){
         var that = this,
             href = el.getAttribute('href'),
-            preventDefault = el.dataset.preventDefault;
-        if(!cm.isEmpty(href) && preventDefault !== 'true'){
+            preventDefault = el.dataset.preventDefault,
+            noRoute = el.dataset.noRoute;
+        if(!cm.isEmpty(href) && preventDefault !== 'true' && noRoute !== 'true'){
             var route = that.prepareRoute(href);
             that.pushRoute(route);
         }
