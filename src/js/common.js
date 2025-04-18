@@ -32,87 +32,111 @@
  ******* */
 
 var cm = {
-        '_version' : '@@VERSION',
+        '_version': '@@VERSION',
         '_lang': 'en',
-        '_locale' : 'en-IN',
-        '_loadTime' : Date.now(),
-        '_isDocumentReady' : false,
-        '_isDocumentLoad' : false,
-        '_debug' : true,
-        '_debugAlert' : false,
-        '_deviceType' : 'desktop',
-        '_deviceOrientation' : 'landscape',
-        '_adaptive' : false,
+        '_locale': 'en-IN',
+        '_loadTime': Date.now(),
+        '_isDocumentReady': false,
+        '_isDocumentLoad': false,
+        '_debug': true,
+        '_debugAlert': false,
+        '_deviceType': 'desktop',
+        '_deviceOrientation': 'landscape',
+        '_adaptive': false,
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
-        '_pathUrl' : '',
-        '_assetsUrl' : [window.location.protocol, window.location.hostname].join('//'),
-        '_scrollSize' : 0,
-        '_pageSize' : {},
-        '_clientPosition' : {'left' : 0, 'top' : 0},
-        '_config' : {
-            'redrawOnLoad' : true,
-            'motionAsymmetric' : 'cubic-bezier(.5,0,.15,1)',
-            'motionSmooth' : 'ease-in-out',
-            'animDuration' : 250,
-            'animDurationShort' : 150,
-            'animDurationLong' : 500,
-            'loadDelay' : 500,
-            'lazyDelay' : 1000,
-            'hideDelay' : 250,
-            'hideDelayShort' : 150,
-            'hideDelayLong' : 500,
-            'autoHideDelay' : 2000,
-            'requestDelay' : 300,
-            'adaptiveFrom' : 768,
-            'screenTablet' : 1024,
-            'screenTabletPortrait' : 768,
-            'screenMobile' : 640,
-            'screenMobilePortrait' : 480,
-            'screenXSmall' : 375,
-            'dateFormat' : '%Y-%m-%d',
-            'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
-            'dateFormatCase' : 'nominative',
-            'timeFormat' : '%H:%i:%s',
-            'displayDateFormat' : '%F %j, %Y',
-            'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
-            'displayDateFormatCase' : 'nominative',
-            'tooltipIndent' : 4,
-            'tooltipTop' : 'targetHeight + 4',
-            'tooltipDown' : 'targetHeight + 4',
-            'tooltipUp' : '- (selfHeight + 4)',
-            'tooltipLeft' : 'targetWidth + 4',
-            'tooltipRight' : '- (selfWidth + 4)',
-            'fileExtensions' : {
-                'image' : 'jpg|jpeg|png|gif|bmp|tga|svg|tiff|webp',
-                'video' : 'avi|ogg|mpeg|mp4|m4a|m4b|mov|wmv|webm',
+        '_port': window.location.port,
+        '_pathUrl': '',
+        '_assetsUrl': [window.location.protocol, window.location.hostname].join('//'),
+        '_scrollSize': 0,
+        '_pageSize': {},
+        '_clientPosition': {'left': 0, 'top': 0},
+        '_config': {
+            'redrawOnLoad': true,
+            'motionAsymmetric': 'cubic-bezier(.5,0,.15,1)',
+            'motionSmooth': 'ease-in-out',
+            'animDuration': 250,
+            'animDurationShort': 150,
+            'animDurationLong': 500,
+            'loadDelay': 500,
+            'lazyDelay': 1000,
+            'hideDelay': 250,
+            'hideDelayShort': 150,
+            'hideDelayLong': 500,
+            'autoHideDelay': 2000,
+            'requestDelay': 300,
+            'adaptiveFrom': 768,
+            'screenTablet': 1024,
+            'screenTabletPortrait': 768,
+            'screenMobile': 640,
+            'screenMobilePortrait': 480,
+            'screenXSmall': 375,
+            'dateFormat': '%Y-%m-%d',
+            'dateTimeFormat': '%Y-%m-%d %H:%i:%s',
+            'dateFormatCase': 'nominative',
+            'timeFormat': '%H:%i:%s',
+            'displayDateFormat': '%F %j, %Y',
+            'displayDateTimeFormat': '%F %j, %Y, %H:%i',
+            'displayDateFormatCase': 'nominative',
+            'tooltipIndent': 4,
+            'tooltipTop': 'targetHeight + 4',
+            'tooltipDown': 'targetHeight + 4',
+            'tooltipUp': '- (selfHeight + 4)',
+            'tooltipLeft': 'targetWidth + 4',
+            'tooltipRight': '- (selfWidth + 4)',
+            'fileExtensions': {
+                'image': 'jpg|jpeg|png|gif|bmp|tga|svg|tiff|webp',
+                'video': 'avi|ogg|mpeg|mp4|m4a|m4b|mov|wmv|webm',
             },
-            'fileTypes' : {
-                'image' : /image\/.*/,
-                'video' : /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
-                'embed' : /application\/pdf/,
+            'fileTypes': {
+                'image': /image\/.*/,
+                'video': /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
+                'embed': /application\/pdf/,
             }
         },
-        '_variables' : {
-            '%baseUrl%' : 'cm._baseUrl',
-            '%assetsUrl%' : 'cm._assetsUrl',
-            '%pathUrl%' : 'cm._pathUrl',
-            '%version%' : 'cm._version'
+        '_variables': {
+            '%baseUrl%': 'cm._baseUrl',
+            '%port%': 'cm._port',
+            '%assetsUrl%': 'cm._assetsUrl',
+            '%pathUrl%': 'cm._pathUrl',
+            '%version%': 'cm._version'
         },
-        '_strings' : {
-            'common' : {
-                'server_error' : 'An unexpected error has occurred. Please try again later.'
+        '_strings': {
+            'common': {
+                'server_error': 'An unexpected error has occurred. Please try again later.'
             },
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            'daysShort' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+            'months': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            'days': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'daysShort': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'daysAbbr': ['S', 'M', 'T', 'W', 'T', 'F', 'S']
         }
     },
     Mod = {},
     Part = {},
     Com = {
-        'Elements' : {}
+        'Elements': {}
     };
+
+/* ******* CHECK SUPPORT ******* */
+
+cm.isFileReader = (function(){return 'FileReader' in window;})();
+cm.isHistoryAPI = !!(window.history && history.pushState);
+cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
+cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
+cm.isCanvas = !!document.createElement("canvas").getContext;
+cm.hasBeacon = !!(navigator.sendBeacon);
+cm.hasPointerEvent = !!(window.PointerEvent);
+
+cm.isMotionReduced = () => (window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true);
+
+/* ******* COMMON ******* */
+
+cm._getVariables = function(){
+    var data = {};
+    cm.forEach(cm._variables, function(value, name){
+        data[name] = cm.reducePath(value, window);
+    });
+    return data;
+};
 
 /* ******* BREAKPOINTS ******* */
 
@@ -154,28 +178,6 @@ cm.isBreakpoint = function(value) {
     return cm.isArray(value)
         ? value.some(breakpoint => cm.inArray(cm._breakpoint, breakpoint))
         : cm.inArray(cm._breakpoint, value);
-};
-
-/* ******* CHECK SUPPORT ******* */
-
-cm.isFileReader = (function(){return 'FileReader' in window;})();
-cm.isHistoryAPI = !!(window.history && history.pushState);
-cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
-cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
-cm.isCanvas = !!document.createElement("canvas").getContext;
-cm.hasBeacon = !!(navigator.sendBeacon);
-cm.hasPointerEvent = !!(window.PointerEvent);
-
-cm.isMotionReduced = () => (window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true);
-
-/* ******* COMMON ******* */
-
-cm._getVariables = function(){
-    var data = {};
-    cm.forEach(cm._variables, function(value, name){
-        data[name] = cm.reducePath(value, window);
-    });
-    return data;
 };
 
 /* ******* OBJECTS AND ARRAYS ******* */
