@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.105.0 (2025-04-18 08:24) ************ */
+/*! ************ MagpieUI v3.106.0 (2025-04-22 19:09) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.105.0');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.105.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.105.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.105.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.105.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.106.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.106.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.106.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.106.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.106.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12913,7 +12913,6 @@ ul.pt__field__hint li:before {
   min-height: 1px;
   position: relative;
   z-index: 1;
-  will-change: opacity;
   transition: opacity 250ms ease-in-out 0ms;
 }
 .pt__image > .inner > .descr:is(iframe) {
@@ -13048,7 +13047,6 @@ ul.pt__field__hint li:before {
   z-index: 5;
   position: absolute;
   transform: translateY(100%);
-  will-change: transform;
   top: auto;
   right: 0;
   bottom: 0;
@@ -18965,7 +18963,6 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   margin-top: 0;
 }
 .com__dialog__window.is-animate {
-  will-change: opacity, transform;
   opacity: 0;
   transform: scale(0.9);
   transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
@@ -18979,6 +18976,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   .com__dialog__window.is-animate {
     transform: none !important;
   }
+}
+.com__dialog__window.is-animate-process {
+  will-change: opacity, transform;
 }
 .com__dialog__window.is-fullscreen > .inner > .descr > .scroll.is-animate {
   -webkit-transition: none !important;

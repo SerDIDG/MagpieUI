@@ -134,7 +134,6 @@
     }
 
     &.is-animate {
-        will-change: opacity, transform;
         opacity: 0;
         .mx__transform(scale(0.9)); // FixMe: Not working position fixed inside this block
         .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
@@ -148,6 +147,10 @@
         @media (prefers-reduced-motion) {
             transform: none !important;
         }
+    }
+
+    &.is-animate-process {
+        will-change: opacity, transform;
     }
 
     &.is-fullscreen {
