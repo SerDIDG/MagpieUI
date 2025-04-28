@@ -3572,7 +3572,7 @@ cm.scrollTo = function(node, parent, params, callback){
     }else{
         var scrollAnimation = new cm.Animation(parent);
         scrollAnimation.go({
-            'anim' : params['behavior'],
+            'easing' : params['behavior'],
             'duration' : params['duration'],
             'onStop' : params['callback'],
             'style' : {

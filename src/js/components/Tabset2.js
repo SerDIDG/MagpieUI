@@ -56,6 +56,7 @@ cm.define('Com.Tabset2', {
 
         /* STYLES */
 
+        useLessVariables: true,                                  // Parse LESS variables for some parameters
         adaptive: true,
         className: '',
         icons: {
@@ -89,6 +90,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
 
     classProto.onGetLESSVariablesProcess = function(){
         var that = this;
+        if (!that.params.useLessVariables) return;
         that.params.animateDuration = cm.getTransitionDurationFromLESS('ComTabset-Duration', that.params.animateDuration);
         that.params.tabsWidth = cm.getLESSVariable('ComTabset-Column-Width', that.params.tabsWidth, true);
     };

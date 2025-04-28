@@ -524,14 +524,14 @@ function (params) {
             ? false
             : that.params.cycle || that.itemsLength < 2 ? that.itemsLength > 1 : that.current > 0;
         that.nodes.prev.disabled = !showPrev;
-        that.nodes.prev.setAttribute('aria-hidden', !showPrev);
+        that.nodes.prev.setAttribute('aria-disabled', !showPrev);
         cm.toggleClass(that.nodes.prev, 'is-hidden', !showPrev);
 
         var showNext = toggle === false
             ? false
             : that.params.cycle || that.itemsLength < 2 ? that.itemsLength > 1 : that.current < that.itemsLength - 1;
         that.nodes.next.disabled = !showNext;
-        that.nodes.next.setAttribute('aria-hidden', !showNext);
+        that.nodes.next.setAttribute('aria-disabled', !showNext);
         cm.toggleClass(that.nodes.next, 'is-hidden', !showNext);
     };
 
