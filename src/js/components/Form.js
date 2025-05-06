@@ -41,6 +41,7 @@ cm.define('Com.Form', {
 
         'renderButtons' : true,
         'renderButtonsSeparator' : true,
+        'buttonsContainerClasses' : [],
         'buttonsClasses' : [],
         'buttonsAlign' : 'right',
         'buttonsAdaptive' : true,
@@ -138,8 +139,10 @@ function(params){
                     that.nodes.fields = cm.node('div', {'class' : 'inner'})
                 )
             );
+
             // Notifications
             that.nodes.notifications = cm.node('div', {'class' : 'com__form__notifications'});
+
             // Buttons
             that.nodes.buttonsSeparator = cm.node('hr');
             that.nodes.buttonsContainer = cm.node('div', {'class' : 'com__form__buttons'},
@@ -147,10 +150,12 @@ function(params){
                     that.nodes.buttonsHolder = cm.node('div', {'class' : 'inner'})
                 )
             );
+            cm.addClass(that.nodes.buttonsContainer, that.params.buttonsContainerClasses);
             cm.addClass(that.nodes.buttons, ['pull', that.params.buttonsAlign].join('-'));
             cm.addClass(that.nodes.buttons, that.params.buttonsClasses);
             that.params.buttonsAdaptive && cm.addClass(that.nodes.buttons, 'is-adaptive');
-            // Embed
+
+            // Append
             that.params.renderButtonsSeparator && cm.insertFirst(that.nodes.buttonsSeparator, that.nodes.buttonsContainer);
             that.params.renderButtons && cm.appendChild(that.nodes.buttonsContainer, that.nodes.container);
             cm.insertFirst(that.nodes.notifications, that.nodes.container);
