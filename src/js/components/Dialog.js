@@ -504,7 +504,7 @@ function(params){
         if(!cm.inDOM(nodes['container'])){
             that.params['container'].appendChild(nodes['container']);
         }
-        nodes['container'].style.display = 'block';
+        nodes['container'].style.display = 'flex';
 
         // Set sizes preset and calculate initial sizes
         cm.addClass(nodes['container'], 'cm__transition-disable', true);

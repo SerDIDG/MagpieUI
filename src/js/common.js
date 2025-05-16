@@ -2329,11 +2329,9 @@ cm.decode = (function(){
 
 cm.copyToClipboard = function(text, callback){
     if (cm.isEmpty(text)) return;
-
     const success = () => {
         cm.isFunction(callback) && callback(true);
     };
-
     const error = () => {
         cm.errorLog({type: 'error', name: 'cm.copyToClipboard', message: 'Unable to copy text to clipboard!'});
         cm.isFunction(callback) && callback(false);

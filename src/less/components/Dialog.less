@@ -7,16 +7,10 @@
     position: fixed;
     z-index: 1000;
     opacity: 0;
-    text-align: center;
+    align-items: center;
+    justify-content: center;
     .mx__position(0, 0, 0, 0);
     .mx__transition(all, @ComDialog-Duration, @CmUI-MotionAsymmetric);
-
-    &::before {
-        height: 100%;
-        display: inline-block;
-        vertical-align: middle;
-        content: '';
-    }
 
     > .bg {
         width: 100%;
@@ -34,15 +28,11 @@
     }
 
     &.is-valign-top {
-        &::before {
-            vertical-align: top;
-        }
+        align-items: flex-start;
     }
 
     &.is-valign-bottom {
-        &::before {
-            vertical-align: bottom;
-        }
+        align-items: flex-end;
     }
 
     &.is-open {
@@ -55,9 +45,6 @@
     max-width: 100%;
     position: relative;
     z-index: 2;
-    display: inline-block;
-    text-align: left;
-    vertical-align: middle;
 
     > .icon {
         position: absolute;

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.106.2 (2025-05-07 00:33) ************ */
+/*! ************ MagpieUI v3.106.3 (2025-05-16 22:04) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.106.2');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.106.2') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.106.2') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.106.2') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.106.2#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.106.3');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.106.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.106.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.106.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.106.3#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -18838,18 +18838,13 @@ ul.pt__field__hint li:before {
   position: fixed;
   z-index: 1000;
   opacity: 0;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   transition: all 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
-}
-.com__dialog::before {
-  height: 100%;
-  display: inline-block;
-  vertical-align: middle;
-  content: '';
 }
 .com__dialog > .bg {
   width: 100%;
@@ -18864,11 +18859,11 @@ ul.pt__field__hint li:before {
   z-index: 2;
   font-size: 0;
 }
-.com__dialog.is-valign-top::before {
-  vertical-align: top;
+.com__dialog.is-valign-top {
+  align-items: flex-start;
 }
-.com__dialog.is-valign-bottom::before {
-  vertical-align: bottom;
+.com__dialog.is-valign-bottom {
+  align-items: flex-end;
 }
 .com__dialog.is-open {
   visibility: visible;
@@ -18878,9 +18873,6 @@ ul.pt__field__hint li:before {
   max-width: 100%;
   position: relative;
   z-index: 2;
-  display: inline-block;
-  text-align: left;
-  vertical-align: middle;
 }
 .com__dialog__window > .icon {
   position: absolute;
