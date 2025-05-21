@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.106.3 (2025-05-16 22:04) ************ */
+/*! ************ MagpieUI v3.107.0 (2025-05-21 21:46) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.106.3');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.106.3') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.106.3') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.106.3') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.106.3#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.107.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.107.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.107.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.107.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.107.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9848,6 +9848,9 @@ html.is-scrollbar-visible .pt__box-code {
 .pt__check-line.is-box.has-hover {
   gap: 1px;
 }
+.pt__check-line.is-box.is-compact label {
+  padding: 0;
+}
 .pt__check-line.is-flex label,
 .pt__check-line.is-flex-reverse label {
   display: flex;
@@ -9908,6 +9911,9 @@ html.is-scrollbar-visible .pt__box-code {
   }
   html.is-adaptive .pt__check-line.is-adaptive.has-hover {
     gap: 1px;
+  }
+  html.is-adaptive .pt__check-line.is-adaptive.is-compact label {
+    padding: 0;
   }
 }
 /* ******* PARTS: COLUMNS ******* */

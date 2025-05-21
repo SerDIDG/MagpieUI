@@ -12,6 +12,7 @@ cm.define('Com.DialogContainer', {
         'renderButtons' : false,
         'renderButtonsPositions' : false,
         'buttonsAdaptive': true,
+        'buttonsClasses': [],
         'justifyButtons' : 'right',
         'constructor' : 'Com.Dialog',
         'constructorParams' : {
@@ -103,10 +104,16 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
 
     classProto.renderButtonsView = function(){
         var that = this;
+
         // Structure
         that.nodes['buttons'] = cm.node('div', {'class' : 'pt__buttons'},
             that.nodes['buttonsHolder'] = cm.node('div', {'class' : 'inner'})
         );
+
+        // Classes
+        cm.addClass(that.nodes['buttons'], that.params['buttonsClasses']);
+        that.setButtonsJustify(that.params['justifyButtons']);
+
         if(that.params['buttonsAdaptive']){
             if(that.params['buttonsAdaptive'] === 'reverse'){
                 cm.addClass(that.nodes['buttons'], 'is-adaptive-reverse');
@@ -114,17 +121,17 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
                 cm.addClass(that.nodes['buttons'], 'is-adaptive');
             }
         }
+
+        // Positions
         if(that.params['renderButtonsPositions']){
             that.nodes['buttonsHolderLeft'] = cm.node('div', {'class' : 'left'});
             that.nodes['buttonsHolderRight'] = cm.node('div', {'class' : 'right'});
             cm.appendChild(that.nodes['buttonsHolderLeft'], that.nodes['buttonsHolder']);
             cm.appendChild(that.nodes['buttonsHolderRight'], that.nodes['buttonsHolder']);
         }
-        that.setButtonsJustify(that.params['justifyButtons']);
+
         // Render buttons
-        cm.forEach(that.buttons, function(item){
-            that.renderButton(item);
-        });
+        cm.forEach(that.buttons, item => that.renderButton(item));
         return that;
     };
 
