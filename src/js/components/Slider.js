@@ -46,6 +46,7 @@ cm.define('Com.Slider', {
         setOnClick: false,
         fadePrevious: false,         // Fade out previous slide, needed when using transparency slides
 
+        controls: true,
         controlsType: 'partial',     // full | partial | small | null
         controlsClasses: [],
         buttons: true,               // Display buttons, can hide exists buttons
@@ -127,7 +128,6 @@ function (params) {
     var getLESSVariables = function () {
         that.params.time = cm.getTransitionDurationFromLESS('ComSlider-Duration', that.params.time);
     };
-
     var validateParams = function () {
         // Check if slider in the editing mode
         if (cm.isNode(that.params.node)) {
@@ -174,6 +174,12 @@ function (params) {
         cm.forEach(that.params.items, collectItem);
 
         // Controls
+        if (that.params.controls) {
+            cm.addClass(that.nodes.container, 'has-controls');
+        } else {
+            cm.addClass(that.nodes.controls, 'is-hidden');
+            that.nodes.controls.setAttribute('aria-hidden', true);
+        }
         if (cm.inArray(['full', 'partial', 'small'], that.params.controlsType)) {
             cm.addClass(that.nodes.controls, ['is', that.params.controlsType].join('-'));
         }
