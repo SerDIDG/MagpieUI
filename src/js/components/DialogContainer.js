@@ -143,7 +143,7 @@ cm.getConstructor('Com.DialogContainer', function(classConstructor, className, c
             'name' : '',
             'label' : '',
             'classes': ['button-primary'],
-            'justify' : 'auto',
+            'justify' : 'right',
             'visible' : true,
             'focus': false,
             'embed' : false,
