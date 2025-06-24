@@ -308,6 +308,9 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         };
 
         // Check access
+        if (cm.isFunction(item.params.access)) {
+            item.params.access = item.params.access(item.params);
+        }
         if (!item.params.access) return;
 
         // Validate params
