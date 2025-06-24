@@ -186,6 +186,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         if (!cm.isEmpty(that.params.autocomplete)) {
             that.nodes.content.input.setAttribute('autocomplete', that.params.autocomplete);
         }
+        if (that.params.readOnly) {
+            that.nodes.content.input.setAttribute('readonly', true);
+        }
         if (that.params.renderName) {
             that.nodes.content.input.name = that.params.visibleName || that.params.name;
         }

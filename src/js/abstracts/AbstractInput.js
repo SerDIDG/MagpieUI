@@ -30,6 +30,7 @@ cm.define('Com.AbstractInput', {
         'autocomplete' : null,
         'ariaLabel' : '',
         'disabled' : false,
+        'readOnly' : false,
         'checked' : null,
         'className' : '',
         'contentClassName' : '',
@@ -167,7 +168,8 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['id'] = that.params['node'].getAttribute('id') || that.params['id'];
             that.params['title'] = that.params['node'].getAttribute('title') || that.params['title'];
             that.params['name'] = that.params['node'].getAttribute('name') || that.params['name'];
-            that.params['disabled'] = that.params['node'].disabled || that.params['node'].readOnly || that.params['disabled'];
+            that.params['disabled'] = that.params['node'].disabled || that.params['disabled'];
+            that.params['readOnly'] = that.params['node'].readOnly || that.params['readOnly'];
             that.params['checked'] = that.params['node'].checked || that.params['checked'];
             that.params['required'] = that.params['node'].required || that.params['required'];
             that.params['minLength'] = that.params['node'].getAttribute('minlength') || that.params['minLength'];
