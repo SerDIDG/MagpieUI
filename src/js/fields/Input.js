@@ -15,8 +15,8 @@ cm.define('Com.Input', {
         'type': 'text',
         'inputmode': null,
         'trimValue': true,
-        'limitValue' : true,
-        'constraints' : {},
+        'limitValue': true,
+        'constraints': {},
         'inputClasses': [],
         'lazy': false,
         'delay': 'cm._config.requestDelay',
@@ -26,7 +26,7 @@ cm.define('Com.Input', {
         'iconInsertMethod': 'appendChild',
         'autoResize': false,
         'enterPressBehavior': false,
-    }
+    },
 },
 function() {
     Com.AbstractInput.apply(this, arguments);
@@ -34,8 +34,8 @@ function() {
 
 cm.getConstructor('Com.Input', function(classConstructor, className, classProto, classInherit) {
     classProto.construct = function() {
-        var that = this;
-        
+        const that = this;
+
         // Variables
         that.selectionStartInitial = null;
         that.selectionEndInitial = null;
@@ -43,7 +43,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.wasFocus = false;
         that.lazyDelay = null;
         that.constraints = {};
-        
+
         // Bind context to methods
         that.focusHandler = that.focus.bind(that);
         that.blurHandler = that.blur.bind(that);
@@ -63,7 +63,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.onValidateParamsStart = function() {
-        var that = this;
+        const that = this;
 
         // Validate input \ change constraints
         cm.forEach(that.params.constraints, (handlers, eventName) => {
@@ -72,18 +72,18 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.onEnable = function() {
-        var that = this;
+        const that = this;
         that.nodes.content.input.disabled = false;
     };
 
     classProto.onDisable = function() {
-        var that = this;
+        const that = this;
         that.nodes.content.input.disabled = true;
     };
 
     classProto.onAfterRender = function() {
-        var that = this;
-        
+        const that = this;
+
         // Autoresize textarea
         if (that.params.type === 'textarea' && that.params.autoResize) {
             cm.addClass(that.nodes.content.input, 'cm-autoresize');
@@ -94,7 +94,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     /*** VIEW MODEL ***/
 
     classProto.renderContent = function() {
-        var that = this;
+        const that = this;
         that.triggerEvent('onRenderContentStart');
 
         // Structure
@@ -113,10 +113,10 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.renderContentView = function() {
-        var that = this;
+        const that = this;
 
         // Structure
-        var nodes = {};
+        const nodes = {};
         nodes.container = cm.node('div', {classes: 'pt__input'},
             nodes.inner = cm.node('div', {classes: 'inner'})
         );
@@ -134,14 +134,10 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         // Icon
         if (that.params.icon) {
             cm.addClass(nodes.container, 'has-icon');
-            if (cm.isNode(that.params.icon)) {
-                nodes.icon = that.params.icon
-            } else {
-                nodes.icon = that.renderIconView();
-            }
-            if (!cm.isEmpty(that.params.iconTitle)) {
-                nodes.icon.title = that.params.iconTitle;
-            }
+            nodes.icon = that.renderIcon({
+                icon: that.params.icon,
+                title: that.params.iconTitle,
+            });
             cm[that.params.iconInsertMethod](nodes.icon, nodes.inner);
         }
 
@@ -150,15 +146,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.renderContentAttributes = function() {
-        var that = this;
+        const that = this;
 
         // Required
         that.nodes.content.input.required = that.params.required;
-        
+
         // Min / Max length
         cm.setInputMinLength(that.nodes.content.input, that.params.minLength, that.params.min);
         cm.setInputMaxLength(that.nodes.content.input, that.params.maxLength, that.params.max, that.params.limitMaxLength);
-        
+
         // Placeholder / Title
         if (!cm.isEmpty(that.params.placeholder)) {
             that.nodes.content.input.placeholder = that.params.placeholder;
@@ -195,7 +191,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.renderContentEvents = function() {
-        var that = this;
+        const that = this;
         cm.addEvent(that.nodes.content.input, 'input', that.inputEventHandler);
         cm.addEvent(that.nodes.content.input, 'focus', that.focusEventHandler);
         cm.addEvent(that.nodes.content.input, 'blur', that.blurEventHandler);
@@ -211,20 +207,34 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     /*** ICON ***/
 
-    classProto.renderIconView = function() {
-        var that = this;
-        return cm.node('div', {classes: that.params.icon});
+    classProto.renderIcon = function(params) {
+        const that = this;
+        params = cm.merge({
+            icon: null,
+            title: null,
+        }, params);
+
+        const node = cm.isNode(params.icon) ? params.icon : that.renderIconView(params);
+        if (!cm.isEmpty(params.title)) {
+            node.title = params.title;
+        }
+        return node;
+    };
+
+    classProto.renderIconView = function(params) {
+        const that = this;
+        return cm.node('div', {classes: params.icon});
     };
 
     classProto.getIcon = function() {
-        var that = this;
+        const that = this;
         return that.nodes.content.icon;
     };
 
     /*** EVENTS ***/
 
     classProto.inputKeyDown = function(e) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onKeyDown', that.value, e);
         that.selectionStartInitial = that.nodes.content.input.selectionStart;
         that.selectionEndInitial = that.nodes.content.input.selectionStart;
@@ -254,17 +264,17 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.inputKeyUp = function(e) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onKeyUp', that.value, e);
     };
 
     classProto.inputKeyPress = function(e) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onKeyPress', that.value, e);
     };
 
     classProto.inputEvent = function() {
-        var that = this;
+        const that = this;
         that.execConstraint('onInput', false);
         that.selectValue(true);
         if (that.params['lazy']) {
@@ -273,14 +283,14 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.focusEvent = function() {
-        var that = this;
+        const that = this;
         that.isFocus = true;
         that.execConstraint('onFocus', false);
         that.triggerEvent('onFocus', that.value);
     };
 
     classProto.blurEvent = function() {
-        var that = this;
+        const that = this;
         that.isFocus = false;
         that.execConstraint('onBlur', false);
         that.setValue(true);
@@ -288,7 +298,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.iconEvent = function(e) {
-        var that = this;
+        const that = this;
         cm.preventDefault(e);
         if (e.type === 'mousedown') {
             that.wasFocus = that.isFocus;
@@ -304,7 +314,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     /*** CONSTRAINT ***/
 
     classProto.addConstraint = function(eventName, handler) {
-        var that = this;
+        const that = this;
         if (!that.constraints[eventName]) {
             that.constraints[eventName] = [];
         }
@@ -315,7 +325,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.removeConstraint = function(eventName, handler) {
-        var that = this;
+        const that = this;
         if (!that.constraints[eventName]) {
             that.constraints[eventName] = [];
         }
@@ -326,7 +336,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.execConstraint = function(eventName, triggerEvents) {
-        var that = this;
+        const that = this;
         if (!that.constraints[eventName]) {
             return that;
         }
@@ -372,11 +382,11 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
     /*** DATA VALUE ***/
 
-    classProto.validateValueHelper = function(value){
-        var that = this;
+    classProto.validateValueHelper = function(value) {
+        const that = this;
 
         // Trim value
-        if(!cm.isEmpty(value)){
+        if (!cm.isEmpty(value)) {
             if (that.params.trimValue && cm.isString(value)) {
                 value = value.trim();
             }
@@ -390,7 +400,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.lazyValue = function(triggerEvents) {
-        var that = this;
+        const that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.lazyDelay && clearTimeout(that.lazyDelay);
         that.lazyDelay = setTimeout(function() {
@@ -415,7 +425,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.setData = function(value) {
-        var that = this;
+        const that = this;
         that.nodes.content.input.value = !cm.isUndefined(value) ? value : that.value;
         return that;
     };
@@ -423,7 +433,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     /******* PUBLIC *******/
 
     classProto.focus = function(selection) {
-        var that = this;
+        const that = this;
         if (selection === true) {
             var value = that.nodes.content.input.value;
             that.nodes.content.input.setSelectionRange(0, value.length);
@@ -433,7 +443,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.blur = function() {
-        var that = this;
+        const that = this;
         that.nodes.content.input.blur();
         return that;
     };
@@ -460,17 +470,6 @@ Com.FormFields.add('textarea', {
     'constructor': 'Com.Input',
     'constructorParams': {
         'type': 'textarea'
-    }
-});
-
-Com.FormFields.add('password', {
-    'node': cm.node('input', {'type': 'password'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'password'
     }
 });
 
