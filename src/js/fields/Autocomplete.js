@@ -95,7 +95,7 @@ function() {
 
 cm.getConstructor('Com.Autocomplete', function(classConstructor, className, classProto, classInherit) {
     classProto.onConstructStart = function() {
-        var that = this;
+        const that = this;
 
         // Variables
         that.disabled = false;
@@ -126,7 +126,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.onValidateParams = function() {
-        var that = this;
+        const that = this;
 
         if (cm.isNode(that.params.input)) {
             that.params.node = that.params.input;
@@ -164,7 +164,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.onAfterRender = function() {
-        var that = this;
+        const that = this;
 
         // Set target input
         that.setInput(that.params.node);
@@ -177,19 +177,19 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.onDestructStart = function() {
-        var that = this;
+        const that = this;
         that.callbacks.destructListSuggestion(that, that.suggestionItem);
         that.unsetInputEvents();
     };
 
     classProto.renderViewModel = function() {
-        var that = this;
+        const that = this;
 
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Init tooltip
-        cm.getConstructor(that.params.tooltip.constructor, function(classConstructor) {
+        cm.getConstructor(that.params.tooltip.constructor, classConstructor => {
             that.components.tooltip = new classConstructor(
                 cm.merge(that.params.tooltip.constructorParams, {
                     container: that.params.container,
@@ -207,7 +207,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /******* INPUT *******/
 
     classProto.setInputEvents = function() {
-        var that = this;
+        const that = this;
         cm.addEvent(that.params.node, 'input', that.requestHandler);
         cm.addEvent(that.params.node, 'keydown', that.afterKeypressHandler);
         cm.addEvent(that.params.node, 'focus', that.afterFocusHandler);
@@ -215,7 +215,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.unsetInputEvents = function() {
-        var that = this;
+        const that = this;
         cm.removeEvent(that.params.node, 'input', that.requestHandler);
         cm.removeEvent(that.params.node, 'keydown', that.afterKeypressHandler);
         cm.removeEvent(that.params.node, 'focus', that.afterFocusHandler);
@@ -223,17 +223,17 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.getInputValue = function() {
-        var that = this;
+        const that = this;
         return that.params.node.value.trim();
     };
 
     classProto.setInputAction = function() {
-        var that = this;
+        const that = this;
         that.abort();
 
         // Set value form input
-        var text = that.getInputValue();
-        var item = that.getItemAction(null, text);
+        const text = that.getInputValue();
+        const item = that.getItemAction(null, text);
 
         if (item) {
             // If registered item exists, set their value
@@ -256,7 +256,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.getTooltipHoldTarget = function() {
-        var that = this;
+        const that = this;
         if (cm.isNode(that.params.holdTarget)) return that.params.holdTarget;
         if (that.params.target === that.params.node) return that.params.target.parentNode;
         return that.params.target;
@@ -265,19 +265,19 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /******* LIST *******/
 
     classProto.setListAction = function(index) {
-        var that = this;
+        const that = this;
 
         if (that.params.suggestion.enable) {
             that.callbacks.suggestionItemUnselect(that,  that.suggestionItem);
         }
 
-        var previousItem = that.registeredItems[that.selectedItemIndex];
+        const previousItem = that.registeredItems[that.selectedItemIndex];
         if (previousItem) {
             previousItem.container.setAttribute('aria-selected', 'false');
             cm.removeClass(previousItem.container, 'active');
         }
 
-        var item = that.registeredItems[index];
+        const item = that.registeredItems[index];
         if (item) {
             that.selectedItemIndex = index;
             item.container.setAttribute('aria-selected', 'true');
@@ -288,8 +288,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.getItemAction = function(value, text) {
-        var that = this;
-        var item = null;
+        const that = this;
+        let item = null;
 
         // Get from stored items
         if (
@@ -317,7 +317,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /******* EVENTS *******/
 
     classProto.afterFocus = function() {
-        var that = this;
+        const that = this;
         if (that.params.showListOnEmpty) {
             that.request();
         }
@@ -325,7 +325,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.afterBlur = function() {
-        var that = this;
+        const that = this;
         if (!that.isOwnNode(that.clickTarget)) {
             that.hide();
             that.setInputAction();
@@ -335,13 +335,13 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.afterShow = function() {
-        var that = this;
+        const that = this;
         that.isOpen = true;
         cm.addEvent(document, 'mousedown', that.afterBodyClickHandler);
     };
 
     classProto.afterHide = function() {
-        var that = this;
+        const that = this;
         that.isOpen = false;
         cm.removeEvent(document, 'mousedown', that.afterBodyClickHandler);
     };
@@ -380,14 +380,14 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.afterChange = function() {
-        var that = this;
+        const that = this;
         if (that.value !== that.previousValue) {
             that.triggerEvent('onChange', that.value);
         }
     };
 
     classProto.afterBodyClick = function(e) {
-        var that = this;
+        const that = this;
         that.clickTarget = cm.getEventTarget(e);
         if (!that.isOwnNode(that.clickTarget)) {
             that.hide();
@@ -438,7 +438,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         // Request
         if (that.params.showListOnEmpty || query.length >= that.params.minLength) {
             const delay = that.params.showListOnEmpty && cm.isEmpty(query) ? 0 : that.params.delay;
-            that.requestDelay = setTimeout(function() {
+            that.requestDelay = setTimeout(() => {
                 if (that.params.preloadData && !cm.isEmpty(that.requestData.data)) {
                     that.callbacks.data(that, {
                         data: that.requestData.data,
@@ -459,7 +459,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.requestAction = function(params) {
-        var that = this;
+        const that = this;
 
         // Validate params
         params = cm.merge({
@@ -532,12 +532,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.filter = function(that, params) {
-        var data = [];
-        var dataItem = cm.reducePath(that.params.responseKey, params.response);
-        if (!cm.isEmpty(dataItem)) {
-            data = dataItem;
-        }
-        return data;
+        const dataItem = cm.reducePath(that.params.responseKey, params.response);
+        return !cm.isEmpty(dataItem) ? dataItem : [];
     };
 
     classProto.callbacks.response = function(that, params) {
@@ -571,9 +567,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         if (cm.isObject(data)) {
             return that.callbacks.convertObject(that, data);
         } else {
-            return data.map(function(item) {
-                return that.callbacks.convertItem(that, item);
-            });
+            return data.map(item => that.callbacks.convertItem(that, item));
         }
     };
 
@@ -591,30 +585,33 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.convertObject = function(that, data) {
-        var a = [];
-        cm.forEach(data, function(text, value) {
-            a.push({text: text, value: value});
+        const options = [];
+        cm.forEach(data, (text, value) => {
+            options.push({text: text, value: value});
         });
-        return a;
+        return options;
     };
 
     /*** LIST ***/
 
     classProto.callbacks.renderList = function(that, params) {
         that.triggerEvent('onRenderListStart');
+
         // Render structure
-        var nodes = that.callbacks.renderListStructure(that, params);
+        const nodes = that.callbacks.renderListStructure(that, params);
+
         // Render list's items
-        cm.forEach(params.data, function(item, i) {
+        cm.forEach(params.data, (item, i) => {
             that.callbacks.renderItem(that, params, {data: item, i: i}, nodes.items);
         });
+
         // Append nodes to tooltip
         that.callbacks.embed(that, nodes.container);
         that.triggerEvent('onRenderListEnd');
     };
 
     classProto.callbacks.renderListStructure = function(that, params) {
-        var nodes = {};
+        const nodes = {};
         nodes.container = cm.node('div', {classes: that.params.classes.list},
             nodes.items = cm.node('ul', {role: 'listbox'})
         );
@@ -640,7 +637,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.renderItemStructure = function(that, params, item) {
-        var nodes = {};
+        const nodes = {};
         nodes.container = cm.node('li', {classes: that.params.classes.listItem, role: 'option', 'aria-selected': 'false'},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content', innerHTML: item.data.text})
@@ -653,7 +650,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.renderLoader = function(that, params) {
         // Structure
-        var nodes = that.callbacks.renderListStructure(that, params);
+        const nodes = that.callbacks.renderListStructure(that, params);
         cm.addClass(nodes.container, 'disabled');
 
         // Render item structure
@@ -667,7 +664,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.renderLoaderItemStructure = function(that, params) {
         // Structure
-        var nodes = {};
+        const nodes = {};
         nodes.container = cm.node('li', {classes: that.params.classes.listItem, role: 'status'},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content'},
@@ -685,7 +682,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.renderListSuggestion = function(that, params) {
         // Structure
-        var nodes = that.callbacks.renderListStructure(that, params);
+        const nodes = that.callbacks.renderListStructure(that, params);
 
         // Render item structure
         nodes.item = that.callbacks.renderListSuggestionItem(that, params, {}, nodes.items);
@@ -722,7 +719,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.renderListSuggestionItemConstructor = function(that, item) {
         // If controller was not cached, render new one
-        var isCachedController = that.suggestionItem && that.suggestionItem.controller && !that.suggestionItem.controller.isDestructed;
+        const isCachedController = that.suggestionItem && that.suggestionItem.controller && !that.suggestionItem.controller.isDestructed;
         if (!isCachedController) {
             that.callbacks.renderListSuggestionItemController(that, item);
         } else {
@@ -730,14 +727,14 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         }
 
         // Set query data on link click and hide tooltip
-        cm.click.add(item.nodes.container, function() {
+        cm.click.add(item.nodes.container, () => {
             that.callbacks.listSuggestionItemEvent(that, item);
         });
     };
 
     classProto.callbacks.renderListSuggestionItemStructure = function(that, item) {
         // Structure
-        var nodes = {};
+        const nodes = {};
         nodes.container = cm.node('li', {classes: that.params.classes.listItem, role: 'option'},
             cm.node('div', {classes: 'inner'},
                 cm.node('div', {classes: 'content'},
@@ -753,7 +750,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.callbacks.renderListSuggestionItemController = function(that, item) {
         // Render controller
-        cm.getConstructor(that.params.suggestion.constructor, function(classConstructor) {
+        cm.getConstructor(that.params.suggestion.constructor, classConstructor => {
             item.controller = new classConstructor(
                 cm.merge(that.params.suggestion.constructorParams, {
                     events: {
@@ -771,7 +768,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.listSuggestionItemEvent = function(that, item) {
-        var data = {};
+        const data = {};
         data[that.params.suggestion.queryKey] = item.params.query;
 
         // Set Query Data
@@ -784,17 +781,13 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.suggestionItemSelect = function(that, item) {
-        if (!item) {
-            return;
-        }
+        if (!item) return;
         that.suggestionItemFocus = true;
         cm.addClass(item.nodes.container, 'active');
     };
 
     classProto.callbacks.suggestionItemUnselect = function(that, item) {
-        if (!item) {
-            return;
-        }
+        if (!item) return;
         that.suggestionItemFocus = false;
         cm.removeClass(item.nodes.container, 'active');
     };
@@ -802,8 +795,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /*** HELPERS ***/
 
     classProto.callbacks.query = function(that, params) {
-        var filteredItems = [];
-        cm.forEach(params.data, function(item) {
+        const filteredItems = [];
+        cm.forEach(params.data, item => {
             if (that.callbacks.isContain(that, item.text, params.query)) {
                 filteredItems.push(item);
             }
@@ -812,11 +805,9 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.callbacks.preselect = function(that, params) {
-        var item;
-        cm.forEach(params.data, function(data, i) {
-            if (data.text !== params.query) {
-                return;
-            }
+        let item;
+        cm.forEach(params.data, (data, i) => {
+            if (data.text !== params.query) return;
             item = {
                 data: data,
                 i: i,
@@ -838,6 +829,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.callbacks.isContain = function(that, text, query) {
         text = text.trim().toLowerCase();
         query = query.trim().toLowerCase();
+
         // Direction
         switch (that.params.direction) {
             case 'start':
@@ -862,7 +854,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.callbacks.registerItem = function(that, params, item) {
         if (item.nodes) {
             item.container = item.nodes.container;
-            cm.click.add(item.container, function() {
+            cm.click.add(item.container, () => {
                 that.setRegisteredItem(item);
                 that.hide();
                 that.triggerEvent('onClickSelect', that.value);
@@ -878,7 +870,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     /******* PUBLIC *******/
 
     classProto.set = function(item, triggerEvents) {
-        var that = this;
+        const that = this;
 
         that.rawValue = that.callbacks.convertItem(that, item);
         that.previousValue = that.value;
@@ -896,20 +888,20 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.setData = function(data) {
-        var that = this;
+        const that = this;
         that.params.data = that.callbacks.convert(that, data);
         return that;
     };
 
     classProto.setInput = function(node) {
-        var that = this;
+        const that = this;
         if (cm.isNode(node)) {
             that.unsetInputEvents();
             that.params.node = node;
             that.setInputEvents();
 
             // Set tooltip container
-            var tooltipContainer = that.params.container;
+            let tooltipContainer = that.params.container;
             if (tooltipContainer === 'targetParent') {
                 tooltipContainer = that.params.node.parentNode;
             }
@@ -919,7 +911,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.setTarget = function(node) {
-        var that = this;
+        const that = this;
         if (cm.isNode(node)) {
             that.params.target = node;
             that.components.tooltip.setTarget(node);
@@ -928,7 +920,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.setRegisteredItem = function(item, triggerEvents) {
-        var that = this;
+        const that = this;
         if (cm.inArray(that.registeredItems, item)) {
             that.set(item.data, triggerEvents);
         }
@@ -936,26 +928,24 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.get = function() {
-        var that = this;
+        const that = this;
         return that.value;
     };
 
     classProto.getText = function() {
-        var that = this;
+        const that = this;
         return that.valueText;
     };
 
     classProto.getRaw = function() {
-        var that = this;
+        const that = this;
         return that.rawValue;
     };
 
     classProto.getItem = function(value, text) {
-        var that = this;
-        if (cm.isEmpty(that.params.data)) {
-            return;
-        }
-        return that.params.data.find(function(item) {
+        const that = this;
+        if (cm.isEmpty(that.params.data)) return;
+        return that.params.data.find(item => {
             if (!cm.isUndefined(value)) {
                 return item.value === value;
             }
@@ -966,11 +956,9 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.getRequestItem = function(value, text) {
-        var that = this;
-        if (cm.isEmpty(that.requestData.data)) {
-            return;
-        }
-        return that.requestData.data.find(function(item) {
+        const that = this;
+        if (cm.isEmpty(that.requestData.data)) return;
+        return that.requestData.data.find(item => {
             if (!cm.isUndefined(value)) {
                 return item.value === value;
             }
@@ -981,11 +969,9 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.getRegisteredItem = function(value, text) {
-        var that = this;
-        if (cm.isEmpty(that.registeredItems)) {
-            return;
-        }
-        return that.registeredItems.find(function(item) {
+        const that = this;
+        if (cm.isEmpty(that.registeredItems)) return;
+        return that.registeredItems.find(item => {
             if (!cm.isUndefined(value)) {
                 return item.data.value === value;
             }
@@ -996,7 +982,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.reset = classProto.clear = function(triggerEvents) {
-        var that = this;
+        const that = this;
         triggerEvents = typeof triggerEvents === 'undefined' ? true : triggerEvents;
         that.previousValue = that.value;
         that.value = null;
@@ -1014,19 +1000,19 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.show = function() {
-        var that = this;
+        const that = this;
         that.components.tooltip.show();
         return that;
     };
 
     classProto.hide = function() {
-        var that = this;
+        const that = this;
         that.components.tooltip.hide();
         return that;
     };
 
     classProto.setAction = function(o, mode, update) {
-        var that = this;
+        const that = this;
         mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
         switch (mode) {
             case 'raw':
@@ -1046,7 +1032,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.setVariables = function(o, mode, update) {
-        var that = this;
+        const that = this;
         mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
         switch (mode) {
             case 'raw':
@@ -1066,7 +1052,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.abort = function() {
-        var that = this;
+        const that = this;
         that.requestDelay && clearTimeout(that.requestDelay);
         if (that.ajaxHandler && that.ajaxHandler.abort) {
             that.ajaxHandler.abort();
@@ -1075,9 +1061,9 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.focus = function(selection) {
-        var that = this;
+        const that = this;
         if (selection === true) {
-            var value = that.params.node.value;
+            const value = that.params.node.value;
             that.params.node.setSelectionRange(0, value.length);
         }
         that.params.node.focus();
@@ -1085,13 +1071,13 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.blur = function() {
-        var that = this;
+        const that = this;
         that.params.node.blur();
         return that;
     };
 
     classProto.enable = function() {
-        var that = this;
+        const that = this;
         if (that.disabled) {
             that.disabled = false;
             that.params.node.disabled = false;
@@ -1101,7 +1087,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.disable = function() {
-        var that = this;
+        const that = this;
         if (!that.disabled) {
             that.disabled = true;
             that.params.node.disabled = true;
@@ -1111,7 +1097,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     };
 
     classProto.isOwnNode = function(node) {
-        var that = this;
+        const that = this;
         return cm.isParent(that.params.target, node, true) || that.components.tooltip.isOwnNode(node);
     };
 });

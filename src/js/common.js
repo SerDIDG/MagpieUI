@@ -3879,13 +3879,12 @@ cm.isKeyCode = function(){
     cm.errorLog({type: 'error', name: 'cm.isKeyCode', message: 'Deprecated!'});
 };
 
-cm.handleKey = function(event, codes, callback){
-    if (!cm.isArray(codes)) {
-        codes = [codes];
-    }
-    if(!cm.isInputFocused() && cm.inArray(codes, event.code)){
-        callback && callback(event);
-    }
+cm.allowKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.allowKeyCode', message: 'Deprecated!'});
+};
+
+cm.disallowKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.disallowKeyCode', message: 'Deprecated!'});
 };
 
 cm.isNotToggleKey = function(event) {
@@ -3897,23 +3896,25 @@ cm.isLinkClick = function(e){
 };
 
 cm.isInputFocused = function(){
-    var el = document.activeElement,
-        tagName = el.tagName.toLowerCase();
-    return tagName === 'textarea' || (tagName === 'input' &&  !/button|file/.test(el.type));
+    const element = document.activeElement;
+    return (element.tagName === 'INPUT' && !cm.inArray(['button', 'submit', 'reset', 'file', 'checkbox', 'radio', 'image', 'hidden'], element.type)) ||
+        element.tagName === 'TEXTAREA' ||
+        element.contentEditable === 'true';
 };
 
 cm.isFormInputFocused = function(){
-    var el = document.activeElement,
-        tagName = el.tagName.toLowerCase();
-    return tagName === 'input' &&  !/button|file/.test(el.type);
+    const element = document.activeElement;
+    return (element.tagName === 'INPUT' && !cm.inArray(['button', 'submit', 'reset', 'file', 'checkbox', 'radio', 'image', 'hidden'], element.type)) ||
+        element.contentEditable === 'true';
 };
 
-cm.allowKeyCode = function(){
-    cm.errorLog({type: 'error', name: 'cm.allowKeyCode', message: 'Deprecated!'});
-};
-
-cm.disallowKeyCode = function(){
-    cm.errorLog({type: 'error', name: 'cm.disallowKeyCode', message: 'Deprecated!'});
+cm.handleKey = function(event, codes, callback){
+    if (!cm.isArray(codes)) {
+        codes = [codes];
+    }
+    if(!cm.isInputFocused() && cm.inArray(codes, event.code)){
+        callback && callback(event);
+    }
 };
 
 cm.charCodeIsDigit = function(code){
