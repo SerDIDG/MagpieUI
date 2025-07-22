@@ -663,6 +663,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             state = cm.clone(item);
             state.params = cm.merge(state.params, params);
             state.data = that.getStorageData(state.route, state, params.data);
+            if ( that.current ) {
+                state.route = that.current.route;
+            }
             // Process route
             that.destructRoute(that.current);
             that.constructRoute(state);
