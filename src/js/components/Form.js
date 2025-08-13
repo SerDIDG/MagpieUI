@@ -1152,6 +1152,10 @@ function(params){
         return that;
     };
 
+    that.getNotifications = function(){
+        return that.components.notifications;
+    };
+
     that.renderError = function(errors, message){
         that.callbacks.renderError(that, errors, message);
         return that;

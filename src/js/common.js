@@ -1568,10 +1568,8 @@ cm.node = cm.Node = function(){
         i = 0;
     if(cm.isObject(args[1])){
         cm.forEach(args[1], function(value, key){
-            if(cm.isUndefined(value)){
-                return;
-            }
-            if(cm.isObject(value) && !['class', 'classes', 'style', 'styles'].includes(key)){
+            if (cm.isUndefined(value)) return;
+            if (cm.isObject(value) && !['class', 'classes', 'style', 'styles'].includes(key)) {
                 value = JSON.stringify(value);
             }
             switch(key){
@@ -1600,9 +1598,9 @@ cm.node = cm.Node = function(){
     }
     for(var ln = args.length; i < ln; i++){
         if(typeof args[i] !== 'undefined'){
-            if(typeof args[i] === 'string' || typeof args[i] === 'number'){
+            if (typeof args[i] === 'string' || typeof args[i] === 'number') {
                 cm.appendChild(cm.textNode(args[i]), el);
-            }else{
+            } else {
                 cm.appendNodes(args[i], el);
             }
         }
@@ -1612,6 +1610,39 @@ cm.node = cm.Node = function(){
 
 cm.textNode = function(text){
     return document.createTextNode(text);
+};
+
+cm.svgNode = function(){
+    const ns = 'http://www.w3.org/2000/svg';
+    const xlink = 'http://www.w3.org/1999/xlink';
+
+    const args = arguments;
+    const el = document.createElementNS(ns, args[0]);
+    let i = 0;
+    if(cm.isObject(args[1])){
+        cm.forEach(args[1], function(value, key){
+            if(cm.isUndefined(value)) return;
+            if (/^xlink/.test(key)) {
+                const name = key.split(':').pop();
+                el.setAttributeNS(xlink, name, value);
+            } else {
+                el.setAttribute(key, value);
+            }
+        });
+        i = 2;
+    }else{
+        i = 1;
+    }
+    for(let ln = args.length; i < ln; i++){
+        if(typeof args[i] !== 'undefined'){
+            if (typeof args[i] === 'string' || typeof args[i] === 'number') {
+                cm.appendChild(cm.textNode(args[i]), el);
+            } else {
+                cm.appendNodes(args[i], el);
+            }
+        }
+    }
+    return el;
 };
 
 cm.wrap = function(target, node){
