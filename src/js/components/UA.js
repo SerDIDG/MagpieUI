@@ -180,7 +180,7 @@ Com['UA'] = {
                 arr['os_type'] = 'mobile';
                 arr['os_version'] = str.replace(/^(?:.+)(?:Version\/)([0-9\.]{1,})(?:.+)$/, '$1').replace(/_/gi,'.');
             }else if((str.indexOf('Mac OS X') > -1)){
-                arr['os'] = 'Mac OSX';
+                arr['os'] = 'macOS';
                 arr['os_version'] =  str.replace(/^(?:.+)(?:Mac OS X)(?:[\s]{0,1})([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
             }else{
                 arr['os'] = 'Mac OS';
@@ -218,17 +218,20 @@ Com['UA'] = {
         return arr;
     },
     'setBrowserClass' : function(){
-        var user = Com.UA.get();
-        var classes = [];
+        const user = Com.UA.get();
+
+        let classes = [];
         if(user['browser']){
             classes.push(user['browser'].toLowerCase());
         }
         if(user['os']){
             classes.push(user['os'].toLowerCase());
         }
-        if(user['os_device']){
-            classes.push(user['os_device'].toLowerCase());
+        if(user['device']){
+            classes.push(user['device'].toLowerCase());
         }
+
+        classes = classes.map(className => className.replace(/\s/g, '-').trim());
         cm.addClass(cm.getDocumentHtml(), classes);
     },
     'setEngineClass' : function(){
