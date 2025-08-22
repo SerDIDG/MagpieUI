@@ -4289,10 +4289,10 @@ cm.sessionStorageRemove = function(key){
     }
 };
 
-cm.cookieSet = function(name, value, expires, path){
+cm.cookieSet = function(name, value, maxAge, path){
     path = 'path=' + (!cm.isEmpty(path) ? encodeURI(path) : '/');
-    expires = !cm.isEmpty(expires) ? cm.cookieDate(expires) : '';
-    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + path + ';' + expires;
+    maxAge = !cm.isEmpty(maxAge) ? cm.cookieAge(maxAge) : '';
+    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + path + ';' + maxAge;
 };
 
 cm.cookieGet = function(name){
@@ -4323,6 +4323,10 @@ cm.cookieRemove = function(name){
 
 cm.cookieDate = function(days){
     return 'expires=' + (new Date(Date.now() + 1000 * 60 * 60 * 24 * days)).toUTCString() + ';';
+};
+
+cm.cookieAge = function(days){
+    return 'max-age=' + (60 * 60 * 24 * days) + ';';
 };
 
 /* ******* AJAX ******* */
