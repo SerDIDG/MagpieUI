@@ -5,8 +5,7 @@ Mod['Extend'] = {
         'extend': true,
         'predefine': true
     },
-    '_construct': function() {
-    },
+    '_construct': function() {},
     '_extend': function(name, o) {
         const that = this;
         if (!that.build._modules[name]) {
@@ -849,8 +848,7 @@ Mod['Stack'] = {
         var that = this,
             item = that._stackItem;
         name = cm.isNumber(name) ? name.toString() : name;
-        callback = cm.isFunction(callback) ? callback : function() {
-        };
+        callback = cm.isFunction(callback) ? callback : function() {};
         if ((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))) {
             callback(item['classInstance'], item, name);
             return true;
@@ -861,8 +859,7 @@ Mod['Stack'] = {
         var that = this,
             items = [];
         name = cm.isNumber(name) ? name.toString() : name;
-        callback = cm.isFunction(callback) ? callback : function() {
-        };
+        callback = cm.isFunction(callback) ? callback : function() {};
         cm.forEach(that._stack, function(item) {
             if ((cm.isEmpty(name) || item['name'] === name) && (cm.isEmpty(parent) || cm.isParent(parent, item['node'], true))) {
                 items.push(item);
