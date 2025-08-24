@@ -1,9 +1,5 @@
 @charset "UTF-8";
-<<<<<<< HEAD
-/*! ************ MagpieUI v3.66.4 (2024-01-17 18:20) ************ */
-=======
-/*! ************ MagpieUI v3.113.0 (2025-08-22 03:59) ************ */
->>>>>>> master
+/*! ************ MagpieUI v3.114.0 (2025-08-24 09:58) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4411,13 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-<<<<<<< HEAD
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.66.4');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.66.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.66.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.66.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.66.4#Magpie-UI-Glyphs') format('svg');
-=======
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.113.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.113.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.113.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.113.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.113.0#Magpie-UI-Glyphs') format('svg');
->>>>>>> master
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.114.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.114.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.114.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.114.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.114.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -13388,7 +13379,7 @@ ul.pt__field__hint li:before {
   padding: 0;
   position: absolute;
   border-radius: 1px;
-  color: hsl(0, 0%, 80%);
+  color: #666666;
 }
 .pt__input.no-label .input,
 .pt__input.no-label input[type="text"],
@@ -16157,8 +16148,6 @@ ul.pt__field__hint li:before {
   background-color: hsl(0, 0%, 98%);
   color: #999999;
 }
-<<<<<<< HEAD
-=======
 .pt__listing-items ul li.sticky {
   position: sticky;
   top: 0;
@@ -16175,7 +16164,6 @@ ul.pt__field__hint li:before {
   z-index: 2;
   background-color: #ffffff;
 }
->>>>>>> master
 .pt__listing-items ul li.hidden {
   display: none;
 }
@@ -19156,7 +19144,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__dialog__window.theme-black.has-close-inside > .inner > .title,
 .com__dialog__window.theme-light.has-close-inside > .inner > .title,
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
-  padding-right: 60px;
+  padding-right: 48px;
 }
 .com__dialog__window.theme-default.has-close-inside > .inner > .title.is-align-center,
 .com__dialog__window.theme-black.has-close-inside > .inner > .title.is-align-center,
@@ -19372,7 +19360,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   padding-left: 12px;
 }
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title {
-  padding-right: 44px;
+  padding-right: 32px;
 }
 .com__dialog__window.theme-compact.has-close-inside > .inner > .title.is-align-center {
   padding-left: 32px;
@@ -21245,6 +21233,9 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__notifications > ul > li.notice > .close,
 .com__notifications > ul > li.warning > .close {
   border-color: #d2a323;
+}
+.com__notifications__entry {
+  color: inherit;
 }
 /* ******* COMPONENTS: OLD BROWSERS ALERT ******* */
 .com__oldbrowser-alert .b-descr {

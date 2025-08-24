@@ -1,3 +1,10 @@
+// Init helper components
+if (!cm._messageParser) {
+    cm.getConstructor('Com.MessageParser', classConstructor => {
+        cm._messageParser = new classConstructor();
+    });
+}
+
 // Get initial values
 cm._breakpoints = cm.getBreakpoints();
 cm._breakpoint = cm.getBreakpoint();

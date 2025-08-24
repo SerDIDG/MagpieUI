@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/*! ************ MagpieUI v3.66.4 (2024-01-17 18:20) ************ */
-=======
-/*! ************ MagpieUI v3.113.0 (2025-08-22 03:59) ************ */
->>>>>>> master
+/*! ************ MagpieUI v3.114.0 (2025-08-24 09:58) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4624,11 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-<<<<<<< HEAD
-@CmVersion: '3.66.4';
-=======
-@CmVersion: '3.113.0';
->>>>>>> master
+@CmVersion: '3.114.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -13306,7 +13298,7 @@ ul.pt__field__hint {
         padding: 0;
         position: absolute;
         border-radius: max(@CmBorder-Radius - 2px, 0px);
-        color: @CmColor-Border;
+        color: @CmColor-Icon;
     }
 
     &.no-label {
@@ -14273,8 +14265,6 @@ ul.pt__field__hint {
                 }
             }
 
-<<<<<<< HEAD
-=======
             &.sticky {
                 position: sticky;
                 top: 0;
@@ -14296,7 +14286,6 @@ ul.pt__field__hint {
                 }
             }
 
->>>>>>> master
             &.hidden {
                 display: none;
             }
@@ -17349,7 +17338,7 @@ ul.pt__field__hint {
         }
 
         &.help {
-            right: @icon_size + (@icon_indent * 2);
+            right: (@icon_size + @icon_indent * 2);
         }
     }
 
@@ -17362,16 +17351,12 @@ ul.pt__field__hint {
     &.has-close-inside {
         > .inner {
             > .title {
-<<<<<<< HEAD
-                padding-right: @indent + @icon_indent + @icon_size;
-=======
                 @padding: (@icon_size + @icon_indent * 2);
                 padding-right: @padding;
 
                 &.is-align-center {
                     padding-left: @padding;
                 }
->>>>>>> master
             }
         }
     }
@@ -17383,7 +17368,7 @@ ul.pt__field__hint {
             }
 
             &.help {
-                right: -(@icon_indent + @icon_size) * 2;
+                right: -((@icon_indent + @icon_size) * 2);
             }
         }
     }
@@ -18820,6 +18805,10 @@ ul.pt__field__hint {
             }
         }
     }
+
+    &__entry {
+        color: inherit;
+    }
 }
 
 /* ******* COMPONENTS: OLD BROWSERS ALERT ******* */
@@ -19589,10 +19578,6 @@ ul.pt__field__hint {
         cursor: default;
     }
 
-<<<<<<< HEAD
-    .pt__listing-items > ul {
-        max-height: @ComSelect-MaxHeight;
-=======
     .checkbox {
         margin: 0 @CmIndent-XXSmall 0 @PtListingItems-PaddingX;
         vertical-align: baseline;
@@ -19605,7 +19590,6 @@ ul.pt__field__hint {
             .cm__scrollbar;
             max-height: @ComSelect-ListHeight;
         }
->>>>>>> master
     }
 
     &.is-max {

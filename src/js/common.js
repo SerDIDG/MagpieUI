@@ -5062,6 +5062,15 @@ cm.setMessages = cm.setStrings = function(className, strings){
     });
 };
 
+cm.parseMessage = function(text, variables){
+    if (!cm._messageParser) {
+        cm.getConstructor('Com.MessageParser', classConstructor => {
+            cm._messageParser = new classConstructor();
+        });
+    }
+    return cm._messageParser.parse(text, variables);
+};
+
 cm.getMessage = cm.getString = function(className, str){
     var data;
     cm.getConstructor(className, function(classConstructor, className, classProto){
