@@ -4,12 +4,17 @@ cm.define('Com.Check', {
         controllerEvents: true,
         type: 'checkbox',
         inline: false,
+        renderRequiredMessage: false,
+
         multiple: false,
         values: {
             checked: null,
             unchecked: null,
         },
         contentIcon: null,
+
+        help: null,
+        helpType: 'tooltip',
         helpConstructor: 'Com.HelpBubble',
         helpParams: {
             renderStructure: true,
@@ -171,15 +176,20 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Structure
         nodes.container = cm.node('div', {classes: 'pt__check-line'});
-        if (that.params.inline) {
-            cm.addClass(nodes.container, 'is-line');
-        } else {
-            cm.addClass(nodes.container, 'is-box');
+        if (cm.isBoolean(that.params.inline)) {
+            if (that.params.inline) {
+                cm.addClass(nodes.container, 'is-line');
+            } else {
+                cm.addClass(nodes.container, 'is-box');
+            }
         }
 
         // Render inputs
         that.triggerEvent('onRenderContentProcess');
         if (!cm.isEmpty(that.params.options)) {
+            if (that.params.type === 'radio') {
+                nodes.container.setAttribute('role', 'radiogroup');
+            }
             cm.forEach(that.params.options, function(option) {
                 inputContainer = that.renderInput(option);
                 cm.appendChild(inputContainer, nodes.container);
@@ -202,10 +212,13 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         var that = this;
         item = cm.merge({
             nodes: {},
+            textNodes: {},
             value: null,
             text: '',
-            help: null,
-            helpType: 'tooltip',
+            hint: null,
+            icon: null,
+            help: that.params.help,
+            helpType: that.params.helpType,
             values: {
                 checked: null,
                 unchecked: null,
@@ -213,10 +226,13 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }, item);
 
         // Validate
-        if (cm.isEmpty(item.values.checked)) {
-            item.values.checked = !cm.isEmpty(item.value) ? item.value : true;
+        if (cm.isEmpty(item.icon)) {
+            item.icon = that.params.contentIcon;
         }
-        if (cm.isEmpty(item.values.unchecked)) {
+        if (cm.isUndefined(item.values.checked)) {
+            item.values.checked = !cm.isUndefined(item.value) ? item.value : true;
+        }
+        if (cm.isUndefined(item.values.unchecked)) {
             item.values.unchecked = false;
         }
 
@@ -228,18 +244,33 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         // Input
         item.input = item.nodes.input;
 
+        // Value
+        if (that.params.type === 'checkbox') {
+            item.input.value = item.value;
+        }
+
         // Label
         if (!cm.isEmpty(item.text)) {
             item.nodes.label = cm.node('span', {
                 classes: 'label',
                 innerHTML: item.text,
             });
+            item.textNodes = cm.getNodes(item.nodes.label);
             cm.appendChild(item.nodes.label, item.nodes.container);
         }
 
+        // Hint
+        if (!cm.isEmpty(item.hint)) {
+            item.nodes.hint = cm.node('span', {
+                classes: 'hint',
+                innerHTML: item.hint,
+            });
+            cm.appendChild(item.nodes.hint, item.nodes.label);
+        }
+
         // Icon
-        if (cm.isNode(that.params.contentIcon)) {
-            item.nodes.icon = cm.clone(that.params.contentIcon);
+        if (cm.isNode(item.icon)) {
+            item.nodes.icon = cm.clone(item.icon);
             cm.appendChild(item.nodes.icon, item.nodes.container);
             cm.addClass(item.nodes.container, 'has-icon');
         }
@@ -251,21 +282,38 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Help Bubble
         if (!cm.isEmpty(item.help)) {
-            item.helpParams = cm.merge(that.params.helpParams, {
-                title: item.label,
-                content: item.help,
-                name: that.params.name,
-                type: item.nodes.helpType,
-                container: item.nodes.container,
-            });
-            cm.getConstructor(that.params.helpConstructor, function(classConstructor){
-                item.helpController = new classConstructor(item.helpParams);
-            });
+            that.renderHelp(item);
         }
 
         // Push
         that.inputs.push(item);
         return item.nodes.container;
+    };
+
+    classProto.renderHelp = function(item) {
+        var that = this;
+
+        // Validate params
+        item.helpParams = cm.merge(that.params.helpParams, {
+            name: that.params.name,
+            content: item.help,
+            type: item.helpType,
+            container: item.nodes.container,
+        });
+
+        // Find help button target in the text nodes if exists
+        if (item.textNodes && item.textNodes.helpButton) {
+            item.helpParams.nodes = {
+                button: item.textNodes.helpButton,
+            };
+            item.helpParams.renderStructure = false;
+            item.helpParams.embedStructureOnRender = false;
+        }
+
+        // Render component
+        cm.getConstructor(that.params.helpConstructor, function(classConstructor){
+            item.helpController = new classConstructor(item.helpParams);
+        });
     };
 
     /*** DATA VALUE ***/
@@ -348,7 +396,6 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }
 
         item.input.checked = checked;
-        item.input.value = value;
         cm.toggleClass(item.nodes.container, 'active', checked);
     };
 
@@ -367,7 +414,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         var that = this;
         if (data.required && cm.isEmpty(that.params.options)) {
             data.valid = data.value === that.params.values.checked;
-            if (!data.valid) {
+            if (!data.valid && that.params.renderRequiredMessage) {
                 data.message = that.msg('required');
             }
         }
@@ -383,6 +430,18 @@ Com.FormFields.add('checkbox', {
     constructor: 'Com.Check',
     constructorParams: {
         type: 'checkbox',
+    },
+});
+
+Com.FormFields.add('checkbox-group', {
+    node: cm.node('div', {classes: 'pt__check-line'}),
+    multiple: true,
+    isValueObject: true,    // ToDo: implement
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Check',
+    constructorParams: {
+        type: 'checkbox',
+        inline: false,
     },
 });
 

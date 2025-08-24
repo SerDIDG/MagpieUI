@@ -1,7 +1,7 @@
-cm.getConstructor(that.params['uploaderConstructor'], function(classConstructor){
-    that.components['uploader'] = new classConstructor(
-        cm.merge(that.params['uploaderParams'], {
-            'container' : that.nodes['content']
+cm.getConstructor(that.params.component.constructor, classConstructor => {
+    that.components.component = new classConstructor(
+        cm.merge(that.params.component.constructorParams, {
+            container: that.nodes.content,
         })
     );
 });

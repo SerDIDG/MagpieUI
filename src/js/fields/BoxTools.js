@@ -1,242 +1,283 @@
 cm.define('Com.BoxTools', {
-    'extend' : 'Com.AbstractInput',
-    'params' : {
-        'controllerEvents' : true,
-        'className' : 'com__box-tools',
-        'maxlength' : 5,
-        'units' : 'px',
-        'allowNegative' : false,
-        'allowFloat' : false,
-        'inputs' : [
-            {'name' : 'top', 'icon' : 'icon svg__indent-top small linked', 'iconPosition' : 'insideRight'},
-            {'name' : 'right', 'icon' : 'icon svg__indent-right small linked', 'iconPosition' : 'insideRight'},
-            {'name' : 'bottom', 'icon' : 'icon svg__indent-bottom small linked', 'iconPosition' : 'insideRight'},
-            {'name' : 'left', 'icon' : 'icon svg__indent-left small linked', 'iconPosition' : 'insideRight'}
-        ]
+    extend: 'Com.AbstractInput',
+    params: {
+        controllerEvents: true,
+        className: 'com__box-tools',
+        maxlength: 5,
+        units: 'px',
+        allowNegative: false,
+        allowFloat: false,
+        inputs: [
+            {
+                name: 'top',
+                icon: 'icon svg__indent-top small linked',
+                iconPosition: 'insideRight'
+            },
+            {
+                name: 'right',
+                icon: 'icon svg__indent-right small linked',
+                iconPosition: 'insideRight'
+            },
+            {
+                name: 'bottom',
+                icon: 'icon svg__indent-bottom small linked',
+                iconPosition: 'insideRight'
+            },
+            {
+                name: 'left',
+                icon: 'icon svg__indent-left small linked',
+                iconPosition: 'insideRight'
+            },
+        ],
     },
-    'strings' : {
-        'link' : 'Link',
-        'unlink' : 'Unlink'
-    }
+    strings: {
+        link: 'Link',
+        unlink: 'Unlink'
+    },
 },
-function(params){
-    var that = this;
-    // Call parent class construct
-    Com.AbstractInput.apply(that, arguments);
+function() {
+    Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto){
-    var _inherit = classProto._inherit;
+cm.getConstructor('Com.BoxTools', function(classConstructor, className, classProto, classInherit) {
+    classProto.onConstructStart = function() {
+        const that = this;
 
-    classProto.onConstructStart = function(){
-        var that = this;
         // Variables
         that.inputs = [];
         that.rawValue = null;
-        that.isInputsLinked = false;
+        that.isInputsLinked = null;
         that.lastInput = null;
-        // Bind context to methods
-        that.linkInputsHandler = that.linkInputs.bind(that);
-        that.setValuesHandler = that.setValues.bind(that);
-        return that;
     };
 
-    classProto.onEnable = function(){
-        var that = this;
-        cm.forEach(that.inputs, function(item){
-            cm.removeClass(item['nodes']['inner'], 'disabled');
-            item['input'].disabled = false;
+    classProto.onEnable = function() {
+        const that = this;
+        cm.forEach(that.inputs, item => {
+            item.input.disabled = false;
+            cm.removeClass(item.nodes.inner, 'disabled');
         });
     };
 
-    classProto.onDisable = function(){
-        var that = this;
-        cm.forEach(that.inputs, function(item){
-            cm.addClass(item['nodes']['inner'], 'disabled');
-            item['input'].disabled = true;
+    classProto.onDisable = function() {
+        const that = this;
+        cm.forEach(that.inputs, item => {
+            item.input.disabled = true;
+            cm.addClass(item.nodes.inner, 'disabled');
         });
     };
 
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes['content'] = nodes;
+    classProto.renderContent = function() {
+        const that = this;
+        const nodes = {};
+
+        that.nodes.content = nodes;
         that.triggerEvent('onRenderContentStart');
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'com__box-tools__content'},
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][0], 0)
+        nodes.container = cm.node('div', {classes: 'com__box-tools__content'},
+            cm.node('div', {classes: 'b-line'},
+                that.renderInput(that.params.inputs[0], 0)
             ),
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][3], 3),
-                cm.node('div', {'class' : 'b-link-container'},
-                    nodes['link'] = cm.node('div', {'class' : 'b-link', 'title' : that.lang('link')},
-                        cm.node('div', {'class' : 'icon'})
-                    )
-                ),
-                that.renderInput(that.params['inputs'][1], 1)
+            cm.node('div', {classes: 'b-line'},
+                that.renderInput(that.params.inputs[3], 3),
+                that.renderLinkButton(),
+                that.renderInput(that.params.inputs[1], 1)
             ),
-            cm.node('div', {'class' : 'b-line'},
-                that.renderInput(that.params['inputs'][2], 2)
+            cm.node('div', {classes: 'b-line'},
+                that.renderInput(that.params.inputs[2], 2)
             )
         );
+
         // Events
         that.triggerEvent('onRenderContentProcess');
-        cm.addEvent(nodes['link'], 'click', that.linkInputsHandler);
         that.triggerEvent('onRenderContentEnd');
+
         // Export
-        return nodes['container'];
+        return nodes.container;
     };
 
-    classProto.renderInput = function(item, i){
-        var that = this,
-            params = {
-                'allowNegative' : that.params['allowNegative'],
-                'allowFloat' : that.params['allowFloat']
-            };
+    classProto.renderLinkButton = function() {
+        const that = this;
+        const content = that.nodes.content;
+
+        content.linkContainer = cm.node('div', {classes: 'b-link-container'},
+            content.link = cm.node('div', {classes: 'b-link', title: that.msg('link'), role: 'button', tabindex: 0, 'aria-pressed': 'false'},
+                cm.node('div', {classes: 'icon'})
+            )
+        );
+        cm.click.add(content.link, () => that.linkInputs(true));
+
+        return content.linkContainer;
+    };
+
+    classProto.renderInput = function(item, i) {
+        const that = this;
+
         // Validate
         item = cm.merge({
-            'i' : i,
-            'icon' : 'small',
-            'iconPosition' : 'leftInside',
-            'name' : '',
-            'nodes' : {}
+            i: i,
+            icon: 'small',
+            iconPosition: 'leftInside',
+            name: '',
+            nodes: {}
         }, item);
+
         // Structure
-        item['nodes'] = that.renderInputContainer(item);
-        item['input'] = item['nodes']['input'];
+        item.nodes = that.renderInputContainer(item);
+        item.input = item.nodes.input;
+
         // Attributes
-        if(that.params['maxlength']){
-            item['input'].setAttribute('maxlength', that.params['maxlength']);
+        if (that.params.maxlength) {
+            item.input.setAttribute('maxlength', that.params.maxlength);
         }
+
         // Events
-        cm.addEvent(item['nodes']['icon'], 'click', function(e){
-            cm.preventDefault(e);
-            item['input'].setSelectionRange(0, item['input'].value.length);
-            item['input'].focus();
+        cm.click.add(item.nodes.icon, event => {
+            cm.preventDefault(event);
+            item.input.setSelectionRange(0, item.input.value.length);
+            item.input.focus();
         });
-        cm.addEvent(item['input'], 'focus', function(){
+        cm.addEvent(item.input, 'focus', () => {
             that.lastInput = item;
         });
-        cm.addEvent(item['input'], 'blur', that.setValuesHandler);
+        cm.addEvent(item.input, 'blur', () => that.setValues());
+
         // Keypress events
-        cm.addEvent(item['input'], 'keypress', function(e){
-            if(cm.isKeyCode(e.keyCode, 'enter')){
-                cm.preventDefault(e);
-                that.setValues();
-                item['input'].blur();
-            }
+        cm.addEvent(item.input, 'keypress', event => {
+            if (event.code !== 'Enter') return;
+            cm.preventDefault(event);
+            that.setValues();
+            item.input.blur();
         });
-        // Input events
-        cm.allowOnlyNumbersInputEvent(item['input'], function(e, value){
-            that.inputOnInputEvent(e, value, item);
-        }, params);
+
+        // Input validator
+        const validatorParams = {
+            allowNegative: that.params.allowNegative,
+            allowFloat: that.params.allowFloat
+        };
+        cm.allowOnlyNumbersInputEvent(item.input, (event, value) => that.inputOnInputEvent(event, value, item), validatorParams);
+
         // Push
         that.inputs.push(item);
-        return item['nodes']['container'];
+        return item.nodes.container;
     };
 
-    classProto.inputOnInputEvent = function(e, value, item){
-        var that = this;
-        if(that.isInputsLinked){
+    classProto.inputOnInputEvent = function(e, value, item) {
+        const that = this;
+        if (that.isInputsLinked) {
             that.tempRawValue = [value, value, value, value];
             that.setInputs();
-        }else{
-            that.tempRawValue[item['i']] = value;
+        } else {
+            that.tempRawValue[item.i] = value;
         }
-        that.selectAction(cm.arrayToCSSValues(that.tempRawValue, that.params['units']), true);
+        that.selectAction(cm.arrayToCSSValues(that.tempRawValue, that.params.units), true);
         return that;
     };
 
-    classProto.renderInputContainer = function(item){
-        var that = this,
-            nodes = {};
+    classProto.renderInputContainer = function(item) {
+        const that = this;
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'b-container'},
-            nodes['inner'] = cm.node('div', {'class' : 'pt__input'},
-                nodes['input'] = cm.node('input', {'type' : 'text'})
+        const nodes = {};
+        nodes.container = cm.node('div', {classes: 'b-container'},
+            nodes.inner = cm.node('div', {classes: 'pt__input'},
+                nodes.input = cm.node('input', {type: 'text'})
             )
         );
-        if(!cm.isEmpty(item['title'])){
-            nodes['inner'].setAttribute('title', item['title']);
+
+        // Title
+        if (!cm.isEmpty(item.title)) {
+            nodes.inner.setAttribute('title', item.title);
         }
-        nodes['icon'] = cm.node('div', {'class' : item['icon']});
-        switch(item['iconPosition']){
+
+        // Icon
+        nodes.icon = cm.node('div', {classes: item.icon});
+        switch (item.iconPosition) {
             case 'insideLeft':
-                cm.addClass(nodes['inner'], 'is-less-indent');
-                cm.insertFirst(nodes['icon'], nodes['inner']);
+                cm.addClass(nodes.inner, 'is-less-indent');
+                cm.insertFirst(nodes.icon, nodes.inner);
                 break;
             case 'insideRight':
-                cm.addClass(nodes['inner'], 'is-less-indent');
-                cm.insertLast(nodes['icon'], nodes['inner']);
+                cm.addClass(nodes.inner, 'is-less-indent');
+                cm.insertLast(nodes.icon, nodes.inner);
                 break;
             case 'outsideLeft':
-                cm.addClass(nodes['inner'], 'is-icon-outside');
-                cm.insertFirst(nodes['icon'], nodes['inner']);
+                cm.addClass(nodes.inner, 'is-icon-outside');
+                cm.insertFirst(nodes.icon, nodes.inner);
                 break;
             case 'outsideRight':
-                cm.addClass(nodes['inner'], 'is-icon-outside');
-                cm.insertLast(nodes['icon'], nodes['inner']);
+                cm.addClass(nodes.inner, 'is-icon-outside');
+                cm.insertLast(nodes.icon, nodes.inner);
                 break;
         }
+
         return nodes;
     };
 
-    classProto.setInputs = function(){
-        var that = this;
-        cm.forEach(that.inputs, function(item){
-            item['input'].value = that.tempRawValue[item['i']];
+    classProto.setInputs = function() {
+        const that = this;
+        cm.forEach(that.inputs, function(item) {
+            item.input.value = that.tempRawValue[item.i];
         });
         return that;
     };
 
-    classProto.setValues = function(triggerEvents){
-        var that = this;
+    classProto.setValues = function(triggerEvents) {
+        const that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
-        that.set(cm.arrayToCSSValues(that.tempRawValue, that.params['units']), triggerEvents);
+        that.set(cm.arrayToCSSValues(that.tempRawValue, that.params.units), triggerEvents);
         return that;
     };
 
-    classProto.linkInputs = function(){
-        var that = this;
-        if(!that.disabled){
-            if(!that.isInputsLinked){
-                that.isInputsLinked = true;
-                cm.addClass(that.nodes['content']['link'], 'active');
-                that.nodes['content']['link'].title = that.lang('unlink');
-                if(that.lastInput){
-                    that.set(that.lastInput['input'].value);
-                }else{
-                    var value = 0;
-                    cm.forEach(that.inputs, function(item){
-                        value = Math.max(value, parseInt(item['input'].value));
-                    });
-                    that.set(value);
-                }
-            }else{
-                that.isInputsLinked = false;
-                cm.removeClass(that.nodes['content']['link'], 'active');
-                that.nodes['content']['link'].title = that.lang('link');
+    classProto.linkInputs = function(setValues) {
+        const that = this;
+        const content = that.nodes.content;
+        if (that.disabled) return;
+        
+        if (!that.isInputsLinked) {
+            that.isInputsLinked = true;
+            content.link.title = that.msg('unlink');
+            content.link.setAttribute('aria-pressed', 'true');
+            cm.addClass(content.link, 'active');
+            
+            if (setValues) {
+                const value = that.lastInput
+                    ? that.lastInput.input.value
+                    : that.inputs.reduce((acc, item) => Math.max(acc, parseFloat(item.input.value)), 0);
+                that.set(value);
             }
+        } else {
+            that.isInputsLinked = false;
+            content.link.title = that.msg('link');
+            content.link.setAttribute('aria-pressed', 'false');
+            cm.removeClass(content.link, 'active');
         }
-        return that;
     };
 
     /*** DATA ***/
 
-    classProto.setData = function(){
-        var that = this;
+    classProto.setData = function() {
+        const that = this;
+
+        // Set initially linked state
+        if (!cm.isBoolean(that.isInputsLinked)) {
+            const isValuesEqual = that.tempRawValue.every(value => value === that.tempRawValue[0]);
+            if (isValuesEqual && that.tempRawValue[0] > 0) {
+                that.linkInputs(false);
+            }
+        }
+
         that.setInputs();
         return that;
     };
 
-    classProto.validateValue = function(value){
-        var that = this;
-        return cm.arrayToCSSValues(cm.CSSValuesToArray(value), that.params['units']);
+    classProto.validateValue = function(value) {
+        const that = this;
+        return cm.arrayToCSSValues(cm.CSSValuesToArray(value), that.params.units);
     };
 
-    classProto.saveRawValue = function(value){
-        var that = this;
+    classProto.saveRawValue = function(value) {
+        const that = this;
         that.tempRawValue = cm.CSSValuesToArray(value);
     };
 });

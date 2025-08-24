@@ -1,6 +1,6 @@
 {
   "name": "MagpieUI",
-  "version": "3.66.6",
+  "version": "3.113.0",
   "description": "Collection of JavaScript and CSS snippets.",
   "license": "MIT",
   "author": {
@@ -15,28 +15,31 @@
     "watch": "grunt && grunt watcher"
   },
   "dependencies": {
-    "grunt-cli": "^1.4.3"
+    "grunt-cli": "^1.5.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@babel/preset-env": "^7.26.9",
     "@lodder/time-grunt": "^4.0.0",
-    "animate.css": "^4.0.0",
-    "codemirror": "^5.65.13",
+    "animate.css": "^4.1.1",
+    "codemirror": "~5.65.18",
     "grunt": "^1.6.1",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-concat": "~2.1.0",
+    "grunt-babel": "^8.0.0",
+    "grunt-contrib-clean": "^2.0.1",
+    "grunt-contrib-concat": "^2.1.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "~5.0.0",
+    "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-imagemin": "^4.0.0",
-    "grunt-contrib-jshint": "^3.0.0",
+    "grunt-contrib-jshint": "^3.2.0",
     "grunt-contrib-less": "^3.0.0",
-    "grunt-contrib-uglify": "^5.0.0",
-    "grunt-contrib-watch": "~1.1.0",
-    "grunt-less-imports": "^1.1.0",
+    "grunt-contrib-uglify": "^5.2.2",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-less-imports": "^1.2.2",
     "grunt-lessvars": "^0.3.1",
-    "grunt-replace": "^2.0.1",
+    "grunt-replace": "^2.0.2",
     "grunt-svg-css": "^0.2.9",
-    "less": "^4.1.1",
+    "less": "^4.2.2",
     "load-grunt-tasks": "^5.1.0",
-    "tinycolor2": "^1.4.1"
+    "tinycolor2": "^1.6.0"
   }
 }

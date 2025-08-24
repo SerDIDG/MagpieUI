@@ -172,6 +172,21 @@
             }
         }
     }
+
+    &.is-animated2 {
+        > ul {
+            display: grid;
+            grid-template-columns: 1fr;
+
+            > li {
+                min-width: 0;
+                position: relative;
+                overflow: visible;
+                grid-row-start: 1;
+                grid-column-start: 1;
+            }
+        }
+    }
 }
 
 .com__tabset__holder,

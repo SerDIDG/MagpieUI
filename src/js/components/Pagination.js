@@ -30,7 +30,7 @@ cm.define('Com.Pagination', {
         'loaderDelay' : 'cm._config.loadDelay',
         'barPosition' : 'bottom',                                   // top | bottom | both, require renderStructure
         'barAlign' : 'left',                                        // left | center | right, require renderStructure
-        'barCountLR' : 3,
+        'barCountLR' : 1,
         'barCountM' : 1,                                            // 1 for drawing 3 center pagination buttons, 2 - 5, 3 - 7, etc
         'switchManually' : false,                                   // Switch pages manually
         'animateSwitch' : false,
@@ -62,9 +62,12 @@ cm.define('Com.Pagination', {
         }
     },
     'strings' : {
-        'prev' : 'Previous',
-        'next' : 'Next',
-        'server_error' : 'An unexpected error has occurred. Please try again later.'
+        'bar' : {
+            'title' : 'Pagination navigation',
+            'prev' : 'Previous',
+            'next' : 'Next',
+        },
+        'server_error' : 'An unexpected error has occurred. Please try again later.',
     }
 },
 function(params){
@@ -454,7 +457,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         }, params);
         var item = {};
         // Structure
-        item['container'] = cm.node('div', {'class' : 'com__pagination__bar'},
+        item['container'] = cm.node('div', {'class' : 'com__pagination__bar', 'aria-label': that.msg('bar.title')},
             item['items'] = cm.node('ul')
         );
         cm.addClass(item['container'], ['pull', params['align']].join('-'));
@@ -493,9 +496,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         var dots = false;
         // Previous page buttons
         that.callbacks.renderBarArrow(that, item, {
-            'text' : '<',
-            'title' : that.lang('prev'),
-            'className' : 'prev',
+            'title' : that.msg('bar.prev'),
+            'classes' : ['prev'],
+            'linkClasses' : ['cm-i__chevron-left', 'has-icon'],
             'callback' : that.prevHanlder
         });
         // Page buttons
@@ -510,7 +513,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             }else{
                 if(
                     page <= that.params['barCountLR'] ||
-                    (that.currentPage && page >= that.page - that.params['barCountM'] && page <= that.page + that.params['barCountM']) ||
+                    (that.page && page >= that.page - that.params['barCountM'] && page <= that.page + that.params['barCountM']) ||
                     page > that.pageCount - that.params['barCountLR']
                 ){
                     dots = true;
@@ -527,9 +530,9 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         });
         // Next page buttons
         that.callbacks.renderBarArrow(that, item, {
-            'text' : '>',
-            'title' : that.lang('next'),
-            'className' : 'next',
+            'title' : that.msg('bar.next'),
+            'classes' : ['next'],
+            'linkClasses' : ['cm-i__chevron-right', 'has-icon'],
             'callback' : that.nextHanlder
         });
     };
@@ -538,17 +541,17 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         params = cm.merge({
             'text' : '',
             'title' : '',
-            'className' : '',
+            'classes' : [],
+            'linkClasses': [],
             'callback' : function(){}
         }, params);
         // Structure
-        params['container'] = cm.node('li', {'class' : params['className']},
-            params['link'] = cm.node('a', {'title' : params['title']}, params['text'])
+        params['container'] = cm.node('li', {'class': params['classes']},
+            params['link'] = cm.node('a', {'class': params['linkClasses'], 'role': 'button', 'tabindex': '0', 'title': params['title']}, params['text'])
         );
         // Events
-        cm.addEvent(params['link'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
+        cm.click.add(params['link'], function(event){
+            cm.preventDefault(event);
             params['callback']();
         });
         // Append
@@ -561,7 +564,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
             'className' : 'points'
         }, params);
         // Structure
-        params['container'] = cm.node('li', {'class' : params['className']}, params['text']);
+        params['container'] = cm.node('li', {'class' : params['className'], 'aria-hidden': 'true'}, params['text']);
         // Append
         item['items'].appendChild(params['container']);
     };
@@ -573,16 +576,16 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
         }, params);
         // Structure
         params['container'] = cm.node('li',
-            params['link'] = cm.node('a', params['page'])
+            params['link'] = cm.node('a', {'role': 'button', 'tabindex': '0'}, params['page'])
         );
         // Active Class
         if(params['isActive']){
+            params['link'].setAttribute('aria-current', 'page');
             cm.addClass(params['container'], 'active');
         }
         // Events
-        cm.addEvent(params['link'], 'click', function(e){
-            e = cm.getEvent(e);
-            cm.preventDefault(e);
+        cm.click.add(params['link'], function(event){
+            cm.preventDefault(event);
             that.set(params['page']);
         });
         // Append
@@ -613,6 +616,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
 
     /* ******* PUBLIC ******* */
 
+    // ToDo: rewrite: add soft rebuild when current page is exist
     classProto.rebuild = function(params){
         var that = this;
         // Cleanup

@@ -9,7 +9,8 @@
     .mx__transition(all, @PtOverlay-Duration);
 
     .overlay__spinner,
-    .overlay__content {
+    .overlay__content,
+    .overlay__progress {
         visibility: hidden;
         position: absolute;
         opacity: 0;
@@ -33,8 +34,37 @@
         }
     }
 
-    .overlay__content {
+    .overlay__progress {
+        width: 100%;
+        height: @PtOverlay-Progress-Size;
         z-index: 2;
+        display: block;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        background: @CmColor-Secondary-LightActive;
+        border-radius: @CmBorder-Radius;
+        color: transparent;
+        .mx__position(auto, 0, 0, 0);
+
+        &::-webkit-progress-bar {
+            background: transparent;
+        }
+
+        &::-moz-progress-bar {
+            background: @CmColor-Primary-DarkDefault;
+        }
+
+        &::-webkit-progress-value {
+            background: @CmColor-Primary-DarkDefault;
+        }
+    }
+
+    .overlay__content {
+        z-index: 3;
     }
 
     &.theme-transparent {

@@ -1,100 +1,48 @@
+// Get initial values
+cm._breakpoints = cm.getBreakpoints();
+cm._breakpoint = cm.getBreakpoint();
+
 cm.init = function(){
     var init = function(){
         cm._isDocumentReady = true;
+
         // Helpers
         checkBrowser();
-        checkType();
-        checkScrollSize();
         checkPageSize();
+        checkBreakpoints();
+        checkScrollSize();
+        checkType();
+
+        // Enable :active pseudo-class on iOS-based devices
+        cm.addEvent(document, 'touchstart', () => {}, false);
+
         // Events
         cm.addEvent(window, 'mousemove', getClientPosition);
         cm.addEvent(window, 'resize', resizeAction);
         setInterval(checkAction, 50);
-        //cm.addEvent(window, 'scroll', disableHover);
     };
 
     // Actions
 
     var checkAction = function(){
         animFrame(function(){
-            checkScrollSize();
             checkPageSize();
+            checkScrollSize();
         });
     };
 
     var resizeAction = function(){
-        animFrame(function(){
-            checkType();
-            checkScrollSize();
-            checkPageSize();
-        });
+        checkPageSize();
+        checkBreakpoints();
+        checkScrollSize();
+        checkType();
     };
-
-    // Set browser class
 
     var checkBrowser = function(){
         if(typeof Com.UA !== 'undefined'){
             Com.UA.setBrowserClass();
         }
     };
-
-    // Get device type
-
-    var checkType = (function(){
-        var html = cm.getDocumentHtml(),
-            sizes,
-            width,
-            height;
-
-        return function(){
-            sizes = cm.getPageSize();
-            width = sizes['winWidth'];
-            height = sizes['winHeight'];
-
-            cm.removeClass(html, ['is', cm._deviceType].join('-'));
-            cm.removeClass(html, ['is', cm._deviceOrientation].join('-'));
-
-            cm._deviceOrientation = width < height? 'portrait' : 'landscape';
-            if(width > cm._config['screenTablet']){
-                cm._deviceType = 'desktop';
-            }
-            if(width <= cm._config['screenTablet'] && width > cm._config['screenMobile']){
-                cm._deviceType = 'tablet';
-            }
-            if(width <= cm._config['screenMobile']){
-                cm._deviceType = 'mobile';
-            }
-            if(width <= cm._config['adaptiveFrom']){
-                cm._adaptive = true;
-            }else{
-                cm._adaptive = false;
-            }
-
-            cm.addClass(html, ['is', cm._deviceType].join('-'));
-            cm.addClass(html, ['is', cm._deviceOrientation].join('-'));
-        };
-    })();
-
-    // Get device scroll bar size
-
-    var checkScrollSize = (function(){
-        var size;
-        return function(){
-            cm._scrollSize = cm.getScrollBarSize();
-            if(size !== cm._scrollSize){
-                size = cm._scrollSize;
-                cm.toggleClass(cm.getDocumentHtml(), 'is-scrollbar-visible', (size > 0));
-                cm.hook.trigger('scrollSizeChange', {
-                    'scrollSize' : cm._scrollSize
-                });
-                cm.customEvent.trigger(window, 'scrollSizeChange', {
-                    'direction' : 'all',
-                    'self' : true,
-                    'scrollSize' : cm._scrollSize
-                });
-            }
-        };
-    })();
 
     var checkPageSize = (function(){
         var size, sizeNew;
@@ -115,25 +63,60 @@ cm.init = function(){
         };
     })();
 
-    // Disable hover on scroll
+    var checkBreakpoints = function(){
+        cm._breakpoints = cm.getBreakpoints();
+        cm._breakpoint = cm.getBreakpoint();
+    };
 
-    var disableHover = (function(){
-        var body = document.body,
-            timer;
+    var checkScrollSize = (function(){
+        var size;
+        return function(){
+            cm._scrollSize = cm.getScrollBarSize();
+            if(size !== cm._scrollSize){
+                size = cm._scrollSize;
+                cm.toggleClass(cm.getDocumentHtml(), 'is-scrollbar-visible', (size > 0));
+                cm.hook.trigger('scrollSizeChange', {
+                    'scrollSize' : cm._scrollSize
+                });
+                cm.customEvent.trigger(window, 'scrollSizeChange', {
+                    'direction' : 'all',
+                    'self' : true,
+                    'scrollSize' : cm._scrollSize
+                });
+            }
+        };
+    })();
+
+    var checkType = (function(){
+        var html = cm.getDocumentHtml(),
+            width,
+            height;
 
         return function(){
-            timer && clearTimeout(timer);
-            if(!cm.hasClass(body, 'disable-hover')){
-                cm.addClass(body, 'disable-hover');
+            width = cm._pageSize.winWidth;
+            height = cm._pageSize.height;
+
+            cm.removeClass(html, ['is', cm._deviceType].join('-'));
+            cm.removeClass(html, ['is', cm._deviceOrientation].join('-'));
+
+            cm._adaptive = width <= cm._config.adaptiveFrom;
+            cm._deviceOrientation = width < height? 'portrait' : 'landscape';
+            if(width >= cm._breakpoints.desktop){
+                cm._deviceType = 'desktop';
             }
-            timer = setTimeout(function(){
-                cm.removeClass(body, 'disable-hover');
-            }, 100);
+            if(width <= cm._breakpoints.desktopDown){
+                cm._deviceType = 'tablet';
+            }
+            if(width <= cm._breakpoints.mobileDown){
+                cm._deviceType = 'mobile';
+            }
+
+            cm.addClass(html, ['is', cm._deviceType].join('-'));
+            cm.addClass(html, ['is', cm._deviceOrientation].join('-'));
         };
     })();
 
     // Get client cursor position
-
     var getClientPosition = function(e){
         cm._clientPosition = cm.getEventClientPosition(e);
     };

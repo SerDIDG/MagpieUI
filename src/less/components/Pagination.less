@@ -47,6 +47,9 @@
 .com__pagination__bar {
     margin: @CmIndent-Medium 0;
     line-height: @CmForm-FieldHeight;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
     .mx__user-select(none);
 
     &:first-child {
@@ -87,12 +90,19 @@
                 padding-right: 6px;
             }
 
-            &.prev a,
-            &.next a {
-                .button.button-transparent;
-                padding-left: 6px;
-                padding-right: 6px;
-                font-weight: @CmFont-Base-BoldWeight;
+            &.prev,
+            &.next {
+                a {
+                    .button.button-transparent;
+                    padding-left: 6px;
+                    padding-right: 6px;
+                    font-weight: @CmFont-Base-BoldWeight;
+
+                    &.has-icon {
+                        font-size: @CmFont-Base-SizeSmall;
+                        font-weight: @CmFont-Base-NormalWeight;
+                    }
+                }
             }
 
             &.points {

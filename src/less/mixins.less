@@ -43,6 +43,13 @@
     }
 }
 
+.mx__backdrop-filter (@properties) {
+    .for(@properties); .-each(@property) {
+        -webkit-backdrop-filter+_: @property;
+                backdrop-filter+_: @property;
+    }
+}
+
 .mx__transform (@properties) {
     .for(@properties); .-each(@property) {
         transform+_: @property;
@@ -123,6 +130,10 @@
 
 .mx__backface-visibility (@value: visible) {
     backface-visibility: @value;
+}
+
+.mx__letter-spacing (@value, @fontSize) {
+    letter-spacing: ((@value * @fontSize) / 1000px);
 }
 
 // /* ******* COMMON ******* */

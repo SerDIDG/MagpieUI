@@ -17,9 +17,12 @@ cm.define('Com.Geolocation', {
 
         apiKey: '',
         apiLink: 'https://maps.googleapis.com/maps/api/js?key=%key%',
-        useGeocoder: false,
-        geocodeConstructor: 'Com.Geocoder',
-        geocoderParams: {},
+
+        geocoder: {
+            enable: false,
+            constructor: 'Com.Geocoder',
+            constructorParams: {},
+        },
 
         options: {
             enableHighAccuracy: false,
@@ -35,8 +38,8 @@ function() {
 cm.getConstructor('Com.Geolocation', function(classConstructor, className, classProto, classInherit) {
     classProto.onValidateParams = function() {
         var that = this;
-        that.params.geocoderParams.apiLink = that.params.apiLink;
-        that.params.geocoderParams.apiKey = that.params.apiKey;
+        that.params.geocoder.constructorParams.apiLink = that.params.apiLink;
+        that.params.geocoder.constructorParams.apiKey = that.params.apiKey;
     };
 
     classProto.renderViewModel = function() {
@@ -46,9 +49,9 @@ cm.getConstructor('Com.Geolocation', function(classConstructor, className, class
         classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Init geocoder
-        if (that.params.useGeocoder) {
-            cm.getConstructor(that.params.geocodeConstructor, function(classConstructor) {
-                that.components.geocoder = new classConstructor(that.params.geocoderParams);
+        if (that.params.geocoder.enable) {
+            cm.getConstructor(that.params.geocoder.constructor, function(classConstructor) {
+                that.components.geocoder = new classConstructor(that.params.geocoder.constructorParams);
             });
         }
 
@@ -87,7 +90,7 @@ cm.getConstructor('Com.Geolocation', function(classConstructor, className, class
 
         // Request location data from the geocoder
         if (
-            that.params.useGeocoder &&
+            that.params.geocoder.enable &&
             (that.params.useDefault || status === 'success')
         ) {
             that.requestGeocoder(location);

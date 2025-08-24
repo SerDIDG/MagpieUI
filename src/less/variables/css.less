@@ -1,6 +1,36 @@
 :root {
+
+    // /******* COLORS *******/
+
+    --cm-color--primary: @CmColor-Primary-DarkDefault;
+    --cm-color--secondary: @CmColor-Secondary-DarkDefault;
+    --cm-color--placeholder: @CmColor-Font-Placeholder;
+    --cm-color--hint: @CmColor-Font-Hint;
+    --cm-color--success: @CmColor-Success-DarkDefault;
+    --cm-color--warning: @CmColor-Warning-DarkDefault;
+    --cm-color--danger: @CmColor-Danger-DarkDefault;
+
+    // /******* PARTS *******/
+
+    --cm-button--gap: @CmButton-Gap;
+    --cm-input--icon-gap: @CmInput-IconGap;
+
     --pt-buttons--indent: @CmForm-ButtonsIndent;
+    --pt-buttons--box-indent: @CmForm-FieldIndent;
 
     --pt-field--title-width: @CmForm-FieldTitleWidth;
     --pt-field--title-indent: @CmForm-FieldIndent;
+
+    // /******* SIZES *******/
+
+    --dvh-100: 100vh;
+    --svh-100: 100vh;
+
+    @supports(height: 100dvh) {
+        --dvh-100: 100dvh;
+    }
+
+    @supports(height: 100svh) {
+        --svh-100: 100svh;
+    }
 }

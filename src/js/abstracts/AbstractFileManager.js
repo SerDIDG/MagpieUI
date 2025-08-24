@@ -119,8 +119,8 @@ cm.getConstructor('Com.AbstractFileManager', function(classConstructor, classNam
     classProto.renderViewModel = function(){
         var that = this;
         if(that.params['showStats']){
-            cm.getConstructor(that.params['statsConstructor'], function(classObject){
-                that.components['stats'] = new classObject(
+            cm.getConstructor(that.params['statsConstructor'], function(classConstructor){
+                that.components['stats'] = new classConstructor(
                     cm.merge(that.params['statsParams'], {
                         'container' : that.nodes['content']['container']
                     })

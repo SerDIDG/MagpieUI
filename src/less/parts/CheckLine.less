@@ -1,11 +1,12 @@
 .pt__check-line {
     @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
     @padding: max(floor((@padding_calc)), 0px);
-    @margin_calc: (@CmFont-Base-LineHeight - 13px) / 2;
+    @margin_calc: (@CmFont-Base-LineHeight - 14px) / 2;
     @margin: max(floor((@margin_calc)), 0px);
 
     min-height: @CmForm-FieldHeight;
     line-height: @CmForm-FieldHeight;
+    .mx__transition(color, @CmUI-Transition-Duration);
 
     label {
         margin-right: @CmIndent-Medium;
@@ -47,10 +48,6 @@
         }
     }
 
-    &.pull-center {
-        text-align: center;
-    }
-
     &.disabled {
         label {
             color: @CmColor-Font-Disabled;
@@ -60,7 +57,7 @@
 
     &.has-hover {
         label {
-            margin-right: @CmBorder-Width;
+            margin: 0;
             padding: @padding @CmForm-FieldInnerIndent;
             border-radius: @CmBorder-Radius;
         }
@@ -106,6 +103,12 @@
                 }
             }
         }
+
+        &.is-line {
+            label {
+                margin-right: @PtCheckLine-HasHover-Gap;
+            }
+        }
     }
 
     &.has-fields {
@@ -133,15 +136,27 @@
     &.has-fields-box {
         input[type="radio"],
         input[type="checkbox"] {
-            @margin_calc: (@CmForm-FieldHeight - 13px) / 2;
+            @margin_calc: (@CmForm-FieldHeight - 14px) / 2;
             @margin: max(floor((@margin_calc)), 0px);
             margin-top: @margin;
             margin-bottom: @margin;
         }
     }
 
+    &.is-line {
+        &.pull-center {
+            text-align: center;
+        }
+    }
+
     &.is-box {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: @PtCheckLine-Gap;
+
         label {
+            margin: 0;
             display: block;
         }
 
@@ -153,6 +168,20 @@
         .label {
             overflow: hidden;
             display: block;
+        }
+
+        .text {
+            display: block;
+        }
+
+        &.has-hover {
+            gap: @PtCheckLine-HasHover-Gap;
+        }
+
+        &.is-compact {
+            label {
+                padding: 0;
+            }
         }
     }
 
@@ -184,6 +213,29 @@
     &.is-flex-reverse {
         label {
             flex-direction: row-reverse;
+        }
+    }
+
+    &.is-flex-inline {
+        display: flex;
+        flex-wrap: wrap;
+
+        &.pull-center {
+            justify-content: center;
+        }
+
+        &.has-hover {
+            gap: @PtCheckLine-HasHover-Gap;
+        }
+    }
+}
+
+@media only screen and (max-width : @CmUI-AdaptiveFrom) {
+    html.is-adaptive {
+        .pt__check-line {
+            &.is-adaptive {
+                .pt__check-line.is-box;
+            }
         }
     }
 }

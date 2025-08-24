@@ -26,11 +26,12 @@
                 > li {
                     width: 100%;
                     height: 100%;
+                    display: none;
                     position: absolute;
                     z-index: 1;
                     .mx__position(0,0,0,0);
 
-                    &:first-child {
+                    &:not(.is-ready):first-child {
                         display: block;
                         z-index: 2;
                     }
@@ -182,7 +183,7 @@
                 display: none;
                 position: relative;
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
 
@@ -203,7 +204,7 @@
                 display: none;
                 position: relative;
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
 
@@ -222,7 +223,7 @@
                 opacity: 0;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     opacity: 1;
                 }
@@ -238,7 +239,7 @@
                 opacity: 0;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     opacity: 1;
                 }
@@ -265,7 +266,7 @@
                 position: absolute;
                 .mx__position(0, auto, auto, 100%);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     left: 0;
                 }
@@ -280,7 +281,7 @@
                 position: absolute;
                 .mx__position(0, auto, auto, 100%);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     left: 0;
                 }
@@ -295,7 +296,7 @@
                 position: absolute;
                 .mx__position(0, auto, auto, 100%);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                     left: 0;
                 }
@@ -310,7 +311,7 @@
                 position: absolute;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
             }
@@ -324,7 +325,7 @@
                 position: absolute;
                 .mx__position(0, auto, auto, 0);
 
-                &:first-child {
+                &:not(.is-ready):first-child {
                     display: block;
                 }
             }

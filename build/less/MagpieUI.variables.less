@@ -1,8 +1,38 @@
 :root {
+
+    // /******* COLORS *******/
+
+    --cm-color--primary: @CmColor-Primary-DarkDefault;
+    --cm-color--secondary: @CmColor-Secondary-DarkDefault;
+    --cm-color--placeholder: @CmColor-Font-Placeholder;
+    --cm-color--hint: @CmColor-Font-Hint;
+    --cm-color--success: @CmColor-Success-DarkDefault;
+    --cm-color--warning: @CmColor-Warning-DarkDefault;
+    --cm-color--danger: @CmColor-Danger-DarkDefault;
+
+    // /******* PARTS *******/
+
+    --cm-button--gap: @CmButton-Gap;
+    --cm-input--icon-gap: @CmInput-IconGap;
+
     --pt-buttons--indent: @CmForm-ButtonsIndent;
+    --pt-buttons--box-indent: @CmForm-FieldIndent;
 
     --pt-field--title-width: @CmForm-FieldTitleWidth;
     --pt-field--title-indent: @CmForm-FieldIndent;
+
+    // /******* SIZES *******/
+
+    --dvh-100: 100vh;
+    --svh-100: 100vh;
+
+    @supports(height: 100dvh) {
+        --dvh-100: 100dvh;
+    }
+
+    @supports(height: 100svh) {
+        --svh-100: 100svh;
+    }
 }
 
 
@@ -47,20 +77,17 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
+<<<<<<< HEAD
 @CmVersion: '3.66.4';
+=======
+@CmVersion: '3.113.0';
+>>>>>>> master
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
 
 @CmPath-Images: '../img';
 @CmPath-Fonts: '../fonts';
-
-// /* ******* SCREEN TYPES ******* */
-
-@CmScreen-Mobile: 640px;
-@CmScreen-MobilePortrait: 480px;
-@CmScreen-Tablet: 1024px;
-@CmScreen-TabletPortrait: 768px;
 
 // /* ******* SIZES ******* */
 
@@ -102,11 +129,14 @@
 @CmUI-Transition-DurationNone: 0ms;
 @CmUI-Transition-Delay-Hide: 300ms;
 @CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
+@CmUI-MotionBounce: cubic-bezier(.5,.1,.4,1.3);
+@CmUI-Opacity-Transparent: 0.01;
 @CmUI-Opacity-Hover: 0.7;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Top: 0 -2px 5px rgba(0,0,0,0.15);
+@CmUI-Shadow-TopSmall: 0 -1px 2px rgba(0,0,0,0.15);
 @CmUI-Shadow-Bottom: 0 2px 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
 @CmUI-Shadow-BottomSmall: 0 1px 2px rgba(0,0,0,0.15);
@@ -115,10 +145,12 @@
 @CmUI-Shadow-Card: 0 1px 2px rgba(0,0,0,0.25);
 @CmUI-Overlay: @CmUI-Overlay-Light;
 @CmUI-Overlay-Fade: 0.7;
-@CmUI-Overlay-FadeHeight: 0.9;
+@CmUI-Overlay-FadeHeight: 0.9; // ToDo: deprecated
+@CmUI-Overlay-FadeHigh: 0.9;
 @CmUI-Overlay-FadeMedium: 0.3;
 @CmUI-Overlay-FadeP: 70%;
-@CmUI-Overlay-FadeHeightP: 90%;
+@CmUI-Overlay-FadeHeightP: 90%; // ToDo: deprecated
+@CmUI-Overlay-FadeHighP: 90%;
 @CmUI-Overlay-FadeMediumP: 30%;
 @CmUI-Overlay-Dark: rgba(0, 0, 0, @CmUI-Overlay-Fade);
 @CmUI-Overlay-Light: rgba(255, 255, 255, @CmUI-Overlay-Fade);
@@ -475,6 +507,7 @@
 @CmButton-PaddingX: @CmIndent-XSmall;
 @CmButton-OutlineWidth: 1px;
 @CmButton-OutlineOffset: 1px;
+@CmButton-Gap: @CmIndent-XXSmall;
 
 // /* ******* INPUTS ******* */
 
@@ -490,6 +523,7 @@
 @CmInput-DisabledBackground: @CmColor-Secondary-LightHighlight;
 @CmInput-DisableBorder: @CmColor-BorderDisabled;
 @CmInput-AccentColor: hsl(@CmColor-Primary, @CmColor-Primary-DarkSaturation, 40%);
+@CmInput-IconGap: @CmInput-Padding;
 @CmTextarea-Height: 100px;
 @CmSelect-Size: 7;
 
@@ -512,6 +546,10 @@
 @CmForm-FieldTitleWidthSpaceless: 128px;
 @CmForm-FieldInnerIndent: (@CmForm-FieldIndent / 2);
 @CmForm-FieldSmallWidth: 210px;
+@CmForm-Field-AdaptiveUp: @CmMedia-Mobile-Up;
+@CmForm-Field-AdaptiveDown: @CmMedia-Mobile-Down;
+
+@CmForm-HintGap: @CmSize-XXXSmall;
 @CmForm-ButtonsIndent: @CmIndent-XSmall;
 @CmForm-IconsIndent: @CmIndent-XXSmall;
 @CmForm-ImageBox-ButtonWidth: 100px;
@@ -551,12 +589,14 @@
 
 @PtMenu-ItemIndentY: 2px;
 @PtMenu-ItemIndentX: @CmIndent-XSmall;
+@PtMenu-ItemGap: @CmIndent-XXSmall;
 @PtMenu-Item-Color: @CmFont-Base-Color;
 @PtMenu-Item-HoverColor: @CmColor-Font-LinkHover;
 @PtMenu-Item-ActiveColor: @CmColor-Font-LinkActive;
 @PtMenu-SeparatorIndentX: @PtMenu-ItemIndentX;
 @PtMenu-SeparatorSize: @PtBox-BorderWidth;
 @PtMenu-SeparatorColor: @PtBox-BorderColor;
+@PtMenu-SeparatorContent: '';
 
 @PtMenu-Dropdown-IndentX: 0px;
 @PtMenu-Dropdown-IndentY: 0px;
@@ -566,6 +606,11 @@
 @PtLinks-Indent: @CmIndent-XXXSmall;
 @PtLinks-Separator: '|';
 @PtLinks-Separator-Color: @CmFont-Base-Color;
+
+// /* ******* CHECK LINE ******* */
+
+@PtCheckLine-Gap: 0px;
+@PtCheckLine-HasHover-Gap: @CmBorder-Width;
 
 // /* ******* IMAGE ******* */
 
@@ -596,6 +641,8 @@
 @PtListingItems-PaddingY: @PtList-PaddingY;
 @PtListingItems-PaddingX: @PtList-PaddingX;
 @PtListingItems-Indent: @PtList-Indent;
+@PtListingItems-GroupIndent: @CmIndent-XSmall;
+@PtListingItems-ItemHeight: (@CmFont-Base-LineHeight + @PtListingItems-PaddingY * 2);
 
 // /* ******* LISTING COUNTERS ******* */
 
@@ -744,6 +791,7 @@
 @PtOverlay-Dark: @CmUI-Overlay-Dark;
 @PtOverlay-Duration: @CmUI-Overlay-Duration;
 @PtOverlay-Spinner-Size: @CmSize-Large;
+@PtOverlay-Progress-Size: @CmSize-XXXSmall;
 @PtOverlay-ZIndex: 1003;
 
 // /* ************************************************ */
@@ -979,13 +1027,12 @@
 // /* ******* SELECT ******* */
 
 @ComSelect-ListCount: 7;
-@ComSelect-MultiListCount: 5;
-@ComSelect-MultiListHeight: (@CmFont-Base-LineHeight + @PtListingItems-Indent + @PtListingItems-PaddingY * 2);
-@ComSelect-MaxHeight: @ComSelect-MultiListCount * @ComSelect-MultiListHeight - @PtListingItems-Indent;
+@ComSelect-ListHeight: @ComSelect-ListCount * @PtListingItems-ItemHeight + (@ComSelect-ListCount - 1) * @PtListingItems-Indent;
 
 // /* ******* AUTOCOMPLETE ******* */
 
 @ComAutocomplete-ListCount: 7;
+@ComAutocomplete-ListHeight: @ComAutocomplete-ListCount * @PtListingItems-ItemHeight + (@ComAutocomplete-ListCount - 1) * @PtListingItems-Indent;
 
 // /* ******* TAGS INPUT ******* */
 
@@ -1022,3 +1069,29 @@
 // /* ************************************************ */
 // /* ******* VENDORS ******* */
 // /* ************************************************ */
+
+// /* ******* SCREEN TYPES ******* */
+
+@CmScreen-Tablet: 1024px;
+@CmScreen-TabletPortrait: 768px;
+@CmScreen-Mobile: 640px;
+@CmScreen-MobilePortrait: 480px;
+@CmScreen-XSmall: 375px;
+@CmScreen-XXSmall: 300px;
+
+// /* ******* BREAKPOINTS ******* */
+
+@CmMedia-Laptop-Up: 1400px;
+@CmMedia-Laptop-Down: (1400px - 1px);
+@CmMedia-Desktop-Up: @CmScreen-Tablet;
+@CmMedia-Desktop-Down: (@CmScreen-Tablet - 1px);
+@CmMedia-Tablet-Up: (@CmScreen-TabletPortrait + 1px);
+@CmMedia-Tablet-Down: @CmScreen-TabletPortrait;
+@CmMedia-Mobile-Up: (@CmScreen-Mobile + 1px);
+@CmMedia-Mobile-Down: @CmScreen-Mobile;
+@CmMedia-Small-Up: (@CmScreen-MobilePortrait + 1px);
+@CmMedia-Small-Down: @CmScreen-MobilePortrait;
+@CmMedia-XSmall-Up: (@CmScreen-XSmall + 1px);
+@CmMedia-XSmall-Down: @CmScreen-XSmall;
+@CmMedia-XXSmall-Up: (@CmScreen-XXSmall + 1px);
+@CmMedia-XXSmall-Down: @CmScreen-XXSmall;

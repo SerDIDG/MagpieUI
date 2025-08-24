@@ -28,8 +28,13 @@ cm.define('Com.GalleryItem', {
         adaptiveFrom: cm._config.screenTabletPortrait,
         adaptivePosition: 'is-contain',
 
+        extensions: {
+            image: cm._config.fileExtensions.image,
+            video: cm._config.fileExtensions.video,
+        },
         types: {
-            image: null,
+            image: cm._config.fileTypes.image,
+            video: cm._config.fileTypes.video,
         },
     },
 },
@@ -75,15 +80,10 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
 
         // Check type
-        that.typeRegexp = new RegExp('\\.(' + that.params.types.image + ')$', 'gi');
-        if(
-            (that.params.src && that.typeRegexp.test(that.params.src)) ||
-            (that.params.url && that.typeRegexp.test(that.params.url.pathname)) ||
-            (that.params.src && /^data:image/gi.test(that.params.src)) ||
-            (that.params.mime && /^image/gi.test(that.params.mime)) ||
-            that.params.type === 'image'
-        ){
+        if(that.isImage()){
             that.params.type = 'image';
+        }else if(that.isVideo()){
+            that.params.type = 'video';
         }else{
             that.params.type = 'iframe';
         }
@@ -119,6 +119,12 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         // Render by type
         if (that.params.type === 'image') {
             that.nodes.content = cm.node('img', {classes: 'descr', alt: that.params.title, title: that.params.title});
+        } else if(that.params.type === 'video') {
+            that.nodes.content = cm.node('video', {classes: 'descr', preload: 'none', playsinline: true});
+            that.nodes.content.playsinline = true;
+            that.nodes.content.playsInline = true;
+            that.nodes.content.autoplay = true;
+            that.nodes.content.controls = true;
         } else {
             that.nodes.content = cm.node('iframe', {classes: 'descr', allowfullscreen: true});
         }
@@ -174,6 +180,49 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         that.triggerEvent('onError');
     };
 
+    /******* HELPERS *******/
+
+    classProto.isImage = function() {
+        var that = this;
+        var regexp = new RegExp('\\.(' + that.params.extensions.image + ')$', 'gi');
+        return (that.params.src && regexp.test(that.params.src)) ||
+            (that.params.url && regexp.test(that.params.url.pathname)) ||
+            (that.params.src && /^data:image/gi.test(that.params.src)) ||
+            (that.params.mime && that.params.types.image.test(that.params.mime)) ||
+            that.params.type === 'image';
+    };
+
+    classProto.isVideo = function() {
+        var that = this;
+        var regexp = new RegExp('\\.(' + that.params.extensions.video + ')$', 'gi');
+        return (that.params.src && regexp.test(that.params.src)) ||
+            (that.params.url && regexp.test(that.params.url.pathname)) ||
+            (that.params.src && /^data:video/gi.test(that.params.src)) ||
+            (that.params.mime && that.params.types.video.test(that.params.mime)) ||
+            that.params.type === 'video';
+    };
+
+    classProto.loadVideo = function() {
+        var that = this;
+        cm.addEvent(that.nodes.content, 'loadedmetadata', that.loadSuccessEventHanlder);
+        cm.addEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
+        that.nodes.content.videoSource = cm.node('source', {src: that.params.src});
+        cm.appendChild(that.nodes.content.videoSource, that.nodes.content);
+    };
+
+    classProto.loadMedia = function() {
+        var that = this;
+        cm.addEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
+        cm.addEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
+        if (!cm.isEmpty(that.params.sizes)) {
+            that.nodes.content.sizes = that.params.sizes;
+        }
+        if (!cm.isEmpty(that.params.srcset)) {
+            that.nodes.content.srcset = that.params.srcset;
+        }
+        that.nodes.content.src = that.params.src;
+    };
+
     /******* PUBLIC *******/
 
     classProto.load = function() {
@@ -183,18 +232,14 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         }
 
         that.hasProcess = true;
-        if (that.hasLoaded && that.params.types === 'image') {
+        if (that.hasLoaded && cm.inArray(['image', 'video'], that.params.type)) {
             that.loadSuccessEvent();
         } else {
-            cm.addEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
-            cm.addEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
-            if (!cm.isEmpty(that.params.sizes)) {
-                that.nodes.content.sizes = that.params.sizes;
+            if (that.params.type === 'video') {
+                that.loadVideo();
+            } else {
+                that.loadMedia();
             }
-            if (!cm.isEmpty(that.params.srcset)) {
-                that.nodes.content.srcset = that.params.srcset;
-            }
-            that.nodes.content.src = that.params.src;
         }
         return that;
     };
@@ -209,6 +254,17 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         cm.removeEvent(that.nodes.content, 'load', that.loadSuccessEventHanlder);
         cm.removeEvent(that.nodes.content, 'error', that.loadErrorEventHanlder);
         that.triggerEvent('onAbort');
+        return that;
+    };
+
+    classProto.play = function() {
+        var that = this;
+        if (that.hasProcess) {
+            return that;
+        }
+        if (that.params.type === 'video' && that.hasLoaded) {
+            that.nodes.content.play();
+        }
         return that;
     };
 

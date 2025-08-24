@@ -103,30 +103,42 @@
     }
 }
 
-.pt__buttons--box {
+.pt__buttons--flex {
     > .inner {
-        display: block;
+        gap: var(--pt-buttons--indent);
         margin: 0;
 
         > .left,
         > .right {
-            display: block;
-            width: 100%;
-            margin: @CmForm-FieldIndent 0 0 0;
+            gap: var(--pt-buttons--indent);
+        }
+    }
 
-            &:first-child {
-                margin: 0;
-            }
+    .button-alike {
+        margin: 0;
+    }
+}
+
+.pt__buttons--box {
+    > .inner {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        gap: var(--pt-buttons--box-indent);
+
+        > .left,
+        > .right {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            gap: var(--pt-buttons--box-indent);
         }
     }
 
     .button-alike {
         width: 100%;
-        margin: @CmForm-FieldIndent 0 0 0;
-
-        &:first-child {
-            margin: 0;
-        }
+        margin: 0;
     }
 }
 
@@ -135,7 +147,7 @@
         display: flex;
         flex-direction: column-reverse;
         margin: 0;
-        gap: @CmForm-FieldIndent;
+        gap: var(--pt-buttons--box-indent);
 
         > .left,
         > .right {
@@ -143,7 +155,7 @@
             display: flex;
             flex-direction: column-reverse;
             margin: 0;
-            gap: @CmForm-FieldIndent;
+            gap: var(--pt-buttons--box-indent);
         }
     }
 

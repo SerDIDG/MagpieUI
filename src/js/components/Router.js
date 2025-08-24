@@ -106,12 +106,17 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.hashchangeEvent = function(e){
         var that = this,
             hash = !cm.isEmpty(window.location.hash) ? window.location.hash.slice(1) : null;
+
         // Check hash
         that.current.hash = hash;
-        that.current.href = !cm.isEmpty(hash) ? [that.current.location, that.current.hash].join('#') : that.current.location;
+        that.current.pathHash = that.prepareHash(that.current.path, that.current.hash);
+        that.current.href = that.prepareHash(that.current.location, that.current.hash);
+
         that.current.state = cm.clone(that.current.state);
         that.current.state.hash = hash;
+        that.current.state.pathHash = that.current.pathHash;
         that.current.state.href = that.current.href;
+
         // Restore route state after somebody change hash
         window.history.replaceState(that.current.state, '', that.current.state.href);
     };
@@ -121,13 +126,21 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.processLink = function(el){
         var that = this,
             href = el.getAttribute('href'),
+<<<<<<< HEAD
             preventDefault = el.dataset.preventDefault;
         if(!cm.isEmpty(href) && preventDefault !== 'true'){
             var route = that.prepareRouteParts(href);
+=======
+            preventDefault = el.dataset.preventDefault,
+            noRoute = el.dataset.noRoute;
+        if(!cm.isEmpty(href) && preventDefault !== 'true' && noRoute !== 'true'){
+            var route = that.prepareRoute(href);
+>>>>>>> master
             that.pushRoute(route);
         }
     };
 
+<<<<<<< HEAD
     classProto.pushRoute = function(route, params) {
         var that = this;
         if (cm.isEmpty(route)) {
@@ -150,18 +163,58 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Process url location and href
         state.location = that.prepareRouteLocation(route.route, route.parameters);
         state.href = !cm.isEmpty(state.hash) ? [state.location, state.hash].join('#') : state.location;
+=======
+    classProto.pushRoute = function(route, params){
+        var that = this,
+            state;
+
+        // Validate state
+        if(cm.isEmpty(route)){
+            route = that.current.route;
+        }
+        state = {
+            'route' : route.route,
+            'hash' : route.hash,
+            'parameters' : route.parameters,
+            'match' : [],
+            'params' : cm.merge({
+                'processRoute' : true,
+                'pushState' : true,
+                'replaceState' : false,
+            }, params)
+        };
+
+        // Path
+        state.path = that.preparePath(state.route, state.parameters);
+        state.location = that.prepareHref(state.route, state.parameters);
+
+        // Check hash
+        state.pathHash = that.prepareHash(state.path, state.hash);
+        state.href = that.prepareHash(state.location, state.hash);
+>>>>>>> master
 
         // Parse parameters
+        state.originParameters = state.parameters;
         try {
             state.parameters = Object.fromEntries(
-                new URLSearchParams(state.parameters)
+                new URLSearchParams(state.originParameters)
             );
+<<<<<<< HEAD
         } catch (e) {
         }
+=======
+        } catch {}
+>>>>>>> master
 
         // Check data storage
         state.data = that.getStorageData(state.route, state, state.params.data);
 
+<<<<<<< HEAD
+=======
+        // Set scroll
+        cm.setBodyScrollTop(0);
+
+>>>>>>> master
         // Set Window URL
         if (state.params.replaceState) {
             window.history.replaceState(state, '', state.location);
@@ -170,7 +223,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
 
         // Process route
+<<<<<<< HEAD
         if (state.params.processRoute) {
+=======
+        if(state.params.processRoute){
+>>>>>>> master
             that.processRoute(state);
         }
 
@@ -249,6 +306,114 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return matchedRouteData;
     };
 
+<<<<<<< HEAD
+=======
+    classProto.destructRoute = function(routeItem){
+        var that = this;
+        // Export
+        that.previous = routeItem;
+        // Callbacks
+        if(routeItem){
+            if(routeItem.constructor){
+                routeItem.controller && routeItem.controller.destruct && routeItem.controller.destruct();
+            }else{
+                routeItem.onDestruct(routeItem);
+                routeItem.callback(routeItem);
+            }
+        }
+        return that;
+    };
+
+    classProto.constructRoute = function(routeItem){
+        var that = this,
+            constructor;
+        that.triggerEvent('onChangeStart', routeItem);
+        // Export
+        that.current = routeItem;
+        // Callbacks
+        if(!cm.isEmpty(routeItem.constructor)){
+            if(cm.isObject(routeItem.constructor)){
+                cm.forEach(routeItem.constructor, function(item, key){
+                    if(that.checkRoleAccess(key)){
+                        constructor = item;
+                    }
+                });
+            }else{
+                constructor = routeItem.constructor;
+            }
+        }
+        if(constructor){
+            that.constructRouteController(routeItem, constructor);
+        }else{
+            routeItem.onConstruct(routeItem);
+            routeItem.callback(routeItem);
+        }
+        that.triggerEvent('onChange', routeItem);
+        that.triggerEvent('onChangeEnd', routeItem);
+        return that;
+    };
+
+    classProto.constructRouteController = function(routeItem, constructor) {
+        var that = this;
+
+        // Bypass errors
+        if (!that.params.catchRouteErrors) {
+            cm.getConstructor(constructor, function(classConstructor) {
+                routeItem.controller = new classConstructor(
+                    cm.merge(routeItem.constructorParams, {
+                        'container': that.params.container,
+                        'route': routeItem
+                    })
+                );
+                routeItem.controller.triggerEvent('onConstructComplete');
+            });
+            return;
+        }
+
+        // Catch errors
+        var errorDetails;
+        var errorMessage;
+        var errorMessageData = {
+            '{route}': routeItem.route,
+            '{constructor}': constructor,
+        };
+        var classConstructor = cm.getConstructor(constructor, function(classConstructor) {
+            try {
+                routeItem.controller = new classConstructor(
+                    cm.merge(routeItem.constructorParams, {
+                        'container': that.params.container,
+                        'route': routeItem
+                    })
+                );
+                routeItem.controller.triggerEvent('onConstructComplete');
+            } catch (e) {
+                errorDetails = e;
+                errorMessage = that.msg('errors.constructor_error', errorMessageData);
+            }
+        });
+        if (cm.isEmpty(classConstructor)) {
+            errorMessage = that.msg('errors.constructor_not_found', errorMessageData);
+        }
+        if (!cm.isEmpty(errorMessage)) {
+            cm.errorLog({
+                'type': 'error',
+                'name': 'Com.Router',
+                'message': errorMessage,
+            });
+            console.error(errorDetails);
+            if (that.params.summonRouteOnError) {
+                that.summon('error', null, {
+                    'data': {
+                        'code': 1404,
+                        'message': errorMessage,
+                        'error': errorDetails,
+                    },
+                });
+            }
+        }
+    };
+
+>>>>>>> master
     classProto.getRouteRedirect = function(routeItem){
         var that = this,
             routeRedirect;
@@ -450,12 +615,40 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         route = route.replace(new RegExp('^\\.'), '');
         // Prepare url
         var url =  window.location.protocol + baseUrl + route;
+        return that.preparePath(url, parameters);
+    };
+
+    classProto.preparePath = function(url, parameters){
+        var that = this;
         if (!cm.isEmpty(parameters)) {
+<<<<<<< HEAD
             url = [url, parameters].join('?')
+=======
+            url = [url, parameters].join('?');
         }
         return url;
     };
 
+    classProto.prepareHash = function(url, hash){
+        var that = this;
+        if (!cm.isEmpty(hash)) {
+            url = [url, hash].join('#');
+>>>>>>> master
+        }
+        return url;
+    };
+
+<<<<<<< HEAD
+=======
+    classProto.prepareExternalHref = function(route, hash, urlParams){
+        var that = this;
+        // Fill url params
+        route = that.fillCaptures(route, urlParams);
+        // Add hash
+        return that.prepareHash(route, hash);
+    };
+
+>>>>>>> master
     classProto.getMap = function(route){
         var machRX = /({(\w+)})/g,
             map = {},
@@ -558,6 +751,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         if (cm.isEmpty(route)) {
             return;
         }
+<<<<<<< HEAD
 
         // Validate
         params = cm.merge({
@@ -574,6 +768,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
 
         // Check route type
+=======
+        // Check a route type
+>>>>>>> master
         var item = that.get(route);
         if (item) {
             if (item.type === 'external') {
@@ -608,10 +805,14 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
 
         // Add hash
+<<<<<<< HEAD
         if (!cm.isEmpty(params.hash)) {
             url = [url, params.hash].join('#');
         }
         return url;
+=======
+        return that.prepareHash(route, hash);
+>>>>>>> master
     };
 
     classProto.getFullURL = function(route, params, urlParams){
@@ -655,7 +856,8 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             parametersConfig: null,
             hash: null,
             captures: null,
-            assignLocation: false
+            assignLocation: false,
+            replaceLocation: false,
         }, params);
         if (cm.isEmpty(params.urlData)) {
             params.urlData = params.captures;
@@ -668,6 +870,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }
 
         // Get route url
+<<<<<<< HEAD
         var url = that.getURL(route, params);
 
         // Assign new location or push/replace history state
@@ -676,13 +879,35 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }else{
             that.setURL(url, params);
         }
+=======
+        var urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
+        var url = that.getURL(route, hash, urlParams);
+        that.setURL(url, hash, params);
+>>>>>>> master
         return that;
     };
 
     classProto.setURL = function(url, params){
         var that = this;
+<<<<<<< HEAD
         var route = that.prepareRouteParts(url);
         that.pushRoute(route, params);
+=======
+        // Validate params
+        params = cm.merge({
+            assignLocation: false,
+            replaceLocation: false,
+        }, params);
+        // Assign new location or push/replace history state
+        if(params.replaceLocation) {
+            window.history.replaceState(that.current.state, '', url);
+        }else if(params.assignLocation){
+            window.location.assign(url);
+        }else{
+            var route = that.prepareRoute(url);
+            that.pushRoute(route, params);
+        }
+>>>>>>> master
         return that;
     };
 
@@ -705,6 +930,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             state = cm.clone(item);
             state.params = cm.merge(state.params, params);
             state.data = that.getStorageData(state.route, state, params.data);
+            if ( that.current ) {
+                state.route = that.current.route;
+            }
             // Process route
             that.destructRoute(that.current);
             that.constructRoute(state);

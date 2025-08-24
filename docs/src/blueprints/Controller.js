@@ -1,21 +1,21 @@
-cm.define('Com.MyController', {
-    'extend' : 'Com.AbstractController',
-    'params' : {
-        'renderStructure' : false,
-        'embedStructureOnRender' : false,
-        'controllerEvents' : true
-    }
+cm.define('Com.Sample', {
+    extend: 'Com.AbstractController',
+    params: {
+        controllerEvents: true,
+        renderStructure: true,
+        embedStructureOnRender: true,
+        embedStructure: 'append',
+    },
 },
-function(params){
-    var that = this;
-    // Call parent class construct in current context
-    Com.AbstractController.apply(that, arguments);
+function() {
+    Com.AbstractController.apply(this, arguments);
 });
 
-cm.getConstructor('Com.MyController', function(classConstructor, className, classProto, classInherit){
-    classProto.renderViewModel = function(){
-        var that = this;
-        // Call parent method - renderViewModel
+cm.getConstructor('Com.Sample', function(classConstructor, className, classProto, classInherit) {
+    classProto.renderViewModel = function() {
+        const that = this;
+
+        // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
     };
 });

@@ -21,11 +21,14 @@
         .mx__background-clip(padding-box);
 
         > .inner {
-            .cm__text-overflow;
             display: block;
             position: relative;
             word-wrap: normal;
             text-decoration: none;
+
+            &.is-nowrap {
+                .cm__text-nowrap;
+            }
         }
 
         &.pull-left {
@@ -149,6 +152,16 @@
         .pt__gridlist__has-background;
     }
 
+    &.is-scrollable {
+        .cm__scroll--auto;
+
+        table {
+            width: auto;
+            min-width: 100%;
+            max-width: none;
+        }
+    }
+
     &.is-editable {
         > .com__columns__chassis {
             display: block;
@@ -186,6 +199,14 @@
 
 .pt__gridlist__counter {
     .cm__box;
+}
+
+.pt__gridlist__row-filter {
+    td, th {
+        > .inner {
+            min-height: @CmForm-FieldHeight;
+        }
+    }
 }
 
 .pt__gridlist__indent {
@@ -243,17 +264,24 @@
 
     tbody {
         tr {
+            background-color: @PtGridlist-Cell-DefaultBackground;
+
             th, td {
                 background-color: @PtGridlist-Cell-DefaultBackground;
             }
 
-            &:hover {
+            &:hover,
+            &.highlight {
+                background-color: @PtGridlist-Cell-HoverBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HoverBackground;
                 }
             }
 
             &:active {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
@@ -261,11 +289,16 @@
 
             &.success,
             &.valid {
+                background-color: @PtGridlist-Cell-SuccessBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-SuccessBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
+                    background-color: @PtGridlist-Cell-SuccessHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-SuccessHoverBackground;
                     }
@@ -274,11 +307,16 @@
 
             &.danger,
             &.invalid {
+                background-color: @PtGridlist-Cell-DangerBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-DangerBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
+                    background-color: @PtGridlist-Cell-DangerHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-DangerHoverBackground;
                     }
@@ -286,11 +324,16 @@
             }
 
             &.warning {
+                background-color: @PtGridlist-Cell-WarningBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-WarningBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
+                    background-color: @PtGridlist-Cell-WarningHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-WarningHoverBackground;
                     }
@@ -298,11 +341,16 @@
             }
 
             &.active {
+                background-color: @PtGridlist-Cell-ActiveBackground;
+
                 th, td {
                     background-color: @PtGridlist-Cell-ActiveBackground;
                 }
 
-                &:hover {
+                &:hover,
+                &.highlight {
+                    background-color: @PtGridlist-Cell-ActiveHoverBackground;
+
                     th, td {
                         background-color: @PtGridlist-Cell-ActiveHoverBackground;
                     }
@@ -329,17 +377,23 @@
 
     tbody {
         tr {
+            background-color: @PtGridlist-Cell-HasBackground-Default;
+
             td {
                 background-color: @PtGridlist-Cell-HasBackground-Default;
             }
 
             &:hover {
+                background-color: @PtGridlist-Cell-HasBackground-Hover;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HasBackground-Hover;
                 }
             }
 
             &:active {
+                background-color: @PtGridlist-Cell-HasBackground-Active;
+
                 th, td {
                     background-color: @PtGridlist-Cell-HasBackground-Active;
                 }
@@ -354,13 +408,7 @@
 
     html.is-adaptive {
         .pt__gridlist {
-            .cm__scroll--auto;
-
-            table {
-                width: auto;
-                min-width: 100%;
-                max-width: none;
-            }
+            .pt__gridlist.is-scrollable;
         }
 
         .pt__gridlist.is-adaptive {

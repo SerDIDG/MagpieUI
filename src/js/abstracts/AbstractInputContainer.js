@@ -14,7 +14,7 @@ cm.define('Com.AbstractInputContainer', {
         'embedStructureOnRender' : false,
         'controllerEvents' : true,
         'constructor' : 'Com.AbstractInput',
-        'params' : {}
+        'constructorParams' : {}
     }
 },
 function(params){
@@ -62,7 +62,7 @@ cm.getConstructor('Com.AbstractInputContainer', function(classConstructor, class
 
     classProto.validateControllerParams = function(){
         var that = this;
-        return cm.merge(that.params['params'], {
+        return cm.merge(that.params['constructorParams'], {
             'node' : that.params['node'],
             'value' : that.params['value'],
             'defaultValue' : that.params['defaultValue']

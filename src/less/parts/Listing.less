@@ -175,6 +175,23 @@
         }
     }
 
+    &.is-flex {
+        ul {
+            li {
+                display: flex;
+
+                .l {
+                    min-width: 0;
+                    flex: auto;
+                }
+
+                .r {
+                    flex: none;
+                }
+            }
+        }
+    }
+
     &.is-inline {
         ul {
             .clearfix;
@@ -233,7 +250,7 @@
                     }
                 }
 
-                &:hover {
+                &:is(:hover, :focus-visible, .highlight) {
                     text-decoration: none;
                     .mx__transition(all, @CmUI-Transition-DurationReverse);
                 }
@@ -254,7 +271,7 @@
             }
 
             .pt__listing-items {
-                margin: @PtListingItems-Indent 0 0 @CmIndent-XSmall;
+                margin: @PtListingItems-Indent 0 0 @PtListingItems-GroupIndent;
 
                 &:first-child {
                     margin-top: 0;
@@ -286,6 +303,7 @@
             &.sticky {
                 position: sticky;
                 top: 0;
+                z-index: 2;
 
                 > a,
                 > .inner,
@@ -298,6 +316,7 @@
                 .title {
                     position: sticky;
                     top: 0;
+                    z-index: 2;
                     background-color: @CmColor-Background;
                 }
             }
@@ -317,15 +336,19 @@
             li {
                 > a,
                 > .inner {
-                    &:hover {
+                    &:is(:hover, :focus-visible, .highlight) {
                         background-color: @CmColor-Secondary-LightHover;
+                    }
+
+                    &:is(:active, .active) {
+                        background-color: @CmColor-Primary-LightActive;
                     }
                 }
 
                 &.active {
                     > a,
                     > .inner {
-                        &:hover {
+                        &:is(:hover, :focus-visible, .highlight) {
                             background-color: @CmColor-Primary-LightActiveHover;
                         }
                     }

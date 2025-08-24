@@ -180,10 +180,10 @@ cm.getConstructor('Com.GalleryPopup', function(classConstructor, className, clas
 
     classProto.keyPressEvent = function(event){
         var that = this;
-        cm.handleKey(event, 'left', function(){
+        cm.handleKey(event, 'ArrowLeft', function(){
             that.components.dialog.isFocus && that.prev();
         });
-        cm.handleKey(event, 'right', function(){
+        cm.handleKey(event, 'ArrowRight', function(){
             that.components.dialog.isFocus && that.next();
         });
     };

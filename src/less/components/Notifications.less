@@ -48,6 +48,10 @@
                     @margin_calc: (@CmFont-Base-LineHeight - @CmSize-Small) / 2;
                     @margin: max(round((@margin_calc)), 0px);
                     margin-top: @margin;
+
+                    &[class*="svg__close"] {
+                        background-size: 18px;
+                    }
                 }
             }
 

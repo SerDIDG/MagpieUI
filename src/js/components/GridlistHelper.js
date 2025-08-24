@@ -11,10 +11,10 @@ cm.define('Com.GridlistHelper', {
         'onRender',
         'onColumnsChange',
         'onColumnsResize',
-        'enableEditing',
-        'disableEditing',
-        'enableEditable',
-        'disableEditable'
+        'onEnableEditing',
+        'onEnableEditable',
+        'onDisableEditing',
+        'onDisableEditable',
     ],
     'params' : {
         'node' : cm.node('div'),
@@ -110,8 +110,8 @@ function(params){
             that.isEditing = true;
             cm.addClass(that.params['node'], 'is-editing is-editable');
             that.components['columns'] && that.components['columns'].enableEditing();
-            that.triggerEvent('enableEditing');
-            that.triggerEvent('enableEditable');
+            that.triggerEvent('onEnableEditing');
+            that.triggerEvent('onEnableEditable');
         }
         return that;
     };
@@ -121,8 +121,8 @@ function(params){
             that.isEditing = false;
             cm.removeClass(that.params['node'], 'is-editing is-editable');
             that.components['columns'] && that.components['columns'].disableEditing();
-            that.triggerEvent('disableEditing');
-            that.triggerEvent('disableEditable');
+            that.triggerEvent('onDisableEditing');
+            that.triggerEvent('onDisableEditable');
         }
         return that;
     };

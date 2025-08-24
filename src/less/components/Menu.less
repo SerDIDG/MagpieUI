@@ -1,44 +1,42 @@
-/* ******* COMPONENTS: MENU ******* */
+.pt__menu--tooltip {
+    .pt__menu-dropdown {
+        .pt__menu-dropdown--base;
+        .pt__menu-dropdown--position;
+        .pt__menu-dropdown--show;
+        position: static;
+    }
+}
 
 .com__menu {
+    display: inline-flex;
+    align-items: center;
+    gap: @CmIndent-XXXSmall;
+
     .button {
         margin: 0 !important;
-    }
-
-    > .label {
-        margin: 0 @CmIndent-XXXSmall;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &:last-child {
-            margin-right: 0;
-        }
     }
 
     .pt__menu {
         display: none;
     }
-}
 
-/* *** TOOLTIP *** */
+    &--link {
+        text-decoration: none;
 
-.com__tooltip {
-    &.com__menu-tooltip {
-        > .inner {
-            > .scroll {
-                overflow: visible;
+        &:is(:hover, :active, :focus-visible) {
+            text-decoration: none;
+
+            .label {
+                text-decoration: underline;
             }
         }
+    }
+}
 
-        .pt__menu {
-            .pt__menu-dropdown {
-                .pt__menu-dropdown--base;
-                .pt__menu-dropdown--position;
-                .pt__menu-dropdown--show;
-                position: static;
-            }
+.com__tooltip.com__menu-tooltip {
+    > .inner {
+        > .scroll {
+            overflow: visible;
         }
     }
 }

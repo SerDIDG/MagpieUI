@@ -46,18 +46,18 @@
         }
     }
 
-    &.error,
-    &.danger {
+    &:is(.error, .danger) {
         > dt,
         > .field__title {
             color: @CmColor-Danger-DarkDefault;
         }
 
+        .pt__check-line,
         .pt__field__error {
             color: @CmColor-Danger-DarkDefault;
         }
 
-        .input {
+        .input-alike {
             border: 1px solid @CmColor-Danger-DarkDefault;
             background-color: @CmColor-Danger-LightHighlight;
         }
@@ -69,28 +69,29 @@
             color: @CmColor-Warning-DarkDefault;
         }
 
+        .pt__check-line,
         .pt__field__error {
             color: @CmColor-Warning-DarkDefault;
         }
 
-        .input {
+        .input-alike {
             border: 1px solid @CmColor-Warning-DarkDefault;
             background-color: @CmColor-Warning-LightHighlight;
         }
     }
 
-    &.ok,
-    &.success {
+    &:is(.ok, .success) {
         > dt,
         > .field__title {
             color: @CmColor-Success-DarkDefault;
         }
 
+        .pt__check-line,
         .pt__field__error {
             color: @CmColor-Success-DarkDefault;
         }
 
-        .input {
+        .input-alike {
             border: 1px solid @CmColor-Success-DarkDefault;
             background-color: @CmColor-Success-LightHighlight;
         }
@@ -137,7 +138,7 @@
     &.is-no-label {
         > dt,
         > .field__title {
-            display: none;
+            &:extend(.cm__hidden);
         }
 
         > dd,
@@ -209,7 +210,7 @@
         &.is-no-label {
             > dt,
             > .field__title {
-                display: none;
+                &:extend(.cm__hidden);
             }
         }
 
@@ -326,34 +327,41 @@
 
 .pt__field-status {
     transition: all @CmUI-Transition-DurationLong ease-in-out;
+    color: var(--color);
 
     &.primary,
     &.accent {
-        .cm__color__primary;
+        --color: var(--cm-color--primary);
     }
 
     &.secondary {
-        .cm__color__secondary;
+        --color: var(--cm-color--secondary);
     }
 
     &.placeholder {
-        .cm__color__placeholder;
+        --color: var(--cm-color--placeholder);
     }
 
     &.hint {
-        .cm__color__hint;
+        --color: var(--cm-color--hint);
     }
 
     &.success {
-        .cm__color__success;
+        --color: var(--cm-color--success);
     }
 
     &.warning {
-        .cm__color__warning;
+        --color: var(--cm-color--warning);
     }
 
     &.danger {
-        .cm__color__danger;
+        --color: var(--cm-color--danger);
+    }
+
+    &.has-icon {
+        display: flex;
+        gap: @CmForm-IconsIndent;
+        align-items: center;
     }
 
     &.is-hidden {
@@ -385,14 +393,14 @@
 
 ul.pt__field__hint {
     @padding_calc: (@CmForm-FieldIndent - @CmFont-Base-LineHeightSmall) / 2;
-    @padding: max(min(round((@padding_calc)), 4px), 0px);
+    @padding: max(min(round((@padding_calc)), @CmForm-HintGap), 0px);
     margin: 0;
     padding: @padding 0;
     display: block;
     list-style: none;
 
     li {
-        margin-top: 4px;
+        margin-top: @CmForm-HintGap;
 
         &:first-child {
             margin: 0;
@@ -408,6 +416,8 @@ ul.pt__field__hint {
 /* *** CONTENT *** */
 
 .pt__field__content {
+    position: relative;
+
     .placeholder {
         .cm__font--placeholder;
         .cm__text-nowrap;
@@ -544,7 +554,7 @@ ul.pt__field__hint {
 
 /* ******* PART: FIELD: ADAPTIVE ******* */
 
-@media only screen and (max-width: @CmScreen-Mobile) {
+@media only screen and (max-width: @CmForm-Field-AdaptiveDown) {
 
     html.is-adaptive {
         .pt__field {

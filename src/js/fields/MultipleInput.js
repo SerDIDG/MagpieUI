@@ -141,8 +141,8 @@ cm.getConstructor('Com.MultipleInput', function(classConstructor, className, cla
 
     classProto.renderMultiField = function(){
         var that = this;
-        cm.getConstructor(that.params['multiFieldConstructor'], function(classObject){
-            that.components['multiField'] = new classObject(
+        cm.getConstructor(that.params['multiFieldConstructor'], function(classConstructor){
+            that.components['multiField'] = new classConstructor(
                 cm.merge(that.params['multiFieldParams'], {
                     'container' : that.nodes['holder']
                 })

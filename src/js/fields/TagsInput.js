@@ -141,7 +141,7 @@ function(params){
         });
         // Add new tag on enter or escape
         cm.addEvent(nodes['input'], 'keydown', function(e){
-            if(cm.isKey(e, ['enter', 'escape'])){
+            if(cm.inArray(['Enter', 'Escape'], e.code)){
                 cm.preventDefault(e);
                 addAdderTags(true);
                 that.isAutocomplete && that.components['autocomplete'].hide();

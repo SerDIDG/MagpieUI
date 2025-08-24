@@ -1,6 +1,10 @@
 /* ******* COMMON: INPUTS ******* */
 
+.input-alike {
+}
+
 .input {
+    &:extend(.input-alike all);
     width: 100%;
     margin: 0;
     vertical-align: top;
@@ -106,13 +110,11 @@
     }
 }
 
-.textarea--size-helper (@height, @padding, @border, @lineHeight) {
-    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
-
+.textarea--size-helper (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     min-height: @height;
     height: @CmTextarea-Height;
-    padding: max(ceil((@padding_calc)), @padding);
     border-width: @border;
+    .textarea--padding(@height, @padding, @border, @lineHeight);
 
     &.cm-autoresize {
         height: 0;
@@ -123,6 +125,11 @@
     }
 }
 
+.textarea--padding (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+    padding: max(ceil((@padding_calc)), @padding);
+}
+
 .input--size (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     .input--size-helper(@height, @padding, @border, @lineHeight);
 
@@ -131,14 +138,17 @@
     }
 }
 
-.input--size-helper (@height, @padding, @border, @lineHeight) {
+.input--size-helper (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    height: @height;
+    border-width: @border;
+    .input--padding(@height, @padding, @border, @lineHeight);
+}
+
+.input--padding (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
     @padding_calc: (@height - @lineHeight - @border * 2) / 2;
     @padding_y: max(ceil((@padding_calc)), 0px);
     @padding_x: max(ceil((@padding_calc)), @padding);
-
-    height: @height;
     padding: @padding_y @padding_x;
-    border-width: @border;
 }
 
 /* *** APPLY *** */
@@ -166,6 +176,7 @@ input[type="checkbox"] {
 input[type="text"],
 input[type="search"],
 input[type="email"],
+input[type="url"],
 input[type="tel"],
 input[type="number"],
 input[type="time"],

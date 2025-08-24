@@ -1,4 +1,4 @@
-// This file must be deleted in future
+// ToDO: rewrite
 
 Com['UA'] = {
     'hash' : {'ie':'MSIE','edge':'Edge','opera':'Opera','ff':'Firefox','firefox':'Firefox','webkit':'AppleWebKit','safari':'Safari','chrome':'Chrome','steam':'Steam'},
@@ -92,7 +92,7 @@ Com['UA'] = {
         }else if(str.indexOf('Valve Steam GameOverlay') > -1){
             arr['browser'] = 'Steam';
             arr['hash'] = 'steam';
-            arr['engine'] = 'AppleWebKit';
+            arr['engine'] = 'Blink';
             arr['full_version'] = str.replace(/^(?:.+)(?:Chrome\/)([0-9\.]{1,})(?:.+)$/, '$1');
             var sp = arr['full_version'].toString().split('.');
             arr['version'] = sp[0]+((sp[1])? '.'+sp[1] : '');
@@ -155,16 +155,32 @@ Com['UA'] = {
             arr['os'] = 'Linux';
             arr['os_version'] = str.replace(/^(?:.+)(?:Linux)(?:[\s]{0,1})([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1');
         }else if(str.indexOf('iPhone') > -1){
-            arr['os'] = 'iPhone';
+            arr['device'] = 'iPhone';
+            arr['device_name'] = 'Apple iPhone';
+            arr['os'] = 'iOS';
             arr['os_type'] = 'mobile';
             arr['os_version'] =  str.replace(/^(?:.+)(?:CPU[ iPhone]{0,} OS )([a-zA-Z0-9\._]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
         }else if(str.indexOf('iPad') > -1){
-            arr['os'] = 'iPad';
+            arr['device'] = 'iPad';
+            arr['device_name'] = 'Apple iPad';
+            arr['os'] = 'iOS';
+            arr['os_type'] = 'mobile';
+            arr['os_version'] =  str.replace(/^(?:.+)(?:CPU[ iPhone]{0,} OS )([a-zA-Z0-9\._]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
+        }else if(str.indexOf('iPod') > -1){
+            arr['device'] = 'iPod';
+            arr['device_name'] = 'Apple iPod';
+            arr['os'] = 'iOS';
             arr['os_type'] = 'mobile';
             arr['os_version'] =  str.replace(/^(?:.+)(?:CPU[ iPhone]{0,} OS )([a-zA-Z0-9\._]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
         }else if(str.indexOf('Macintosh') > -1){
-            if((str.indexOf('Mac OS X') > -1)){
-                arr['os'] = 'Mac OSX';
+            if(navigator.xr?.isSessionSupported("immersive-vr")) {
+                arr['device'] = 'Vision Pro';
+                arr['device_name'] = 'Apple Vision Pro';
+                arr['os'] = 'iOS';
+                arr['os_type'] = 'mobile';
+                arr['os_version'] = str.replace(/^(?:.+)(?:Version\/)([0-9\.]{1,})(?:.+)$/, '$1').replace(/_/gi,'.');
+            }else if((str.indexOf('Mac OS X') > -1)){
+                arr['os'] = 'macOS';
                 arr['os_version'] =  str.replace(/^(?:.+)(?:Mac OS X)(?:[\s]{0,1})([a-zA-Z0-9\.\s_]{0,})(?:.+)$/, '$1').replace(/_/gi,'.');
             }else{
                 arr['os'] = 'Mac OS';
@@ -202,14 +218,24 @@ Com['UA'] = {
         return arr;
     },
     'setBrowserClass' : function(){
-        var user = Com.UA.get();
-        if(user['hash']){
-            cm.addClass(document.getElementsByTagName('html')[0], [user['engine'].toLowerCase(), user['hash'], user['hash']+user['short_version']].join(' '));
+        const user = Com.UA.get();
+
+        let classes = [];
+        if(user['browser']){
+            classes.push(user['browser'].toLowerCase());
         }
+        if(user['os']){
+            classes.push(user['os'].toLowerCase());
+        }
+        if(user['device']){
+            classes.push(user['device'].toLowerCase());
+        }
+
+        classes = classes.map(className => className.replace(/\s/g, '-').trim());
+        cm.addClass(cm.getDocumentHtml(), classes);
     },
     'setEngineClass' : function(){
-        var user = Com.UA.get();
-        cm.addClass(document.getElementsByTagName('html')[0], user['engine'].toLowerCase());
+        cm.errorLog({type: 'error', name: 'Com.UA.setEngineClass', message: 'Deprecated!'});
     },
     'is' : function(str){
         var that = this,

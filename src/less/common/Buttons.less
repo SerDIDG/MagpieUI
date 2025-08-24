@@ -28,7 +28,11 @@
 
     &:hover {
         text-decoration: none;
-        .mx__transition(background color box-shadow border-color, @CmUI-Transition-DurationReverse);
+        transition-duration: @CmUI-Transition-DurationReverse;
+    }
+
+    &:active {
+        transition-duration: @CmUI-Transition-DurationReverse;
     }
 
     .button.button-primary;
@@ -192,6 +196,7 @@
     }
 
     &.button-danger--focus {
+        .mx__background__color(@CmColor-Danger-DarkHover, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
     }
 
     &.button-danger--hover {
@@ -340,6 +345,13 @@
 
     // /* *** SIZES *** */
 
+    &.button--medium {
+        @padding_calc: (@CmSize-Medium - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
+        min-height: @CmSize-Medium;
+        padding: @padding @CmIndent-Small;
+    }
+
     &.button--large {
         @padding_calc: (@CmSize-Large - @CmFont-Base-LineHeight) / 2;
         @padding: max(ceil((@padding_calc)), 0px);
@@ -389,11 +401,11 @@
             text-decoration: inherit;
 
             &:not(:first-child){
-                margin-left: @CmIndent-XXSmall;
+                margin-left: var(--cm-button--gap);
             }
 
             &:not(:last-child){
-                margin-right: @CmIndent-XXSmall;
+                margin-right: var(--cm-button--gap);
             }
         }
 

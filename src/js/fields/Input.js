@@ -15,15 +15,18 @@ cm.define('Com.Input', {
         'type': 'text',
         'inputmode': null,
         'trimValue': true,
+        'limitValue': true,
+        'constraints': {},
         'inputClasses': [],
         'lazy': false,
         'delay': 'cm._config.requestDelay',
         'icon': null,
         'iconTitle': null,
+        'iconEvents': true,
         'iconInsertMethod': 'appendChild',
         'autoResize': false,
         'enterPressBehavior': false,
-    }
+    },
 },
 function() {
     Com.AbstractInput.apply(this, arguments);
@@ -31,15 +34,16 @@ function() {
 
 cm.getConstructor('Com.Input', function(classConstructor, className, classProto, classInherit) {
     classProto.construct = function() {
-        var that = this;
-        
+        const that = this;
+
         // Variables
         that.selectionStartInitial = null;
         that.selectionEndInitial = null;
         that.isFocus = false;
+        that.wasFocus = false;
         that.lazyDelay = null;
         that.constraints = {};
-        
+
         // Bind context to methods
         that.focusHandler = that.focus.bind(that);
         that.blurHandler = that.blur.bind(that);
@@ -53,24 +57,33 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         that.inputKeyUpHanlder = that.inputKeyUp.bind(that);
         that.inputKeyPressHanlder = that.inputKeyPress.bind(that);
         that.iconEventHanlder = that.iconEvent.bind(that);
-        
+
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
 
+    classProto.onValidateParamsStart = function() {
+        const that = this;
+
+        // Validate input \ change constraints
+        cm.forEach(that.params.constraints, (handlers, eventName) => {
+            cm.forEach(handlers, handler => that.addConstraint(eventName, handler));
+        });
+    };
+
     classProto.onEnable = function() {
-        var that = this;
+        const that = this;
         that.nodes.content.input.disabled = false;
     };
 
     classProto.onDisable = function() {
-        var that = this;
+        const that = this;
         that.nodes.content.input.disabled = true;
     };
 
     classProto.onAfterRender = function() {
-        var that = this;
-        
+        const that = this;
+
         // Autoresize textarea
         if (that.params.type === 'textarea' && that.params.autoResize) {
             cm.addClass(that.nodes.content.input, 'cm-autoresize');
@@ -81,7 +94,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     /*** VIEW MODEL ***/
 
     classProto.renderContent = function() {
-        var that = this;
+        const that = this;
         that.triggerEvent('onRenderContentStart');
 
         // Structure
@@ -100,10 +113,10 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.renderContentView = function() {
-        var that = this;
+        const that = this;
 
         // Structure
-        var nodes = {};
+        const nodes = {};
         nodes.container = cm.node('div', {classes: 'pt__input'},
             nodes.inner = cm.node('div', {classes: 'inner'})
         );
@@ -120,14 +133,11 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 
         // Icon
         if (that.params.icon) {
-            if (cm.isNode(that.params.icon)) {
-                nodes.icon = that.params.icon
-            } else {
-                nodes.icon = cm.node('div', {classes: that.params.icon});
-            }
-            if (!cm.isEmpty(that.params.iconTitle)) {
-                nodes.icon.title = that.params.iconTitle;
-            }
+            cm.addClass(nodes.container, 'has-icon');
+            nodes.icon = that.renderIcon({
+                icon: that.params.icon,
+                title: that.params.iconTitle,
+            });
             cm[that.params.iconInsertMethod](nodes.icon, nodes.inner);
         }
 
@@ -136,15 +146,15 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.renderContentAttributes = function() {
-        var that = this;
+        const that = this;
 
         // Required
         that.nodes.content.input.required = that.params.required;
-        
+
         // Min / Max length
         cm.setInputMinLength(that.nodes.content.input, that.params.minLength, that.params.min);
         cm.setInputMaxLength(that.nodes.content.input, that.params.maxLength, that.params.max, that.params.limitMaxLength);
-        
+
         // Placeholder / Title
         if (!cm.isEmpty(that.params.placeholder)) {
             that.nodes.content.input.placeholder = that.params.placeholder;
@@ -172,13 +182,16 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         if (!cm.isEmpty(that.params.autocomplete)) {
             that.nodes.content.input.setAttribute('autocomplete', that.params.autocomplete);
         }
+        if (that.params.readOnly) {
+            that.nodes.content.input.setAttribute('readonly', true);
+        }
         if (that.params.renderName) {
             that.nodes.content.input.name = that.params.visibleName || that.params.name;
         }
     };
 
     classProto.renderContentEvents = function() {
-        var that = this;
+        const that = this;
         cm.addEvent(that.nodes.content.input, 'input', that.inputEventHandler);
         cm.addEvent(that.nodes.content.input, 'focus', that.focusEventHandler);
         cm.addEvent(that.nodes.content.input, 'blur', that.blurEventHandler);
@@ -186,25 +199,54 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         cm.addEvent(that.nodes.content.input, 'keydown', that.inputKeyDownHanlder);
         cm.addEvent(that.nodes.content.input, 'keyup', that.inputKeyUpHanlder);
         cm.addEvent(that.nodes.content.input, 'keypress', that.inputKeyPressHanlder);
-        cm.addEvent(that.nodes.content.icon, 'click', that.iconEventHanlder);
+        if (that.params.iconEvents) {
+            cm.addEvent(that.nodes.content.icon, 'mousedown', that.iconEventHanlder);
+            cm.addEvent(that.nodes.content.icon, 'click', that.iconEventHanlder);
+        }
+    };
+
+    /*** ICON ***/
+
+    classProto.renderIcon = function(params) {
+        const that = this;
+        params = cm.merge({
+            icon: null,
+            title: null,
+        }, params);
+
+        const node = cm.isNode(params.icon) ? params.icon : that.renderIconView(params);
+        if (!cm.isEmpty(params.title)) {
+            node.title = params.title;
+        }
+        return node;
+    };
+
+    classProto.renderIconView = function(params) {
+        const that = this;
+        return cm.node('div', {classes: params.icon});
+    };
+
+    classProto.getIcon = function() {
+        const that = this;
+        return that.nodes.content.icon;
     };
 
     /*** EVENTS ***/
 
     classProto.inputKeyDown = function(e) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onKeyDown', that.value, e);
         that.selectionStartInitial = that.nodes.content.input.selectionStart;
         that.selectionEndInitial = that.nodes.content.input.selectionStart;
         that.triggerEvent('onInputStart', that.value);
 
         // Handle enter key
-        if (cm.isKeyCode(e.keyCode, 'enter')) {
+        if (e.code === 'Enter') {
             // For input
             if (that.params.type !== 'textarea') {
                 cm.preventDefault(e);
                 that.setValue();
-                that.nodes.content.input.blur();
+                that.blur();
                 that.triggerEvent('onEnterPress', that.value);
             }
 
@@ -215,24 +257,24 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             ) {
                 cm.preventDefault(e);
                 that.setValue();
-                that.nodes.content.input.blur();
+                that.blur();
                 that.triggerEvent('onEnterPress', that.value);
             }
         }
     };
 
     classProto.inputKeyUp = function(e) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onKeyUp', that.value, e);
     };
 
     classProto.inputKeyPress = function(e) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onKeyPress', that.value, e);
     };
 
     classProto.inputEvent = function() {
-        var that = this;
+        const that = this;
         that.execConstraint('onInput', false);
         that.selectValue(true);
         if (that.params['lazy']) {
@@ -241,14 +283,14 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.focusEvent = function() {
-        var that = this;
+        const that = this;
         that.isFocus = true;
         that.execConstraint('onFocus', false);
         that.triggerEvent('onFocus', that.value);
     };
 
     classProto.blurEvent = function() {
-        var that = this;
+        const that = this;
         that.isFocus = false;
         that.execConstraint('onBlur', false);
         that.setValue(true);
@@ -256,70 +298,109 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.iconEvent = function(e) {
-        var that = this,
-            value = that.nodes.content.input.value;
+        const that = this;
         cm.preventDefault(e);
-        that.nodes.content.input.setSelectionRange(0, value.length);
-        that.focus();
-        that.triggerEvent('onIconClick');
+        if (e.type === 'mousedown') {
+            that.wasFocus = that.isFocus;
+        }
+        if (e.type === 'click') {
+            if (!that.wasFocus) {
+                that.focus(true);
+            }
+            that.triggerEvent('onIconClick');
+        }
     };
 
     /*** CONSTRAINT ***/
 
     classProto.addConstraint = function(eventName, handler) {
-        var that = this;
+        const that = this;
+        if (!that.constraints[eventName]) {
+            that.constraints[eventName] = [];
+        }
         if (cm.isFunction(handler)) {
-            that.constraints[eventName] = handler;
+            that.constraints[eventName] = cm.arrayAdd(that.constraints[eventName], handler);
         }
         return that;
     };
 
     classProto.removeConstraint = function(eventName, handler) {
-        var that = this;
-        that.constraints[eventName] = null;
+        const that = this;
+        if (!that.constraints[eventName]) {
+            that.constraints[eventName] = [];
+        }
+        if (cm.isFunction(handler)) {
+            that.constraints[eventName] = cm.arrayRemove(that.constraints[eventName], handler);
+        }
         return that;
     };
 
     classProto.execConstraint = function(eventName, triggerEvents) {
-        var that = this,
-            selectionStart,
-            value,
-            valueBounded;
+        const that = this;
+        if (!that.constraints[eventName]) {
+            return that;
+        }
+
+        // Execute event handlers
+        cm.forEach(that.constraints[eventName], handler => that.execConstraintHelper(handler));
+
+        // Trigger events
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
-        if (cm.isFunction(that.constraints[eventName])) {
-            selectionStart = that.nodes.content.input.selectionStart;
-            value = that.nodes.content.input.value;
-            valueBounded = that.constraints[eventName](value);
-            
-            // Set bounded value
-            that.nodes.content.input.value = that.constraints[eventName](value);
-            
-            // Restore caret position
-            if (value.indexOf(valueBounded) > -1 || value === valueBounded) {
-                that.nodes.content.input.setSelectionRange(selectionStart, selectionStart);
-            } else {
-                that.nodes.content.input.setSelectionRange(that.selectionStartInitial, that.selectionStartInitial);
-            }
-            
-            // Trigger events
-            if (triggerEvents) {
-                switch (eventName) {
-                    case 'onInput':
-                        that.selectValue(true);
-                        break;
-                    case 'onChange':
-                        that.setValue(true);
-                        break;
-                }
+        if (triggerEvents) {
+            switch (eventName) {
+                case 'onInput':
+                    that.selectValue(true);
+                    break;
+                case 'onChange':
+                    that.setValue(true);
+                    break;
             }
         }
         return that;
     };
 
+    classProto.execConstraintHelper = function(handler) {
+        const that = this;
+        if (!cm.isFunction(handler)) {
+            return;
+        }
+
+        const selectionStart = that.nodes.content.input.selectionStart;
+        const value = that.nodes.content.input.value;
+        const valueBounded = handler(value);
+
+        // Set bounded value
+        that.nodes.content.input.value = valueBounded;
+
+        // Restore caret position
+        if (value.indexOf(valueBounded) > -1 || value === valueBounded) {
+            that.nodes.content.input.setSelectionRange(selectionStart, selectionStart);
+        } else {
+            that.nodes.content.input.setSelectionRange(that.selectionStartInitial, that.selectionStartInitial);
+        }
+    };
+
     /*** DATA VALUE ***/
 
+    classProto.validateValueHelper = function(value) {
+        const that = this;
+
+        // Trim value
+        if (!cm.isEmpty(value)) {
+            if (that.params.trimValue && cm.isString(value)) {
+                value = value.trim();
+            }
+            if (that.params.limitValue && that.params.type === 'number') {
+                value = cm.getMinMax(value, that.params.min, that.params.max, that.params.minLength, that.params.maxLength);
+            }
+        }
+
+        // Call parent method
+        return classInherit.prototype.validateValueHelper.call(that, value);
+    };
+
     classProto.lazyValue = function(triggerEvents) {
-        var that = this;
+        const that = this;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.lazyDelay && clearTimeout(that.lazyDelay);
         that.lazyDelay = setTimeout(function() {
@@ -330,9 +411,6 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.setValue = function(triggerEvents) {
         var that = this,
             value = that.nodes.content.input.value;
-        if (that.params.trimValue) {
-            value = value.trim();
-        }
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.set(value, triggerEvents);
         return that;
@@ -341,30 +419,31 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.selectValue = function(triggerEvents) {
         var that = this,
             value = that.nodes.content.input.value;
-        if (that.params.trimValue) {
-            value = value.trim();
-        }
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.selectAction(value, triggerEvents);
         return that;
     };
 
     classProto.setData = function(value) {
-        var that = this;
+        const that = this;
         that.nodes.content.input.value = !cm.isUndefined(value) ? value : that.value;
         return that;
     };
 
     /******* PUBLIC *******/
 
-    classProto.focus = function() {
-        var that = this;
+    classProto.focus = function(selection) {
+        const that = this;
+        if (selection === true) {
+            var value = that.nodes.content.input.value;
+            that.nodes.content.input.setSelectionRange(0, value.length);
+        }
         that.nodes.content.input.focus();
         return that;
     };
 
     classProto.blur = function() {
-        var that = this;
+        const that = this;
         that.nodes.content.input.blur();
         return that;
     };
@@ -394,17 +473,6 @@ Com.FormFields.add('textarea', {
     }
 });
 
-Com.FormFields.add('password', {
-    'node': cm.node('input', {'type': 'password'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'password'
-    }
-});
-
 Com.FormFields.add('email', {
     'node': cm.node('input', {'type': 'email'}),
     'value': '',
@@ -415,6 +483,18 @@ Com.FormFields.add('email', {
         'type': 'email'
     }
 });
+
+Com.FormFields.add('url', {
+    'node': cm.node('input', {'type': 'url'}),
+    'value': '',
+    'defaultValue': '',
+    'fieldConstructor': 'Com.AbstractFormField',
+    'constructor': 'Com.Input',
+    'constructorParams': {
+        'type': 'url'
+    }
+});
+
 
 Com.FormFields.add('search', {
     'node': cm.node('input', {'type': 'search', 'inputmode': 'search', 'autocomplete': 'off'}),

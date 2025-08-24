@@ -32,74 +32,88 @@
  ******* */
 
 var cm = {
-        '_version' : '@@VERSION',
+        '_version': '@@VERSION',
         '_lang': 'en',
-        '_locale' : 'en-IN',
-        '_loadTime' : Date.now(),
-        '_isDocumentReady' : false,
-        '_isDocumentLoad' : false,
-        '_debug' : true,
-        '_debugAlert' : false,
-        '_deviceType' : 'desktop',
-        '_deviceOrientation' : 'landscape',
-        '_adaptive' : false,
+        '_locale': 'en-IN',
+        '_loadTime': Date.now(),
+        '_isDocumentReady': false,
+        '_isDocumentLoad': false,
+        '_debug': true,
+        '_debugAlert': false,
+        '_deviceType': 'desktop',
+        '_deviceOrientation': 'landscape',
+        '_adaptive': false,
         '_baseUrl': [window.location.protocol, window.location.hostname].join('//'),
-        '_pathUrl' : '',
-        '_assetsUrl' : [window.location.protocol, window.location.hostname].join('//'),
-        '_scrollSize' : 0,
-        '_pageSize' : {},
-        '_clientPosition' : {'left' : 0, 'top' : 0},
-        '_config' : {
-            'redrawOnLoad' : true,
-            'motionAsymmetric' : 'cubic-bezier(.5,0,.15,1)',
-            'motionSmooth' : 'ease-in-out',
-            'animDuration' : 250,
-            'animDurationShort' : 150,
-            'animDurationLong' : 500,
-            'loadDelay' : 500,
-            'lazyDelay' : 1000,
-            'hideDelay' : 250,
-            'hideDelayShort' : 150,
-            'hideDelayLong' : 500,
-            'autoHideDelay' : 2000,
-            'requestDelay' : 300,
-            'adaptiveFrom' : 768,
-            'screenTablet' : 1024,
-            'screenTabletPortrait' : 768,
-            'screenMobile' : 640,
-            'screenMobilePortrait' : 480,
-            'dateFormat' : '%Y-%m-%d',
-            'dateTimeFormat' : '%Y-%m-%d %H:%i:%s',
-            'dateFormatCase' : 'nominative',
-            'timeFormat' : '%H:%i:%s',
-            'displayDateFormat' : '%F %j, %Y',
-            'displayDateTimeFormat' : '%F %j, %Y, %H:%i',
-            'displayDateFormatCase' : 'nominative',
-            'tooltipIndent' : 4,
-            'tooltipTop' : 'targetHeight + 4',
-            'tooltipDown' : 'targetHeight + 4',
-            'tooltipUp' : '- (selfHeight + 4)'
-        },
-        '_variables' : {
-            '%baseUrl%' : 'cm._baseUrl',
-            '%assetsUrl%' : 'cm._assetsUrl',
-            '%pathUrl%' : 'cm._pathUrl',
-            '%version%' : 'cm._version'
-        },
-        '_strings' : {
-            'common' : {
-                'server_error' : 'An unexpected error has occurred. Please try again later.'
+        '_port': window.location.port,
+        '_pathUrl': '',
+        '_assetsUrl': [window.location.protocol, window.location.hostname].join('//'),
+        '_scrollSize': 0,
+        '_pageSize': {},
+        '_clientPosition': {'left': 0, 'top': 0},
+        '_config': {
+            'redrawOnLoad': true,
+            'motionAsymmetric': 'cubic-bezier(.5,0,.15,1)',
+            'motionSmooth': 'ease-in-out',
+            'animDuration': 250,
+            'animDurationShort': 150,
+            'animDurationLong': 500,
+            'loadDelay': 500,
+            'lazyDelay': 1000,
+            'hideDelay': 250,
+            'hideDelayShort': 150,
+            'hideDelayLong': 500,
+            'autoHideDelay': 2000,
+            'requestDelay': 300,
+            'adaptiveFrom': 768,
+            'screenTablet': 1024,
+            'screenTabletPortrait': 768,
+            'screenMobile': 640,
+            'screenMobilePortrait': 480,
+            'screenXSmall': 375,
+            'dateFormat': '%Y-%m-%d',
+            'dateTimeFormat': '%Y-%m-%d %H:%i:%s',
+            'dateFormatCase': 'nominative',
+            'timeFormat': '%H:%i:%s',
+            'displayDateFormat': '%F %j, %Y',
+            'displayDateTimeFormat': '%F %j, %Y, %H:%i',
+            'displayDateFormatCase': 'nominative',
+            'tooltipIndent': 4,
+            'tooltipTop': 'targetHeight + 4',
+            'tooltipDown': 'targetHeight + 4',
+            'tooltipUp': '- (selfHeight + 4)',
+            'tooltipLeft': 'targetWidth + 4',
+            'tooltipRight': '- (selfWidth + 4)',
+            'fileExtensions': {
+                'image': 'jpg|jpeg|png|gif|bmp|tga|svg|tiff|webp',
+                'video': 'avi|ogg|mpeg|mp4|m4a|m4b|mov|wmv|webm',
             },
-            'months' : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            'days' : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-            'daysShort' : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            'daysAbbr' : ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+            'fileTypes': {
+                'image': /image\/.*/,
+                'video': /video\/(mp4|webm|ogg|avi|mp4|mov|mpg|x-ms-wmv|quicktime)/,
+                'embed': /application\/pdf/,
+            }
+        },
+        '_variables': {
+            '%baseUrl%': 'cm._baseUrl',
+            '%port%': 'cm._port',
+            '%assetsUrl%': 'cm._assetsUrl',
+            '%pathUrl%': 'cm._pathUrl',
+            '%version%': 'cm._version'
+        },
+        '_strings': {
+            'common': {
+                'server_error': 'An unexpected error has occurred. Please try again later.'
+            },
+            'months': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            'days': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'daysShort': ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            'daysAbbr': ['S', 'M', 'T', 'W', 'T', 'F', 'S']
         }
     },
     Mod = {},
     Part = {},
     Com = {
-        'Elements' : {}
+        'Elements': {}
     };
 
 /* ******* CHECK SUPPORT ******* */
@@ -112,6 +126,8 @@ cm.isCanvas = !!document.createElement("canvas").getContext;
 cm.hasBeacon = !!(navigator.sendBeacon);
 cm.hasPointerEvent = !!(window.PointerEvent);
 
+cm.isMotionReduced = () => (window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true);
+
 /* ******* COMMON ******* */
 
 cm._getVariables = function(){
@@ -120,6 +136,48 @@ cm._getVariables = function(){
         data[name] = cm.reducePath(value, window);
     });
     return data;
+};
+
+/* ******* BREAKPOINTS ******* */
+
+cm.getBreakpoints = function() {
+    return {
+        desktop: cm._config.screenTablet,
+        desktopUp: cm._config.screenTablet,
+        desktopDown: (cm._config.screenTablet - 1),
+        tablet: cm._config.screenTabletPortrait,
+        tabletUp: (cm._config.screenTabletPortrait + 1),
+        tabletDown: cm._config.screenTabletPortrait,
+        mobile: cm._config.screenMobile,
+        mobileUp: (cm._config.screenMobile + 1),
+        mobileDown: cm._config.screenMobile,
+        small: cm._config.screenMobilePortrait,
+        smallUp: (cm._config.screenMobilePortrait + 1),
+        smallDown: cm._config.screenMobilePortrait,
+        xSmall: cm._config.screenXSmall,
+        xSmallUp: (cm._config.screenXSmall + 1),
+        xSmallDown: cm._config.screenXSmall,
+    };
+};
+
+cm.getBreakpoint = function() {
+    var pageSize = cm._pageSize || cm.getPageSize();
+    var breakpoints = [];
+    cm.forEach(cm._breakpoints, function(breakpoint, name) {
+        if (name.indexOf('Up') > -1 && pageSize.winWidth >= breakpoint) {
+            breakpoints.push(name);
+        }
+        if (name.indexOf('Down') > -1 && pageSize.winWidth <= breakpoint) {
+            breakpoints.push(name);
+        }
+    });
+    return breakpoints;
+};
+
+cm.isBreakpoint = function(value) {
+    return cm.isArray(value)
+        ? value.some(breakpoint => cm.inArray(cm._breakpoint, breakpoint))
+        : cm.inArray(cm._breakpoint, value);
 };
 
 /* ******* OBJECTS AND ARRAYS ******* */
@@ -333,23 +391,23 @@ cm.merge = function(o1, o2){
     return o;
 };
 
-cm.extend = function(o1, o2, deep){
+cm.extend = function(o1, o2, deep, clone){
     if(!o1){
         return o2;
     }
     if(!o2){
         return o1;
     }
-    var o;
+    deep = cm.isUndefined(deep) ? false : deep;
+    clone = cm.isUndefined(clone) ? true : clone;
     if(cm.isArray(o1)){
-        o = o1.concat(o2);
-        return o;
+        return o1.concat(o2);
     }
     if(cm.isObject(o1)){
-        o = cm.clone(o1);
+        var o = clone ? cm.clone(o1) : o1;
         cm.forEach(o2, function(item, key){
             if(deep){
-                o[key] = cm.extend(o[key], item);
+                o[key] = cm.extend(o[key], item, deep, clone);
             }else{
                 o[key] = item;
             }
@@ -465,15 +523,22 @@ cm.inArray = function(a, item){
         return a === item;
     }
     if(cm.isArray(a)){
-        return a.indexOf(item) > -1;
+        return a.includes(item);
     }
-    return false
+    return false;
 };
 
 cm.arrayRemove = function(a, item){
     var index = cm.arrayIndex(a, item);
     if(index > -1){
         a.splice(index, 1);
+    }
+    return a;
+};
+
+cm.arrayClear = function(a){
+    while(a.length > 0){
+        a.pop();
     }
     return a;
 };
@@ -516,24 +581,32 @@ cm.arraySort = function(a, key, dir, clone){
     switch(dir){
         case 'asc':
             newA.sort(function(a, b){
-                if(key){
-                    return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
-                }else{
-                    return (a < b) ? 1 : ((a > b) ? -1 : 0);
-                }
+                return cm.arraySortAsc(a, b, key);
             });
             break;
         case 'desc' :
             newA.sort(function(a, b){
-                if(key){
-                    return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
-                }else{
-                    return (a < b) ? -1 : ((a > b) ? 1 : 0);
-                }
+                return cm.arraySortDesc(a, b, key);
             });
             break;
     }
     return newA;
+};
+
+cm.arraySortAsc = function(a, b, key) {
+    if(key){
+        return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
+    }else{
+        return (a < b) ? 1 : ((a > b) ? -1 : 0);
+    }
+};
+
+cm.arraySortDesc = function(a, b, key) {
+    if(key){
+        return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
+    }else{
+        return (a < b) ? -1 : ((a > b) ? 1 : 0);
+    }
 };
 
 cm.arrayParseFloat = function(a){
@@ -1070,9 +1143,9 @@ cm.onReady = function(handler, logMessage){
         called = true;
         if(logMessage){
             cm.errorLog({
-                'type' : 'common',
-                'name' : 'cm.onReady',
-                'message' : ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
+                type: 'common',
+                name: 'cm.onReady',
+                message: ['Ready time', (Date.now() - cm._loadTime), 'ms.'].join(' ')
             });
         }
         handler();
@@ -1141,10 +1214,50 @@ cm.isCenterButton = function(e){
     return e.button === 1;
 };
 
+cm.ticking = function() {
+    let isTicking = false;
+    return (callback) => {
+        if (isTicking) return;
+        isTicking = true;
+        animFrame(() => {
+            isTicking = false;
+            if (cm.isFunction(callback)) {
+                callback();
+            }
+        });
+    };
+};
+
+cm.throttleFrame = function(callback) {
+    let isTicking = false;
+    return (...args) => {
+        if (isTicking) return;
+        isTicking = true;
+        animFrame(() => {
+            isTicking = false;
+            if (cm.isFunction(callback)) {
+                callback.apply(this, args);
+            }
+        });
+    };
+};
+
+cm.throttle = function (func, wait) {
+    let lastCall = 0;
+    return function (...args) {
+        const now = Date.now();
+        if (now - lastCall >= wait) {
+            lastCall = now;
+            func.apply(this, args);
+        }
+    };
+};
+
 cm.debounce = function(func, wait, immediate){
     var timeout, result;
     return function(){
-        var context = this, args = arguments;
+        var context = this,
+            args = arguments;
         var later = function(){
             timeout = null;
             if(!immediate){
@@ -1166,7 +1279,7 @@ cm.onScrollStart = function(node, handler){
         scrollEnd = function(){
             worked = false;
         },
-        helper = cm.debounce(scrollEnd, 300),
+        helper = cm.debounce(scrollEnd, 100),
         scrollEvent = function(){
             !worked && handler();
             worked = true;
@@ -1181,7 +1294,7 @@ cm.onScrollStart = function(node, handler){
 };
 
 cm.onScrollEnd = function(node, handler){
-    var helper = cm.debounce(handler, 300);
+    var helper = cm.debounce(handler, 100);
     cm.addEvent(node, 'scroll', helper);
     return {
         'remove' : function(){
@@ -1283,12 +1396,16 @@ cm.dataURItoFile = function(dataURI, data) {
 cm.bufferToHEX = function(arrayBuffer){
     var byteArray = new Uint8Array(arrayBuffer),
         hexParts = [];
-    for(var i = 0; i < byteArray.length; i++){
+    for(var i = 0; i < byteArray.byteLength; i++){
         var hex = byteArray[i].toString(16),
             paddedHex = ('00' + hex).slice(-2);
         hexParts.push(paddedHex);
     }
     return hexParts.join('');
+};
+
+cm.bufferToBase64 = function(arrayBuffer){
+    return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 };
 
 /* ******* NODES ******* */
@@ -1331,8 +1448,8 @@ cm.addScript = function(src, async, callback){
         cm._addScriptStack[src] = item;
         // Render Script
         item['script'] = document.createElement('script');
-        item['script'].src = item['src'];
         item['script'].async = item['async'];
+        item['script'].src = item['src'];
         cm.addEvent(item['script'], 'load', item['callback']);
         cm.addEvent(item['script'], 'error', item['callback']);
         cm.appendChild(item['script'], cm.getDocumentHead());
@@ -1451,10 +1568,8 @@ cm.node = cm.Node = function(){
         i = 0;
     if(cm.isObject(args[1])){
         cm.forEach(args[1], function(value, key){
-            if(cm.isUndefined(value)){
-                return;
-            }
-            if(cm.isObject(value) && !['class', 'classes', 'style', 'styles'].includes(key)){
+            if (cm.isUndefined(value)) return;
+            if (cm.isObject(value) && !['class', 'classes', 'style', 'styles'].includes(key)) {
                 value = JSON.stringify(value);
             }
             switch(key){
@@ -1469,6 +1584,9 @@ cm.node = cm.Node = function(){
                 case 'innerHTML':
                     el.innerHTML = value;
                     break;
+                case 'innerText':
+                    el.innerText = value;
+                    break;
                 default:
                     el.setAttribute(key, value);
                     break;
@@ -1480,10 +1598,10 @@ cm.node = cm.Node = function(){
     }
     for(var ln = args.length; i < ln; i++){
         if(typeof args[i] !== 'undefined'){
-            if(typeof args[i] === 'string' || typeof args[i] === 'number'){
+            if (typeof args[i] === 'string' || typeof args[i] === 'number') {
                 cm.appendChild(cm.textNode(args[i]), el);
-            }else{
-                cm.appendChild(args[i], el);
+            } else {
+                cm.appendNodes(args[i], el);
             }
         }
     }
@@ -1492,6 +1610,39 @@ cm.node = cm.Node = function(){
 
 cm.textNode = function(text){
     return document.createTextNode(text);
+};
+
+cm.svgNode = function(){
+    const ns = 'http://www.w3.org/2000/svg';
+    const xlink = 'http://www.w3.org/1999/xlink';
+
+    const args = arguments;
+    const el = document.createElementNS(ns, args[0]);
+    let i = 0;
+    if(cm.isObject(args[1])){
+        cm.forEach(args[1], function(value, key){
+            if(cm.isUndefined(value)) return;
+            if (/^xlink/.test(key)) {
+                const name = key.split(':').pop();
+                el.setAttributeNS(xlink, name, value);
+            } else {
+                el.setAttribute(key, value);
+            }
+        });
+        i = 2;
+    }else{
+        i = 1;
+    }
+    for(let ln = args.length; i < ln; i++){
+        if(typeof args[i] !== 'undefined'){
+            if (typeof args[i] === 'string' || typeof args[i] === 'number') {
+                cm.appendChild(cm.textNode(args[i]), el);
+            } else {
+                cm.appendNodes(args[i], el);
+            }
+        }
+    }
+    return el;
 };
 
 cm.wrap = function(target, node){
@@ -1635,19 +1786,28 @@ cm.firstEl = function(node){
     return node;
 };
 
-cm.insertFirst = function(node, target){
-    if(cm.isNode(node) && cm.isNode(target)){
-        if(target.firstChild){
-            cm.insertBefore(node, target.firstChild);
-        }else{
-            cm.appendChild(node, target);
-        }
+cm.insertFirst = function(node, target, reAppend){
+    reAppend = cm.isUndefined(reAppend) ? true : reAppend;
+    if(!cm.isNode(node) || !cm.isNode(target)){
+        return node;
     }
+    const isAppended = cm.isParent(target, node);
+    const isAlreadyFirst = isAppended && target.firstChild === node;
+    if (reAppend || !isAppended || !isAlreadyFirst) {
+        target.insertBefore(node, target.firstChild);
+    }
+
     return node;
 };
 
-cm.insertLast = cm.appendChild = function(node, target){
-    if(cm.isNode(node) && cm.isNode(target)){
+cm.insertLast = cm.appendChild = function(node, target, reAppend){
+    reAppend = cm.isUndefined(reAppend) ? true : reAppend;
+    if(!cm.isNode(node) || !cm.isNode(target)){
+        return node;
+    }
+    const isAppended = cm.isParent(target, node);
+    const isAlreadyLast = isAppended && target.lastChild === node;
+    if (reAppend || !isAppended || !isAlreadyLast) {
         target.appendChild(node);
     }
     return node;
@@ -1746,91 +1906,91 @@ cm.strToHTML = function(str){
 cm.getNodes = function(container, marker){
     container = container || document.body;
     marker = marker || 'data-node';
-    var nodes = {},
+    var accumulator = {},
         processedNodes = [];
 
-    var separation = function(node, obj, processedObj){
-        var attrData = node.getAttribute(marker),
-            separators = attrData? attrData.split('|') : [],
-            altProcessedObj;
+    var separation = function(node, accumulatorObj, processedObj){
+        var path = node.getAttribute(marker),
+            pathItems = path? path.split('|') : [],
+            tempProcessedObj;
 
-        cm.forEach(separators, function(separator){
-            altProcessedObj = [];
-            if(separator.indexOf('.') === -1){
-                process(node, separator, obj, altProcessedObj);
+        cm.forEach(pathItems, function(item){
+            tempProcessedObj = [];
+            if(item.indexOf('.') === -1){
+                process(node, item, accumulatorObj, tempProcessedObj);
             }else{
-                pathway(node, separator, altProcessedObj);
+                pathway(node, item, tempProcessedObj);
             }
-            cm.forEach(altProcessedObj, function(node){
+            cm.forEach(tempProcessedObj, function(node){
                 processedObj.push(node);
             });
         });
     };
 
-    var pathway = function(node, attr, processedObj){
-        var separators = attr? attr.split('.') : [],
-            obj = nodes;
-        cm.forEach(separators, function(separator, i){
-            if(i === 0 && cm.isEmpty(separator)){
-                obj = nodes;
-            }else if((i + 1) === separators.length){
-                process(node, separator, obj, processedObj);
+    var pathway = function(node, path, processedObj){
+        var pathItems = path? path.split('.') : [],
+            accumulatorObj = accumulator;
+        cm.forEach(pathItems, function(item, i){
+            if(i === 0 && cm.isEmpty(item)){
+                accumulatorObj = accumulator;
+            }else if((i + 1) === pathItems.length){
+                process(node, item, accumulatorObj, processedObj);
             }else{
-                if(!obj[separator]){
-                    obj[separator] = {};
+                if(!accumulatorObj[item]){
+                    accumulatorObj[item] = {};
                 }
-                obj = obj[separator];
+                accumulatorObj = accumulatorObj[item];
             }
         });
     };
 
-    var process = function(node, attr, obj, processedObj){
-        var separators = attr? attr.split(':') : [],
+    var process = function(node, path, accumulatorObj, processedObj){
+        var pathItems = path? path.split(':') : [],
             childNodes;
-        if(separators.length === 1){
-            obj[separators[0]] = node;
-        }else if(separators.length === 2 || separators.length === 3){
-            if(separators[1] === '[]'){
-                if(!obj[separators[0]]){
-                    obj[separators[0]] = [];
+        if(pathItems.length === 1){
+            accumulatorObj[pathItems[0]] = node;
+        }else if(pathItems.length === 2 || pathItems.length === 3){
+            if(pathItems[1] === '[]'){
+                if(!accumulatorObj[pathItems[0]]){
+                    accumulatorObj[pathItems[0]] = [];
                 }
                 childNodes = {};
-                if(separators[2]){
-                    childNodes[separators[2]] = node;
+                if(pathItems[2]){
+                    childNodes[pathItems[2]] = node;
                 }
                 find(node, childNodes, processedObj);
-                obj[separators[0]].push(childNodes);
-            }else if(separators[1] === '[&]'){
-                if(!obj[separators[0]]){
-                    obj[separators[0]] = [];
+                accumulatorObj[pathItems[0]].push(childNodes);
+            }else if(pathItems[1] === '[&]'){
+                if(!accumulatorObj[pathItems[0]]){
+                    accumulatorObj[pathItems[0]] = [];
                 }
-                obj[separators[0]].push(node);
-            }else if(separators[1] === '{}'){
-                if(!obj[separators[0]]){
-                    obj[separators[0]] = {};
+                accumulatorObj[pathItems[0]].push(node);
+            }else if(pathItems[1] === '{}'){
+                if(!accumulatorObj[pathItems[0]]){
+                    accumulatorObj[pathItems[0]] = {};
                 }
-                if(separators[2]){
-                    obj[separators[0]][separators[2]] = node;
+                if(pathItems[2]){
+                    accumulatorObj[pathItems[0]][pathItems[2]] = node;
                 }
-                find(node, obj[separators[0]], processedObj);
+                find(node, accumulatorObj[pathItems[0]], processedObj);
             }
         }
         processedObj.push(node);
     };
 
-    var find = function(container, obj, processedObj){
-        var sourceNodes = container.querySelectorAll('[' + marker +']');
-        cm.forEach(sourceNodes, function(node){
+    var find = function(container, accumulatorObj, processedObj){
+        var childNodes = container.querySelectorAll('[' + marker +']');
+        cm.forEach(childNodes, function(node){
             if(!cm.inArray(processedObj, node)){
-                separation(node, obj, processedObj);
+                separation(node, accumulatorObj, processedObj);
             }
         });
     };
 
-    separation(container, nodes, processedNodes);
-    find(container, nodes, processedNodes);
+    separation(container, accumulator, processedNodes);
+    find(container, accumulator, processedNodes);
 
-    return nodes;
+    return accumulator;
 };
 
 cm.processDataAttributes = function(node, name, vars){
@@ -2089,7 +2249,7 @@ cm.setInputMinLength = function(input, minLength, min){
     if(cm.isNode(input)){
         var value = 0;
         if(input.type === 'number'){
-            value = min || minLength ? ('1' + '0'.repeat(minLength - 1)) : 0;
+            value = min || (minLength ? Math.pow(10, minLength - 1) : 0);
             if(value){
                 input.min = value;
             }
@@ -2101,6 +2261,13 @@ cm.setInputMinLength = function(input, minLength, min){
         }
     }
     return input;
+};
+
+cm.getMinMax = function(value, min, max, minLength, maxLength) {
+    value = parseFloat(value);
+    min = min || (minLength ? Math.pow(10, minLength - 1) : 0);
+    max = max || (maxLength ? '9'.repeat(maxLength) : Infinity);
+    return Math.min(Math.max(value, min), max);
 };
 
 cm.constraintsPattern = function(pattern, match, message){
@@ -2192,31 +2359,37 @@ cm.decode = (function(){
 })();
 
 cm.copyToClipboard = function(text, callback){
-    var node, successful;
+    if (cm.isEmpty(text)) return;
+    const success = () => {
+        cm.isFunction(callback) && callback(true);
+    };
+    const error = () => {
+        cm.errorLog({type: 'error', name: 'cm.copyToClipboard', message: 'Unable to copy text to clipboard!'});
+        cm.isFunction(callback) && callback(false);
+    };
 
-    if(cm.isEmpty(text)){
-        return;
+    if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(success)
+            .catch(error);
+    } else {
+        const node = cm.node('textarea');
+        node.value = text;
+        cm.appendChild(node, document.body);
+
+        node.select();
+        const successful = document.execCommand('copy');
+        cm.remove(node);
+
+        successful ? success() : error();
     }
-
-    node = cm.node('textarea');
-    node.value = text;
-    cm.appendChild(node, document.body);
-
-    node.select();
-    successful = document.execCommand( 'copy' );
-    cm.remove(node);
-
-    if(!successful){
-        cm.errorLog({'type' : 'error', 'name' : 'cm.copyToClipboard', 'message' : 'Unable to copy text to clipboard!'});
-    }
-    cm.isFunction(callback) && callback(successful);
 };
 
-cm.share = function(data){
+cm.share = async function(data) {
     try {
-        navigator.share(data)
-    } catch(err) {
-        cm.errorLog({'type' : 'error', 'name' : 'cm.share', 'message' : 'Unable to share text!'});
+        await navigator.share(data)
+    } catch (err) {
+        cm.errorLog({'type': 'error', 'name': 'cm.share', 'message': `Unable to share text: ${err}`});
     }
 };
 
@@ -2334,8 +2507,16 @@ cm.formatNumber = function(number, locale, params){
     return new Intl.NumberFormat(locale, params).format(number);
 };
 
-cm.getPercentage = function(num, total){
-    return num / total / 100;
+cm.getPercentage = function(){
+    cm.errorLog({type: 'error', name: 'cm.getPercentage', message: 'Deprecated!'});
+};
+
+cm.parseDuration = function(value) {
+    if (cm.isEmpty(value) || cm.isNumber(value)) return value;
+    const str = value.toString().trim().toLowerCase();
+    if (str.includes('ms')) return parseFloat(str);
+    if (str.includes('s')) return parseFloat(str) * 1000;
+    return parseFloat(str);
 };
 
 cm.rand = function(min, max){
@@ -2650,6 +2831,17 @@ cm.replaceClass = function(node, oldClass, newClass, useHack){
     return cm.addClass(cm.removeClass(node, oldClass, useHack), newClass, useHack);
 };
 
+cm.clearClass = function(node){
+    if(!cm.isNode(node)){
+        return null;
+    }
+    var classes = node.classList;
+    while (classes.length > 0) {
+        classes.remove(classes.item(0));
+    }
+    return node;
+};
+
 cm.hasClass = cm.isClass = function(node, cssClass){
     var classes;
     if(!cm.isNode(node)){
@@ -2687,7 +2879,7 @@ cm.getScrollBarSize = (function(){
     var node;
     return function(){
         if(!node){
-            node = cm.node('div', {'class' : 'cm__scrollbar-size-checker'});
+            node = cm.node('div', {'class' : 'cm__scrollbar-size-checker', 'aria-hidden' : true});
             cm.insertFirst(node, document.body);
         }
         return Math.max(node.offsetWidth - node.clientWidth, 0);
@@ -3036,6 +3228,10 @@ cm.getCurrentStyle = function(obj, name, dimension){
             }
             return obj['offset' + Name];
 
+        case 'translateX':
+            var val = cm.getCSSTranslate(obj).x;
+            return cm.styleToNumber(val);
+
         case 'opacity':
             var val = parseFloat(obj.style.opacity || cm.getCSSStyle(obj, 'opacity'));
             return (!isNaN(val)) ? val : 1;
@@ -3043,9 +3239,20 @@ cm.getCurrentStyle = function(obj, name, dimension){
         case 'color':
         case 'backgroundColor':
         case 'borderColor':
-            var val = cm.getCSSStyle(obj, name);
+        case 'metaColor':
+            var val;
+            if (name === 'metaColor') {
+                val = obj.getAttribute('content');
+            } else {
+                val = cm.getCSSStyle(obj, name);
+            }
+            if (cm.isEmpty(val)) return;
             if(val.match(/rgb/i)){
-                return val = val.match(/\d+/g), [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
+                val = val.match(/\d+/g);
+                return [parseInt(val[0]), parseInt(val[1]), parseInt(val[2])];
+            }
+            if(val.match(/hsl/i)){
+                return cm.hsl2rgb.apply(this, cm.strToHsl(val));
             }
             return cm.hex2rgb(val.match(/[\w\d]+/)[0]);
 
@@ -3087,7 +3294,7 @@ cm.hex2rgb = function(hex){
 cm.rgb2hex = function(r, g, b){
     var rgb = [r, g, b];
     for(var i in rgb){
-        rgb[i] = Number(rgb[i]).toString(16);
+        rgb[i] = Math.round(Number(rgb[i])).toString(16);
         if(rgb[i] == '0'){
             rgb[i] = '00';
         }else if(rgb[i].length === 1){
@@ -3095,6 +3302,39 @@ cm.rgb2hex = function(r, g, b){
         }
     }
     return '#' + rgb.join('');
+};
+
+cm.strToHsl = function(value) {
+    return value.match(/[\d.]+/g).map((v, i) => {
+        v = Number(v);
+        if (!v) return 0;
+        if (i === 0) return v / 360;
+        return v / 100;
+    });
+};
+
+cm.hsl2rgb = function(h,s,l){
+    let r, g, b;
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        r = cm.hueToRgb(p, q, h + 1/3);
+        g = cm.hueToRgb(p, q, h);
+        b = cm.hueToRgb(p, q, h - 1/3);
+    }
+    const round = val => Math.min(Math.floor(val * 256), 255);
+    return [round(r), round(g), round(b)];
+};
+
+cm.hueToRgb = function(p, q, t) {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
 };
 
 cm.styleStrToKey = function(line){
@@ -3199,21 +3439,19 @@ cm.getScrollTopMax = function(node){
     return 0;
 };
 
-cm.setBodyScrollTop = function(num){
-    document.documentElement.scrollTop = num;
-    document.body.scrollTop = num;
+cm.setBodyScrollTop = function(top){
+    window.scrollTo({top});
 };
 
-cm.setBodyScrollLeft = function(num){
-    document.documentElement.scrollLeft = num;
-    document.body.scrollLeft = num;
+cm.setBodyScrollLeft = function(left){
+    window.scrollTo({left});
 };
 
 cm.getBodyScrollTop = function(){
     return Math.max(
         document.documentElement.scrollTop,
         document.body.scrollTop,
-        window.pageYOffset,
+        window.scrollY,
         0
     );
 };
@@ -3222,7 +3460,15 @@ cm.getBodyScrollLeft = function(){
     return Math.max(
         document.documentElement.scrollLeft,
         document.body.scrollLeft,
-        window.pageXOffset,
+        window.scrollX,
+        0
+    );
+};
+
+cm.getBodyScrollWidth = function(){
+    return Math.max(
+        document.documentElement.scrollWidth,
+        document.body.scrollWidth,
         0
     );
 };
@@ -3283,40 +3529,50 @@ cm.bodyScroll = (function(){
 })();
 
 cm.scrollTo = function(node, parent, params, callback){
-    if(!cm.isNode(node)){
-        return null;
-    }
-    // If parent not specified - scroll window
+    if (!cm.isNode(node)) return;
+
+    // If parent didn't specify - scroll the window
     parent = !cm.isUndefined(parent) ? parent : window;
+
     // Variables
     var parentNode = cm.isWindow(parent) ? cm.getDocumentHtml() : parent,
         scrollHeight = cm.getScrollHeight(parentNode),
         scrollOffsetHeight = cm.getScrollOffsetHeight(parentNode),
+        scrollTop = cm.getScrollTop(parentNode),
         scrollMax = cm.getScrollTopMax(parentNode);
+
     // Do not process when parent scroll's height match parent's offset height
-    if(scrollHeight === scrollOffsetHeight){
-        return node;
-    }
+    if (scrollHeight === scrollOffsetHeight) return node;
+
     // Validate
     params = cm.merge({
         'type' : 'auto',
         'behavior' : 'smooth',
         'block' : 'start',
         'top' : 'auto',
+        'scrollPadding' : 'auto',
+        'direction' : 'both',   // up | down | both
         'duration' : cm._config.animDuration,
         'callback' : cm.isFunction(callback) ? callback : function(){},
     }, params);
+
     // Check type
     if(params['type'] === 'auto'){
         params['type'] = (cm.isWindow(parent) || parent === document.body) ? 'docScrollTop' : 'scrollTop';
     }
+
     // Calculate top value
     if(params['top'] === 'auto'){
-        var scrollPadding = cm.getStyle(parentNode, 'scroll-padding-top', true) || 0;
+        var scrollPadding = 0;
+        if (params['scrollPadding'] === 'auto') {
+            scrollPadding = cm.getStyle(parentNode, 'scroll-padding-top', true) || 0;
+        } else if (cm.isNumber(params['scrollPadding'])) {
+            scrollPadding = params['scrollPadding'];
+        }
         var nodeOffsetTop = (params['type'] === 'docScrollTop' ? cm.getY(node) : node.offsetTop) - scrollPadding;
         switch(params['block']){
             case 'end':
-                params['top'] = Math.max(Math.min(nodeOffsetTop + scrollOffsetHeight, scrollMax), 0);
+                params['top'] = Math.max(Math.min(nodeOffsetTop + node.offsetHeight, scrollMax), 0);
                 break;
 
             case 'center':
@@ -3329,6 +3585,15 @@ cm.scrollTo = function(node, parent, params, callback){
                 break;
         }
     }
+
+    // Check a direction
+    if (
+        params.direction === 'up' && scrollTop < params.top ||
+        params.direction === 'down' && scrollTop > params.top
+    ) {
+        return node;
+    }
+
     // Animate
     if(params['behavior'] === 'instant'){
         cm.setScrollTop(parent, params['top']);
@@ -3336,7 +3601,7 @@ cm.scrollTo = function(node, parent, params, callback){
     }else{
         var scrollAnimation = new cm.Animation(parent);
         scrollAnimation.go({
-            'anim' : params['behavior'],
+            'easing' : params['behavior'],
             'duration' : params['duration'],
             'onStop' : params['callback'],
             'style' : {
@@ -3507,7 +3772,7 @@ cm.removeCSSRule = function(sheet, selector, index){
 };
 
 cm.setCSSTranslate = (function(){
-    var transform = cm.getSupportedStyle('transform');
+    const transform = cm.getSupportedStyle('transform');
     if(transform){
         return function(node, x, y, z, additional){
             x = !cm.isUndefined(x) && x !== 'auto' ? x : 0;
@@ -3528,8 +3793,18 @@ cm.setCSSTranslate = (function(){
     }
 })();
 
+cm.getCSSTranslate = function(node) {
+    const style = window.getComputedStyle(node)
+    const matrix = new DOMMatrixReadOnly(style.transform)
+    return {
+        x: matrix.m41,
+        y: matrix.m42,
+        z: matrix.m43,
+    };
+};
+
 cm.clearCSSTranslate = (function(){
-    var transform = cm.getSupportedStyle('transform');
+    const transform = cm.getSupportedStyle('transform');
     if(transform){
         return function(node){
             node.style[transform] = '';
@@ -3543,8 +3818,7 @@ cm.clearCSSTranslate = (function(){
 })();
 
 cm.setCSSTransitionDuration = (function(){
-    var rule = cm.getSupportedStyle('transition-duration');
-
+    const rule = cm.getSupportedStyle('transition-duration');
     return function(node, time){
         if(!rule){
             return node;
@@ -3628,43 +3902,20 @@ cm.removeCSSVariable = function(key, node){
 
 /* ******* VALIDATORS ******* */
 
-cm.keyCodeTable = {
-    8  : 'delete',
-    9  : 'tab',
-    13 : 'enter',
-    27 : 'escape',
-    32 : 'space',
-    35 : 'home',
-    36 : 'end',
-    37 : 'left',
-    38 : 'top',
-    39 : 'right',
-    40 : 'bottom',
-    46 : 'backspace'
+cm.isKey = function(){
+    cm.errorLog({type: 'error', name: 'cm.isKey', message: 'Deprecated!'});
 };
 
-cm.isKey = function(e, rules){
-    var keyCode = e.keyCode;
-    return cm.isKeyCode(keyCode, rules);
+cm.isKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.isKeyCode', message: 'Deprecated!'});
 };
 
-cm.isKeyCode = function(code, rules){
-    var isMath = false;
-    if(cm.isString(rules)){
-        rules = rules.split(/\s+/);
-    }
-    cm.forEach(rules, function(rule){
-        if(cm.keyCodeTable[code] === rule){
-            isMath = true;
-        }
-    });
-    return isMath;
+cm.allowKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.allowKeyCode', message: 'Deprecated!'});
 };
 
-cm.handleKey = function(e, rules, callback){
-    if(!cm.isInputFocused() && cm.isKey(e, rules)){
-        callback && callback(e);
-    }
+cm.disallowKeyCode = function(){
+    cm.errorLog({type: 'error', name: 'cm.disallowKeyCode', message: 'Deprecated!'});
 };
 
 cm.isNotToggleKey = function(event) {
@@ -3676,35 +3927,25 @@ cm.isLinkClick = function(e){
 };
 
 cm.isInputFocused = function(){
-    var el = document.activeElement,
-        tagName = el.tagName.toLowerCase();
-    return tagName === 'textarea' || (tagName === 'input' &&  !/button|file/.test(el.type));
+    const element = document.activeElement;
+    return (element.tagName === 'INPUT' && !cm.inArray(['button', 'submit', 'reset', 'file', 'checkbox', 'radio', 'image', 'hidden'], element.type)) ||
+        element.tagName === 'TEXTAREA' ||
+        element.contentEditable === 'true';
 };
 
 cm.isFormInputFocused = function(){
-    var el = document.activeElement,
-        tagName = el.tagName.toLowerCase();
-    return tagName === 'input' &&  !/button|file/.test(el.type);
+    const element = document.activeElement;
+    return (element.tagName === 'INPUT' && !cm.inArray(['button', 'submit', 'reset', 'file', 'checkbox', 'radio', 'image', 'hidden'], element.type)) ||
+        element.contentEditable === 'true';
 };
 
-cm.allowKeyCode = function(code, rules){
-    var codes = [];
-    cm.forEach(cm.keyCodeTable, function(item, key){
-        if(cm.inArray(rules, item)){
-            codes.push(key);
-        }
-    });
-    return cm.inArray(codes, code.toString());
-};
-
-cm.disallowKeyCode = function(code, rules){
-    var codes = [];
-    cm.forEach(cm.keyCodeTable, function(item, key){
-        if(!cm.inArray(rules, item)){
-            codes.push(key);
-        }
-    });
-    return cm.inArray(codes, code.toString());
+cm.handleKey = function(event, codes, callback){
+    if (!cm.isArray(codes)) {
+        codes = [codes];
+    }
+    if(!cm.isInputFocused() && cm.inArray(codes, event.code)){
+        callback && callback(event);
+    }
 };
 
 cm.charCodeIsDigit = function(code){
@@ -3764,201 +4005,226 @@ var animFrame = (function(){
             };
 })();
 
-cm.Animation = function(o){
-    var that = this,
-        obj = o,
-        processes = [],
-        animationMethod = {
-            'random' : function(progress){
-                return (function(min, max){
-                    return Math.random() * (max - min) + min;
-                })(progress, 1);
-            },
-            'simple' : function(progress){
-                return progress;
-            },
-            'acceleration' : function(progress){
-                return Math.pow(progress, 3);
-            },
-            'inhibition' : function(progress){
-                return 1 - animationMethod.acceleration(1 - progress);
-            },
-            'smooth' : function(progress){
-                return (progress < 0.5) ? animationMethod.acceleration(2 * progress) / 2 : 1 - animationMethod.acceleration(2 * (1 - progress)) / 2;
-            }
-        };
+cm.Animation = function(o) {
+    const that = this;
+    const animationMethod = {
+        random: progress => ((min, max) => (Math.random() * (max - min) + min))(progress, 1),
+        simple: progress => progress,
+        linear: progress => progress,
+        acceleration: progress => Math.pow(progress, 3),
+        inhibition: progress => (1 - animationMethod.acceleration(1 - progress)),
+        smooth: progress => (
+            (progress < 0.5)
+                ? animationMethod.acceleration(2 * progress) / 2
+                : 1 - animationMethod.acceleration(2 * (1 - progress)) / 2
+        ),
+        easeInOutSine: progress => -(Math.cos(Math.PI * progress) - 1) / 2,
+    };
+    const obj = o;
+    const processes = [];
 
-    var setProperties = function(progress, delta, properties, duration){
-        if(progress <= 1){
-            properties.forEach(function(item){
-                var val = item['old'] + (item['new'] - item['old']) * delta(progress);
+    const setProperties = (progress, delta, properties, duration) => {
+        if (progress <= 1) {
+            properties.forEach(item => {
+                const val = item['old'] + (item['new'] - item['old']) * delta(progress);
 
-                if(item['name'] === 'opacity'){
+                if (item['name'] === 'opacity') {
                     cm.setOpacity(obj, val);
-                }else if(/color/i.test(item['name'])){
-                    var r = parseInt((item['new'][0] - item['old'][0]) * delta(progress) + item['old'][0]);
-                    var g = parseInt((item['new'][1] - item['old'][1]) * delta(progress) + item['old'][1]);
-                    var b = parseInt((item['new'][2] - item['old'][2]) * delta(progress) + item['old'][2]);
-                    obj.style[properties[i]['name']] = cm.rgb2hex(r, g, b);
-                }else if(/scrollLeft|scrollTop/.test(item['name'])){
+                } else if (/color/i.test(item['name'])) {
+                    const r = parseInt((item['new'][0] - item['old'][0]) * delta(progress) + item['old'][0]);
+                    const g = parseInt((item['new'][1] - item['old'][1]) * delta(progress) + item['old'][1]);
+                    const b = parseInt((item['new'][2] - item['old'][2]) * delta(progress) + item['old'][2]);
+                    const color = cm.rgb2hex(r, g, b);
+                    if (item['name'] === 'metaColor') {
+                        obj.setAttribute('content', color);
+                    } else {
+                        obj.style[item['name']] = color;
+                    }
+                } else if (/scrollLeft|scrollTop/.test(item['name'])) {
                     obj[item['name']] = val;
-                }else if(/x1|x2|y1|y2/.test(item['name'])){
+                } else if (/x1|x2|y1|y2/.test(item['name'])) {
                     obj.setAttribute(item['name'], Math.round(val));
-                }else if(item['name'] === 'docScrollTop'){
+                } else if (item['name'] === 'docScrollTop') {
                     cm.setBodyScrollTop(val);
-                }else{
+                } else if (item['name'] === 'translateX'){
+                    cm.setCSSTranslate(obj, Math.round(val) + item['dimension']);
+                } else {
                     obj.style[item['name']] = Math.round(val) + item['dimension'];
                 }
             });
             return false;
         }
-        properties.forEach(function(item){
-            if(item['name'] === 'opacity'){
+        properties.forEach(item => {
+            if (item['name'] === 'opacity') {
                 cm.setOpacity(obj, item['new']);
-            }else if(/color/i.test(item['name'])){
-                obj.style[item['name']] = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
-            }else if(/scrollLeft|scrollTop/.test(item['name'])){
+            } else if (/color/i.test(item['name'])) {
+                const color = cm.rgb2hex(item['new'][0], item['new'][1], item['new'][2]);
+                if (item['name'] === 'metaColor') {
+                    obj.setAttribute('content', color);
+                } else {
+                    obj.style[item['name']] = color;
+                }
+            } else if (/scrollLeft|scrollTop/.test(item['name'])) {
                 obj[item['name']] = item['new'];
-            }else if(/x1|x2|y1|y2/.test(item['name'])){
+            } else if (/x1|x2|y1|y2/.test(item['name'])) {
                 obj.setAttribute(item['name'], item['new']);
-            }else if(item['name'] === 'docScrollTop'){
+            } else if (item['name'] === 'docScrollTop') {
                 cm.setBodyScrollTop(item['new']);
-            }else{
+            } else {
                 obj.style[item['name']] = item['new'] + item['dimension'];
             }
         });
         return true;
     };
 
-    var prepareEndPosition = function(name, value){
-        if(name.match(/color/i)){
-            if(/rgb/i.test(value)){
+    const prepareEndPosition = (name, value) => {
+        if (cm.isEmpty(value)) return;
+        if (name.match(/color/i)) {
+            if (/rgb/i.test(value)) {
                 var rgb = value.match(/\d+/g);
                 return [parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2])];
-            }else{
-                return cm.hex2rgb(value.match(/[\w\d]+/)[0]);
             }
+            if (/hsl/i.test(value)) {
+                return cm.hsl2rgb.apply(this, cm.strToHsl(value));
+            }
+            return cm.hex2rgb(value.match(/[\w\d]+/)[0]);
         }
-        return value.replace(/[^\-0-9\.]/g, '');
+        return value.replace(/[^\-0-9.]/g, '');
     };
 
-    that.getTarget = function(){
-        return obj;
-    };
+    that.go = function(params) {
+        // Config
+        params= cm.merge({
+            style: {},
+            duration: 0,
+            easing: 'smooth',
+            onStop: function() {}
+        }, params);
 
-    that.go = function(){
-        var params = arguments[0],
-            args = cm.merge({
-                'style' : '',
-                'duration' : '',
-                'anim' : 'simple',
-                'onStop' : function(){}
-            }, params),
-            pId = 'animation_process_' + Math.random(),
-            delta = animationMethod[args.anim] || animationMethod['simple'],
-            properties = [],
-            start = Date.now();
-        for(var name in args.style){
-            var value = args.style[name].toString();
-            var dimension = cm.getStyleDimension(value);
+        // Validate
+        params.duration = cm.parseDuration(params.duration);
+        params.easing = params.anim || params.easing || 'smooth';
+
+        const pId = `animation_process_${Math.random()}`;
+        const delta = cm.isFunction(params.easing) ? params.easing : (animationMethod[params.easing] || animationMethod.smooth);
+        const properties = [];
+        const start = Date.now();
+
+        for (const name in params.style) {
+            const value = params.style[name].toString();
+            const dimension = cm.getStyleDimension(value);
+            const newValue = prepareEndPosition(name, value);
+            if (cm.isEmpty(newValue)) return;
             properties.push({
-                'name' : name,
-                'new' : prepareEndPosition(name, value),
-                'dimension' : dimension,
-                'old' : cm.getCurrentStyle(obj, name, dimension)
+                name: name,
+                dimension: dimension,
+                new: newValue,
+                old: cm.getCurrentStyle(obj, name, dimension),
             });
         }
-        for(var i in processes){
-            processes[i] = false;
-        }
+
+        // Stop a previous process
+        that.stop();
+
+        // Run a new process
         processes[pId] = true;
-        // Run process
-        (function process(){
-            var processId = pId;
-            if(!processes[processId]){
+
+        const process = () => {
+            const processId = pId;
+            if (!processes[processId]) {
                 delete processes[processId];
                 return false;
             }
-            var now = Date.now() - start;
-            var progress = now / args.duration;
-            if(setProperties(progress, delta, properties, args['duration'])){
+            const now = Date.now() - start;
+            const progress = now / params.duration;
+            if (setProperties(progress, delta, properties, params.duration)) {
                 delete processes[processId];
-                args.onStop && args.onStop();
-            }else{
+                params.onStop && params.onStop();
+            } else {
                 animFrame(process);
             }
-        })();
+        };
+        process();
+
         return that;
     };
 
-    that.stop = function(){
-        for(var i in processes){
+    that.stop = function() {
+        for (const i in processes) {
             processes[i] = false;
         }
         return that;
     };
+
+    that.getTarget = function() {
+        return obj;
+    };
 };
 
-cm.transition = function(node, params){
-    var rule = cm.getSupportedStyle('transition'),
-        transitions = [],
-        dimension;
+cm.transition = function(node, params) {
+    const rule = cm.getSupportedStyle('transition');
+    let transitions = [];
 
-    var init = function(){
-        // Merge params
+    const init = () => {
+        // Config
         params = cm.merge({
-            'properties' : {},
-            'duration' : 0,
-            'easing' : 'ease-in-out',
-            'delayIn' : 0,
-            'delayOut' : 0,
-            'immediately' : false,
-            'clear' : false,
-            'onStop' : function(){}
+            properties: {},
+            duration: 0,
+            easing: 'ease-in-out',
+            delayIn: 0,
+            delayOut: 0,
+            immediately: false,
+            clear: false,
+            onStop: function() {}
         }, params);
+
+        // Validate
+        params.duration = cm.parseDuration(params.duration);
+
         // Prepare styles
-        cm.forEach(params['properties'], function(value, key){
+        cm.forEach(params.properties, function(value, key) {
             key = cm.styleStrToKey(key);
-            transitions.push([key, params['duration'] + 'ms', params['easing']].join(' '));
+            transitions.push([key, `${params.duration}ms`, params.easing].join(' '));
         });
         transitions = transitions.join(', ');
+
         start();
     };
 
-    var start = function(){
+    const start = () => {
         // Prepare
-        cm.forEach(params['properties'], function(value, key){
+        cm.forEach(params.properties, (value, key) => {
             key = cm.styleStrToKey(key);
-            dimension = cm.getStyleDimension(value);
+            const dimension = cm.getStyleDimension(value);
             node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
         });
-        if(params['immediately']){
+        if (params.immediately) {
             set();
             end();
-        }else{
-            setTimeout(set, params['delayIn']);
-            setTimeout(end, params['duration'] + params['delayIn'] + params['delayOut']);
+        } else {
+            setTimeout(set, params.delayIn);
+            setTimeout(end, params.duration + params.delayIn + params.delayOut);
         }
     };
 
-    var set = function(){
+    const set = () => {
         node.style[rule] = transitions;
         // Set new styles
-        cm.forEach(params['properties'], function(value, key){
+        cm.forEach(params.properties, (value, key) => {
             key = cm.styleStrToKey(key);
             node.style[key] = value;
         });
     };
 
-    var end = function(){
-        node.style[rule]  = '';
-        if(params['clear']){
-            cm.forEach(params['properties'], function(value, key){
+    const end = () => {
+        node.style[rule] = '';
+        if (params.clear) {
+            cm.forEach(params.properties, (value, key) => {
                 key = cm.styleStrToKey(key);
                 node.style[key] = '';
             });
         }
-        params['onStop'](node);
+        params.onStop(node);
     };
 
     init();
@@ -4023,10 +4289,10 @@ cm.sessionStorageRemove = function(key){
     }
 };
 
-cm.cookieSet = function(name, value, expires, path){
+cm.cookieSet = function(name, value, maxAge, path){
     path = 'path=' + (!cm.isEmpty(path) ? encodeURI(path) : '/');
-    expires = !cm.isEmpty(expires) ? cm.cookieDate(expires) : '';
-    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + path + ';' + expires;
+    maxAge = !cm.isEmpty(maxAge) ? cm.cookieAge(maxAge) : '';
+    document.cookie = encodeURI(name) + "=" + encodeURI(value) + ';' + path + ';' + maxAge;
 };
 
 cm.cookieGet = function(name){
@@ -4059,12 +4325,16 @@ cm.cookieDate = function(days){
     return 'expires=' + (new Date(Date.now() + 1000 * 60 * 60 * 24 * days)).toUTCString() + ';';
 };
 
+cm.cookieAge = function(days){
+    return 'max-age=' + (60 * 60 * 24 * days) + ';';
+};
+
 /* ******* AJAX ******* */
 
 cm.ajax = function(o){
     var config = cm.merge({
             'debug' : true,
-            'type' : 'json',                                         // text | document | json | jsonp | blob
+            'type' : 'json',                                         // text | document | json | jsonp | blob | arraybuffer
             'method' : 'POST',                                       // POST | GET | PUT | PATCH | DELETE
             'paramsType' : 'uri',                                    // uri | json | form-data | none
             'uriConfig' : {},                                        // parameters for cm.obj2URI
@@ -4084,6 +4354,7 @@ cm.ajax = function(o){
             'beacon' : false,
             'onStart' : function(){},
             'onEnd' : function(){},
+            'onProgress': function(){},
             'onSuccess' : function(){},
             'onError' : function(){},
             'onAbort' : function(){},
@@ -4110,7 +4381,7 @@ cm.ajax = function(o){
             sendJSONP();
         }else{
             validate();
-            returnObject = config['httpRequestObject'];
+            returnObject = config.httpRequestObject;
             send();
         }
     };
@@ -4127,7 +4398,7 @@ cm.ajax = function(o){
 
     var validate = function(){
         cm.hook.trigger('ajax.beforePrepare', config);
-        config['httpRequestObject'] = cm.createXmlHttpRequestObject();
+        config.httpRequestObject = cm.createXmlHttpRequestObject();
         config['type'] = config['type'].toLowerCase();
         config['method'] = config['method'].toUpperCase();
         if(config['formData'] === true){
@@ -4182,44 +4453,53 @@ cm.ajax = function(o){
     };
 
     var send = function(){
-        config['httpRequestObject'].open(config['method'], config['url'], config['async']);
-        config['httpRequestObject'].responseType = config['type'];
+        config.httpRequestObject.open(config['method'], config['url'], config['async']);
+        config.httpRequestObject.responseType = config['type'];
+
         // Set Headers
-        if('withCredentials' in config['httpRequestObject']){
-            config['httpRequestObject'].withCredentials = config['withCredentials'];
+        if('withCredentials' in config.httpRequestObject){
+            config.httpRequestObject.withCredentials = config.withCredentials;
         }
         cm.forEach(config['headers'], function(value, name){
-            config['httpRequestObject'].setRequestHeader(name, value);
+            config.httpRequestObject.setRequestHeader(name, value);
         });
+
         // Add response events
-        cm.addEvent(config['httpRequestObject'], 'load', loadHandler);
-        cm.addEvent(config['httpRequestObject'], 'error', errorHandler);
-        cm.addEvent(config['httpRequestObject'], 'abort', abortHandler);
+        cm.addEvent(config.httpRequestObject, 'load', loadHandler);
+        cm.addEvent(config.httpRequestObject, 'error', errorHandler);
+        cm.addEvent(config.httpRequestObject, 'abort', abortHandler);
+
+        // Upload progress events
+        if (config.httpRequestObject.upload) {
+            cm.addEvent(config.httpRequestObject.upload, 'progress', progressHandler);
+        }
+
         // Send
         config['onStart']();
         if(config['beacon'] && cm.hasBeacon){
-            if(!cm.isEmpty(config['data'])){
-                navigator.sendBeacon(config['url'], config['data']);
-            }else if(!cm.isEmpty(config['params'])){
-                navigator.sendBeacon(config['url'], config['params']);
-            }else{
-                navigator.sendBeacon(config['url']);
-            }
+            navigator.sendBeacon(
+                config['url'],
+                !cm.isEmpty(config['data']) ? config['data'] : (!cm.isEmpty(config['params']) ? config['params'] : null)
+            );
         }else{
             if(!cm.isEmpty(config['data'])){
-                config['httpRequestObject'].send(config['data']);
+                config.httpRequestObject.send(config['data']);
             }else if(!cm.isEmpty(config['params']) && cm.inArray(['POST', 'PUT', 'PATCH'], config['method'])){
-                config['httpRequestObject'].send(config['params']);
+                config.httpRequestObject.send(config['params']);
             }else{
-                config['httpRequestObject'].send(null);
+                config.httpRequestObject.send(null);
             }
         }
     };
 
+    var progressHandler = function(e){
+        config['onProgress'].apply(config['onProgress'], arguments);
+    };
+
     var loadHandler = function(e){
-        if(config['httpRequestObject'].readyState === 4){
-            response = config['httpRequestObject'].response;
-            if(cm.inArray(successStatuses, config['httpRequestObject'].status)){
+        if(config.httpRequestObject.readyState === 4){
+            response = config.httpRequestObject.response;
+            if(cm.inArray(successStatuses, config.httpRequestObject.status)){
                 config['onSuccess'](response, e);
                 config['onResolve'](response, e);
             }else{
@@ -4253,7 +4533,11 @@ cm.ajax = function(o){
 
     var deprecatedHandler = function(){
         if(cm.isFunction(config['handler'])){
-            cm.errorLog({'type' : 'attention', 'name' : 'cm.ajax', 'message' : 'Parameter "handler" is deprecated. Use "onSuccess", "onError" or "onAbort" callbacks instead.'});
+            cm.errorLog({
+                'type' : 'attention',
+                'name' : 'cm.ajax',
+                'message' : 'Parameter "handler" is deprecated. Use "onSuccess", "onError" or "onAbort" callbacks instead.'
+            });
             config['handler'].apply(config['handler'], arguments);
         }
     };
@@ -4274,11 +4558,13 @@ cm.ajax = function(o){
                 removeJSONP();
             }
         };
+
         // Prepare url and attach events
         scriptNode = cm.Node('script', {'type' : 'application/javascript'});
         cm.addEvent(scriptNode, 'load', window[callbackSuccessName]);
         cm.addEvent(scriptNode, 'error', window[callbackErrorName]);
-        // Embed
+
+        // Append
         config['onStart']();
         scriptNode.setAttribute('src', config['url']);
         cm.getDocumentHead().appendChild(scriptNode);
@@ -4515,28 +4801,7 @@ cm.responseInArray = function(xmldoc){
 };
 
 cm.createXmlHttpRequestObject = function(){
-    var xmlHttp;
-    try{
-        xmlHttp = new XMLHttpRequest();
-    }catch(e){
-        var XmlHttpVersions = [
-            "MSXML2.XMLHTTP.6.0",
-            "MSXML2.XMLHTTP.5.0",
-            "MSXML2.XMLHTTP.4.0",
-            "MSXML2.XMLHTTP.3.0",
-            "MSXML2.XMLHTTP",
-            "Microsoft.XMLHTTP"
-        ];
-        cm.forEach(XmlHttpVersions, function(item){
-            try{
-                xmlHttp = new ActiveXObject(item);
-            }catch(e){}
-        });
-    }
-    if(!xmlHttp){
-        return null;
-    }
-    return xmlHttp;
+    return new XMLHttpRequest();
 };
 
 /* ******* HASH ******* */
@@ -4584,7 +4849,7 @@ cm.defineHelper = function(name, data, handler){
         'events' : [],
         'extend' : false
     }, data);
-    // Create class extend object
+    // Create a class extend object
     that.build = {
         'constructor' : handler,
         '_raw' : cm.clone(data),
@@ -4764,11 +5029,11 @@ cm.Finder = function(className, name, parentNode, callback, params){
         }
     };
 
-    var watcher = function(classObject){
-        classObject.removeEvent(params['event'], watcher);
-        var isSame = classObject.isAppropriateToStack(name, parentNode, callback);
+    var watcher = function(classInstance){
+        classInstance.removeEvent(params['event'], watcher);
+        var isSame = classInstance.isAppropriateToStack(name, parentNode, callback);
         if(isSame && !params['multiple'] && isEventBind){
-            that.remove(classObject._constructor);
+            that.remove(classInstance._constructor);
         }
     };
 
