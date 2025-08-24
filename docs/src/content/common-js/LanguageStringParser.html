@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html class="is-adaptive">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Components: LanguageStringParser</title>
+
+    <link type="text/css" rel="stylesheet" href="../../css/MagpieUI.css">
+    <script type="text/javascript" src="../../js/MagpieUI.js"></script>
+
+    <script type="text/javascript">
+        cm.onReady(function() {
+            cm.define('Docs.LanguageTest', {
+                    modules: ['Langs']
+                },
+                function() {},
+            );
+
+            cm.setMessages('Docs.LanguageTest', {
+                foo: {
+                    foo: 'foo {bar}',
+                    bar: 'foo'
+                },
+                bar: 'bar',
+            });
+
+            cm.define('Docs.LanguageTest2', {
+                    modules: ['Langs']
+                },
+                function() {},
+            );
+            cm.setMessages('Docs.LanguageTest2', {
+                testFooFoo: '{#msg:Docs.LanguageTest|foo.foo}',
+                testFooBar: '{#msg:Docs.LanguageTest|foo.bar}',
+                testBar: '{#msg:Docs.LanguageTest|bar}',
+                error: '{#var:cm._strings.common.server_error}'
+            });
+
+            const test2 = new Docs.LanguageTest2();
+            const output = document.getElementById('output');
+
+            cm.appendChild(
+                cm.node('dl',
+                    cm.node('dt', 'test2.testFooFoo'),
+                    cm.node('dd', test2.msgParse('testFooFoo', {bar: 'Bar'}))
+                ),
+                output
+            );
+
+            cm.appendChild(
+                cm.node('dl',
+                    cm.node('dt', 'test2.testFooBar'),
+                    cm.node('dd', test2.msgParse('testFooBar'))
+                ),
+                output
+            );
+
+            cm.appendChild(
+                cm.node('dl',
+                    cm.node('dt', 'test2.testBar'),
+                    cm.node('dd', test2.msgParse('testBar'))
+                ),
+                output
+            );
+
+            cm.appendChild(
+                cm.node('dl',
+                    cm.node('dt', 'test2.error'),
+                    cm.node('dd', test2.msgParse('error'))
+                ),
+                output
+            );
+        });
+    </script>
+</head>
+
+<body>
+
+<h1 class="pt__box-title">Components: LanguageStringParser</h1>
+
+<ul class="com__tabset__content-ul" data-element="Com.Tabset">
+    <li data-node="tabs:[]:container" data-config='{"id" : "overview", "title" : "Overview"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "methods", "title" : "Methods"}'></li>
+
+    <li data-node="tabs:[]:container" data-config='{"id" : "examples", "title" : "Sandbox"}'>
+        <h2>Sandbox:</h2>
+
+        <div id="output"></div>
+    </li>
+</ul>
+
+</body>
+</html>
