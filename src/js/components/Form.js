@@ -717,7 +717,7 @@ function(params){
         }else if(hasMessage){
             data.label = label;
         }else{
-            data.label = that.lang('server_error');
+            data.label = that.msgParse('server_error');
         }
         if(that.params.showNotifications){
             that.callbacks.renderNotification(that, data);

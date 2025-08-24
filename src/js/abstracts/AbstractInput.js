@@ -46,6 +46,9 @@ cm.define('Com.AbstractInput', {
         'max' : 0,
         'setHiddenInput' : true,
         'setContentInput' : true
+    },
+    'strings': {
+        'required': 'This field is required.'
     }
 },
 function(){

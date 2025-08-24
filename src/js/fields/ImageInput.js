@@ -28,7 +28,7 @@ cm.define('Com.ImageInput', {
     strings: {
         preview: 'Preview',
         errors: {
-            dimensions: 'Image dimensions do not meet requirements'
+            dimensions: 'Image dimensions do not meet size requirements'
         }
     }
 },

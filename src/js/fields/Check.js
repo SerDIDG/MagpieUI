@@ -20,9 +20,6 @@ cm.define('Com.Check', {
             renderStructure: true,
             embedStructureOnRender: true
         },
-    },
-    strings: {
-        'required': 'This field is required.'
     }
 },
 function() {
