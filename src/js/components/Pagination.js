@@ -67,7 +67,7 @@ cm.define('Com.Pagination', {
             'prev' : 'Previous',
             'next' : 'Next',
         },
-        'server_error' : 'An unexpected error has occurred. Please try again later.',
+        'server_error' : '{#var:cm._strings.common.server_error}',
     }
 },
 function(params){
@@ -393,7 +393,7 @@ cm.getConstructor('Com.Pagination', function(classConstructor, className, classP
     classProto.callbacks.renderError = function(that, page){
         if(that.params['responseHTML']){
             page['container'].appendChild(
-                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
+                cm.node('div', {'class' : 'cm__empty'}, that.msgParse('server_error'))
             );
         }
         that.triggerEvent('onPageRenderError', page);

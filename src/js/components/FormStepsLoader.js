@@ -42,7 +42,7 @@ cm.define('Com.FormStepsLoader', {
         }
     },
     'strings' : {
-        'server_error' : 'An unexpected error has occurred. Please try again later.'
+        'server_error' : '{#var:cm._strings.common.server_error}'
     }
 },
 function(params){
@@ -242,7 +242,7 @@ function(params){
             that.isRendering = true;
             var temporary = that.callbacks.renderTemporary(that);
             temporary.appendChild(
-                cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'))
+                cm.node('div', {'class' : 'cm__empty'}, that.msgParse('server_error'))
             );
             that.callbacks.append(that, temporary);
         }

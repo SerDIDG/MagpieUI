@@ -75,7 +75,7 @@ cm.define('Com.ScrollPagination', {
     },
     strings: {
         'load_more': 'Load More',
-        'server_error': 'An unexpected error has occurred. Please try again later.'
+        'server_error': '{#var:cm._strings.common.server_error}'
     },
 },
 function() {

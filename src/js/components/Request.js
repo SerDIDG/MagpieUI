@@ -61,7 +61,7 @@ cm.define('Com.Request', {
         }
     },
     'strings' : {
-        'server_error' : 'An unexpected error has occurred. Please try again later.'
+        'server_error' : '{#var:cm._strings.common.server_error}'
     }
 },
 function(params){
@@ -419,7 +419,7 @@ cm.getConstructor('Com.Request', function(classConstructor, className, classProt
             temporary,
             node;
         if(that.params.responseHTML){
-            node = cm.node('div', {'class' : 'cm__empty'}, that.lang('server_error'));
+            node = cm.node('div', {'class' : 'cm__empty'}, that.msgParse('server_error'));
             // Append
             if(cm.isNode(that.params.responseContainer)){
                 that.triggerEvent('onContentRenderStart', node);

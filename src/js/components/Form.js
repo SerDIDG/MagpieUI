@@ -91,7 +91,7 @@ cm.define('Com.Form', {
     },
     'strings' : {
         'form_error' : 'Form is not filled correctly.',
-        'server_error' : 'An unexpected error has occurred. Please try again later.',
+        'server_error' : '{#var:cm._strings.common.server_error}',
         'success_message' : 'Form successfully sent'
     }
 },

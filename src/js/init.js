@@ -1,10 +1,3 @@
-// Init helper components
-if (!cm._messageParser) {
-    cm.getConstructor('Com.MessageParser', classConstructor => {
-        cm._messageParser = new classConstructor();
-    });
-}
-
 // Get initial values
 cm._breakpoints = cm.getBreakpoints();
 cm._breakpoint = cm.getBreakpoint();
@@ -12,6 +5,13 @@ cm._breakpoint = cm.getBreakpoint();
 cm.init = function(){
     var init = function(){
         cm._isDocumentReady = true;
+
+        // Init helper components
+        if (!cm._messageParser) {
+            cm.getConstructor('Com.MessageParser', classConstructor => {
+                cm._messageParser = new classConstructor();
+            });
+        }
 
         // Helpers
         checkBrowser();
