@@ -18,6 +18,10 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
         'var': {
             handler: 'parseVariableReference',
             description: 'Variable reference: {#var:path.to.variable}'
+        },
+        'plural': {
+            handler: 'parsePluralReference',
+            description: 'Plural reference: {#plural:number|one|many}'
         }
     };
 
@@ -183,6 +187,31 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
             return that.parse(String(message), variables, depth + 1);
         } catch (error) {
             console.error(`Error parsing variable reference ${content}:`, error);
+            return `{${content}}`;
+        }
+    };
+
+    /**
+     * Plural reference handler
+     * Format: #plural:number|one|many
+     */
+    classProto.parsePluralReference = function(content, variables, depth) {
+        const that = this;
+        try {
+            const reference = content.substring(8); // Remove '#plural:'
+            const parts = reference.split('|');
+
+            if (parts.length < 2) {
+                console.warn(`Invalid plural reference format: ${content}`);
+                return `{${content}}`;
+            }
+
+            const number = that.parse(parts.shift(), variables, depth + 1);
+            parts.map(message => that.parse(message, variables, depth + 1));
+
+            return cm.plural(number, parts);
+        } catch (error) {
+            console.error(`Error parsing plural reference ${content}:`, error);
             return `{${content}}`;
         }
     };

@@ -22,6 +22,7 @@
                     bar: 'foo'
                 },
                 bar: 'bar',
+
             });
 
             cm.define('Docs.LanguageTest2', {
@@ -33,7 +34,8 @@
                 testFooFoo: '{#msg:Docs.LanguageTest|foo.foo}',
                 testFooBar: '{#msg:Docs.LanguageTest|foo.bar}',
                 testBar: '{#msg:Docs.LanguageTest|bar}',
-                error: '{#var:cm._strings.common.server_error}'
+                error: '{#var:cm._strings.common.server_error}',
+                plural: '{#plural:{count}|foo|bar}',
             });
 
             const test2 = new Docs.LanguageTest2();
@@ -41,7 +43,7 @@
 
             cm.appendChild(
                 cm.node('dl',
-                    cm.node('dt', 'test2.testFooFoo'),
+                    cm.node('dt', '{#msg:Docs.LanguageTest|foo.foo} {bar: \'Bar\'}'),
                     cm.node('dd', test2.msgParse('testFooFoo', {bar: 'Bar'}))
                 ),
                 output
@@ -49,7 +51,7 @@
 
             cm.appendChild(
                 cm.node('dl',
-                    cm.node('dt', 'test2.testFooBar'),
+                    cm.node('dt', '{#msg:Docs.LanguageTest|foo.bar}'),
                     cm.node('dd', test2.msgParse('testFooBar'))
                 ),
                 output
@@ -57,7 +59,7 @@
 
             cm.appendChild(
                 cm.node('dl',
-                    cm.node('dt', 'test2.testBar'),
+                    cm.node('dt', '{#msg:Docs.LanguageTest|bar}'),
                     cm.node('dd', test2.msgParse('testBar'))
                 ),
                 output
@@ -65,8 +67,16 @@
 
             cm.appendChild(
                 cm.node('dl',
-                    cm.node('dt', 'test2.error'),
-                    cm.node('dd', test2.msgParse('error'))
+                    cm.node('dt', '{#plural:{count}|foo|bar} {count: 1}'),
+                    cm.node('dd', test2.msgParse('plural', {count: 1}))
+                ),
+                output
+            );
+
+            cm.appendChild(
+                cm.node('dl',
+                    cm.node('dt', '{#plural:{count}|foo|bar} {count: 2}'),
+                    cm.node('dd', test2.msgParse('plural', {count: 2}))
                 ),
                 output
             );
