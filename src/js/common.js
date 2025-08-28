@@ -1416,13 +1416,14 @@ cm.getOwnerWindow = function(node){
 
 cm._addScriptStack = {};
 
-cm.addScript = function(src, async, callback){
+cm.addScript = function(src, async, callback, container){
     var item,
         vars = cm._getVariables();
     // Config
     src = cm.isArray(src) ? cm.objectReplace(src, vars) : cm.strReplace(src, vars);
     async = !cm.isUndefined(async) ? async : false;
     callback = !cm.isUndefined(callback) ? callback : function(){};
+    container = !cm.isUndefined(container) ? container : cm.getDocumentHead()
     // Configure Stack Item
     if(cm._addScriptStack[src]){
         item = cm._addScriptStack[src];
@@ -1452,7 +1453,7 @@ cm.addScript = function(src, async, callback){
         item['script'].src = item['src'];
         cm.addEvent(item['script'], 'load', item['callback']);
         cm.addEvent(item['script'], 'error', item['callback']);
-        cm.appendChild(item['script'], cm.getDocumentHead());
+        cm.appendChild(item['script'], container);
     }
     return item['script'];
 };
