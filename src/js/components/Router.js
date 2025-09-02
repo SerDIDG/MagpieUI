@@ -238,6 +238,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
                 that.redirect(matchedRouteData.redirect, null, {
                     urlParams: routeItem.urlParams,
                     captures: routeItem.captures,
+                    parameters: routeItem.parameters,
                     data: routeItem.data
                 });
             }
@@ -482,11 +483,23 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return url;
     };
 
-    classProto.prepareExternalHref = function(route, hash, urlParams) {
+    classProto.prepareExternalHref = function(route, hash, urlParams, params) {
         const that = this;
+
+        // Validate params
+        params = cm.merge({
+            parameters: null,
+        }, params);
+
+        if (cm.isObject(params.parameters)) {
+            params.parameters = cm.obj2URI(params.parameters);
+        }
 
         // Fill url params
         route = that.fillCaptures(route, urlParams);
+
+        // Add parameters
+        route = that.preparePath(route, params.parameters);
 
         // Add hash
         return that.prepareHash(route, hash);
@@ -608,16 +621,25 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return that.routes[route];
     };
 
-    classProto.getURL = function(route, hash, urlParams, data) {
+    classProto.getURL = function(route, hash, urlParams, params) {
         const that = this;
         if (cm.isEmpty(route)) return;
+
+        // Validate params
+        params = cm.merge({
+            data: null,
+            parameters: null,
+        }, params);
+
+        if (cm.isObject(params.parameters)) {
+            params.parameters = cm.obj2URI(params.parameters);
+        }
 
         // Check a route type
         const item = that.get(route);
         if (item) {
             if (item.type === 'external') {
-                route = item.href;
-                return that.prepareExternalHref(route, hash, urlParams);
+                return that.prepareExternalHref(item.href, hash, urlParams, params);
             } else {
                 route = item.route;
             }
@@ -626,26 +648,29 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Fill url params
         route = that.fillCaptures(route, urlParams);
 
-        // Save into data storage
-        that.dataStorage[route] = data;
-
         // Add lead slash if not exists
         if (!/^(\/|\.\/)/.test(route)) {
             route = '/' + route;
         }
+
+        // Save into data storage
+        that.dataStorage[route] = params.data;
 
         // Add lead point if not exists
         if (that.params.addLeadPoint && !/^\./.test(route)) {
             route = '.' + route;
         }
 
+        // Add parameters
+        route = that.preparePath(route, params.parameters);
+
         // Add hash
         return that.prepareHash(route, hash);
     };
 
-    classProto.getFullURL = function(route, hash, urlParams, data) {
+    classProto.getFullURL = function(route, hash, urlParams, params) {
         const that = this;
-        return that.prepareHref(that.getURL(route, hash, urlParams, data));
+        return that.prepareHref(that.getURL(route, hash, urlParams, params));
     };
 
     classProto.getRedirect = function(route) {
@@ -677,7 +702,9 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Validate params
         params = cm.merge({
             urlParams: null,
+            parameters: null,
             captures: null,
+            data: null,
             assignLocation: false,
             replaceLocation: false,
         }, params);
@@ -690,7 +717,11 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
 
         // Get route url
         const urlParams = !cm.isEmpty(params.urlParams) ? params.urlParams : params.captures;
-        const url = that.getURL(route, hash, urlParams);
+        const urlRouteParams = {
+            data: params.data,
+            parameters: params.parameters,
+        };
+        const url = that.getURL(route, hash, urlParams, urlRouteParams);
         that.setURL(url, hash, params);
 
         return that;

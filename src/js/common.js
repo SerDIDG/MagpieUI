@@ -98,7 +98,8 @@ var cm = {
             '%port%': 'cm._port',
             '%assetsUrl%': 'cm._assetsUrl',
             '%pathUrl%': 'cm._pathUrl',
-            '%version%': 'cm._version'
+            '%version%': 'cm._version',
+            '%lang%': 'cm._lang',
         },
         '_strings': {
             'common': {
