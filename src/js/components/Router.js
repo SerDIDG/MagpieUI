@@ -533,6 +533,20 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         return cm.fillVariables(route, params);
     };
 
+    classProto.prepareRouteRegExp = function(route) {
+        const replacer = function() {
+            const name = arguments[2];
+            if (route.patterns[name]) {
+                return route.patterns[name];
+            }
+            if (cm.isFunction(route.pattern)) {
+                return route.pattern(arguments);
+            }
+            return route.pattern;
+        };
+        return new RegExp('^' + route.route.replace(/({(\w+)})/g, replacer) + '$');
+    };
+
     classProto.checkRouteAccess = function(route) {
         const that = this;
         return route ? that.checkRoleAccess(route.access) : false;
@@ -579,6 +593,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
             name: null,
             access: 'all',
             pattern: '([^\\/]+?)',
+            patterns: {},
             regexp: null,
             map: [],
             captures: {},
@@ -596,7 +611,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         }, params);
 
         // RegExp
-        item.regexp = new RegExp('^' + route.replace(/({\w+})/g, item.pattern) + '$');
+        item.regexp = that.prepareRouteRegExp(item);
         item.map = that.getMap(route);
 
         // Binds
