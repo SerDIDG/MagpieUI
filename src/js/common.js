@@ -100,6 +100,7 @@ var cm = {
             '%pathUrl%': 'cm._pathUrl',
             '%version%': 'cm._version',
             '%lang%': 'cm._lang',
+            '%locale%': 'cm._locale',
         },
         '_strings': {
             'common': {
