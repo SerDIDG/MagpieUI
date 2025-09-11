@@ -1,26 +1,28 @@
 cm.define('Com.Notifications', {
-    'extend': 'Com.AbstractController',
-    'events': [
+    extend: 'Com.AbstractController',
+    events: [
         'onAdd',
         'onRemove',
         'onClear'
     ],
-    'params': {
-        'renderStructure': true,
-        'embedStructureOnRender': true,
-        'embedStructure': 'append',
-        'iconClasses': ['icon', 'small', 'linked'],
-        'closable': true,
-        'items': [],
+    params: {
+        renderStructure: true,
+        embedStructureOnRender: true,
+        embedStructure: 'append',
+
+        closable: true,
+        items: [],
+        iconClasses: ['icon', 'small', 'linked'],
+
         'Com.ToggleBox': {
-            'toggleTitle': false,
-            'className': null,
-            'duration': 'cm._config.animDuration',
+            toggleTitle: false,
+            className: null,
+            duration: 'cm._config.animDuration',
         }
     },
-    'strings': {
-        'close': 'Close',
-        'more': 'Read more'
+    strings: {
+        close: 'Close',
+        more: 'Read more'
     }
 },
 function() {
@@ -31,7 +33,8 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
     classProto.construct = function() {
         const that = this;
         that.items = [];
-        // Call parent method - construct
+
+        // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
 
@@ -39,7 +42,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         const that = this;
 
         // Structure
-        that.nodes.container = cm.node('div', {'classes': 'com__notifications is-hidden'},
+        that.nodes.container = cm.node('div', {classes: 'com__notifications is-hidden'},
             that.nodes.list = cm.node('ul')
         );
 
@@ -61,61 +64,74 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
         // Config
         item = cm.merge({
-            'label': '',
-            'type': 'warning',           // success | warning | danger
-            'messages': [],
-            'collapsed': true,
-            'closable': that.params['closable'],
-            'nodes': {}
+            label: '',
+            type: 'warning',           // success | warning | danger
+            messages: [],
+            collapsed: true,
+            closable: that.params.closable,
+            classes: [],
+            modifiers: [],
+            nodes: {},
         }, item);
 
+        // Validate
+        item.classes = cm.extend(item.classes, [
+            item.type,
+            'com__notifications__item',
+        ]);
+        cm.forEach(item.modifiers, modifier => {
+            item.classes.push(`com__notifications__item--${modifier}`);
+        });
+
         // Structure
-        item['nodes'].container = cm.node('li', {'classes': item['type']},
-            item['nodes']['descr'] = cm.node('div', {'classes': 'descr'}),
-            item['nodes']['messages'] = cm.node('div', {'classes': 'messages'},
-                item['nodes']['messagesList'] = cm.node('ul')
+        item.nodes.container = cm.node('li', {classes: item.classes},
+            item.nodes.descr = cm.node('div', {classes: 'descr'}),
+            item.nodes.messages = cm.node('div', {classes: 'messages'},
+                item.nodes.messagesList = cm.node('ul')
             )
         );
 
         // Close action
-        if (item['closable']) {
+        if (item.closable) {
             item.iconClasses = cm.clone(that.params.iconClasses);
-            item.iconClasses.push(['svg__close', item['type']].join('-'));
-            item['nodes']['close'] = cm.node('div', {
-                'classes': item.iconClasses,
-                'title': that.lang('close'),
-                'role': 'button',
-                'tabindex': 0
+            item.iconClasses.push(['svg__close', item.type].join('-'));
+
+            item.nodes.close = cm.node('div', {
+                classes: item.iconClasses,
+                title: that.lang('close'),
+                role: 'button',
+                tabindex: 0
             });
-            cm.insertFirst(item['nodes']['close'], item['nodes'].container);
-            cm.click.add(item['nodes']['close'], function() {
-                that.remove(item);
-            });
+
+            cm.click.add(item.nodes.close, () => that.remove(item));
+            cm.insertFirst(item.nodes.close, item.nodes.container);
         }
 
         // Label
-        if (!cm.isNode(item['label']) && !cm.isTextNode(item['label'])) {
-            item['label'] = cm.node('div', {'innerHTML': item['label']});
+        if (!cm.isNode(item.label) && !cm.isTextNode(item.label)) {
+            item.label = cm.node('div', {innerHTML: item.label});
         }
-        cm.appendChild(item['label'], item['nodes']['descr']);
+        cm.appendChild(item.label, item.nodes.descr);
 
         // Messages
-        if (!cm.isEmpty(item['messages'])) {
+        if (!cm.isEmpty(item.messages)) {
             // Button
-            item['nodes']['button'] = cm.node('a', {'classes': 'more'}, that.lang('more'));
-            cm.insertFirst(item['nodes']['button'], item['nodes']['descr']);
+            item.nodes.button = cm.node('a', {classes: 'more'}, that.lang('more'));
+            cm.insertFirst(item.nodes.button, item.nodes.descr);
+
             // List
-            cm.forEach(item['messages'], function(message) {
-                cm.appendChild(cm.node('li', message), item['nodes']['messagesList']);
+            cm.forEach(item.messages, message => {
+                cm.appendChild(cm.node('li', message), item.nodes.messagesList);
             });
+
             // Toggle
             cm.getConstructor('Com.ToggleBox', function(classConstructor) {
-                item['controller'] = new classConstructor(
+                item.controller = new classConstructor(
                     cm.merge(that.params['Com.ToggleBox'], {
-                        'nodes': {
-                            'container': item['nodes'].container,
-                            'button': item['nodes']['button'],
-                            'target': item['nodes']['messages']
+                        nodes: {
+                            container: item.nodes.container,
+                            button: item.nodes.button,
+                            target: item.nodes.messages
                         }
                     })
                 );
@@ -123,7 +139,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         }
 
         // Embed
-        cm.appendChild(item['nodes'].container, that.nodes.list);
+        cm.appendChild(item.nodes.container, that.nodes.list);
         cm.removeClass(that.nodes.container, 'is-hidden');
 
         // Push
@@ -134,7 +150,7 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
 
     classProto.remove = function(item) {
         const that = this;
-        cm.remove(item['nodes'].container);
+        cm.remove(item.nodes.container);
         cm.arrayRemove(that.items, item);
         if (that.items.length === 0) {
             cm.addClass(that.nodes.container, 'is-hidden');

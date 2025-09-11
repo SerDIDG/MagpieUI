@@ -1,5 +1,5 @@
 cm.define('Com.Form', {
-    'modules' : [
+    'modules': [
         'Params',
         'Events',
         'Langs',
@@ -10,7 +10,7 @@ cm.define('Com.Form', {
         'Stack',
         'Structure'
     ],
-    'events' : [
+    'events': [
         'onRenderStart',
         'onRender',
         'onValidate',
@@ -31,71 +31,73 @@ cm.define('Com.Form', {
         'onEnable',
         'onDisable'
     ],
-    'params' : {
-        'node' : cm.node('div'),
-        'container' : null,
-        'name' : '',
-        'renderStructure' : true,
-        'embedStructure' : 'append',
-        'removeOnDestruct' : true,
+    'params': {
+        'node': cm.node('div'),
+        'container': null,
+        'name': '',
+        'renderStructure': true,
+        'embedStructure': 'append',
+        'removeOnDestruct': true,
 
-        'renderButtons' : true,
-        'renderButtonsSeparator' : true,
-        'buttonsContainerClasses' : [],
-        'buttonsClasses' : [],
-        'buttonsAlign' : 'right',
-        'buttonsAdaptive' : true,
-        'renderNames' : false,                                      // Render visual input name attribute
+        'renderButtons': true,
+        'renderButtonsSeparator': true,
+        'buttonsContainerClasses': [],
+        'buttonsClasses': [],
+        'buttonsAlign': 'right',
+        'buttonsAdaptive': true,
+        'renderNames': false,                                      // Render visual input name attribute
 
-        'validate' : false,
-        'validateOnChange' : false,
-        'validateOnInput' : false,
-        'showNotifications' : true,
-        'showNotificationsMessages' : true,
-        'showSuccessNotification' : false,
-        'showValidationNotification' : false,
-        'showValidationMessages' : true,
-        'notificationsClosable' : true,
-        'Com.Notifications' : {},
+        'validate': false,
+        'validateOnChange': false,
+        'validateOnInput': false,
+        'showNotifications': true,
+        'showNotificationsMessages': true,
+        'showSuccessNotification': false,
+        'showValidationNotification': false,
+        'showValidationMessages': true,
+        'notificationsClosable': true,
+        'Com.Notifications': {},
 
-        'data' : {},
+        'data': {},
         'mergeData': false,
         'sendable': true,
-        'autoSend' : false,
-        'sendOnChange' : false,
-        'sendEmptyForm' : true,
-        'sendEmptyFields' : false,
-        'sendOnlyChangedFields' : false,
+        'autoSend': false,
+        'sendOnChange': false,
+        'sendEmptyForm': true,
+        'sendEmptyFields': false,
+        'sendOnlyChangedFields': false,
         'abortPreviousRequest': false,
         'responseKey': 'data',
         'responseErrorsKey': 'errors',
-        'responseMessageKey' : 'message',
-        'responseCodeKey' : 'code',
-        'ajax' : {
-            'type' : 'json',
-            'method' : 'post',
-            'paramsType' : 'json',
-            'url' : '',                                             // Request URL. Variables: %baseUrl%, %callback% for JSONP.
-            'params' : ''                                           // Params object. %baseUrl%, %callback% for JSONP.
+        'responseMessageKey': 'message',
+        'responseMessageCodeKey': false,
+        'responseCodeKey': 'code',
+        'ajax': {
+            'type': 'json',
+            'method': 'post',
+            'paramsType': 'json',
+            'url': '',                                             // Request URL. Variables: %baseUrl%, %callback% for JSONP.
+            'params': ''                                           // Params object. %baseUrl%, %callback% for JSONP.
         },
 
-        'showLoader' : true,
-        'loaderCoverage' : 'fields',                                // fields, all
-        'overlayConstructor' : 'Com.Overlay',
-        'overlayParams' : {
-            'position' : 'absolute',
-            'autoOpen' : false,
-            'removeOnClose' : true,
-            'lazy' : true
+        'showLoader': true,
+        'loaderCoverage': 'fields',                                // fields, all
+        'overlayConstructor': 'Com.Overlay',
+        'overlayParams': {
+            'position': 'absolute',
+            'autoOpen': false,
+            'removeOnClose': true,
+            'lazy': true
         }
     },
-    'strings' : {
-        'form_error' : 'Form is not filled correctly.',
-        'server_error' : '{#var:cm._strings.common.server_error}',
-        'success_message' : 'Form successfully sent'
+    'strings': {
+        'form_error': 'Form is not filled correctly.',
+        'server_error': '{#var:cm._strings.common.server_error}',
+        'success_message': 'Form successfully sent',
+        'error_codes': {},
     }
 },
-function(params){
+function(params) {
     var that = this;
 
     that.nodes = {};
@@ -109,7 +111,7 @@ function(params){
     that.isProcess = false;
     that.isEnabled = true;
 
-    var init = function(){
+    var init = function() {
         that.renderComponent();
         that.setParams(params);
         that.convertEvents(that.params.events);
@@ -124,30 +126,30 @@ function(params){
         that.triggerEvent('onRender');
     };
 
-    var validateParams = function(){
+    var validateParams = function() {
         that.params.buttonsAlign = cm.inArray(['left', 'center', 'right', 'justify'], that.params.buttonsAlign) ? that.params.buttonsAlign : 'right';
         that.params.loaderCoverage = cm.inArray(['fields', 'all'], that.params.loaderCoverage) ? that.params.loaderCoverage : 'all';
         // Ajax
         that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url) && that.params.sendable;
     };
 
-    var render = function(){
+    var render = function() {
         // Structure
-        if(that.params.renderStructure){
-            that.nodes.container = cm.node('div', {'class' : 'com__form'},
-                that.nodes.fieldsContainer = cm.node('div', {'class' : 'com__form__fields'},
-                    that.nodes.fields = cm.node('div', {'class' : 'inner'})
+        if (that.params.renderStructure) {
+            that.nodes.container = cm.node('div', {'class': 'com__form'},
+                that.nodes.fieldsContainer = cm.node('div', {'class': 'com__form__fields'},
+                    that.nodes.fields = cm.node('div', {'class': 'inner'})
                 )
             );
 
             // Notifications
-            that.nodes.notifications = cm.node('div', {'class' : 'com__form__notifications'});
+            that.nodes.notifications = cm.node('div', {'class': 'com__form__notifications'});
 
             // Buttons
             that.nodes.buttonsSeparator = cm.node('hr');
-            that.nodes.buttonsContainer = cm.node('div', {'class' : 'com__form__buttons'},
-                that.nodes.buttons = cm.node('div', {'class' : 'pt__buttons'},
-                    that.nodes.buttonsHolder = cm.node('div', {'class' : 'inner'})
+            that.nodes.buttonsContainer = cm.node('div', {'class': 'com__form__buttons'},
+                that.nodes.buttons = cm.node('div', {'class': 'pt__buttons'},
+                    that.nodes.buttonsHolder = cm.node('div', {'class': 'inner'})
                 )
             );
             cm.addClass(that.nodes.buttonsContainer, that.params.buttonsContainerClasses);
@@ -162,27 +164,27 @@ function(params){
             that.embedStructure(that.nodes.container);
         }
         // Notifications
-        cm.getConstructor('Com.Notifications', function(classConstructor, className){
+        cm.getConstructor('Com.Notifications', function(classConstructor, className) {
             that.components.notifications = new classConstructor(
                 cm.merge(that.params[className], {
-                    'closable' : that.params.notificationsClosable,
-                    'container' : that.nodes.notifications
+                    'closable': that.params.notificationsClosable,
+                    'container': that.nodes.notifications
                 })
             );
-            that.components.notifications.addEvent('onAdd', function(){
+            that.components.notifications.addEvent('onAdd', function() {
                 cm.addClass(that.nodes.notifications, 'is-show', true);
             });
-            that.components.notifications.addEvent('onRemove', function(){
-                if(that.components.notifications.getLength() === 0){
+            that.components.notifications.addEvent('onRemove', function() {
+                if (that.components.notifications.getLength() === 0) {
                     cm.removeClass(that.nodes.notifications, 'is-show', true);
                 }
             });
         });
         // Overlay Loader
         var overlayContainer;
-        if(that.params.showLoader){
-            cm.getConstructor(that.params.overlayConstructor, function(classConstructor){
-                switch(that.params.loaderCoverage){
+        if (that.params.showLoader) {
+            cm.getConstructor(that.params.overlayConstructor, function(classConstructor) {
+                switch (that.params.loaderCoverage) {
                     case 'fields':
                         overlayContainer = that.nodes.fieldsContainer;
                         break;
@@ -200,65 +202,65 @@ function(params){
         that.params.autoSend && that.send();
     };
 
-    var renderField = function(type, params){
+    var renderField = function(type, params) {
         var field = Com.FormFields.get(type);
         // Merge params
         params = cm.merge({
-            'form' : that,
-            'formName' : that.params.name,
-            'system' : false,
-            'name' : '',
-            'dataName' : null,
-            'dataPath' : null,
-            'label' : '',
-            'originValue' : null,
-            'required' : false,
-            'validate' : false,
-            'send' : true,
-            'sendEmpty' : true,
-            'sendAlways' : false,
-            'sendPath' : null,
-            'sendCallback' : null,
-            'preventReset' : false,
-            'options' : [],
-            'container' : that.nodes.fields,
-            'render' : true,
-            'renderName' : null,
-            'renderEvents' : true,
-            'renderErrorMessage' : that.params.showValidationMessages
+            'form': that,
+            'formName': that.params.name,
+            'system': false,
+            'name': '',
+            'dataName': null,
+            'dataPath': null,
+            'label': '',
+            'originValue': null,
+            'required': false,
+            'validate': false,
+            'send': true,
+            'sendEmpty': true,
+            'sendAlways': false,
+            'sendPath': null,
+            'sendCallback': null,
+            'preventReset': false,
+            'options': [],
+            'container': that.nodes.fields,
+            'render': true,
+            'renderName': null,
+            'renderEvents': true,
+            'renderErrorMessage': that.params.showValidationMessages
         }, params);
         params = cm.merge(cm.clone(field, true), params);
         // Validate
         params.fieldConstructor = !cm.isEmpty(params.fieldConstructor) ? params.fieldConstructor : 'Com.FormField';
         params.renderName = cm.isBoolean(params.renderName) ? params.renderName : that.params.renderNames;
         // Value
-        if(params.dataPath){
+        if (params.dataPath) {
             var value = cm.reducePath(params.dataPath, that.params.data);
             params.value = !cm.isEmpty(value) ? value : params.value;
-        }else{
+        } else {
             params.value = !cm.isEmpty(that.params.data[params.name]) ? that.params.data[params.name] : params.value;
         }
         params.dataValue = !cm.isEmpty(that.params.data[params.dataName]) ? that.params.data[params.dataName] : params.dataValue;
         // Render controller
-        if(params.render && field && !that.fields[params.name]){
+        if (params.render && field && !that.fields[params.name]) {
             renderFieldController(params);
         }
     };
 
-    var renderFieldController = function(params){
-        cm.getConstructor(params.fieldConstructor, function(classConstructor){
+    var renderFieldController = function(params) {
+        cm.getConstructor(params.fieldConstructor, function(classConstructor) {
             params.fieldController = params.controller = new classConstructor(params);
             params.inputController = params.constructorController = cm.isFunction(params.fieldController.getController) && params.fieldController.getController();
 
             // Events
             if (params.renderEvents) {
-                params.fieldController.addEvent('onBlur', function(field){
+                params.fieldController.addEvent('onBlur', function(field) {
                     fieldBlurEvent(field, params);
                 });
-                params.fieldController.addEvent('onChange', function(field){
+                params.fieldController.addEvent('onChange', function(field) {
                     fieldChangeEvent(field, params);
                 });
-                params.fieldController.addEvent('onInput', function(field){
+                params.fieldController.addEvent('onInput', function(field) {
                     fieldInputEvent(field, params);
                 });
             }
@@ -273,39 +275,39 @@ function(params){
         });
     };
 
-    var fieldBlurEvent = function(field, params){
-        if(
+    var fieldBlurEvent = function(field, params) {
+        if (
             that.isEnabled && that.params.validate && that.params.validateOnChange &&
             (field.params.required || field.params.validate)
-        ){
+        ) {
             params.fieldController.validate();
         }
     };
 
-    var fieldChangeEvent = function(field, params){
-        if(
+    var fieldChangeEvent = function(field, params) {
+        if (
             that.isEnabled && that.params.validate && that.params.validateOnChange &&
             (field.params.required || field.params.validate)
-        ){
+        ) {
             params.fieldController.validate();
         }
-        if(that.params.sendOnChange && !field.params.system){
+        if (that.params.sendOnChange && !field.params.system) {
             that.send();
         }
         that.triggerEvent('onChange');
     };
 
-    var fieldInputEvent = function(field, params){
-        if(
+    var fieldInputEvent = function(field, params) {
+        if (
             that.isEnabled && that.params.validate && that.params.validateOnInput &&
             (field.params.required || field.params.validate)
-        ){
+        ) {
             params.fieldController.validate();
         }
         that.triggerEvent('onInput');
     };
 
-    var renderButton = function(params){
+    var renderButton = function(params) {
         params = cm.merge({
             'node': null,
             'name': '',
@@ -320,12 +322,12 @@ function(params){
             'handler': null,
         }, params);
 
-        if(that.buttons[params.name]){
+        if (that.buttons[params.name]) {
             return;
         }
 
         // Structure
-        if(!cm.isNode(params.node)){
+        if (!cm.isNode(params.node)) {
             params.classes = cm.merge(['button', params.class], params.classes);
             params.node = cm.node('button', {name: params.name, classes: params.classes},
                 params.labelNode = cm.node('div', {classes: 'label is-show'}, params.label)
@@ -333,7 +335,7 @@ function(params){
         }
 
         // Spinner
-        if(params.spinner){
+        if (params.spinner) {
             params.spinnerClasses = cm.merge(['icon', params.spinnerClass], params.spinnerClasses);
             params.spinnerNode = cm.node('div', {classes: params.spinnerClasses});
             cm.appendChild(params.spinnerNode, params.node);
@@ -341,19 +343,19 @@ function(params){
         }
 
         // Actions
-        switch(params.action){
+        switch (params.action) {
             case 'submit':
                 params.node.type = 'submit';
                 cm.addClass(params.node, 'button-primary');
-                cm.click.add(params.node, function(event){
+                cm.click.add(params.node, function(event) {
                     cm.preventDefault(event);
-                    if(cm.isFunction(params.handler)){
+                    if (cm.isFunction(params.handler)) {
                         params.handler(that, params, event);
                         return;
                     }
-                    if(that.isProcess){
+                    if (that.isProcess) {
                         that.abort();
-                    }else{
+                    } else {
                         that.send();
                     }
                 });
@@ -362,13 +364,13 @@ function(params){
             case 'reset':
                 params.node.type = 'reset';
                 cm.addClass(params.node, 'button-transparent');
-                cm.click.add(params.node, function(event){
+                cm.click.add(params.node, function(event) {
                     cm.preventDefault(event);
-                    if(cm.isFunction(params.handler)){
+                    if (cm.isFunction(params.handler)) {
                         params.handler(that, params, event);
                         return;
                     }
-                    if(!that.isProcess){
+                    if (!that.isProcess) {
                         that.reset();
                     }
                 });
@@ -376,13 +378,13 @@ function(params){
 
             case 'clear':
                 cm.addClass(params.node, 'button-transparent');
-                cm.click.add(params.node, function(event){
+                cm.click.add(params.node, function(event) {
                     cm.preventDefault(event);
-                    if(cm.isFunction(params.handler)){
+                    if (cm.isFunction(params.handler)) {
                         params.handler(that, params, event);
                         return;
                     }
-                    if(!that.isProcess){
+                    if (!that.isProcess) {
                         that.clear();
                     }
                 });
@@ -390,9 +392,9 @@ function(params){
 
             case 'custom':
             default:
-                cm.click.add(params.node, function(event){
+                cm.click.add(params.node, function(event) {
                     cm.preventDefault(event);
-                    if(cm.isFunction(params.handler)){
+                    if (cm.isFunction(params.handler)) {
                         params.handler(that, params, event);
                     }
                 });
@@ -404,13 +406,13 @@ function(params){
         cm.appendChild(params.node, params.container);
     };
 
-    var toggleButtons = function(value){
-        cm.forEach(that.buttons, function(item){
-            if(item.spinner){
-                if(value){
+    var toggleButtons = function(value) {
+        cm.forEach(that.buttons, function(item) {
+            if (item.spinner) {
+                if (value) {
                     cm.replaceClass(item.labelNode, 'is-show', 'is-hide');
                     cm.replaceClass(item.spinnerNode, 'is-hide', 'is-show');
-                }else{
+                } else {
                     cm.replaceClass(item.labelNode, 'is-hide', 'is-show');
                     cm.replaceClass(item.spinnerNode, 'is-show', 'is-hide');
                 }
@@ -418,19 +420,19 @@ function(params){
         });
     };
 
-    var renderSeparator = function(params){
+    var renderSeparator = function(params) {
         params = cm.merge({
-            'node' : cm.node('hr'),
-            'container' : that.nodes.fields,
+            'node': cm.node('hr'),
+            'container': that.nodes.fields,
             'classes': []
         }, params);
         cm.addClass(params.node, params.classes);
         cm.appendChild(params.node, params.container);
     };
 
-    var removeField = function(name){
+    var removeField = function(name) {
         var item = that.getField(name);
-        if(item){
+        if (item) {
             item.fieldController && cm.isFunction(item.fieldController.remove) && item.fieldController.remove();
             delete that.fields[name];
         }
@@ -438,49 +440,49 @@ function(params){
 
     /* *** VALIDATE *** */
 
-    var validateHelper = function(options){
+    var validateHelper = function(options) {
         var fieldParams,
             isFieldValidatable,
             constraintsData,
             testData,
             data = {
-                'form' : that,
-                'valid' : true,
-                'message' : null
+                'form': that,
+                'valid': true,
+                'message': null
             };
         // Fields
-        cm.forEach(that.fields, function(field, name){
+        cm.forEach(that.fields, function(field, name) {
             fieldParams = field.controller.getParams();
             isFieldValidatable = field.field && !field.system
                 && (fieldParams.required || fieldParams.validate)
                 && cm.isFunction(field.controller.validate);
-            if(isFieldValidatable && !field.controller.validate(options)){
-                data.message = that.lang('form_error');
+            if (isFieldValidatable && !field.controller.validate(options)) {
+                data.message = that.msg('form_error');
                 data.valid = false;
             }
         });
         // Constraints
-        if(!cm.isEmpty(that.constraints)){
+        if (!cm.isEmpty(that.constraints)) {
             testData = cm.clone(data);
             constraintsData = validateConstraints(testData);
-            if(constraintsData){
+            if (constraintsData) {
                 data = cm.merge(data, constraintsData);
             }
         }
         return data;
     };
 
-    var validateConstraints = function(data){
+    var validateConstraints = function(data) {
         var constraintsTest,
             constraintsData;
-        constraintsTest = that.constraints.some(function(item){
-            if(cm.isFunction(item)){
+        constraintsTest = that.constraints.some(function(item) {
+            if (cm.isFunction(item)) {
                 constraintsData = item(data);
                 return !constraintsData.valid;
             }
             return false;
         });
-        if(constraintsTest){
+        if (constraintsTest) {
             return constraintsData;
         }
         return false;
@@ -488,32 +490,32 @@ function(params){
 
     /* ******* HELPERS ******* */
 
-    var getHelper = function(type, o, field, name){
+    var getHelper = function(type, o, field, name) {
         var value = field.controller.get();
 
         // Process send callback function if specified
-        if(cm.isFunction(field.sendCallback)){
+        if (cm.isFunction(field.sendCallback)) {
             value = field.sendCallback(field, value);
         }
 
         // To send only changed values we need to make diff between original and current values
-        if(
+        if (
             cm.inArray(['send', 'sendPath'], type) &&
             that.params.sendOnlyChangedFields &&
             !field.sendAlways
-        ){
+        ) {
             value = cm.getDiffCompare(field.originValue, value);
         }
-        if(
+        if (
             !cm.isUndefined(value) &&
             (that.params.sendEmptyFields || !that.params.sendEmptyFields && !cm.isEmpty(value)) &&
             (field.sendEmpty || !field.sendEmpty && !cm.isEmpty(value))
-        ){
-            if(type === 'sendPath' && !cm.isEmpty(field.sendPath)){
+        ) {
+            if (type === 'sendPath' && !cm.isEmpty(field.sendPath)) {
                 var path = cm.objectFormPath(field.sendPath, value, '');
                 // Use extend instead of merge, because merge will make deep copy of objects without custom properties
                 o = cm.extend(o, path, true, false);
-            }else{
+            } else {
                 o[name] = value;
             }
         }
@@ -521,7 +523,7 @@ function(params){
         return o;
     };
 
-    var sendPlaceholderHelper = function(){
+    var sendPlaceholderHelper = function() {
         var data = that.get('sendPath');
         sendCompleteHelper(data);
         that.clearError(that);
@@ -531,7 +533,7 @@ function(params){
         that.triggerEvent('onSendEnd', data);
     };
 
-    var sendCompleteHelper = function(data){
+    var sendCompleteHelper = function(data) {
         data = !cm.isEmpty(data) ? data : that.get('sendPath');
         that.set(data, {
             triggerEvents: false,
@@ -542,36 +544,36 @@ function(params){
 
     /* ******* CALLBACKS ******* */
 
-    that.callbacks.prepare = function(that, config){
+    that.callbacks.prepare = function(that, config) {
         config = that.callbacks.beforePrepare(that, config);
         config.url = cm.strReplace(config.url, {
-            '%baseUrl%' : cm._baseUrl
+            '%baseUrl%': cm._baseUrl
         });
         config.params = cm.objectReplace(config.params, {
-            '%baseUrl%' : cm._baseUrl
+            '%baseUrl%': cm._baseUrl
         });
         config.params = cm.merge(config.params, that.get('sendPath', that.params.mergeData));
         config = that.callbacks.afterPrepare(that, config);
         return config;
     };
 
-    that.callbacks.filterData = function(that, data){
+    that.callbacks.filterData = function(that, data) {
         return data;
     };
 
-    that.callbacks.beforePrepare = function(that, config){
+    that.callbacks.beforePrepare = function(that, config) {
         return config;
     };
 
-    that.callbacks.afterPrepare = function(that, config){
+    that.callbacks.afterPrepare = function(that, config) {
         return config;
     };
 
-    that.callbacks.request = function(that, config){
+    that.callbacks.request = function(that, config) {
         config = that.callbacks.prepare(that, config);
         that.callbacks.clearError(that);
 
-        if(!that.params.sendEmptyForm && cm.isEmpty(config.params)){
+        if (!that.params.sendEmptyForm && cm.isEmpty(config.params)) {
             sendPlaceholderHelper();
             return;
         }
@@ -579,152 +581,165 @@ function(params){
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(config, {
-                'onStart' : function(){
+                'onStart': function() {
                     that.callbacks.start(that, config);
                 },
-                'onProgress' : function(event){
+                'onProgress': function(event) {
                     that.callbacks.progress(that, config, event);
                 },
-                'onSuccess' : function(response, event){
+                'onSuccess': function(response, event) {
                     event = response instanceof ProgressEvent ? response : event;
                     that.callbacks.response(that, config, response, event);
                 },
-                'onError' : function(response, event){
+                'onError': function(response, event) {
                     event = response instanceof ProgressEvent ? response : event;
                     that.callbacks.error(that, config, response, event);
                 },
-                'onAbort' : function(){
+                'onAbort': function() {
                     that.callbacks.abort(that, config);
                 },
-                'onEnd' : function(response){
+                'onEnd': function(response) {
                     that.callbacks.end(that, config, response);
                 }
             })
         );
     };
 
-    that.callbacks.start = function(that, config){
+    that.callbacks.start = function(that, config) {
         that.isProcess = true;
         that.sendStart();
         that.triggerEvent('onSendStart');
     };
 
-    that.callbacks.end = function(that, config){
+    that.callbacks.end = function(that, config) {
         that.isProcess = false;
         that.sendEnd();
         that.triggerEvent('onSendEnd');
     };
 
-    that.callbacks.progress = function(that, config, event){
+    that.callbacks.progress = function(that, config, event) {
         that.sendProgress(event);
         that.triggerEvent('onProgress', event);
     };
 
-    that.callbacks.response = function(that, config, response, event){
+    that.callbacks.response = function(that, config, response, event) {
         var errors,
             data;
-        if(!cm.isEmpty(response)){
+        if (!cm.isEmpty(response)) {
             errors = cm.reducePath(that.params.responseErrorsKey, response);
             data = cm.reducePath(that.params.responseKey, response);
-            if(!cm.isEmpty(errors)){
+            if (!cm.isEmpty(errors)) {
                 that.callbacks.error(that, config, response, event);
-            }else{
+            } else {
                 that.callbacks.success(that, data, response, event);
             }
-        }else{
+        } else {
             that.callbacks.error(that, config, response, event);
         }
     };
 
-    that.callbacks.error = function(that, config, response, event){
-        var errors,
-            message,
-            code;
-        if(!cm.isEmpty(response)){
-            errors = cm.reducePath(that.params.responseErrorsKey, response);
-            message = cm.reducePath(that.params.responseMessageKey, response);
-            code = cm.reducePath(that.params.responseCodeKey, response);
-        }
-        that.callbacks.renderError(that, errors, message);
-
-        var responseData = {
-            'response' : response,
-            'errors' : errors,
-            'message' : message,
-            'code' : code,
-            'target': event instanceof ProgressEvent ? event.target : null,
+    that.callbacks.responseParams = function(that, response) {
+        const params = {
+            response: response,
         };
-        that.triggerEvent('onError', responseData);
-        that.triggerEvent('onRequestError', responseData);
+
+        if (!cm.isEmpty(response)) {
+            params.code = cm.reducePath(that.params.responseCodeKey, response);
+            params.errors = cm.reducePath(that.params.responseErrorsKey, response);
+            params.message = cm.reducePath(that.params.responseMessageKey, response);
+            params.messageCode = cm.reducePath(that.params.responseMessageCodeKey, response);
+        }
+
+        const message = that.getErrorMessage(params.messageCode);
+        if (!cm.isEmpty(message)) {
+            params.message = message;
+        }
+
+        return params;
     };
 
-    that.callbacks.success = function(that, data, response, event){
-        var message,
-            code;
-        if(!cm.isEmpty(response)){
-            message = cm.reducePath(that.params.responseMessageKey, response);
-            code = cm.reducePath(that.params.responseCodeKey, response);
-        }
-        if(that.params.showNotifications && that.params.showSuccessNotification){
+    that.callbacks.error = function(that, config, response, event) {
+        const params = that.callbacks.responseParams(that, response, event);
+        params.target = event instanceof ProgressEvent ? event.target : null;
+
+        that.callbacks.renderError(that, params.errors, params.message);
+        that.triggerEvent('onError', params);
+        that.triggerEvent('onRequestError', params);
+    };
+
+    that.callbacks.success = function(that, data, response, event) {
+        if (that.params.showNotifications && that.params.showSuccessNotification) {
             that.callbacks.renderNotification(that, {
-                'label' : that.lang('success_message'),
-                'type' : 'success'
+                type: 'success',
+                label: that.msg('success_message'),
             });
         }
-        sendCompleteHelper(data);
-        that.triggerEvent('onSuccess', data);
-        that.triggerEvent('onRequestSuccess', {
-            'response' : response,
-            'data' : data,
-            'message' : message,
-            'code' : code,
-            'target': event instanceof ProgressEvent ? event.target : null,
-        });
+
+        const params = that.callbacks.responseParams(that, response, event);
+        params.target = event instanceof ProgressEvent ? event.target : null;
+        params.data = data;
+
+        sendCompleteHelper(params.data);
+        that.triggerEvent('onSuccess', params.data);
+        that.triggerEvent('onRequestSuccess', params);
     };
 
-    that.callbacks.abort = function(that, config){
+    that.callbacks.abort = function(that, config) {
         that.triggerEvent('onAbort');
     };
 
     /* *** RENDER *** */
 
-    that.callbacks.clearError = function(that){
+    that.callbacks.clearError = function(that) {
         // Clear notification
         that.clearNotification();
         // Clear field errors
-        cm.forEach(that.fields, function(field){
+        cm.forEach(that.fields, function(field) {
             field.controller.clearError();
         });
     };
 
-    that.callbacks.renderError = function(that, errors, message){
-        var hasMessage = !cm.isEmpty(message) && cm.isString(message),
-            label = hasMessage ? message : that.lang('form_error'),
-            messages;
+    that.callbacks.renderError = function(that, errors, message, messageCode) {
+        let label = that.msg('form_error');
+        let hasMessage = false;
+
+        if (!cm.isEmpty(message) && cm.isString(message)) {
+            label = message;
+            hasMessage = true;
+        }
+
+        if (!cm.isEmpty(messageCode)) {
+            const msg = that.getMsg(`error_codes.${messageCode}`);
+            if (!cm.isEmpty(msg)) {
+                label = msg;
+                hasMessage = true;
+            }
+        }
+
         // Clear old errors messages
         that.callbacks.clearError(that);
+
         // Render new errors messages
-        var data = {
-            'type' : 'danger'
+        const params = {
+            type: 'danger'
         };
-        if(cm.isArray(errors) || cm.isObject(errors)){
-            messages = that.callbacks.renderErrorMessages(that, errors);
-            data.label = label;
-            if(that.params.showNotificationsMessages) {
-                data.messages = messages;
-                data.collapsed = true;
+
+        if (cm.isArray(errors) || cm.isObject(errors)) {
+            params.label = label;
+            if (that.params.showNotificationsMessages) {
+                params.messages = that.callbacks.renderErrorMessages(that, errors);
+                params.collapsed = true;
             }
-        }else if(hasMessage){
-            data.label = label;
-        }else{
-            data.label = that.msgParse('server_error');
+        } else {
+            params.label = hasMessage ? label : that.msgParse('server_error');
         }
-        if(that.params.showNotifications){
-            that.callbacks.renderNotification(that, data);
+
+        if (that.params.showNotifications) {
+            that.callbacks.renderNotification(that, params);
         }
     };
 
-    that.callbacks.renderErrorMessages = function(that, errors){
+    that.callbacks.renderErrorMessages = function(that, errors) {
         var field,
             fieldName,
             fieldMessage,
@@ -735,28 +750,28 @@ function(params){
         errors = that.callbacks.filterErrors(that, errors);
 
         // Render error messages
-        cm.forEach(errors, function(item, key){
+        cm.forEach(errors, function(item, key) {
             // Get field
             fieldName = item && item.field ? item.field : key;
             field = that.getField(fieldName);
             fieldLabel = that.getFieldLabel(fieldName) || fieldName;
             // Render field messages
-            if(cm.isObject(item)){
-                if(cm.isArray(item.message)){
-                    cm.forEach(item.message, function(messageItem){
+            if (cm.isObject(item)) {
+                if (cm.isArray(item.message)) {
+                    cm.forEach(item.message, function(messageItem) {
                         fieldMessage = that.callbacks.renderErrorMessage(that, field, messageItem, fieldLabel);
                         messages.push(fieldMessage);
                     })
-                }else if(!cm.isEmpty(item.message)){
+                } else if (!cm.isEmpty(item.message)) {
                     fieldMessage = that.callbacks.renderErrorMessage(that, field, item.message, fieldLabel);
                     messages.push(fieldMessage);
                 }
-            }else if(cm.isArray(item)){
-                cm.forEach(item, function(messageItem){
+            } else if (cm.isArray(item)) {
+                cm.forEach(item, function(messageItem) {
                     fieldMessage = that.callbacks.renderErrorMessage(that, field, messageItem, fieldLabel);
                     messages.push(fieldMessage);
                 });
-            }else if(!cm.isEmpty(item)){
+            } else if (!cm.isEmpty(item)) {
                 fieldMessage = that.callbacks.renderErrorMessage(that, field, item, fieldLabel);
                 messages.push(fieldMessage);
             }
@@ -764,34 +779,34 @@ function(params){
         return messages;
     };
 
-    that.callbacks.filterErrors = function(that, errors){
+    that.callbacks.filterErrors = function(that, errors) {
         return errors;
     };
 
-    that.callbacks.renderErrorMessage = function(that, field, message, label){
+    that.callbacks.renderErrorMessage = function(that, field, message, label) {
         var messagePath = ['errors', message].join('.'),
             messageString = that.getMsg(messagePath);
         message = !cm.isEmpty(messageString) ? that.msg(messagePath) : message;
-        if(field){
+        if (field) {
             field.controller.renderError(message);
         }
-        if(!cm.isEmpty(label)){
+        if (!cm.isEmpty(label)) {
             message = [label, message].join(': ');
         }
         return message
     };
 
-    that.callbacks.renderNotification = function(that, o){
+    that.callbacks.renderNotification = function(that, o) {
         cm.addClass(that.nodes.notifications, 'is-show', true);
         that.components.notifications.add(o);
     };
 
     /* ******* PUBLIC ******* */
 
-    that.destruct = function(){
-        if(!that._isDestructed){
+    that.destruct = function() {
+        if (!that._isDestructed) {
             that._isDestructed = true;
-            cm.forEach(that.fields, function(field){
+            cm.forEach(that.fields, function(field) {
                 field.controller.destruct();
             });
             that.removeFromStack();
@@ -800,83 +815,83 @@ function(params){
         return that;
     };
 
-    that.add = function(type, params){
+    that.add = function(type, params) {
         renderField(type, params);
         return that;
     };
 
-    that.addButton = function(o){
+    that.addButton = function(o) {
         renderButton(o);
         return that;
     };
 
-    that.addButtons = function(o){
-        if(cm.isArray(o)){
-            cm.forEach(o, function(item){
+    that.addButtons = function(o) {
+        if (cm.isArray(o)) {
+            cm.forEach(o, function(item) {
                 renderButton(item);
             });
         }
         return that;
     };
 
-    that.toggleButtons = function(value){
+    that.toggleButtons = function(value) {
         toggleButtons(value);
         return that;
     };
 
-    that.addSeparator = function(params){
+    that.addSeparator = function(params) {
         renderSeparator(params);
         return that;
     };
 
-    that.addConstraint = function(constraint){
-        if(cm.isFunction(constraint)){
+    that.addConstraint = function(constraint) {
+        if (cm.isFunction(constraint)) {
             cm.arrayAdd(that.constraints, constraint);
         }
         return that;
     };
 
-    that.removeConstraint = function(constraint){
-        if(cm.isFunction(constraint)){
+    that.removeConstraint = function(constraint) {
+        if (cm.isFunction(constraint)) {
             cm.arrayRemove(that.constraints, constraint);
         }
         return that;
     };
 
-    that.appendChild = function(node, insertMethod){
+    that.appendChild = function(node, insertMethod) {
         insertMethod = cm.isUndefined(insertMethod) ? 'appendChild' : insertMethod;
         cm[insertMethod](node, that.nodes.fields);
         return that;
     };
 
-    that.getField = function(name){
+    that.getField = function(name) {
         return that.fields[name];
     };
 
-    that.getFields = function(names){
+    that.getFields = function(names) {
         var fields = {};
-        cm.forEach(names, function(name){
+        cm.forEach(names, function(name) {
             fields[name] = that.getField(name);
         });
         return fields;
     };
 
-    that.getFieldLabel = function(name){
+    that.getFieldLabel = function(name) {
         var field = that.getField(name);
-        if(!field){
+        if (!field) {
             return;
         }
-        if(!cm.isEmpty(field.label)){
+        if (!cm.isEmpty(field.label)) {
             return field.label;
         }
-        if(!cm.isEmpty(field.placeholder)){
+        if (!cm.isEmpty(field.placeholder)) {
             return field.placeholder;
         }
     };
 
-    that.setFieldParams = function(name, params){
+    that.setFieldParams = function(name, params) {
         var field = that.getField(name);
-        if(field){
+        if (field) {
             field = cm.merge(field, params);
             // Save
             that.fields[name] = field;
@@ -884,46 +899,46 @@ function(params){
         return field;
     };
 
-    that.removeField = function(name){
+    that.removeField = function(name) {
         removeField(name);
         return that;
     };
 
-    that.get = function(type, mergeData){
+    that.get = function(type, mergeData) {
         var data = {};
         // Validate
         type = cm.inArray(['all', 'fields', 'send', 'sendPath', 'system'], type) ? type : 'fields';
         mergeData = cm.isUndefined(mergeData) ? that.params.mergeData : mergeData;
         // Get
-        cm.forEach(that.fields, function(field, name){
-            switch(type){
+        cm.forEach(that.fields, function(field, name) {
+            switch (type) {
                 case 'all':
                     data = getHelper('all', data, field, name);
                     break;
                 case 'fields':
-                    if(!field.system){
+                    if (!field.system) {
                         data = getHelper('fields', data, field, name);
                     }
                     break;
                 case 'send':
-                    if(field.send && !field.system){
+                    if (field.send && !field.system) {
                         data = getHelper('send', data, field, name);
                     }
                     break;
                 case 'sendPath':
-                    if(field.send && !field.system){
+                    if (field.send && !field.system) {
                         data = getHelper('sendPath', data, field, name);
                     }
                     break;
                 case 'system':
-                    if(field.system){
+                    if (field.system) {
                         data = getHelper('system', data, field, name);
                     }
                     break;
             }
         });
         // Merge data with origin
-        if(mergeData){
+        if (mergeData) {
             data = cm.merge(that.params.data, data);
         }
         // Filter data
@@ -931,11 +946,11 @@ function(params){
         return data;
     };
 
-    that.getAll = function(){
+    that.getAll = function() {
         return that.get('all');
     };
 
-    that.set = function(data, params){
+    that.set = function(data, params) {
         // Validate params
         params = cm.merge({
             triggerEvents: true,
@@ -944,39 +959,39 @@ function(params){
             setData: false,
         }, params);
         // Set data
-        if(params.setData){
+        if (params.setData) {
             that.params.data = data;
         }
         // Set values
         var value;
-        cm.forEach(that.fields, function(field, name){
-            if(field.dataPath){
+        cm.forEach(that.fields, function(field, name) {
+            if (field.dataPath) {
                 value = cm.reducePath(field.dataPath, data);
-            }else{
+            } else {
                 value = !cm.isUndefined(data[field.dataName]) ? data[field.dataName] : data[name];
             }
-            if(!cm.isUndefined(value)){
-                if(params.setOrigin){
+            if (!cm.isUndefined(value)) {
+                if (params.setOrigin) {
                     that.setFieldParams(name, {originValue: value});
                 }
-                if(params.setFields) {
+                if (params.setFields) {
                     field.controller.set(value, params.triggerEvents);
                 }
             }
         });
-        if(params.triggerEvents){
+        if (params.triggerEvents) {
             that.triggerEvent('onSet');
         }
         return that;
     };
 
-    that.clear = function(){
-        cm.forEach(that.fields, function(field){
+    that.clear = function() {
+        cm.forEach(that.fields, function(field) {
             field.controller.destruct();
         });
         that.fields = {};
         cm.clearNode(that.nodes.fields);
-        cm.forEach(that.buttons, function(button){
+        cm.forEach(that.buttons, function(button) {
             cm.remove(button.node);
         });
         that.buttons = {};
@@ -986,9 +1001,9 @@ function(params){
         return that;
     };
 
-    that.reset = function(){
-        cm.forEach(that.fields, function(field){
-            if(!field.preventReset){
+    that.reset = function() {
+        cm.forEach(that.fields, function(field) {
+            if (!field.preventReset) {
                 field.controller.reset();
             }
         });
@@ -997,13 +1012,13 @@ function(params){
         return that;
     };
 
-    that.enable = function(){
-        if(!that.isEnabled){
+    that.enable = function() {
+        if (!that.isEnabled) {
             that.isEnabled = true;
-            cm.forEach(that.fields, function(field){
+            cm.forEach(that.fields, function(field) {
                 field.controller.enable();
             });
-            cm.forEach(that.buttons, function(button){
+            cm.forEach(that.buttons, function(button) {
                 cm.removeClass(button.node, 'button-disabled');
             });
             that.triggerEvent('onEnable');
@@ -1011,13 +1026,13 @@ function(params){
         return that;
     };
 
-    that.disable = function(){
-        if(that.isEnabled){
+    that.disable = function() {
+        if (that.isEnabled) {
             that.isEnabled = false;
-            cm.forEach(that.fields, function(field){
+            cm.forEach(that.fields, function(field) {
                 field.controller.disable();
             });
-            cm.forEach(that.buttons, function(button){
+            cm.forEach(that.buttons, function(button) {
                 cm.addClass(button.node, 'button-disabled');
             });
             that.triggerEvent('onDisable');
@@ -1025,50 +1040,50 @@ function(params){
         return that;
     };
 
-    that.validate = function(options){
+    that.validate = function(options) {
         options = cm.merge({
-            'silent' : false,
-            'triggerEvents' : true
+            'silent': false,
+            'triggerEvents': true
         }, options);
         // Clear previous notifications
         that.clearNotification();
         // Show new notifications if exists
         var data = validateHelper(options);
-        if(!data.valid && !options.silent){
-            if(that.params.showNotifications && that.params.showValidationNotification){
+        if (!data.valid && !options.silent) {
+            if (that.params.showNotifications && that.params.showValidationNotification) {
                 that.renderNotification({
-                    'label' : data.message,
-                    'type' : 'danger'
+                    'label': data.message,
+                    'type': 'danger'
                 });
             }
         }
         // Trigger events
-        if(options.triggerEvents && !options.silent){
+        if (options.triggerEvents && !options.silent) {
             that.triggerEvent('onValidate', data);
         }
         return data;
     };
 
-    that.send = function(){
-        if(!that.isEnabled){
+    that.send = function() {
+        if (!that.isEnabled) {
             return that;
         }
-        if(that.isProcess && that.params.abortPreviousRequest){
+        if (that.isProcess && that.params.abortPreviousRequest) {
             that.abort();
         }
 
         var data = {
-            'valid' : true
+            'valid': true
         };
         // Validate
-        if(that.params.validate){
+        if (that.params.validate) {
             data = that.validate();
         }
         // Send
-        if(data.valid){
-            if(that.isAjax){
+        if (data.valid) {
+            if (that.isAjax) {
                 that.ajaxHandler = that.callbacks.request(that, cm.clone(that.params.ajax));
-            }else{
+            } else {
                 sendPlaceholderHelper();
             }
         }
@@ -1080,7 +1095,7 @@ function(params){
         // Toggle buttons
         toggleButtons(true);
         // Show Loader
-        if(that.params.showLoader){
+        if (that.params.showLoader) {
             that.showLoader();
         }
         return that;
@@ -1088,7 +1103,7 @@ function(params){
 
     that.sendProgress = function(event) {
         // Hide Loader
-        if(that.params.showLoader){
+        if (that.params.showLoader) {
             if (event.lengthComputable) {
                 that.setLoaderProgress(event.total, event.loaded);
             } else {
@@ -1103,27 +1118,27 @@ function(params){
         // Toggle buttons
         toggleButtons(false);
         // Hide Loader
-        if(that.params.showLoader){
+        if (that.params.showLoader) {
             that.hideLoader();
         }
         return that;
     };
 
-    that.sendPlaceholder = function(){
+    that.sendPlaceholder = function() {
         sendPlaceholderHelper();
         return that;
     };
 
-    that.abort = function(){
-        if(that.ajaxHandler && that.ajaxHandler.abort){
+    that.abort = function() {
+        if (that.ajaxHandler && that.ajaxHandler.abort) {
             that.ajaxHandler.abort();
         }
         return that;
     };
 
-    that.setAction = function(o, mode, update){
-        mode = cm.inArray(['raw', 'update', 'current'], mode)? mode : 'current';
-        switch(mode){
+    that.setAction = function(o, mode, update) {
+        mode = cm.inArray(['raw', 'update', 'current'], mode) ? mode : 'current';
+        switch (mode) {
             case 'raw':
                 that.params.ajax = cm.merge(that._raw.params.ajax, o);
                 break;
@@ -1134,75 +1149,80 @@ function(params){
                 that.params.ajax = cm.merge(that._update.params.ajax, o);
                 break;
         }
-        if(update){
+        if (update) {
             that._update.params.ajax = cm.clone(that.params.ajax);
         }
         that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url);
         return that;
     };
 
-    that.renderNotification = function(o){
+    that.renderNotification = function(o) {
         that.callbacks.renderNotification(that, o);
         return that;
     };
 
-    that.clearNotification = function(){
+    that.clearNotification = function() {
         cm.removeClass(that.nodes.notifications, 'is-show', true);
         that.components.notifications.clear();
         return that;
     };
 
-    that.getNotifications = function(){
+    that.getNotifications = function() {
         return that.components.notifications;
     };
 
-    that.renderError = function(errors, message){
+    that.renderError = function(errors, message) {
         that.callbacks.renderError(that, errors, message);
         return that;
     };
 
-    that.clearError = function(){
+    that.clearError = function() {
         that.callbacks.clearError(that);
         return that;
     };
 
-    that.getLoader = function(){
+    that.getErrorMessage = function(code) {
+        if (cm.isEmpty(code)) return;
+        return that.getMsg(`error_codes.${code}`);
+    };
+
+    that.getLoader = function() {
         return that.components.loader;
     };
 
-    that.showLoader = function(isImmediately){
+    that.showLoader = function(isImmediately) {
         that.components.loader && that.components.loader.open(isImmediately);
         return that;
     };
 
-    that.hideLoader = function(isImmediately){
+    that.hideLoader = function(isImmediately) {
         that.components.loader && that.components.loader.close(isImmediately);
         return that;
     };
 
-    that.setLoaderProgress = function(total, value){
+    that.setLoaderProgress = function(total, value) {
         that.components.loader && that.components.loader.setProgress(total, value);
         return that;
     };
 
-    that.hideLoaderProgress = function(){
+    that.hideLoaderProgress = function() {
         that.components.loader && that.components.loader.hideProgress();
         return that;
     };
 
-    that.getName = function(){
+    that.getName = function() {
         return that.params.name;
     };
 
-    that.getContainer = function(){
+    that.getContainer = function() {
         return that.nodes.container;
     };
 
-    that.getButtonsContainer = function(){
+    that.getButtonsContainer = function() {
         return that.nodes.buttonsContainer;
     };
 
-    that.getNodes = function(key){
+    that.getNodes = function(key) {
         return that.nodes[key] || that.nodes;
     };
 
