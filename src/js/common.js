@@ -26,6 +26,7 @@
     Custom Events / Hooks:
         ajax.beforePrepare
         ajax.afterPrepare
+        ajax.error
         scrollSizeChange
         pageSizeChange
 
@@ -4508,27 +4509,29 @@ cm.ajax = function(o){
             }else{
                 config['onError'](response, e);
                 config['onReject'](response, e);
+                cm.hook.trigger('ajax.error', e);
             }
             deprecatedHandler(response);
             config['onEnd'](response, e);
         }
     };
 
-    var successHandler = function(){
+    var successHandler = function(e){
         config['onSuccess'].apply(config['onSuccess'], arguments);
         config['onResolve'].apply(config['onResolve'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
     };
 
-    var errorHandler = function(){
+    var errorHandler = function(e){
         config['onError'].apply(config['onError'], arguments);
         config['onReject'].apply(config['onReject'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
+        cm.hook.trigger('ajax.error', e);
     };
 
-    var abortHandler = function(){
+    var abortHandler = function(e){
         config['onAbort'].apply(config['onAbort'], arguments);
         deprecatedHandler.apply(deprecatedHandler, arguments);
         config['onEnd'].apply(config['onEnd'], arguments);
@@ -4624,7 +4627,7 @@ cm.parseJSON = function(str){
 
 cm.stringifyJSON = function(o){
     if(cm.isObject(o) || cm.isArray(o)){
-        return JSON.stringify(o);
+        return JSON.stringify.apply(null, arguments);
     }else {
         return o;
     }
