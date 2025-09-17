@@ -378,3 +378,9 @@
         }
     }
 }
+
+.pt__listing-items--max-height(@count: @PtListingItems-Count) {
+    ul {
+        max-height: @count * @PtListingItems-ItemHeight + (@count - 1) * @PtListingItems-Indent;
+    }
+}

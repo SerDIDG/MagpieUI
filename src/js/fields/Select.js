@@ -34,6 +34,7 @@ cm.define('Com.Select', {
         name: '',
         embedStructure: 'replace',
         customEvents: true,
+
         renderInBody: true,                  // Render dropdowns in document.body, else they will be rendered in component container.
         renderHiddenContent: true,
         multiple: false,                     // Render multiple select.
@@ -43,19 +44,23 @@ cm.define('Com.Select', {
         title: false,                        // Title text. Will be shown on hover.
         options: [],                         // Listing of options, for rendering through java-script. Example: [{'value' : 'foo', 'text' : 'Bar'}].
         selected: 0,                         // Deprecated, use 'value' parameter instead.
-        max: 0,                               // Maximum selected options, 0 - for unlimited
+        max: 0,                              // Maximum selected options, 0 - for unlimited
         setInitialValue: true,
         setPlaceholderText: true,            // Set text of the placeholder option as selected
+        renderCheckboxes: false,             // Render checkboxes in the list for multi-select
         value: null,                         // Option value / array of option values.
         defaultValue: null,
+
         disabled: false,
         id: null,
         className: [],
         inputClassName: [],
         tabindex: null,
+
         icons: {
             arrow: 'icon default linked'
         },
+
         tooltip: {
             limitWidth: true,
             constructor: 'Com.Tooltip',
@@ -593,7 +598,7 @@ function(params) {
             textNode: null,
             classes: [],
             style: null,
-            renderCheckbox: false,
+            renderCheckbox: that.params.renderCheckboxes,
         }, item);
 
         // Validate
