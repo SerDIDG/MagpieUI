@@ -71,6 +71,7 @@ cm.define('Com.Form', {
         'responseErrorsKey': 'errors',
         'responseMessageKey': 'message',
         'responseMessageCodeKey': false,
+        'responseMessageDetailsKey': false,
         'responseCodeKey': 'code',
         'ajax': {
             'type': 'json',
@@ -648,9 +649,10 @@ function(params) {
             params.errors = cm.reducePath(that.params.responseErrorsKey, response);
             params.message = cm.reducePath(that.params.responseMessageKey, response);
             params.messageCode = cm.reducePath(that.params.responseMessageCodeKey, response);
+            params.messageDetails = cm.reducePath(that.params.responseMessageDetailsKey, response);
         }
 
-        const message = that.getErrorMessage(params.messageCode);
+        const message = that.getErrorMessage(params.messageCode, params.messageDetails);
         if (!cm.isEmpty(message)) {
             params.message = message;
         }
@@ -1181,9 +1183,16 @@ function(params) {
         return that;
     };
 
-    that.getErrorMessage = function(code) {
+    that.getErrorMessage = function(code, data) {
         if (cm.isEmpty(code)) return;
-        return that.getMsg(`error_codes.${code}`);
+
+        const message = that.getMsg(`error_codes.${code}`);
+        if (!message) return;
+
+        if (!cm.isEmpty(data) && cm.isObject(data)) {
+            return cm.parseMessage(message, data);
+        }
+        return message;
     };
 
     that.getLoader = function() {

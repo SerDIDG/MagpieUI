@@ -428,6 +428,17 @@ cm.join = function(arr, separator) {
         .join(separator);
 };
 
+cm.joinIntl = function(data, type = 'conjunction') {
+    if (!cm.isArray(data)) {
+        return data;
+    }
+    const formatter = new Intl.ListFormat(cm._locale, {
+        style: 'long',
+        type: type,
+    });
+    return formatter.format(data);
+};
+
 cm.extract = function(o1, o2){
     if(!o1){
         return o2;

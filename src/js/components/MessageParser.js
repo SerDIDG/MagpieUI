@@ -132,7 +132,12 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
         let result = text;
         for (let i = matches.length - 1; i >= 0; i--) {
             const match = matches[i];
-            const replacement = that.parseKeyword(match.content, variables, depth);
+
+            let replacement = that.parseKeyword(match.content, variables, depth);
+            if (cm.isArray(replacement)) {
+                replacement = cm.joinIntl(replacement);
+            }
+
             result = result.substring(0, match.start) + replacement + result.substring(match.end);
         }
 
