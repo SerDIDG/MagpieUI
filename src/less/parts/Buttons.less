@@ -142,6 +142,28 @@
     }
 }
 
+.pt__buttons--box-column {
+    > .inner {
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        gap: var(--pt-buttons--box-indent);
+
+        > .left,
+        > .right {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            gap: var(--pt-buttons--box-indent);
+        }
+    }
+
+    .button-alike {
+        margin: 0;
+    }
+}
+
 .pt__buttons--box-reverse {
     > .inner {
         display: flex;
