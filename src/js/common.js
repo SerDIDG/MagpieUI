@@ -123,6 +123,7 @@ var cm = {
 
 cm.isFileReader = (function(){return 'FileReader' in window;})();
 cm.isHistoryAPI = !!(window.history && history.pushState);
+cm.isClipboardItem = (function(){return 'ClipboardItem' in window;})();
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement("canvas").getContext;
@@ -2373,20 +2374,41 @@ cm.decode = (function(){
     };
 })();
 
-cm.copyToClipboard = function(text, callback){
+cm.copyToClipboard = function(text, params){
     if (cm.isEmpty(text)) return;
+
+    if (cm.isFunction(params)) {
+        params = {
+            callback: params,
+        };
+    }
+    params = cm.merge({
+        type: 'text/plain',
+        callback: () => {},
+    }, params);
+
     const success = () => {
-        cm.isFunction(callback) && callback(true);
-    };
-    const error = () => {
-        cm.errorLog({type: 'error', name: 'cm.copyToClipboard', message: 'Unable to copy text to clipboard!'});
-        cm.isFunction(callback) && callback(false);
+        cm.isFunction(params.callback) && params.callback(true);
     };
 
-    if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(text)
-            .then(success)
-            .catch(error);
+    const error = () => {
+        cm.errorLog({type: 'error', name: 'cm.copyToClipboard', message: 'Unable to copy text to clipboard!'});
+        cm.isFunction(params.callback) && params.callback(false);
+    };
+
+    if (
+        (params.type === 'text/plain' && navigator.clipboard?.writeText) ||
+        (params.type !== 'text/plain' && navigator.clipboard?.write && cm.isClipboardItem)
+    ) {
+        if (params.type === 'text/plain') {
+            navigator.clipboard.writeText(text).then(success).catch(error);
+        } else {
+            const clipboardItem = new ClipboardItem({
+                'text/plain': new Blob([text], {type: 'text/plain'}),
+                [params.type]: new Blob([text], {type: params.type}),
+            });
+            navigator.clipboard.write([clipboardItem]).then(success).catch(error);
+        }
     } else {
         const node = cm.node('textarea');
         node.value = text;
