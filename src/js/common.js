@@ -2579,14 +2579,56 @@ cm.addLeadZero = function(x, count){
     return x.toString().padStart(++count, '0');
 };
 
-cm.plural = cm.getNumberDeclension = function(number, titles /* ['найдена', 'найдено', 'найдены'] */){
-    if(!cm.isArray(titles)){
-        return titles;
+/**
+ * Gets a plural string from a value using Intl.PluralRules.
+ * @param {Number} count
+ * @param {Object|Array|string} strings - Object with plural categories or legacy array
+ * @param {string} locale - Locale code (e.g., 'en-US', 'uk-UA')
+ * @return string
+ */
+cm.plural = cm.getNumberDeclension = function(count, strings, locale){
+    if(!strings || cm.isString(strings)){
+        return strings;
     }
-    var cases = [2, 0, 1, 1, 1, 2],
-        i = (number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5];
-    return titles[i] || titles[i - 1] || titles[0];
+
+    const pr = cm.getPluralRules(locale);
+    const rule = pr.select(count);
+
+    // Support legacy array format with fallback
+    if (cm.isArray(strings)) {
+        // Map array indices to common categories: [one, few, many] or [singular, plural]
+        const mapping = {
+            'one': 0,
+            'few': 1,
+            'many': 2,
+            'other': strings.length > 2 ? 2 : 1
+        };
+
+        const i = !cm.isUndefined(mapping[rule]) ? mapping[rule] : 0;
+        return strings[i] || strings[strings.length - 1] || strings[0];
+    }
+
+    // Modern object format: {one: '...', few: '...', many: '...', other: '...'}
+    return strings[rule] || strings.other || strings.one || '';
 };
+
+/**
+ * Gets a cached Intl.PluralRules instance for the specified locale.
+ * Creates and caches a new instance if one doesn't exist for the locale.
+ * @param {string} [locale] - Locale code (e.g., 'en-US', 'uk-UA')
+ * @return {Intl.PluralRules} Cached PluralRules instance for the locale
+ */
+cm.getPluralRules = (function(){
+    const cache = {};
+
+    return function(locale){
+        locale = !cm.isUndefined(locale) ? locale : cm._locale;
+        if(!cache[locale]){
+            cache[locale] = new Intl.PluralRules(locale);
+        }
+        return cache[locale];
+    };
+})();
 
 cm.toRadians = function(degrees) {
     return degrees * Math.PI / 180;
