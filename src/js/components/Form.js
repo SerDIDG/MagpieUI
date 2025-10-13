@@ -651,6 +651,9 @@ function(params) {
             params.messageCode = cm.reducePath(that.params.responseMessageCodeKey, response);
             params.messageDetails = cm.reducePath(that.params.responseMessageDetailsKey, response);
         }
+        if (!cm.isEmpty(params.messageDetails)) {
+            params.messageDetails = that.callbacks.filterMessageDetails(that, params.messageDetails);
+        }
 
         const message = that.getErrorMessage(params.messageCode, params.messageDetails);
         if (!cm.isEmpty(message)) {
@@ -781,10 +784,6 @@ function(params) {
         return messages;
     };
 
-    that.callbacks.filterErrors = function(that, errors) {
-        return errors;
-    };
-
     that.callbacks.renderErrorMessage = function(that, field, message, label) {
         var messagePath = ['errors', message].join('.'),
             messageString = that.getMsg(messagePath);
@@ -801,6 +800,16 @@ function(params) {
     that.callbacks.renderNotification = function(that, o) {
         cm.addClass(that.nodes.notifications, 'is-show', true);
         that.components.notifications.add(o);
+    };
+
+    /* *** FILTERS *** */
+
+    that.callbacks.filterMessageDetails = function(that, data) {
+        return data;
+    };
+
+    that.callbacks.filterErrors = function(that, errors) {
+        return errors;
     };
 
     /* ******* PUBLIC ******* */
