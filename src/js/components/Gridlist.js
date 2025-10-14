@@ -582,6 +582,7 @@ function(params){
             type: 'text',		         // text | number | url | date | html | icon | checkbox | empty | actions | links
             key: '',                     // Data array key
             title: '',                   // Table th title
+            titleTooltip: '',            // Table th title on hover
             sort: that.params.sort,      // Sort this column or not
             sortKey: '',                 // Sort key
             filterKey: null,
@@ -657,7 +658,7 @@ function(params){
 
             default:
                 item.nodes.inner.appendChild(
-                    cm.node('span', item.title)
+                    cm.node('span', {title: item.titleTooltip}, item.title)
                 );
                 break;
         }

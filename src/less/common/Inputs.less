@@ -151,6 +151,18 @@
     padding: @padding_y @padding_x;
 }
 
+.input--padding-inline (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+    @padding_x: max(ceil((@padding_calc)), @padding);
+    padding-inline: @padding_x;
+}
+
+.input--padding-block (@height: @CmForm-FieldHeight, @padding: @CmInput-Padding, @border: @CmBorder-Width, @lineHeight: @CmFont-Base-LineHeight) {
+    @padding_calc: (@height - @lineHeight - @border * 2) / 2;
+    @padding_y: max(ceil((@padding_calc)), 0px);
+    padding-block: @padding_y;
+}
+
 /* *** APPLY *** */
 
 input, select, textarea, button {
