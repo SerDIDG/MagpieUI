@@ -50,13 +50,16 @@ cm.define('Com.Form', {
         'validate': false,
         'validateOnChange': false,
         'validateOnInput': false,
+
         'showNotifications': true,
         'showNotificationsMessages': true,
         'showSuccessNotification': false,
         'showValidationNotification': false,
         'showValidationMessages': true,
-        'notificationsClosable': true,
-        'Com.Notifications': {},
+        'notificationsConstructor': 'Com.Notifications',
+        'notificationsParams': {
+            'closable': true,
+        },
 
         'data': {},
         'mergeData': false,
@@ -128,8 +131,12 @@ function(params) {
     };
 
     var validateParams = function() {
+        // Legacy
+        that.params.notificationsParams = cm.merge(that.params.notificationsParams, that.params['Com.Notifications']);
+
         that.params.buttonsAlign = cm.inArray(['left', 'center', 'middle', 'right', 'justify'], that.params.buttonsAlign) ? that.params.buttonsAlign : 'right';
         that.params.loaderCoverage = cm.inArray(['fields', 'all'], that.params.loaderCoverage) ? that.params.loaderCoverage : 'all';
+
         // Ajax
         that.isAjax = that.params.ajax && !cm.isEmpty(that.params.ajax.url) && that.params.sendable;
     };
@@ -164,11 +171,11 @@ function(params) {
             cm.insertFirst(that.nodes.notifications, that.nodes.container);
             that.embedStructure(that.nodes.container);
         }
+
         // Notifications
-        cm.getConstructor('Com.Notifications', function(classConstructor, className) {
+        cm.getConstructor(that.params.notificationsConstructor, function(classConstructor) {
             that.components.notifications = new classConstructor(
-                cm.merge(that.params[className], {
-                    'closable': that.params.notificationsClosable,
+                cm.merge(that.params.notificationsParams, {
                     'container': that.nodes.notifications
                 })
             );
@@ -181,6 +188,7 @@ function(params) {
                 }
             });
         });
+
         // Overlay Loader
         var overlayContainer;
         if (that.params.showLoader) {
