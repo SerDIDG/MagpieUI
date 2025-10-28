@@ -71,7 +71,7 @@ function() {
 
 cm.getConstructor('Com.FileInput', function(classConstructor, className, classProto, classInherit) {
     classProto.construct = function() {
-        var that = this;
+        const that = this;
         
         // Bind context to methods
         that.browseHandler = that.browse.bind(that);
@@ -83,14 +83,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.onInitComponentsStart = function() {
-        var that = this;
+        const that = this;
         cm.getConstructor(that.params.fileReaderConstructor, classConstructor => {
             that.components.validator = new classConstructor(that.params.fileReaderParams);
         });
     };
 
     classProto.onValidateParamsEnd = function() {
-        var that = this;
+        const that = this;
 
         // Validate Language Strings
         that.setLangs({
@@ -114,14 +114,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.onReset = function() {
-        var that = this;
+        const that = this;
 
         // Release file object url to clear from memory
         that.releaseFileURL();
     };
 
     classProto.onDestruct = function() {
-        var that = this;
+        const that = this;
 
         // Release file object url to clear from memory
         that.releaseFileURL();
@@ -130,7 +130,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     /*** VIEW MODEL ***/
 
     classProto.renderViewModel = function() {
-        var that = this;
+        const that = this;
 
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
@@ -192,12 +192,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.renderContent = function() {
-        var that = this,
-            nodes = {};
-        that.nodes.content = nodes;
+        const that = this;
         that.triggerEvent('onRenderContentStart');
-        
+
         // Structure
+        const nodes = {};
+        that.nodes.content = nodes;
+
         nodes.container = cm.node('div', {classes: 'com__file-input__content'},
             nodes.inner = cm.node('div', {classes: 'inner'},
                 nodes.content = cm.node('div', {classes: 'com__file-input__holder'},
@@ -223,8 +224,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.renderLocalInput = function() {
-        var that = this;
-        that.nodes.content.input = cm.node('input', {classes: 'input__browse', type: 'file'});
+        const that = this;
+        that.nodes.content.input = cm.node('input', {classes: 'input__browse', type: 'file', autocomplete: 'off'});
         if (!cm.isEmpty(that.params.accept) && cm.isArray(that.params.accept)) {
             that.nodes.content.input.accept = that.params.accept.join(',');
         }
@@ -233,7 +234,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.renderButtons = function() {
-        var that = this;
+        const that = this;
 
         // Clear button
         that.nodes.content.clear = cm.node('button', {type: 'button', classes: 'button button-primary'}, that.msg('remove'));
@@ -267,17 +268,17 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     /* *** PROCESS FILES *** */
 
     classProto.browseAction = function(e) {
-        var that = this,
-            file = e.target.files[0];
+        const that = this;
         cm.preventDefault(e);
         
         // Read File
+        const file = e.target.files[0];
         that.processFiles(file);
         return that;
     };
 
     classProto.processFiles = function(data) {
-        var that = this;
+        const that = this;
         if (cm.isFile(data)) {
             that.components.reader.read(data);
         } else if (cm.isArray(data)) {
@@ -291,15 +292,16 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.releaseFileURL = function() {
-        var that = this;
+        const that = this;
         if (!cm.isEmpty(that.value) && !cm.isEmpty(that.value.url)) {
             window.URL.revokeObjectURL(that.value.url);
         }
     };
 
     classProto.isAcceptableFileFormat = function(item) {
-        var that = this,
-            isValid = true;
+        const that = this;
+
+        let isValid;
         if (
             cm.isEmpty(that.params.accept) || !cm.isArray(that.params.accept) ||
             cm.isEmpty(item) || cm.isEmpty(item.file)
@@ -308,6 +310,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         } else {
             isValid = cm.inArray(that.params.accept, item.type);
         }
+
         if (that.params.formField) {
             if (!isValid) {
                 that.params.formField.renderError(that.msg('errors.accept'));
@@ -315,12 +318,14 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 that.params.formField.clearError();
             }
         }
+
         return isValid;
     };
 
     classProto.isAcceptableFileSizes = function(item) {
-        var that = this,
-            isValid = true;
+        const that = this;
+
+        let isValid;
         if (
             cm.isEmpty(that.params.acceptSizes) ||
             cm.isEmpty(item) || cm.isEmpty(item.file)
@@ -329,6 +334,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
         } else {
             isValid = item.size >= that.params.acceptSizes.min && (that.params.acceptSizes.max === 0 || item.size <= that.params.acceptSizes.max);
         }
+
         if (that.params.formField) {
             if (!isValid) {
                 that.params.formField.renderError(that.msg('errors.sizes'));
@@ -336,6 +342,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 that.params.formField.clearError();
             }
         }
+
         return isValid;
     };
 
@@ -353,8 +360,8 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.validateValue = function(value) {
-        var that = this,
-            item = that.components.validator.validate(value);
+        const that = this;
+        const item = that.components.validator.validate(value);
         if (
             (cm.isEmpty(item.value) && cm.isEmpty(item.file)) ||
             !that.isAcceptableFileFormat(item) ||
@@ -366,15 +373,13 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     };
 
     classProto.setData = function() {
-        var that = this;
+        const that = this;
         if (cm.isEmpty(that.value)) {
-            if (!cm.isEmpty(that.params.placeholder)) {
-                cm.removeClass(that.nodes.content.placeholder, 'is-hidden');
-            } else {
-                cm.addClass(that.nodes.content.placeholder, 'is-hidden');
-            }
-            cm.clearNode(that.nodes.content.label);
+            cm.toggleClass(that.nodes.content.placeholder, 'is-hidden', cm.isEmpty(that.params.placeholder));
+
             cm.addClass(that.nodes.content.label, 'is-hidden');
+            cm.clearNode(that.nodes.content.label);
+
             if (that.params.showClearButton) {
                 cm.removeClass(that.nodes.content.browseLocal, 'is-hidden');
                 cm.removeClass(that.nodes.content.browseFileManager, 'is-hidden');
@@ -386,10 +391,17 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
             if (that.params.buttonsAdaptive) {
                 cm.addClass(that.nodes.content.buttons, 'is-adaptive');
             }
+
+            // Clear local input value
+            if (that.params.local) {
+                that.nodes.content.input.value = '';
+            }
         } else {
             cm.addClass(that.nodes.content.placeholder, 'is-hidden');
+
             cm.clearNode(that.nodes.content.label);
             cm.removeClass(that.nodes.content.label, 'is-hidden');
+
             if (that.params.showFilename) {
                 if (that.params.showLink) {
                     that.nodes.content.link = cm.node('a', {target: '_blank', href: that.value.url, title: that.msg('open')}, that.value.name);
@@ -398,6 +410,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
                 }
                 cm.appendChild(that.nodes.content.link, that.nodes.content.label);
             }
+
             if (that.params.showClearButton) {
                 cm.addClass(that.nodes.content.browseLocal, 'is-hidden');
                 cm.addClass(that.nodes.content.browseFileManager, 'is-hidden');
@@ -416,7 +429,7 @@ cm.getConstructor('Com.FileInput', function(classConstructor, className, classPr
     /* *** PUBLIC *** */
 
     classProto.browse = function() {
-        var that = this;
+        const that = this;
         if (that.params.local) {
             that.nodes.content.input.click();
         }

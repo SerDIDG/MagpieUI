@@ -169,7 +169,7 @@ cm.getConstructor('Com.MultipleFileInput', function(classConstructor, className,
             nodes['browseLocal'] = cm.node('div', {'class' : 'browse-button'},
                 cm.node('button', {'type' : 'button', 'class' : 'button button-primary'}, that.lang('_browse_local')),
                 cm.node('div', {'class' : 'inner'},
-                    nodes['input'] = cm.node('input', {'type' : 'file'})
+                    nodes['input'] = cm.node('input', {'type' : 'file', 'autocomplete' : 'off'})
                 )
             );
             that.isMultiple && nodes['input'].setAttribute('multiple', 'multiple');

@@ -38,7 +38,7 @@ function() {
 
 cm.getConstructor('Com.ImageInput', function(classConstructor, className, classProto, classInherit) {
     classProto.renderViewModel = function() {
-        var that = this;
+        const that = this;
 
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
@@ -56,12 +56,13 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.renderContent = function() {
-        var that = this;
+        const that = this;
         that.triggerEvent('onRenderContentStart');
 
         // Structure
-        var nodes = {};
+        const nodes = {};
         that.nodes.content = nodes;
+
         nodes.container = cm.node('div', {classes: 'com__image-input__content'},
             nodes.inner = cm.node('div', {classes: 'inner'},
                 nodes.content = cm.node('div', {classes: 'input__holder'},
@@ -97,7 +98,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.renderButtons = function() {
-        var that = this;
+        const that = this;
 
         // Clear button
         that.nodes.content.clearButton = cm.node('button', {type: 'button', classes: ['button', 'button-danger', 'input__button', 'input__button--remove']},
@@ -146,7 +147,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     classProto.isAcceptableImageDimensions = function(item) {
         const that = this;
 
-        let isValid = true;
+        let isValid;
         if (
             cm.isEmpty(that.params.acceptDimensions) ||
             cm.isEmpty(item) || cm.isEmpty(item.file) || !item._isLoaded ||
@@ -171,8 +172,8 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     /******* DATA *******/
 
     classProto.validateValue = function(value){
-        var that = this,
-            item = that.components.validator.validate(value);
+        const that = this;
+        const item = that.components.validator.validate(value);
         if (
             (cm.isEmpty(item.value) && cm.isEmpty(item.file)) ||
             !that.isAcceptableFileFormat(item) ||
@@ -185,13 +186,19 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.setData = function() {
-        var that = this;
+        const that = this;
         if (cm.isEmpty(that.value)) {
             // Label
             cm.clearNode(that.nodes.content.label);
             cm.addClass(that.nodes.content.label, 'is-hidden');
+
             // Hde clear button
             cm.addClass(that.nodes.content.clearButton, 'is-hidden');
+
+            // Clear local input value
+            if (that.params.local) {
+                that.nodes.content.input.value = '';
+            }
         } else {
             // Label
             cm.clearNode(that.nodes.content.label);
@@ -204,6 +211,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                 cm.appendChild(that.nodes.content.link, that.nodes.content.label);
                 cm.removeClass(that.nodes.content.label, 'is-hidden');
             }
+
             // Show clear button
             cm.removeClass(that.nodes.content.clearButton, 'is-hidden');
         }
@@ -213,7 +221,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.setPreviewData = function() {
-        var that = this;
+        const that = this;
 
         // Clear
         cm.remove(that.nodes.content.image);
@@ -224,11 +232,13 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
             that.components.preview && that.components.preview.clear();
             cm.addClass(that.nodes.content.previewButton, 'is-hidden');
             cm.addClass(that.nodes.content.imageContainer, 'is-default-image');
+
             that.renderPreviewDefault();
         } else {
             that.components.preview && that.components.preview.set(that.value);
             cm.removeClass(that.nodes.content.previewButton, 'is-hidden');
             cm.removeClass(that.nodes.content.imageContainer, 'is-default-image');
+
             if(that.params.types.video.test(that.value.type)) {
                 that.renderPreviewVideo();
             }else{
@@ -238,15 +248,17 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.renderPreviewDefault = function() {
-        var that = this;
+        const that = this;
+
         // Structure
         that.nodes.content.image = cm.node('div', {classes: 'descr'});
+
         // Append
         cm.appendChild(that.nodes.content.image, that.nodes.content.imageHolder);
     };
 
     classProto.renderPreviewImage = function() {
-        var that = this;
+        const that = this;
 
         // Structure
         that.nodes.content.image = cm.node('div', {classes: 'descr'});
@@ -257,7 +269,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     };
 
     classProto.renderPreviewVideo = function() {
-        var that = this;
+        const that = this;
 
         // Structure
         that.nodes.content.video = cm.node('video', {classes: 'descr', preload: 'none', playsinline: true, controls: false, muted: true, tabindex: -1});
