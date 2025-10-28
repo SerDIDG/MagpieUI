@@ -144,8 +144,9 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
     /******* PROCESS FILES *******/
 
     classProto.isAcceptableImageDimensions = function(item) {
-        var that = this,
-            isValid = true;
+        const that = this;
+
+        let isValid = true;
         if (
             cm.isEmpty(that.params.acceptDimensions) ||
             cm.isEmpty(item) || cm.isEmpty(item.file) || !item._isLoaded ||
@@ -155,6 +156,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
         } else {
             isValid = item.width >= that.params.acceptDimensions.minWidth && item.height >= that.params.acceptDimensions.minHeight;
         }
+
         if (that.params.formField) {
             if (!isValid) {
                 that.params.formField.renderError(that.msg('errors.dimensions'));
@@ -162,6 +164,7 @@ cm.getConstructor('Com.ImageInput', function(classConstructor, className, classP
                 that.params.formField.clearError();
             }
         }
+
         return isValid;
     };
 
