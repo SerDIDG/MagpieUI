@@ -70,6 +70,7 @@ cm.define('Com.Form', {
         'sendEmptyFields': false,
         'sendOnlyChangedFields': false,
         'abortPreviousRequest': false,
+        'successOnEmptyData': false,
         'responseKey': 'data',
         'responseErrorsKey': 'errors',
         'responseMessageKey': 'message',
@@ -632,11 +633,9 @@ function(params) {
     };
 
     that.callbacks.response = function(that, config, response, event) {
-        var errors,
-            data;
-        if (!cm.isEmpty(response)) {
-            errors = cm.reducePath(that.params.responseErrorsKey, response);
-            data = cm.reducePath(that.params.responseKey, response);
+        if (that.params.successOnEmptyData || !cm.isEmpty(response)) {
+            const errors = cm.reducePath(that.params.responseErrorsKey, response);
+            const data = cm.reducePath(that.params.responseKey, response);
             if (!cm.isEmpty(errors)) {
                 that.callbacks.error(that, config, response, event);
             } else {
