@@ -584,44 +584,70 @@ cm.arrayFilter = function(a, items){
     });
 };
 
-cm.arraySort = function(a, key, dir, clone){
-    var newA;
-    if(!cm.isArray(a)){
-        return a;
-    }
+/**
+ * Sort an array by key with optional locale comparison
+ * @param {Array} a - Array to sort
+ * @param {string} [key] - Object key to sort by
+ * @param {string} [dir='asc'] - Direction: 'asc', 'desc', 'asc-locale', 'desc-locale'
+ * @param {boolean} [clone=true] - Whether to clone array or sort in place
+ * @param {Object} [options] - Locale compare options
+ * @returns {Array} Sorted array
+ */
+cm.arraySort = function(a, key, dir, clone, options){
+    if (!cm.isArray(a)) return a;
+
     dir = cm.isUndefined(dir) ? 'asc' : dir.toLowerCase();
-    dir = cm.inArray(['asc', 'desc'], dir) ? dir : 'asc';
+    dir = cm.inArray(['asc', 'asc-locale', 'desc', 'desc-locale'], dir) ? dir : 'asc';
     clone = cm.isUndefined(clone) ? true : clone;
-    newA = clone ? cm.clone(a) : a;
+
+    const method = clone ? 'toSorted' : 'sort';
     switch(dir){
         case 'asc':
-            newA.sort(function(a, b){
-                return cm.arraySortAsc(a, b, key);
-            });
-            break;
+            return a[method]((a, b) => cm.arraySortAsc(a, b, key));
+
+        case 'asc-locale':
+            return a[method]((a, b) => cm.arraySortAscLocale(a, b, key, options));
+
         case 'desc' :
-            newA.sort(function(a, b){
-                return cm.arraySortDesc(a, b, key);
-            });
-            break;
+            return a[method]((a, b) => cm.arraySortDesc(a, b, key));
+
+        case 'desc-locale':
+            return a[method]((a, b) => cm.arraySortDescLocale(a, b, key, options));
     }
-    return newA;
 };
 
 cm.arraySortAsc = function(a, b, key) {
-    if(key){
-        return (a[key] < b[key]) ? 1 : ((a[key] > b[key]) ? -1 : 0);
-    }else{
-        return (a < b) ? 1 : ((a > b) ? -1 : 0);
-    }
+    a = key ? a[key] : a;
+    b = key ? b[key] : b;
+    return (a < b) ? -1 : ((a > b) ? 1 : 0);
+};
+
+cm.arraySortAscLocale = function(a, b, key, options) {
+    a = key ? a[key] : a;
+    b = key ? b[key] : b;
+    options = {
+        sensitivity: 'base',
+        numeric: true,
+        ...options,
+    };
+    return a.localeCompare(b, cm._lang, options);
 };
 
 cm.arraySortDesc = function(a, b, key) {
-    if(key){
-        return (a[key] < b[key]) ? -1 : ((a[key] > b[key]) ? 1 : 0);
-    }else{
-        return (a < b) ? -1 : ((a > b) ? 1 : 0);
-    }
+    a = key ? a[key] : a;
+    b = key ? b[key] : b;
+    return (a < b) ? 1 : ((a > b) ? -1 : 0);
+};
+
+cm.arraySortDescLocale = function(a, b, key, options) {
+    a = key ? a[key] : a;
+    b = key ? b[key] : b;
+    options = {
+        sensitivity: 'base',
+        numeric: true,
+        ...options,
+    };
+    return b.localeCompare(a, cm._lang, options);
 };
 
 cm.arrayParseFloat = function(a){

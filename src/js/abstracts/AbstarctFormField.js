@@ -927,6 +927,11 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that;
     };
 
+    classProto.isRequired = function(){
+        var that = this;
+        return that.params.required;
+    };
+
     classProto.getController = function(){
         var that = this;
         return that.components.controller;

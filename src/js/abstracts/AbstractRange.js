@@ -40,7 +40,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
     classProto.onValidateParamsEnd = function(){
         var that = this;
         // Sort
-        that.sort = (that.params['min'] > that.params['max']) ? 'asc' : 'desc';
+        that.sort = (that.params['min'] > that.params['max']) ? 'desc' : 'asc';
         that.targetDraggable = !that.params['range'];
         // Configure draggable
         that.params['draggableParams']['theme'] = that.params['theme'];

@@ -36,7 +36,7 @@ cm.getConstructor('Com.Range', function(classConstructor, className, classProto,
         if(!that.params['range']){
             values.push(that.params['min']);
         }
-        values = cm.arraySort(values, false, 'desc');
+        values = cm.arraySort(values, false, 'asc');
         values[0] = that.getBarRangeValuePosition(values[0]);
         values[1] = that.getBarRangeValuePosition(values[1]);
         that.nodes['rangeContent']['range'].style.left = values[0] + 'px';
