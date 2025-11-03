@@ -2566,8 +2566,21 @@ cm.splitNumber = function(str){
 };
 
 cm.formatNumber = function(number, locale, params){
+    number = cm.isString(number) ? cm.parseLocalNumber(number) : number;
     locale = !cm.isEmpty(locale) ? locale : cm._locale;
     return new Intl.NumberFormat(locale, params).format(number);
+};
+
+cm.parseLocalNumber = function(str){
+    // Check if comma is a decimal separator
+    const hasCommaDecimal = /,\d{1,2}$/.test(str);
+    if (hasCommaDecimal) {
+        // European format: "2.415,00"
+        return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+    } else {
+        // US format: "2,415.00"
+        return parseFloat(str.replace(/,/g, ''));
+    }
 };
 
 cm.getPercentage = function(){
