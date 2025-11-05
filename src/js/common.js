@@ -533,14 +533,18 @@ cm.arrayIndex = function(a, item){
     return Array.prototype.indexOf.call(a, item);
 };
 
-cm.inArray = function(a, item){
-    if(cm.isString(a)){
-        return a === item;
+/**
+ * Check if item(s) exist in array
+ * @param {Array} a - Array to search in
+ * @param {*|Array} item - Item(s) to search for
+ * @returns {boolean} True if found
+ */
+cm.inArray = function(a, item) {
+    if (!cm.isArray(a)) return false;
+    if (cm.isArray(item)) {
+        return item.some(i => a.includes(i));
     }
-    if(cm.isArray(a)){
-        return a.includes(item);
-    }
-    return false;
+    return a.includes(item);
 };
 
 cm.arrayRemove = function(a, item){
