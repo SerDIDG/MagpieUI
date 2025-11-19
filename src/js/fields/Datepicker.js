@@ -62,7 +62,7 @@ cm.define('Com.Datepicker', {
                 targetEvent: 'click',
                 hideOnReClick: false,
                 className: ['com__datepicker__tooltip'],
-                align: 'bottomLeft',
+                align: 'underTopLeft',
                 alignOffset: cm._config.tooltipIndent,
             },
         },

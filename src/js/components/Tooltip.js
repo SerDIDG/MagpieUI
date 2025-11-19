@@ -678,17 +678,32 @@ cm.getConstructor('Com.Tooltip', function(classConstructor, className, classProt
         const that = this;
 
         switch(that.params.align) {
-            case 'bottomLeft':
+            case 'topLeft':
+                that.params.top = '0';
+                that.params.left = '0';
+                break;
+
+            case 'topCenter':
+                that.params.top = '0';
+                that.params.left = '(targetWidth - selfWidth) / 2';
+                break;
+
+            case 'topRight':
+                that.params.top = '0';
+                that.params.left = 'targetWidth - selfWidth';
+                break;
+
+            case 'underTopLeft':
                 that.params.top = `targetHeight + ${that.params.alignOffset}`;
                 that.params.left = '0';
                 break;
 
-            case 'bottomCenter':
+            case 'underTopCenter':
                 that.params.top = `targetHeight + ${that.params.alignOffset}`;
                 that.params.left = '(targetWidth - selfWidth) / 2';
                 break;
 
-            case 'bottomRight':
+            case 'underTopRight':
                 that.params.top = `targetHeight + ${that.params.alignOffset}`;
                 that.params.left = 'targetWidth - selfWidth';
                 break;
