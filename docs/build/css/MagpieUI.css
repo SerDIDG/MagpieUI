@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.129.0 (2025-11-05 19:49) ************ */
+/*! ************ MagpieUI v3.130.0 (2025-11-19 09:35) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.129.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.129.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.129.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.129.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.129.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.130.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.130.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.130.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.130.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.130.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -18804,19 +18804,11 @@ ul.pt__field__hint li:before {
 /* ******* COMPONENT: DATEPICKER ******* */
 .com__datepicker-input {
   width: 100%;
-  max-width: 210px;
   display: inline-block;
   vertical-align: top;
   position: relative;
   z-index: 1;
   outline: none;
-}
-.com__datepicker-input.size-full {
-  max-width: none;
-}
-.com__datepicker-input.has-clear-button {
-  max-width: 250px;
-  padding: 0 40px 0 0;
 }
 .com__datepicker-input .pt__input .icon.default {
   background-image: url("../img/MagpieUI/icons/medium/datepicker.png");
@@ -18832,6 +18824,15 @@ ul.pt__field__hint li:before {
 }
 .com__datepicker-input > .icon.default {
   background-image: url("../img/MagpieUI/icons/small/remove.png");
+}
+.com__datepicker-input.size-default {
+  max-width: 210px;
+}
+.com__datepicker-input.has-clear-button {
+  padding: 0 40px 0 0;
+}
+.com__datepicker-input.has-clear-button.size-default {
+  max-width: 250px;
 }
 /* Tooltip */
 .com__tooltip.com__datepicker__tooltip {

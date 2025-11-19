@@ -23,6 +23,7 @@ cm.define('Com.Calendar', {
         'node': cm.node('div'),
         'name': '',
         'className': '',
+        'modifiers': [],
         'startYear': 1950,                                                 // number | current
         'endYear': 'current + 10',                                         // number | current
         'startMonth': null,                                                // ToDo: implement
@@ -97,45 +98,56 @@ function(params) {
             )
         );
 
-        // Add css class
-        cm.addClass(nodes.container, that.params['className']);
+        // Set additional CSS classes
+        cm.addClass(nodes.container, that.params.className);
+        cm.forEach(that.params.modifiers, modifier => {
+            cm.addClass(nodes.container, `com__calendar--${modifier}`);
+        });
 
         // Render selects
         nodes.selects = cm.node('div', {classes: 'selects'},
             nodes.months = cm.node('select', {classes: 'select months'}),
             nodes.years = cm.node('select', {classes: 'select years'})
         );
-        if(that.params.renderSelects){
+        if (that.params.renderSelects) {
             cm.insertFirst(nodes.selects, nodes.container);
         }
 
         // Render arrows
         if (that.params.renderArrows) {
-            nodes.prev = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('prev'), 'aria-label': that.msg('prev')}, '<');
+            nodes.prev = cm.node('button', {
+                classes: ['button-primary', 'arrow'],
+                title: that.msg('prev'),
+                'aria-label': that.msg('prev')
+            }, '<');
             cm.click.add(nodes.prev, that.prevMonth.bind(that));
             cm.insertFirst(nodes.prev, nodes.selects);
-            nodes.next = cm.node('button', {classes: ['button-primary', 'arrow'], title: that.msg('next'), 'aria-label': that.msg('next')}, '>');
+
+            nodes.next = cm.node('button', {
+                classes: ['button-primary', 'arrow'],
+                title: that.msg('next'),
+                'aria-label': that.msg('next')
+            }, '>');
             cm.click.add(nodes.next, that.nextMonth.bind(that));
             cm.insertLast(nodes.next, nodes.selects);
         }
-        
+
         // Render days
-        var weekday;
-        cm.forEach(7, function(i) {
-            weekday = i + that.params.startWeekDay;
-            weekday = weekday > 6? Math.abs(6 - (weekday - 1)) : weekday;
+        cm.forEach(7, (i) => {
+            let weekday = i + that.params.startWeekDay;
+            weekday = weekday > 6 ? Math.abs(6 - (weekday - 1)) : weekday;
             nodes.days.appendChild(
                 cm.node('th', {title: that.msg('days')[weekday]}, that.msg('daysAbbr')[weekday])
             );
         });
 
         // Render selects options
-        that.msg('months').forEach(function(item, i) {
+        that.msg('months').forEach((item, i) => {
             nodes.months.appendChild(
                 cm.node('option', {value: i}, item)
             );
         });
-        for (var i = that.params.endYear; i >= that.params.startYear; i--) {
+        for (let i = that.params.endYear; i >= that.params.startYear; i--) {
             nodes.years.appendChild(
                 cm.node('option', {value: i}, i)
             );
@@ -147,18 +159,18 @@ function(params) {
 
     var setMiscEvents = function() {
         selects.years = new Com.Select({
-                node: nodes.years,
-                title: that.msg('year'),
-                renderInBody: that.params.renderSelectsInBody
-            })
+            node: nodes.years,
+            title: that.msg('year'),
+            renderInBody: that.params.renderSelectsInBody
+        })
             .set(current.year)
             .addEvent('onChange', renderView);
 
         selects.months = new Com.Select({
-                node: nodes.months,
-                title: that.msg('month'),
-                renderInBody: that.params.renderSelectsInBody
-            })
+            node: nodes.months,
+            title: that.msg('month'),
+            renderInBody: that.params.renderSelectsInBody
+        })
             .set(current.month)
             .addEvent('onChange', renderView);
     };
@@ -177,7 +189,7 @@ function(params) {
         }
     };
 
-    var renderView = function(params){
+    var renderView = function(params) {
         params = cm.merge({
             render: that.params.renderMonthOnRequest,
             triggerEvents: true,
@@ -187,16 +199,16 @@ function(params) {
         // Get new today date
         var date;
         today = new Date();
-        
+
         // Get current month data
         date = new Date(selects.years.get(), selects.months.get(), 1);
         current = getMonthData(date);
-        
+
         // Get previous month data
         date = new Date(current.year, current.month, 1);
         date.setMonth(current.month - 1);
         previous = getMonthData(date);
-        
+
         // Get next month data
         date = new Date(current.year, current.month, 1);
         date.setMonth(current.month + 1);
@@ -225,7 +237,7 @@ function(params) {
 
     var renderRow = function(i) {
         var startWeekDay = current.startWeekDay - that.params.startWeekDay,
-            day = ((i - 1) * 7) + 1 - (startWeekDay > 0? startWeekDay - 7 : startWeekDay),
+            day = ((i - 1) * 7) + 1 - (startWeekDay > 0 ? startWeekDay - 7 : startWeekDay),
             tr = nodes.dates.appendChild(
                 cm.node('tr')
             );
@@ -235,7 +247,7 @@ function(params) {
         });
     };
 
-    var renderCell = function(row, day){
+    var renderCell = function(row, day) {
         var item = {
             row: row,
             day: day,
@@ -260,7 +272,7 @@ function(params) {
                     that.prevMonth();
                 });
             }
-        } else if(day > current.dayCount) {
+        } else if (day > current.dayCount) {
             cm.addClass(item.container, 'out');
             item.node = item.nodes.holder = renderDay(day - current.dayCount);
             if (that.params.changeMonthOnClick) {

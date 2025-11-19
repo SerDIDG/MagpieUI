@@ -34,6 +34,8 @@ cm.define('Com.Tooltip', {
         'stopPropagation': false,
         'preventClickEvent': false,                    // Prevent default click event on the target, requires setting value 'targetEvent': 'click'
         'positionTarget': false,                       // Override target node for calculation position and dimensions
+        'align': null,                                 // Supported properties: bottomLeft, bottomCenter, bottomRight
+        'alignOffset': 0,
         'top': 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
         'left': 0,                                     // Supported properties: targetWidth, selfWidth, screenWidth, number
         'width': 'auto',                               // Supported properties: targetWidth, screenWidth, auto, number
@@ -124,6 +126,7 @@ function(params) {
             that.params.adaptiveY = false;
         }
         that.params.position = cm.inArray(['absolute', 'fixed'], that.params.position) ? that.params.position : 'absolute';
+        that.validateAlignParams();
         that.triggerEvent('onValidateParams');
     };
 
@@ -668,4 +671,27 @@ function(params) {
     };
 
     init();
+});
+
+cm.getConstructor('Com.Tooltip', function(classConstructor, className, classProto, classInherit) {
+    classProto.validateAlignParams = function() {
+        const that = this;
+
+        switch(that.params.align) {
+            case 'bottomLeft':
+                that.params.top = `targetHeight + ${that.params.alignOffset}`;
+                that.params.left = '0';
+                break;
+
+            case 'bottomCenter':
+                that.params.top = `targetHeight + ${that.params.alignOffset}`;
+                that.params.left = '(targetWidth - selfWidth) / 2';
+                break;
+
+            case 'bottomRight':
+                that.params.top = `targetHeight + ${that.params.alignOffset}`;
+                that.params.left = 'targetWidth - selfWidth';
+                break;
+        }
+    };
 });

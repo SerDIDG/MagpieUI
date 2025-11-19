@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.129.0 (2025-11-05 19:49) ************ */
+/*! ************ MagpieUI v3.130.0 (2025-11-19 09:35) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4620,7 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.129.0';
+@CmVersion: '3.130.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -16813,27 +16813,15 @@ ul.pt__field__hint {
     @clear-button-indent: (@CmForm-FieldHeight + @CmForm-FieldInnerIndent);
 
     width: 100%;
-    max-width: @ComDatepicker-Width;
     display: inline-block;
     vertical-align: top;
     position: relative;
     z-index: 1;
     outline: none;
 
-    &.size-full {
-        max-width: none;
-    }
-
-    &.has-clear-button {
-        max-width: @ComDatepicker-Width + @clear-button-indent;
-        padding: 0 @clear-button-indent 0 0;
-    }
-
     .pt__input {
-        .icon {
-            &.default {
-                .icon.medium.datepicker;
-            }
+        .icon.default {
+            .icon.medium.datepicker;
         }
     }
 
@@ -16845,6 +16833,18 @@ ul.pt__field__hint {
 
         &.default {
             .icon.small.remove;
+        }
+    }
+
+    &.size-default {
+        max-width: @ComDatepicker-Width;
+    }
+
+    &.has-clear-button {
+        padding: 0 @clear-button-indent 0 0;
+
+        &.size-default {
+            max-width: @ComDatepicker-Width + @clear-button-indent;
         }
     }
 }

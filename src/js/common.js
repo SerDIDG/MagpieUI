@@ -2716,6 +2716,7 @@ cm.dateFormat = function(date, format, langs, formatCase){
     // Define format variables
     var convertFormats = {
         '%Y%' : '%Y',
+        '%y%' : '%y',
         '%m%' : '%m',
         '%n%' : '%n',
         '%F%' : '%F',
@@ -2735,6 +2736,9 @@ cm.dateFormat = function(date, format, langs, formatCase){
         return {
             '%Y' : function(){
                 return date ? date.getFullYear() : '0000';
+            },
+            '%y' : function(){
+                return date ? date.getFullYear().toString().substr(-2) : '00';
             },
             '%m' : function(){
                 return date ? cm.addLeadZero(date.getMonth() + 1) : '00';
