@@ -46,7 +46,7 @@ cm.define('Com.Select', {
         selected: 0,                         // Deprecated, use 'value' parameter instead.
         max: 0,                              // Maximum selected options, 0 - for unlimited
         setInitialValue: true,
-        setPlaceholderText: true,            // Set text of the placeholder option as selected
+        setPlaceholderText: true,            // Set the text of the placeholder option as selected
         renderCheckboxes: false,             // Render checkboxes in the list for multi-select
         value: null,                         // Option value / array of option values.
         defaultValue: null,
@@ -114,7 +114,7 @@ function(params) {
         setMiscEvents();
         setEvents();
         
-        // Set selected option
+        // Set the selected option
         if (that.params.multiple) {
             if (!cm.isEmpty(that.params.value) && cm.isArray(that.params.value)) {
                 cm.forEach(that.params.value, item => {
@@ -589,7 +589,7 @@ function(params) {
             group: null,         // Group name
             groupItem: null,      // Group item
             hidden: false,
-            select: false,       // Choose option after adding
+            select: false,       // Choose an option after adding
             selected: false,     // For select with multiple options to choose
             disabled: false,
             placeholder: false,
@@ -775,8 +775,10 @@ function(params) {
             } else {
                 nodes.text.value = cm.decode(option.text);
             }
+            cm.toggleClass(nodes.text, 'is-placeholder', option.placeholder);
         } else {
             nodes.text.value = '';
+            cm.removeClass(nodes.text, 'is-placeholder', option.placeholder);
         }
         nodes.hidden.value = active;
         setOption(option);

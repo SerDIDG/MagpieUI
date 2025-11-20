@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.130.1 (2025-11-19 09:52) ************ */
+/*! ************ MagpieUI v3.131.0 (2025-11-20 14:14) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4620,7 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.130.1';
+@CmVersion: '3.131.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4920,7 +4920,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* Middle Tone Key */
 
-@CmColor-Warning-MiddleSaturation: 70%;
+@CmColor-Warning-MiddleSaturation: 75%;
 @CmColor-Warning-MiddleLighten: 0%;
 @CmColor-Warning-MiddleDefault-Lightness: @CmVar-Color-MiddleDefault-Lightness;
 @CmColor-Warning-MiddleHover-Lightness: @CmVar-Color-MiddleHover-Lightness;
@@ -4933,7 +4933,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 // /* Light Key */
 
-@CmColor-Warning-LightSaturation: 70%;
+@CmColor-Warning-LightSaturation: 75%;
 @CmColor-Warning-LightLighten: 0%;
 @CmColor-Warning-LightHighlight-Lightness: @CmVar-Color-LightHighlight-Lightness;
 @CmColor-Warning-LightHover-Lightness: @CmVar-Color-LightHover-Lightness;
@@ -5718,6 +5718,9 @@ span.CodeMirror-selectedtext { background: none; }
         .mx__placeholder__content(@color, @size, @style);
     }
     &::placeholder {
+        .mx__placeholder__content(@color, @size, @style);
+    }
+    &.is-placeholder {
         .mx__placeholder__content(@color, @size, @style);
     }
 }
@@ -11390,6 +11393,13 @@ button {
         > dt,
         > .field__title {
             font-weight: @CmFont-Base-BoldWeight;
+        }
+    }
+
+    &.is-label-medium {
+        > dt,
+        > .field__title {
+            font-weight: @CmFont-Base-MediumWeight;
         }
     }
 
@@ -17384,7 +17394,7 @@ ul.pt__field__hint {
         }
 
         &.help {
-            right: (@icon_size + @icon_indent * 2);
+            right: (@icon_size + @icon_indent);
         }
     }
 
@@ -17414,7 +17424,7 @@ ul.pt__field__hint {
             }
 
             &.help {
-                right: -((@icon_indent + @icon_size) * 2);
+                right: -(@icon_indent + @icon_size * 2);
             }
         }
     }

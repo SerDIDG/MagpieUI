@@ -221,7 +221,7 @@ function(params){
                 'role' : 'button',
                 'tabindex' : 0,
             }, that.lang('close'));
-            cm.insertFirst(nodes['closeInside'], nodes['window']);
+            cm.insertBefore(nodes['closeInside'], nodes['windowInner']);
             cm.click.add(nodes['closeInside'], close);
         }
         if(that.params['closeOnBackground']){
@@ -231,8 +231,13 @@ function(params){
 
         // Render help button
         if(that.params['showHelp']){
-            nodes['helpInside'] = cm.node('div', {'class' : that.params['icons']['helpInside'], 'title' : that.lang('helpTitle')}, that.lang('help'));
-            cm.appendChild(nodes['helpInside'],nodes['window']);
+            nodes['helpInside'] = cm.node('div', {
+                'class' : that.params['icons']['helpInside'],
+                'title' : that.lang('helpTitle'),
+                'role' : 'button',
+                'tabindex' : 0,
+            }, that.lang('help'));
+            cm.insertBefore(nodes['helpInside'],nodes['windowInner']);
         }
 
         // Set title
