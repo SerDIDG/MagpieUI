@@ -87,6 +87,7 @@ var cm = {
             'fileExtensions': {
                 'image': 'jpg|jpeg|png|gif|bmp|tga|svg|tiff|webp',
                 'video': 'avi|ogg|mpeg|mp4|m4a|m4b|mov|wmv|webm',
+                'embed': 'pdf',
             },
             'fileTypes': {
                 'image': /image\/.*/,

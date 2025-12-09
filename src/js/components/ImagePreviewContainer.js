@@ -14,20 +14,18 @@ cm.define('Com.ImagePreviewContainer', {
     },
 },
 function() {
-    var that = this;
-    that.item = {};
-    Com.AbstractContainer.apply(that, arguments);
+    Com.AbstractContainer.apply(this, arguments);
 });
 
 cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, className, classProto, classInherit) {
     classProto.onRenderControllerProcess = function() {
-        var that = this;
+        const that = this;
         that.setController();
         return that;
     };
 
     classProto.set = function(item) {
-        var that = this;
+        const that = this;
         that.clear();
         that.setData(item);
         that.setController();
@@ -35,31 +33,33 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
     };
 
     classProto.clear = function() {
-        var that = this;
-        that.components.controller && that.components.controller.clear();
+        const that = this;
+        that.components.controller?.clear();
         return that;
     };
 
     classProto.setData = function(item) {
-        var that = this;
+        const that = this;
         that.item = {
-            type: 'image',
+            type: item.type || 'image',
             src: item.url,
             mime: item.mime || item.type,
             title: item.name,
         };
-        if (
-            !cm.isEmpty(that.item.mime) &&
-            (that.params.types.embed.test(that.item.mime) || that.params.types.video.test(that.item.mime))
-        ) {
-            that.item.type = 'iframe';
+        if (!cm.isEmpty(that.item.mime)) {
+            if (that.params.types.video.test(that.item.mime)) {
+                that.item.type = 'video';
+            }
+            if (that.params.types.embed.test(that.item.mime)) {
+                that.item.type = 'iframe';
+            }
         }
         return that;
     };
 
     classProto.setController = function() {
-        var that = this;
-        that.components.controller && that.components.controller.add(that.item);
+        const that = this;
+        that.components.controller?.add(that.item);
         return that;
     };
 });
