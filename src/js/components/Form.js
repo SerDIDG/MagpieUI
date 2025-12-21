@@ -63,6 +63,7 @@ cm.define('Com.Form', {
 
         'data': {},
         'mergeData': false,
+        'statusDetails': {},
         'sendable': true,
         'autoSend': false,
         'sendOnChange': false,
@@ -662,6 +663,7 @@ function(params) {
             params.messageDetails = that.callbacks.filterMessageDetails(that, params.messageDetails);
         }
 
+        // Process error message codes
         const message = that.getErrorMessage(params.messageCode, params.messageDetails);
         if (!cm.isEmpty(message)) {
             params.message = message;
@@ -674,7 +676,13 @@ function(params) {
         const params = that.callbacks.responseParams(that, response, event);
         params.target = event instanceof ProgressEvent ? event.target : null;
 
-        that.callbacks.renderError(that, params.errors, params.message);
+        // Process error status codes
+        if (cm.isEmpty(params.message)) {
+            params.statusDetails = that.callbacks.filterStatusDetails(that, that.params.statusDetails);
+            params.message = that.getStatusMessage( params.target.status, params.statusDetails );
+        }
+
+        that.callbacks.renderError(that, params);
         that.triggerEvent('onError', params);
         that.triggerEvent('onRequestError', params);
     };
@@ -711,41 +719,32 @@ function(params) {
         });
     };
 
-    that.callbacks.renderError = function(that, errors, message, messageCode) {
-        let label = that.msg('form_error');
-        let hasMessage = false;
+    that.callbacks.renderError = function(that, errors, message) {
+        const params = {
+            label: that.msg('form_error'),
+            type: 'danger',
+        };
 
+        // Process message from the response
+        let hasMessage = false;
         if (!cm.isEmpty(message) && cm.isString(message)) {
-            label = message;
             hasMessage = true;
+            params.label = message;
         }
 
-        if (!cm.isEmpty(messageCode)) {
-            const msg = that.getMsg(`error_codes.${messageCode}`);
-            if (!cm.isEmpty(msg)) {
-                label = msg;
-                hasMessage = true;
+        if (cm.isArray(errors) || cm.isObject(errors)) {
+            if (that.params.showNotificationsMessages) {
+                params.messages = that.callbacks.renderErrorMessages(that, errors);
+                params.collapsed = true;
             }
+        } else if ( !hasMessage ) {
+            params.label = that.msgParse('server_error');
         }
 
         // Clear old errors messages
         that.callbacks.clearError(that);
 
         // Render new errors messages
-        const params = {
-            type: 'danger'
-        };
-
-        if (cm.isArray(errors) || cm.isObject(errors)) {
-            params.label = label;
-            if (that.params.showNotificationsMessages) {
-                params.messages = that.callbacks.renderErrorMessages(that, errors);
-                params.collapsed = true;
-            }
-        } else {
-            params.label = hasMessage ? label : that.msgParse('server_error');
-        }
-
         if (that.params.showNotifications) {
             that.callbacks.renderNotification(that, params);
         }
@@ -812,6 +811,10 @@ function(params) {
     /* *** FILTERS *** */
 
     that.callbacks.filterMessageDetails = function(that, data) {
+        return data;
+    };
+
+    that.callbacks.filterStatusDetails = function(that, data) {
         return data;
     };
 
@@ -1203,6 +1206,18 @@ function(params) {
         if (cm.isEmpty(code)) return;
 
         const message = that.getMsg(`error_codes.${code}`);
+        if (!message) return;
+
+        if (!cm.isEmpty(data) && cm.isObject(data)) {
+            return cm.parseMessage(message, data);
+        }
+        return message;
+    };
+
+    that.getStatusMessage = function(code, data) {
+        if (cm.isEmpty(code)) return;
+
+        const message = that.getMsg(`status_codes.${code}`);
         if (!message) return;
 
         if (!cm.isEmpty(data) && cm.isObject(data)) {
