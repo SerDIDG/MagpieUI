@@ -318,8 +318,14 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
         // Structure
         item.nodes.container = cm.node('li',
-            item.nodes.link = cm.node('a', item.params.attr, item.params.label)
+            item.nodes.link = cm.node('a', item.params.attr)
         );
+
+        // Label
+        if (!cm.isEmpty(item.params.label)) {
+            item.nodes.label = cm.node('span', {classes: 'label'}, item.params.label);
+            cm.appendChild(item.nodes.label, item.nodes.link);
+        }
 
         // Render icon
         if (cm.isNode(item.params.icon)) {
