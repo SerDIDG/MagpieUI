@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.133.0 (2025-12-21 10:42) ************ */
+/*! ************ MagpieUI v3.134.0 (2026-01-20 19:18) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.133.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.133.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.133.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.133.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.133.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.134.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.134.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.134.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.134.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.134.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -9765,6 +9765,9 @@ html.is-scrollbar-visible .pt__box-code {
   display: inline-block;
   vertical-align: baseline;
   line-height: 18px;
+}
+.pt__check-line label.hidden {
+  display: none;
 }
 .pt__check-line label:first-child {
   margin-left: 0;

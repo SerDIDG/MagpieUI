@@ -165,9 +165,9 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
     };
 
     classProto.renderContent = function() {
-        var that = this,
-            nodes = {},
-            inputContainer;
+        const that = this;
+        const nodes = {};
+
         that.nodes.content = nodes;
         that.triggerEvent('onRenderContentStart');
 
@@ -187,17 +187,17 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             if (that.params.type === 'radio') {
                 nodes.container.setAttribute('role', 'radiogroup');
             }
-            cm.forEach(that.params.options, function(option) {
-                inputContainer = that.renderInput(option);
-                cm.appendChild(inputContainer, nodes.container);
+            cm.forEach(that.params.options, (option) => {
+                option.container = nodes.container;
+                that.renderInput(option);
             });
         } else {
-            inputContainer = that.renderInput({
+            that.renderInput({
+                container: nodes.container,
                 text: that.params.placeholder,
                 value: that.params.value,
                 values: that.params.values,
             });
-            cm.appendChild(inputContainer, nodes.container);
         }
         that.triggerEvent('onRenderContentEnd');
 
@@ -210,6 +210,9 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         item = cm.merge({
             nodes: {},
             textNodes: {},
+            render: true,
+            hidden: false,
+            container: null,
             value: null,
             text: '',
             hint: null,
@@ -237,6 +240,9 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         item.nodes.container = cm.node('label',
             item.nodes.input = cm.node('input', {type: that.params.type}),
         );
+
+        // States
+        item.hidden && cm.addClass(item.nodes.container, 'hidden');
 
         // Input
         item.input = item.nodes.input;
@@ -273,16 +279,19 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }
 
         // Events
-        cm.addEvent(item.nodes.input, 'click', function() {
-            that.setValue(item, true);
-        });
+        cm.addEvent(item.nodes.input, 'click', () => that.setValue(item, true));
 
         // Help Bubble
         if (!cm.isEmpty(item.help)) {
             that.renderHelp(item);
         }
 
-        // Push
+        // Append
+        if (item.render) {
+            cm.appendChild(item.nodes.container, item.container);
+        }
+
+        // Export
         that.inputs.push(item);
         return item.nodes.container;
     };

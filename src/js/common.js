@@ -589,6 +589,12 @@ cm.arrayFilter = function(a, items){
     });
 };
 
+cm.arrayJoin = function(a, separator){
+    return a.filter(item => !cm.isEmpty(item))
+        .map(item => item.trim())
+        .join(separator);
+};
+
 /**
  * Sort an array by key with optional locale comparison
  * @param {Array} a - Array to sort
