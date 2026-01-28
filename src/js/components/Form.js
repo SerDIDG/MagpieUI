@@ -192,23 +192,19 @@ function(params) {
         });
 
         // Overlay Loader
-        var overlayContainer;
         if (that.params.showLoader) {
             cm.getConstructor(that.params.overlayConstructor, function(classConstructor) {
-                switch (that.params.loaderCoverage) {
-                    case 'fields':
-                        overlayContainer = that.nodes.fieldsContainer;
-                        break;
-                    case 'all':
-                    default:
-                        overlayContainer = that.nodes.container;
-                        break;
-                }
-                that.components.loader = new classConstructor(
-                    cm.merge({'container': overlayContainer}, that.params.overlayParams)
-                );
+                const coverageMap = {
+                    fields: that.nodes.fieldsContainer,
+                    all: that.nodes.container,
+                };
+                const params = cm.merge({
+                    'container': coverageMap[that.params.loaderCoverage] || coverageMap.all
+                }, that.params.overlayParams);
+                that.components.loader = new classConstructor(params);
             });
         }
+
         // Auto Send
         that.params.autoSend && that.send();
     };
