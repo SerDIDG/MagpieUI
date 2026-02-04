@@ -17,7 +17,6 @@ cm.define('Com.AutocompleteField', {
             constructor: 'Com.Autocomplete',
             constructorParams: {
                 minLength: 1,
-                direction: 'start',
                 showListOnFocus: true,
             }
         }
