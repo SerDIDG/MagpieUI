@@ -270,8 +270,12 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     /******* LIST *******/
 
-    classProto.setListAction = function(index, triggerEvents) {
+    classProto.setListAction = function(index, params) {
         const that = this;
+        params = cm.merge({
+            setRegisteredItem: true,
+            triggerEvents: true,
+        }, params);
 
         if (that.params.suggestion.enable) {
             that.callbacks.suggestionItemUnselect(that,  that.suggestionItem);
@@ -289,7 +293,10 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             item.container.setAttribute('aria-selected', 'true');
             cm.addClass(item.container, 'active');
             that.components.tooltip.scrollToNode(item.container);
-            that.setRegisteredItem(item, triggerEvents);
+
+            if (params.setRegisteredItem) {
+                that.setRegisteredItem(item, params.triggerEvents);
+            }
         }
     };
 
@@ -344,7 +351,10 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.afterShow = function() {
         const that = this;
         that.isOpen = true;
-        that.setListAction(that.selectedItemIndex, false);
+        that.setListAction(that.selectedItemIndex, {
+            setRegisteredItem: false,
+            triggerEvents: false,
+        });
         cm.addEvent(document, 'mousedown', that.afterBodyClickHandler);
     };
 
