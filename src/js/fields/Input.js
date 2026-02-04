@@ -409,16 +409,16 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     };
 
     classProto.setValue = function(triggerEvents) {
-        var that = this,
-            value = that.nodes.content.input.value;
+        const that = this;
+        const value = that.nodes.content.input.value;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.set(value, triggerEvents);
         return that;
     };
 
     classProto.selectValue = function(triggerEvents) {
-        var that = this,
-            value = that.nodes.content.input.value;
+        const that = this;
+        const value = that.nodes.content.input.value;
         triggerEvents = cm.isUndefined(triggerEvents) ? true : triggerEvents;
         that.selectAction(value, triggerEvents);
         return that;
@@ -435,7 +435,7 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.focus = function(selection) {
         const that = this;
         if (selection === true) {
-            var value = that.nodes.content.input.value;
+            const value = that.nodes.content.input.value;
             that.nodes.content.input.setSelectionRange(0, value.length);
         }
         that.nodes.content.input.focus();

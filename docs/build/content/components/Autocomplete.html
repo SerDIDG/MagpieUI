@@ -217,10 +217,11 @@
     </li>
 
     <li data-node="tabs:[]:container" data-config='{"id" : "garage", "title" : "Garage"}'>
-        <h2>Show empty list on click. Select behavior.</h2>
-        <input type="text" data-element="Com.Autocomplete" data-config='{"clearOnEmpty" : false, "showListOnEmpty" : true, "data" : ["Sponge Bob", "User Userberg", "User Userbergovich", "User Userbergini", "User Userbergovski", "User Userbergoff", "User Userberegovoy", "User Userbergosyan", "User Userbergovenko"]}'>
+        <h2>Show the list on input focus</h2>
+        <input type="text" data-element="Com.Autocomplete" data-config='{"clearOnEmpty" : false, "showListOnFocus" : true, "data" : ["Sponge Bob", "User Userberg", "User Userbergovich", "User Userbergini", "User Userbergovski", "User Userbergoff", "User Userberegovoy", "User Userbergosyan", "User Userbergovenko"]}'>
         <hr>
-        <h2>Select</h2>
+
+        <h2>Behave like a select</h2>
         <select name="select-1" data-element="Com.AutocompleteField">
             <option value="0">Zero</option>
             <option value="1" selected>One</option>
@@ -235,6 +236,7 @@
             <option value="10">Ten</option>
         </select>
         <hr>
+
         <h2>Multiple Autocomplete</h2>
         <dl class="pt__field is-adaptive is-box">
             <dd>
@@ -242,6 +244,7 @@
             </dd>
         </dl>
         <hr>
+
         <h2>Multiple Autocomplete</h2>
         <dl class="pt__field is-adaptive is-box">
             <dd>

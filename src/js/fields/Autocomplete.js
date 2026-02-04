@@ -35,8 +35,8 @@ cm.define('Com.Autocomplete', {
         direction: 'auto',                                       // auto | start
         disabled: false,
         delay: 'cm._config.requestDelay',
-        clearOnEmpty: true,                                      // Clear input and value if item didn't selected from tooltip
-        showListOnEmpty: false,                                  // Show options list, when input is empty
+        clearOnEmpty: true,                                      // Clear input and value if the item didn't selected from the tooltip
+        showListOnFocus: false,                                  // Show the options list on input focus
         listItemNowrap: false,
 
         className: '',
@@ -102,6 +102,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         that.ajaxHandler = null;
         that.isOpen = false;
         that.isAjax = false;
+        that.isTyping = false;
         that.requestData = {};
         that.requestDelay = null;
         that.clickTarget = null;
@@ -134,6 +135,11 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
         if (!that.params.target) {
             that.params.target = that.params.node;
+        }
+
+        // ToDo: Deprecated legacy parameter
+        if (that.params.showListOnEmpty) {
+            that.params.showListOnFocus = true;
         }
 
         // If URL parameter exists, use ajax data
@@ -236,7 +242,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         const item = that.getItemAction(null, text);
 
         if (item) {
-            // If registered item exists, set their value
+            // If a registered item exists, set their value
             if (that.value !== item.value) {
                 that.set(item, true);
             }
@@ -264,7 +270,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     /******* LIST *******/
 
-    classProto.setListAction = function(index) {
+    classProto.setListAction = function(index, triggerEvents) {
         const that = this;
 
         if (that.params.suggestion.enable) {
@@ -283,7 +289,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             item.container.setAttribute('aria-selected', 'true');
             cm.addClass(item.container, 'active');
             that.components.tooltip.scrollToNode(item.container);
-            that.setRegisteredItem(item);
+            that.setRegisteredItem(item, triggerEvents);
         }
     };
 
@@ -291,7 +297,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         const that = this;
         let item = null;
 
-        // Get from stored items
+        // Get from the stored items
         if (
             that.rawValue && (
                 (!cm.isUndefined(value) && value === that.rawValue.value) ||
@@ -301,12 +307,12 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             item = that.rawValue;
         }
 
-        // Get from item list
+        // Get from the items list
         if (!item) {
             item = that.getRequestItem(value, text);
         }
 
-            // Get from a params data list
+        // Get from the params data list
         if (!item) {
             item = that.getItem(value, text);
         }
@@ -318,8 +324,8 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.afterFocus = function() {
         const that = this;
-        if (that.params.showListOnEmpty) {
-            that.request();
+        if (that.params.showListOnFocus) {
+            that.request(false);
         }
         that.triggerEvent('onFocus', that.value);
     };
@@ -331,18 +337,21 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             that.setInputAction();
         }
         that.clickTarget = null;
+        that.isTyping = false;
         that.triggerEvent('onBlur', that.value);
     };
 
     classProto.afterShow = function() {
         const that = this;
         that.isOpen = true;
+        that.setListAction(that.selectedItemIndex, false);
         cm.addEvent(document, 'mousedown', that.afterBodyClickHandler);
     };
 
     classProto.afterHide = function() {
         const that = this;
         that.isOpen = false;
+        that.isTyping = false;
         cm.removeEvent(document, 'mousedown', that.afterBodyClickHandler);
     };
 
@@ -357,7 +366,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
             End: () => that.setListAction(that.findLastIndex()),
         };
 
-        // Execute action if key exists
+        // Execute action if the key exists
         if (actions[event.code]) {
             event.preventDefault();
             if (that.registeredItems.length) {
@@ -425,8 +434,15 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     /******* REQUEST *******/
 
-    classProto.request = function() {
+    classProto.request = function(event) {
         const that = this;
+
+        // Indicate that typing is happening
+        if (event instanceof InputEvent) {
+            that.isTyping = true;
+        }
+
+        // Get current input text value
         const query = that.getInputValue();
 
         // Clear tooltip ajax/static delay and filtered items list
@@ -436,20 +452,22 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         that.abort();
 
         // Request
-        if (that.params.showListOnEmpty || query.length >= that.params.minLength) {
-            const delay = that.params.showListOnEmpty && cm.isEmpty(query) ? 0 : that.params.delay;
+        if (that.params.showListOnFocus || query.length >= that.params.minLength) {
+            const searchQuery = that.params.showListOnFocus && !that.isTyping ? '' : query;
+            const delay = that.params.showListOnFocus ? 0 : that.params.delay;
+
             that.requestDelay = setTimeout(() => {
                 if (that.params.preloadData && !cm.isEmpty(that.requestData.data)) {
                     that.callbacks.data(that, {
                         data: that.requestData.data,
-                        query: query
+                        query: searchQuery
                     });
                 } else if (that.isAjax) {
                     that.requestAction();
                 } else {
                     that.callbacks.data(that, {
                         data: that.params.data,
-                        query: query
+                        query: searchQuery
                     });
                 }
             }, delay);
@@ -607,6 +625,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
         // Append nodes to tooltip
         that.callbacks.embed(that, nodes.container);
+
         that.triggerEvent('onRenderListEnd');
     };
 
@@ -622,17 +641,16 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         // Render structure of list's item
         item.nodes = that.callbacks.renderItemStructure(that, params, item);
         that.params.listItemNowrap && cm.addClass(item.nodes.container, 'is-nowrap');
-        
-        // Highlight a selected option
+
+        // Mark the selected item index
         if (that.value === item.data.value) {
-            cm.addClass(item.nodes.container, 'active');
             that.selectedItemIndex = item.i;
         }
         
         // Register item
         that.callbacks.registerItem(that, params, item);
         
-        // Append item to list
+        // Append item to the list
         cm.appendChild(item.nodes.container, container);
     };
 
