@@ -678,7 +678,7 @@ function(params) {
             params.message = that.getStatusMessage( params.target.status, params.statusDetails );
         }
 
-        that.callbacks.renderError(that, params);
+        that.callbacks.renderError(that, params.errors, params.message);
         that.triggerEvent('onError', params);
         that.triggerEvent('onRequestError', params);
     };
