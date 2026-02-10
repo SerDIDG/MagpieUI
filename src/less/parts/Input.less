@@ -75,7 +75,13 @@
     }
 }
 
-.pt__input--size-helper (@height, @paddingX, @borderWidth, @lineHeight, @gap) {
+.pt__input--size-helper (
+    @height,
+    @paddingX,
+    @borderWidth,
+    @lineHeight,
+    @gap: var(--cm-input--icon-gap)
+) {
     @iconSize: @height - @borderWidth * 2;
     @iconSizeDouble: @iconSize * 2;
     @iconPadding: calc(@iconSize + @gap);
