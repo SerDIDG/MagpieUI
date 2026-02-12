@@ -372,7 +372,7 @@
 .cm-i,
 [class^="cm-i__"],
 [class*=" cm-i__"] {
-    font-family: @CmIconVars-Family;
+    font-family: @CmIconVars-Family !important;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -383,11 +383,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    &:link,
-    &:visited,
-    &:hover,
-    &:active {
-        font-family: @CmIconVars-Family;
+    &:is(:link, :visited, :hover, :active) {
+        font-family: @CmIconVars-Family !important;
     }
 
     &:hover {
@@ -431,7 +428,7 @@
     }
 
     &:before {
-        speak: none;
+        speak: never;
         display: block;
     }
 }

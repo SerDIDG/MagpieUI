@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.135.4 (2026-02-10 15:06) ************ */
+/*! ************ MagpieUI v3.135.5 (2026-02-12 17:06) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4620,7 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.135.4';
+@CmVersion: '3.135.5';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7084,7 +7084,7 @@ span.CodeMirror-selectedtext { background: none; }
 .cm-i,
 [class^="cm-i__"],
 [class*=" cm-i__"] {
-    font-family: @CmIconVars-Family;
+    font-family: @CmIconVars-Family !important;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -7095,11 +7095,8 @@ span.CodeMirror-selectedtext { background: none; }
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    &:link,
-    &:visited,
-    &:hover,
-    &:active {
-        font-family: @CmIconVars-Family;
+    &:is(:link, :visited, :hover, :active) {
+        font-family: @CmIconVars-Family !important;
     }
 
     &:hover {
@@ -7143,7 +7140,7 @@ span.CodeMirror-selectedtext { background: none; }
     }
 
     &:before {
-        speak: none;
+        speak: never;
         display: block;
     }
 }

@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.135.4 (2026-02-10 15:06) ************ */
+/*! ************ MagpieUI v3.135.5 (2026-02-12 17:06) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4407,8 +4407,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.135.4');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.135.4') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.135.4') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.135.4') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.135.4#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.135.5');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.135.5') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.135.5') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.135.5') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.135.5#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -5728,7 +5728,7 @@ html.is-scrollbar-visible .cm__scrollbar--light {
 .cm-i,
 [class^="cm-i__"],
 [class*=" cm-i__"] {
-  font-family: 'Magpie-UI-Glyphs';
+  font-family: 'Magpie-UI-Glyphs' !important;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -5739,19 +5739,10 @@ html.is-scrollbar-visible .cm__scrollbar--light {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.cm-i:link,
-[class^="cm-i__"]:link,
-[class*=" cm-i__"]:link,
-.cm-i:visited,
-[class^="cm-i__"]:visited,
-[class*=" cm-i__"]:visited,
-.cm-i:hover,
-[class^="cm-i__"]:hover,
-[class*=" cm-i__"]:hover,
-.cm-i:active,
-[class^="cm-i__"]:active,
-[class*=" cm-i__"]:active {
-  font-family: 'Magpie-UI-Glyphs';
+.cm-i:is(:link, :visited, :hover, :active),
+[class^="cm-i__"]:is(:link, :visited, :hover, :active),
+[class*=" cm-i__"]:is(:link, :visited, :hover, :active) {
+  font-family: 'Magpie-UI-Glyphs' !important;
 }
 .cm-i:hover,
 [class^="cm-i__"]:hover,
@@ -5815,7 +5806,7 @@ html.is-scrollbar-visible .cm__scrollbar--light {
 .cm-i:before,
 [class^="cm-i__"]:before,
 [class*=" cm-i__"]:before {
-  speak: none;
+  speak: never;
   display: block;
 }
 /* *** COMMON *** */
