@@ -965,6 +965,12 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         return that.params.required;
     };
 
+    classProto.toggleValidate = function(value) {
+        const that = this;
+        that.params.validate = value;
+        return that;
+    };
+
     classProto.getController = function() {
         const that = this;
         return that.components.controller;
