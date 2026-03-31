@@ -1,83 +1,102 @@
 cm.define('Com.Timer', {
-    'modules' : [
-        'Params',
-        'Events'
-    ],
-    'events' : [
+    extend: 'Com.AbstractController',
+    events: [
         'onRender',
         'onStart',
         'onTick',
         'onEnd'
     ],
-    'params' : {
-        'count' : 0                 // ms
-    }
+    params: {
+        renderStructure: false,
+        embedStructureOnRender: false,
+        count: 0, // ms
+    },
 },
-function(params){
-    var that = this;
+function() {
+    Com.AbstractController.apply(this, arguments);
+});
 
-    that.left = 0;
-    that.pass = 0;
+cm.getConstructor('Com.Timer', function(classConstructor, className, classProto, classInherit) {
+    // Constants for time calculations
+    const MS_PER_SECOND = 1000;
+    const MS_PER_MINUTE = 60 * MS_PER_SECOND;
+    const MS_PER_HOUR = 60 * MS_PER_MINUTE;
+    const MS_PER_DAY = 24 * MS_PER_HOUR;
 
-    that.isProcess = false;
-
-    var init = function(){
-        that.setParams(params);
-        that.convertEvents(that.params['events']);
-        render();
-        that.triggerEvent('onRender');
+    classProto.onConstructStart = function() {
+        // Variables
+        this.left = 0;
+        this.pass = 0;
+        this.isProcess = false;
+        this.animationFrameId = null;
     };
 
-    var render = function(){
-        that.left = that.params['count'];
-        that.start();
+    classProto.onDestructStart = function() {
+        this.stop();
     };
 
-    var getLeftTime = function(){
-        var o = {};
-        o['d_total'] = Math.floor(that.left / 1000 / 60 / 60 / 24);
-        o['h_total'] = Math.floor(that.left / 1000 / 60 / 60);
-        o['m_total'] = Math.floor(that.left / 1000 / 60);
-        o['s_total'] = Math.floor(that.left / 1000);
-        o['d'] = Math.floor(o['d_total']);
-        o['h'] = Math.floor(o['h_total'] - (o['d'] * 24));
-        o['m'] = Math.floor(o['m_total'] - (o['d'] * 24 * 60) - (o['h'] * 60));
-        o['s'] = Math.floor(o['s_total'] - (o['d'] * 24 * 60 * 60) - (o['h'] * 60 * 60) - (o['m'] * 60));
-        return o;
+    classProto.renderViewModel = function() {
+        this.left = this.params.count;
+        this.start();
     };
 
-    /* ******* PUBLIC ******* */
+    classProto.getLeftTime = function() {
+        const totalMs = this.left;
 
-    that.start = function(){
-        var o = getLeftTime(),
-            left = that.left,
-            startTime = Date.now(),
-            currentTime;
-        that.isProcess = true;
-        that.triggerEvent('onStart', o);
+        const d_total = Math.floor(totalMs / MS_PER_DAY);
+        const h_total = Math.floor(totalMs / MS_PER_HOUR);
+        const m_total = Math.floor(totalMs / MS_PER_MINUTE);
+        const s_total = Math.floor(totalMs / MS_PER_SECOND);
+
+        const d = d_total;
+        const h = h_total % 24;
+        const m = m_total % 60;
+        const s = s_total % 60;
+
+        return { d_total, h_total, m_total, s_total, d, h, m, s };
+    };
+
+    /******** PUBLIC ********/
+
+    classProto.start = function() {
+        const left = this.left;
+        const startTime = Date.now();
+
+        this.isProcess = true;
+        this.triggerEvent('onStart', this.getLeftTime());
+
         // Process
-        (function process(){
-            if(that.isProcess){
-                currentTime = Date.now();
-                that.left = Math.max(left - (currentTime - startTime), 0);
-                that.pass = that.params['count'] - that.left;
-                o = getLeftTime();
-                that.triggerEvent('onTick', o);
-                if(that.left === 0){
-                    that.stop();
-                    that.triggerEvent('onEnd', o);
-                }else{
-                    animFrame(process);
-                }
+        const process = () => {
+            if (!this.isProcess) {
+                return;
             }
-        })();
-        return that;
+
+            const currentTime = Date.now();
+            this.left = Math.max(left - (currentTime - startTime), 0);
+            this.pass = this.params.count - this.left;
+
+            const timeData = this.getLeftTime();
+            this.triggerEvent('onTick', timeData);
+
+            if (this.left === 0) {
+                this.stop();
+                this.triggerEvent('onEnd', timeData);
+            } else {
+                this.animationFrameId = requestAnimationFrame(process);
+            }
+        };
+
+        process();
+
+        return this;
     };
 
-    that.stop = function(){
-        that.isProcess = false;
-        return that;
+    classProto.stop = function() {
+        this.isProcess = false;
+        if (this.animationFrameId !== null) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        return this;
     };
-
-    init();
 });

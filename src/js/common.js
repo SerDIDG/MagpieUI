@@ -3620,16 +3620,18 @@ cm.getBodyScrollMaxTop = function(){
 
 cm.showBodyScroll = function(){
     cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--clip');
+    cm.removeClass(document.body, 'cm__scroll--clip');
 };
 
 cm.hideBodyScroll = function(){
-    var scrollTop = cm.getBodyScrollTop();
+    const scrollTop = cm.getBodyScrollTop();
     cm.addClass(cm.getDocumentHtml(), 'cm__scroll--clip');
+    cm.addClass(document.body, 'cm__scroll--clip');
     cm.setBodyScrollTop(scrollTop);
 };
 
 cm.bodyScroll = (function(){
-    var stack = [];
+    const stack = [];
 
     return {
         add: function(node) {
