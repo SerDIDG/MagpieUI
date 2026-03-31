@@ -123,7 +123,7 @@ function(params){
             appendEvents();
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
-                cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
+                cm.bodyScroll.add(that.nodes['container']);
             }
             // Append
             that.nodes['container'].style.display = 'block';
@@ -153,7 +153,7 @@ function(params){
             removeEvents();
             // Show / Hide Document Scroll
             if(!that.params['documentScroll']){
-                cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+                cm.bodyScroll.remove(that.nodes['container']);
             }
             // Animate
             cm.transition(that.nodes['container'], {

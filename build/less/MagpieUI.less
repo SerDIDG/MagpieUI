@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.135.6 (2026-02-16 20:19) ************ */
+/*! ************ MagpieUI v3.135.7 (2026-03-31 13:49) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4620,7 +4620,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.135.6';
+@CmVersion: '3.135.7';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6307,6 +6307,11 @@ span.CodeMirror-selectedtext { background: none; }
 
 .cm__scroll--none {
     overflow: hidden !important;
+}
+
+.cm__scroll--clip {
+    overflow: hidden !important;
+    overflow: clip !important;
 }
 
 .cm__scroll--auto {
@@ -9573,6 +9578,10 @@ button {
         &.spin {
             animation: spin 2s linear infinite;
         }
+
+        &.spin-reverse {
+            animation: spin-reverse 2s linear infinite;
+        }
     }
 }
 
@@ -9595,6 +9604,11 @@ button {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes spin-reverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
 }
 
 /* ******* PART: BOX ******* */
@@ -17049,7 +17063,7 @@ ul.pt__field__hint {
             .mx__transition(all, @ComDialog-WindowDuration, @CmUI-MotionAsymmetric);
         }
 
-        @media (prefers-reduced-motion) {
+        @media (prefers-reduced-motion: reduce) {
             transform: none !important;
         }
     }

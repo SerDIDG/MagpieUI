@@ -3619,12 +3619,12 @@ cm.getBodyScrollMaxTop = function(){
 };
 
 cm.showBodyScroll = function(){
-    cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--none');
+    cm.removeClass(cm.getDocumentHtml(), 'cm__scroll--clip');
 };
 
 cm.hideBodyScroll = function(){
     var scrollTop = cm.getBodyScrollTop();
-    cm.addClass(cm.getDocumentHtml(), 'cm__scroll--none');
+    cm.addClass(cm.getDocumentHtml(), 'cm__scroll--clip');
     cm.setBodyScrollTop(scrollTop);
 };
 
