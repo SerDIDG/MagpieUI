@@ -77,7 +77,7 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.136.0';
+@CmVersion: '3.137.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -1077,19 +1077,29 @@
 
 // /* ******* BREAKPOINTS ******* */
 
-@CmMedia-Laptop-Up: 1400px;
-@CmMedia-Laptop-Down: (1400px - 1px);
+@CmMedia-Large-Up: 1440px;
+@CmMedia-Large: 1440px;
+@CmMedia-Large-Down: (1440px - 1px);
+@CmMedia-Laptop-Up: 1280px;
+@CmMedia-Laptop: 1280px;
+@CmMedia-Laptop-Down: (1280px - 1px);
 @CmMedia-Desktop-Up: @CmScreen-Tablet;
+@CmMedia-Desktop: @CmScreen-Tablet;
 @CmMedia-Desktop-Down: (@CmScreen-Tablet - 1px);
 @CmMedia-Tablet-Up: (@CmScreen-TabletPortrait + 1px);
+@CmMedia-Tablet: @CmScreen-TabletPortrait;
 @CmMedia-Tablet-Down: @CmScreen-TabletPortrait;
 @CmMedia-Mobile-Up: (@CmScreen-Mobile + 1px);
+@CmMedia-Mobile: @CmScreen-Mobile;
 @CmMedia-Mobile-Down: @CmScreen-Mobile;
 @CmMedia-Small-Up: (@CmScreen-MobilePortrait + 1px);
+@CmMedia-Small: @CmScreen-MobilePortrait;
 @CmMedia-Small-Down: @CmScreen-MobilePortrait;
 @CmMedia-XSmall-Up: (@CmScreen-XSmall + 1px);
+@CmMedia-XSmall: @CmScreen-XSmall;
 @CmMedia-XSmall-Down: @CmScreen-XSmall;
 @CmMedia-XXSmall-Up: (@CmScreen-XXSmall + 1px);
+@CmMedia-XXSmall: @CmScreen-XXSmall;
 @CmMedia-XXSmall-Down: @CmScreen-XXSmall;
 
 // /* ************************************************ */
