@@ -10,6 +10,7 @@ cm.define('Com.Notifications', {
         embedStructureOnRender: true,
         embedStructure: 'append',
 
+        modifiers: [],
         closable: true,
         items: [],
         iconClasses: ['icon', 'small', 'linked'],
@@ -42,12 +43,24 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         const that = this;
 
         // Structure
-        that.nodes.container = cm.node('div', {classes: 'com__notifications is-hidden'},
+        that.nodes.container = cm.node('div', {classes: ['com__notifications', 'is-hidden']},
             that.nodes.list = cm.node('ul')
         );
 
         // Render items
         cm.forEach(that.params.items, that.add.bind(that));
+    };
+
+    classProto.setAttributes = function(){
+        const that = this;
+
+        // Call parent method
+        classInherit.prototype.setAttributes.apply(that, arguments);
+
+        // Set additional CSS classes
+        cm.forEach(that.params.modifiers, modifier => {
+            cm.addClass(that.nodes.container, `com__notifications--${modifier}`);
+        });
     };
 
     classProto.clear = function() {
