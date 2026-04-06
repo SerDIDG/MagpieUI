@@ -102,7 +102,7 @@
 
             .counter {
                 .cm__font--hint;
-                padding: 0 @CmIndent-XXXSmall;
+                padding: @CmIndent-XXXXSmall @CmIndent-XXXSmall;
                 background: @CmUI-Overlay-Dark;
                 border-radius: @CmBorder-Radius;
                 color: @CmColor-Font-Opposite;
@@ -116,7 +116,7 @@
                     margin: auto;
                     position: absolute;
                     border-style: solid;
-                    border-width: 6px 4px 0 4px;
+                    border-width: @ComTooltip-ArrowSize;
                     border-color: @CmUI-Overlay-Dark transparent transparent;
                     content: '';
                     .mx__position(100%, 0, auto, 0);

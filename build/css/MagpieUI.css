@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.138.0 (2026-04-03 19:39) ************ */
+/*! ************ MagpieUI v3.139.0 (2026-04-07 00:25) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4394,6 +4394,9 @@ span.CodeMirror-selectedtext {
   --pt-field--title-indent: 16px;
   --dvh-100: 100vh;
   --svh-100: 100vh;
+  --com-tooltip--arrow-size: 6px;
+  --com-tooltip--arrow-indent: 12px;
+  --com-tooltip--arrow-background: transparent;
 }
 @supports (height: 100dvh) {
   :root {
@@ -4407,8 +4410,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.138.0');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.138.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.138.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.138.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.138.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.139.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.139.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.139.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.139.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.139.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -6047,6 +6050,7 @@ ul,
 ol,
 hr,
 address,
+blockquote,
 pre {
   margin-bottom: 24px;
   padding: 0;
@@ -6091,6 +6095,9 @@ hr:last-child,
 address.bottom,
 address.is-last,
 address:last-child,
+blockquote.bottom,
+blockquote.is-last,
+blockquote:last-child,
 pre.bottom,
 pre.is-last,
 pre:last-child {
@@ -9136,6 +9143,7 @@ button.is-hidden {
 .pt__box-editable ol,
 .pt__box-editable hr,
 .pt__box-editable address,
+.pt__box-editable blockquote,
 .pt__box-editable pre {
   margin-bottom: 0;
 }
@@ -11370,6 +11378,13 @@ html.is-scrollbar-visible .pt__box-code {
 .pt__field.is-form-box.is-first > .field__title {
   padding-top: 0;
 }
+.pt__field.is-box.is-label-indent > dt,
+.pt__field.is-form-box.is-label-indent > dt,
+.pt__field.is-box.is-label-indent > .field__title,
+.pt__field.is-form-box.is-label-indent > .field__title {
+  margin-bottom: 8px;
+  padding-block: 0;
+}
 .pt__field.is-box.is-border-box,
 .pt__field.is-form-box.is-border-box {
   padding-bottom: 7px;
@@ -13015,6 +13030,7 @@ ul.pt__field__hint li:before {
 .pt__image > .inner > .text ol,
 .pt__image > .inner > .text hr,
 .pt__image > .inner > .text address,
+.pt__image > .inner > .text blockquote,
 .pt__image > .inner > .text pre {
   color: #ffffff;
 }
@@ -16715,7 +16731,7 @@ ul.pt__field__hint li:before {
 .pt__range.theme--default .drag .counter {
   font: 400 12px/18px "Open+Sans", arial, helvetica, sans-serif;
   color: #999999;
-  padding: 0 4px;
+  padding: 2px 4px;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 3px;
   color: #ffffff;
@@ -16732,7 +16748,7 @@ ul.pt__field__hint li:before {
   margin: auto;
   position: absolute;
   border-style: solid;
-  border-width: 6px 4px 0 4px;
+  border-width: 6px;
   border-color: rgba(0, 0, 0, 0.7) transparent transparent;
   content: '';
   top: 100%;
@@ -17555,6 +17571,7 @@ ul.pt__field__hint li:before {
 .lt__comment .comment-text ol,
 .lt__comment .comment-text hr,
 .lt__comment .comment-text address,
+.lt__comment .comment-text blockquote,
 .lt__comment .comment-text pre {
   margin: 0;
 }
@@ -17779,6 +17796,7 @@ ul.pt__field__hint li:before {
 .com__togglebox > dt ol,
 .com__togglebox > dt hr,
 .com__togglebox > dt address,
+.com__togglebox > dt blockquote,
 .com__togglebox > dt pre,
 .com__togglebox > dt h1,
 .com__togglebox > dt h2,
@@ -17792,6 +17810,7 @@ ul.pt__field__hint li:before {
 .com__togglebox > dt ol,
 .com__togglebox > dt hr,
 .com__togglebox > dt address,
+.com__togglebox > dt blockquote,
 .com__togglebox > dt pre,
 .com__togglebox > dt .form .hint,
 .com__togglebox > dt .pt__box-item .title,
@@ -18199,6 +18218,7 @@ ul.pt__field__hint li:before {
 .com__tooltip > .inner > .title ol,
 .com__tooltip > .inner > .title hr,
 .com__tooltip > .inner > .title address,
+.com__tooltip > .inner > .title blockquote,
 .com__tooltip > .inner > .title pre {
   margin: 0;
 }
@@ -18213,13 +18233,45 @@ ul.pt__field__hint li:before {
   overflow-y: auto;
   max-height: calc(100vh - 10px);
 }
+.com__tooltip.has-arrow > .inner::before {
+  width: 0;
+  height: 0;
+  margin: auto;
+  display: block;
+  position: absolute;
+  content: '';
+  border-style: solid;
+  border-width: var(--com-tooltip--arrow-size);
+  border-color: transparent;
+}
+.com__tooltip.has-arrow[class*="arrow--top"] > .inner::before {
+  top: calc(-2 * var(--com-tooltip--arrow-size));
+  border-bottom-color: var(--com-tooltip--arrow-background);
+}
+.com__tooltip.has-arrow[class*="arrow--bottom"] > .inner::before {
+  bottom: calc(-2 * var(--com-tooltip--arrow-size));
+  border-top-color: var(--com-tooltip--arrow-background);
+}
+.com__tooltip.has-arrow.arrow--top-left > .inner::before,
+.com__tooltip.has-arrow.arrow--bottom-left > .inner::before {
+  left: var(--com-tooltip--arrow-indent);
+}
+.com__tooltip.has-arrow.arrow--top-center > .inner::before,
+.com__tooltip.has-arrow.arrow--bottom-center > .inner::before {
+  left: 0;
+  right: 0;
+}
+.com__tooltip.has-arrow.arrow--top-right > .inner::before,
+.com__tooltip.has-arrow.arrow--bottom-right > .inner::before {
+  right: var(--com-tooltip--arrow-indent);
+}
 .com__tooltip.animate--drop-bottom-left {
   transition: transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
   transform-origin: right top;
-  transform: scale(0);
+  transform: scale(0.7);
 }
 .com__tooltip.animate--drop-bottom-left.is-hide {
-  transform: scale(0);
+  transform: scale(0.7);
 }
 .com__tooltip.animate--drop-bottom-left.is-show {
   transform: scale(1);
@@ -18227,10 +18279,10 @@ ul.pt__field__hint li:before {
 .com__tooltip.animate--drop-bottom-center {
   transition: transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
   transform-origin: center top;
-  transform: scale(0);
+  transform: scale(0.7);
 }
 .com__tooltip.animate--drop-bottom-center.is-hide {
-  transform: scale(0);
+  transform: scale(0.7);
 }
 .com__tooltip.animate--drop-bottom-center.is-show {
   transform: scale(1);
@@ -18238,15 +18290,51 @@ ul.pt__field__hint li:before {
 .com__tooltip.animate--drop-bottom-right {
   transition: transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
   transform-origin: left top;
-  transform: scale(0);
+  transform: scale(0.7);
 }
 .com__tooltip.animate--drop-bottom-right.is-hide {
-  transform: scale(0);
+  transform: scale(0.7);
 }
 .com__tooltip.animate--drop-bottom-right.is-show {
   transform: scale(1);
 }
+.com__tooltip.animate--drop-top-left {
+  transition: transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transform-origin: right bottom;
+  transform: scale(0.7);
+}
+.com__tooltip.animate--drop-top-left.is-hide {
+  transform: scale(0.7);
+}
+.com__tooltip.animate--drop-top-left.is-show {
+  transform: scale(1);
+}
+.com__tooltip.animate--drop-top-center {
+  transition: transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transform-origin: center bottom;
+  transform: scale(0.7);
+}
+.com__tooltip.animate--drop-top-center.is-hide {
+  transform: scale(0.7);
+}
+.com__tooltip.animate--drop-top-center.is-show {
+  transform: scale(1);
+}
+.com__tooltip.animate--drop-top-right {
+  transition: transform 250ms cubic-bezier(0.5, 0, 0.15, 1) 0ms;
+  transform-origin: left bottom;
+  transform: scale(0.7);
+}
+.com__tooltip.animate--drop-top-right.is-hide {
+  transform: scale(0.7);
+}
+.com__tooltip.animate--drop-top-right.is-show {
+  transform: scale(1);
+}
 /* ******* COMPONENT: TOOLTIP: THEMES ******* */
+.com__tooltip.theme-default {
+  --com-tooltip--arrow-background: #ffffff;
+}
 .com__tooltip.theme-default > .inner {
   padding: 4px;
   background: #ffffff;
@@ -18257,6 +18345,10 @@ ul.pt__field__hint li:before {
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+}
+.com__tooltip.theme-dark,
+.com__tooltip.theme-black {
+  --com-tooltip--arrow-background: #111111;
 }
 .com__tooltip.theme-dark > .inner,
 .com__tooltip.theme-black > .inner {
@@ -18271,6 +18363,18 @@ ul.pt__field__hint li:before {
   background-clip: padding-box;
   background: #111111;
   border-color: #111111;
+}
+.com__tooltip.theme-shadow-top > .inner {
+  box-shadow: none;
+  border-color: #ffffff;
+  -webkit-filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 -2px 12px rgba(0, 0, 0, 0.2));
+}
+.com__tooltip.theme-shadow-bottom > .inner {
+  box-shadow: none;
+  border-color: #ffffff;
+  -webkit-filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2));
 }
 /* ******* COMPONENT: TOOLTIP: INNER COMPONENTS ******* */
 /* *** ITEMS LIST *** */
@@ -19048,29 +19152,14 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 }
 /* *** TOOLTIP *** */
 .com__tooltip.com__dialog__tooltip {
+  --com-tooltip--arrow-size: 12px;
+  --com-tooltip--arrow-indent: 40px;
+  --com-tooltip--arrow-background: #ffffff;
   text-align: left;
   transform-origin: calc(100% - 52px) -8px;
 }
 .com__tooltip.com__dialog__tooltip > .inner {
   padding: 24px;
-  border-color: #ffffff;
-  box-shadow: none;
-  -webkit-filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2));
-  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.2));
-}
-.com__tooltip.com__dialog__tooltip > .inner::before {
-  width: 0;
-  height: 0;
-  display: block;
-  position: absolute;
-  border-style: solid;
-  border-width: 0 12px 14px 12px;
-  border-color: transparent transparent #ffffff transparent;
-  content: '';
-  top: -14px;
-  right: 40px;
-  bottom: auto;
-  left: auto;
 }
 /* *** FONT *** */
 /* ******* COMPONENT: DIALOG: STUFF ******* */
@@ -19269,6 +19358,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__dialog__window.theme-black ol,
 .com__dialog__window.theme-black hr,
 .com__dialog__window.theme-black address,
+.com__dialog__window.theme-black blockquote,
 .com__dialog__window.theme-black pre,
 .com__dialog__window.theme-black h1,
 .com__dialog__window.theme-black h2,
@@ -19282,6 +19372,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__dialog__window.theme-black ol,
 .com__dialog__window.theme-black hr,
 .com__dialog__window.theme-black address,
+.com__dialog__window.theme-black blockquote,
 .com__dialog__window.theme-black pre,
 .com__dialog__window.theme-black .form .hint,
 .com__dialog__window.theme-black .pt__box-item .title,
@@ -19477,6 +19568,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__dialog-font--theme-black ol,
 .com__dialog-font--theme-black hr,
 .com__dialog-font--theme-black address,
+.com__dialog-font--theme-black blockquote,
 .com__dialog-font--theme-black pre,
 .com__dialog-font--theme-black h1,
 .com__dialog-font--theme-black h2,
@@ -19490,6 +19582,7 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
 .com__dialog-font--theme-black ol,
 .com__dialog-font--theme-black hr,
 .com__dialog-font--theme-black address,
+.com__dialog-font--theme-black blockquote,
 .com__dialog-font--theme-black pre,
 .com__dialog-font--theme-black .form .hint,
 .com__dialog-font--theme-black .pt__box-item .title,
@@ -22719,6 +22812,7 @@ html.is-scrollbar-visible .com__select-multi .pt__listing-items > ul {
 .com__slider > .inner > .slides > ul > li > .text ol,
 .com__slider > .inner > .slides > ul > li > .text hr,
 .com__slider > .inner > .slides > ul > li > .text address,
+.com__slider > .inner > .slides > ul > li > .text blockquote,
 .com__slider > .inner > .slides > ul > li > .text pre {
   color: #fff;
 }

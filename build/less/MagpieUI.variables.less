@@ -33,6 +33,12 @@
     @supports(height: 100svh) {
         --svh-100: 100svh;
     }
+
+    // /******* COMPONENTS *******/
+
+    --com-tooltip--arrow-size: @ComTooltip-ArrowSize;
+    --com-tooltip--arrow-indent: @CmIndent-XSmall;
+    --com-tooltip--arrow-background: transparent;
 }
 
 
@@ -77,7 +83,7 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.138.0';
+@CmVersion: '3.139.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -132,6 +138,7 @@
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Top: 0 -2px 5px rgba(0,0,0,0.15);
+@CmUI-Shadow-TopLarge: 0 -2px 12px rgba(0, 0, 0, 0.2);
 @CmUI-Shadow-TopSmall: 0 -1px 2px rgba(0,0,0,0.15);
 @CmUI-Shadow-Bottom: 0 2px 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
@@ -806,6 +813,10 @@
 // /* ************************************************ */
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
+
+// /* ******* TOOLTIP ******* */
+
+@ComTooltip-ArrowSize: 6px;
 
 // /* ******* CALENDAR ******* */
 

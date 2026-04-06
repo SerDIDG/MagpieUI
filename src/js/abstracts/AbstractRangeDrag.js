@@ -1,67 +1,70 @@
 cm.define('Com.AbstractRangeDrag', {
-    'extend' : 'Com.AbstractController',
-    'events' : [
+    extend: 'Com.AbstractController',
+    events: [
         'onStart',
         'onStop',
         'onSet',
         'onSelect'
     ],
-    'params' : {
-        'renderStructure' : true,
-        'embedStructureOnRender' : true,
-        'embedStructure' : 'append',
-        'controllerEvents' : true,
-        'direction' : 'horizontal',
-        'showCounter' : true,
-        'targetDraggable' : true,
-        'draggableConstructor' : 'Com.Draggable',
-        'draggableParams' : {}
+    params: {
+        renderStructure: true,
+        embedStructureOnRender: true,
+        embedStructure: 'append',
+        controllerEvents: true,
+        direction: 'horizontal',
+        showCounter: true,
+        valueFormater: '{value}',
+        targetDraggable: true,
+        draggableConstructor: 'Com.Draggable',
+        draggableParams: {}
     }
 },
-function(params){
-    var that = this;
-    // Call parent class construct in current context
-    Com.AbstractController.apply(that, arguments);
+function(){
+    Com.AbstractController.apply(this, arguments);
 });
 
 cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className, classProto, classInherit){
     classProto.onValidateParams = function(){
         var that = this;
-        that.params['draggableParams']['direction'] = that.params['direction'];
+        that.params.draggableParams.direction = that.params.direction;
     };
 
     classProto.renderView = function(){
         var that = this;
+
         // Structure
-        that.nodes['container'] = cm.node('div', {'class' : 'drag'},
-            that.nodes['content'] = that.renderDragContent(name)
+        that.nodes.container = cm.node('div', {class: 'drag'},
+            that.nodes.content = that.renderDragContent(name)
         );
+
         // Classes
-        cm.addClass(that.nodes['content'], that.params['theme']);
-        switch(that.params['direction']){
+        cm.addClass(that.nodes.content, that.params.theme);
+        switch(that.params.direction){
             case 'horizontal':
-                cm.addClass(that.nodes['content'], 'is-horizontal');
+                cm.addClass(that.nodes.content, 'is-horizontal');
                 break;
             case 'vertical':
-                cm.addClass(that.nodes['content'], 'is-vertical');
+                cm.addClass(that.nodes.content, 'is-vertical');
                 break;
         }
     };
 
     classProto.renderViewModel = function(){
         var that = this;
-        // Call parent method - renderViewModel
+
+        // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Constructor
-        cm.getConstructor(that.params['draggableConstructor'], function(classConstructor){
-            that.components['draggable'] = new classConstructor(
-                cm.merge(that.params['draggableParams'], {
-                    'target' : that.params['targetDraggable'] ?  that.params['node'] : null,
-                    'node' : that.nodes['container'],
-                    'limiter' : that.params['node'],
-                    'events' : {
-                        'onStart' : function(){
-                            switch(that.params['direction']){
+        cm.getConstructor(that.params.draggableConstructor, function(classConstructor){
+            that.components.draggable = new classConstructor(
+                cm.merge(that.params.draggableParams, {
+                    target: that.params.targetDraggable ?  that.params.node : null,
+                    node: that.nodes.container,
+                    limiter: that.params.node,
+                    events: {
+                        onStart: function(){
+                            switch(that.params.direction){
                                 case 'horizontal':
                                     cm.addClass(document.body, 'cm__cursor--col-resize');
                                     break;
@@ -73,8 +76,8 @@ cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className,
                             that.showCounter();
                             that.triggerEvent('onStart');
                         },
-                        'onStop' : function(){
-                            switch(that.params['direction']){
+                        onStop: function(){
+                            switch(that.params.direction){
                                 case 'horizontal':
                                     cm.removeClass(document.body, 'cm__cursor--col-resize');
                                     break;
@@ -86,11 +89,11 @@ cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className,
                             that.hideCounter();
                             that.triggerEvent('onStop');
                         },
-                        'onSelect' : function(my, data){
+                        onSelect: function(my, data){
                             var value = that.getDraggable(data);
                             that.selectAction(value, true);
                         },
-                        'onSet' : function(my, data){
+                        onSet: function(my, data){
                             var value = that.getDraggable(data);
                             that.set(value, true);
                         }
@@ -105,64 +108,82 @@ cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className,
     classProto.renderDragContent = function(){
         var that = this,
             nodes = {};
-        that.nodes['dragContent'] = nodes;
+        that.nodes.dragContent = nodes;
+
         // Structure
-        nodes['container'] = cm.node('div', {'class' : 'drag__content'});
+        nodes.container = cm.node('div', {class: 'drag__content'});
+
         // Counter
-        that.nodes['counter'] = that.renderCounter(name);
-        if(that.params['showCounter']){
-            cm.appendChild(that.nodes['counter'], nodes['container']);
+        that.nodes.counter = that.renderCounter(name);
+        if(that.params.showCounter){
+            cm.appendChild(that.nodes.counter, nodes.container);
         }
+
         // Export
-        return nodes['container'];
+        return nodes.container;
     };
 
     classProto.getDraggable = function(data){
         var that = this,
-            dimensions = that.components['draggable'].getDimensions(),
-            xn = that.params['max'] - that.params['min'],
+            dimensions = that.components.draggable.getDimensions(),
+            xn = that.params.max - that.params.min,
             yn,
             zn,
-            value;
-        switch(that.params['direction']){
+            value,
+            step = that.params.step || 1;
+
+        switch(that.params.direction){
             case 'horizontal':
-                yn = dimensions['limiter']['absoluteWidth'];
-                zn = (xn / yn) * data['left'];
-                value = cm.toFixed(zn + that.params['min'], that.params['precision'], true);
+                yn = dimensions.limiter.absoluteWidth;
+                zn = (xn / yn) * data.left;
+                value = zn + that.params.min;
                 break;
+
             case 'vertical':
-                yn = dimensions['limiter']['absoluteHeight'];
-                zn = (xn / yn) * data['top'];
-                value = cm.toFixed(zn + that.params['min'], that.params['precision'], true);
+                yn = dimensions.limiter.absoluteHeight;
+                zn = (xn / yn) * data.top;
+                value = zn + that.params.min;
                 break;
         }
-        return value;
+
+        // Apply step snapping
+        value = Math.round((value - that.params.min) / step) * step + that.params.min;
+
+        // Clamp
+        value = Math.max(that.params.min, Math.min(that.params.max, value));
+
+        return cm.toFixed(value, that.params.precision, true);
     };
 
     classProto.setDraggable = function(value){
         var that = this,
-            position = {
-                'top' : 0,
-                'left' : 0
-            },
-            dimensions = that.components['draggable'].getDimensions(),
-            dv = value - that.params['min'],
-            xn = that.params['max'] - that.params['min'],
+            position = { top: 0, left: 0 },
+            dimensions = that.components.draggable.getDimensions(),
+            step = that.params.step || 1,
+            dv,
+            xn = that.params.max - that.params.min,
             yn,
             zn;
-        switch(that.params['direction']){
+
+        // Snap incoming value to step
+        value = Math.round((value - that.params.min) / step) * step + that.params.min;
+        dv = value - that.params.min;
+
+        switch(that.params.direction){
             case 'horizontal':
-                yn = dimensions['limiter']['absoluteWidth'];
+                yn = dimensions.limiter.absoluteWidth;
                 zn = (yn / xn) * dv;
-                position['left'] = cm.toFixed(zn, that.params['precision'], true);
+                position.left = cm.toFixed(zn, that.params.precision, true);
                 break;
+
             case 'vertical':
-                yn = dimensions['limiter']['absoluteHeight'];
+                yn = dimensions.limiter.absoluteHeight;
                 zn = (yn / xn) * dv;
-                position['top'] = cm.toFixed(zn, that.params['precision'], true);
+                position.top = cm.toFixed(zn, that.params.precision, true);
                 break;
         }
-        that.components['draggable'].setPosition(position, false);
+
+        that.components.draggable.setPosition(position, false);
     };
 
     /*** COUNTER ***/
@@ -170,35 +191,41 @@ cm.getConstructor('Com.AbstractRangeDrag', function(classConstructor, className,
     classProto.renderCounter = function(){
         var that = this,
             nodes = {};
-        that.nodes['counterContent'] = nodes;
+        that.nodes.counterContent = nodes;
         // Structure
-        nodes['container'] = nodes['inner'] = cm.node('div', {'class' : 'counter'});
+        nodes.container = nodes.inner = cm.node('div', {class: 'counter'});
         // Export
-        return nodes['container'];
+        return nodes.container;
     };
 
     classProto.showCounter = function(){
         var that = this;
-        cm.addClass(that.nodes['counter'], 'is-show');
+        cm.addClass(that.nodes.counter, 'is-show');
         return that;
     };
 
     classProto.hideCounter = function(){
         var that = this;
-        cm.removeClass(that.nodes['counter'], 'is-show');
+        cm.removeClass(that.nodes.counter, 'is-show');
         return that;
     };
 
     classProto.setCounter = function(value){
         var that = this;
-        that.nodes['counterContent']['inner'].innerHTML = value;
+        that.nodes.counterContent.inner.innerText = cm.parseMessage(that.params.valueFormater, {value});
+    };
+
+    /******* HELPERS  *******/
+
+    classProto.applyStep = function(value, min, step) {
+        return Math.round((value - min) / step) * step + min;
     };
 
     /*** VALUE ***/
 
     classProto.get = function(){
         var that = this,
-            data = that.components['draggable'].get(),
+            data = that.components.draggable.get(),
             value = that.getDraggable(data);
         return value;
     };

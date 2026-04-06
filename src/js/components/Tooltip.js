@@ -55,7 +55,7 @@ cm.define('Com.Tooltip', {
         'className': '',
         'theme': 'theme-default',
         'animate': false,
-        'arrow': false,
+        'arrow': null,
         'adaptive': true,
         'adaptiveX': true,
         'adaptiveY': true,
@@ -63,6 +63,7 @@ cm.define('Com.Tooltip', {
         'title': '',
         'titleTag': 'h3',
         'content': cm.node('div'),
+        'redrawContent': true,
         'container': 'document.body',
     },
 },
@@ -138,18 +139,26 @@ function(params) {
             )
         );
         cm.isString(that.params.scroll) && cm.addClass(that.nodes.content, ['is', that.params.scroll].join('-'));
+
         // Add position style
         that.nodes.container.style.position = that.params.position;
+
         // Add theme CSS class
         !cm.isEmpty(that.params.theme) && cm.addClass(that.nodes.container, that.params.theme);
         !cm.isEmpty(that.params.animate) && cm.addClass(that.nodes.container, ['animate', that.params.animate].join('--'));
-        !cm.isEmpty(that.params.arrow) && cm.addClass(that.nodes.container, ['arrow', that.params.arrow].join('--'));
-        // Add CSS class
+        if (cm.isString(that.params.arrow) && !cm.isEmpty(that.params.arrow)) {
+            cm.addClass(that.nodes.container, ['has-arrow', `arrow--${that.params.arrow}`]);
+        }
+
+        // Add CSS classes
         !cm.isEmpty(that.params.className) && cm.addClass(that.nodes.container, that.params.className);
+
         // Set title
         renderTitle(that.params.title);
+
         // Embed content
         renderContent(that.params.content);
+
         // Disabled / Enabled
         if (that.params.disabled) {
             that.disable();
@@ -315,6 +324,11 @@ function(params) {
         that.nodes.container.style.display = 'block';
         resizeHelper();
         that.triggerEvent('onShowStart');
+
+        // Redraw inner content
+        if (that.params.redrawContent) {
+            that.redrawContent();
+        }
 
         // Animate
         cm.replaceClass(that.nodes.container, 'id-hide', 'is-show', true);
@@ -576,6 +590,14 @@ function(params) {
 
     that.setContent = function(node) {
         renderContent(node);
+        return that;
+    };
+
+    that.redrawContent = function() {
+        cm.customEvent.trigger(that.nodes.content, 'redraw', {
+            direction: 'child',
+            self: false
+        });
         return that;
     };
 

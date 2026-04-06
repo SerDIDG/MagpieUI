@@ -34,13 +34,63 @@
         }
     }
 
+    &.has-arrow {
+        > .inner::before {
+            width: 0;
+            height: 0;
+            margin: auto;
+            display: block;
+            position: absolute;
+            content: '';
+            border-style: solid;
+            border-width: var(--com-tooltip--arrow-size);
+            border-color: transparent;
+        }
+
+        &[class*="arrow--top"] {
+            > .inner::before {
+                top: calc(-2 * var(--com-tooltip--arrow-size));
+                border-bottom-color: var(--com-tooltip--arrow-background);
+            }
+        }
+
+        &[class*="arrow--bottom"] {
+            > .inner::before {
+                bottom: calc(-2 * var(--com-tooltip--arrow-size));
+                border-top-color: var(--com-tooltip--arrow-background);
+            }
+        }
+
+        &.arrow--top-left,
+        &.arrow--bottom-left {
+            > .inner::before {
+                left: var(--com-tooltip--arrow-indent);
+            }
+        }
+
+        &.arrow--top-center,
+        &.arrow--bottom-center {
+            > .inner::before {
+                left: 0;
+                right: 0;
+            }
+        }
+
+        &.arrow--top-right,
+        &.arrow--bottom-right {
+            > .inner::before {
+                right: var(--com-tooltip--arrow-indent);
+            }
+        }
+    }
+
     &.animate--drop-bottom-left {
         .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
         .mx__transform-origin(right top);
-        .mx__transform(scale(0));
+        .mx__transform(scale(0.7));
 
         &.is-hide {
-            .mx__transform(scale(0));
+            .mx__transform(scale(0.7));
         }
 
         &.is-show {
@@ -51,10 +101,10 @@
     &.animate--drop-bottom-center {
         .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
         .mx__transform-origin(center top);
-        .mx__transform(scale(0));
+        .mx__transform(scale(0.7));
 
         &.is-hide {
-            .mx__transform(scale(0));
+            .mx__transform(scale(0.7));
         }
 
         &.is-show {
@@ -65,10 +115,52 @@
     &.animate--drop-bottom-right {
         .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
         .mx__transform-origin(left top);
-        .mx__transform(scale(0));
+        .mx__transform(scale(0.7));
 
         &.is-hide {
-            .mx__transform(scale(0));
+            .mx__transform(scale(0.7));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
+
+    &.animate--drop-top-left {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(right bottom);
+        .mx__transform(scale(0.7));
+
+        &.is-hide {
+            .mx__transform(scale(0.7));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
+
+    &.animate--drop-top-center {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(center bottom);
+        .mx__transform(scale(0.7));
+
+        &.is-hide {
+            .mx__transform(scale(0.7));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
+
+    &.animate--drop-top-right {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(left bottom);
+        .mx__transform(scale(0.7));
+
+        &.is-hide {
+            .mx__transform(scale(0.7));
         }
 
         &.is-show {
@@ -81,6 +173,8 @@
 
 .com__tooltip {
     &.theme-default {
+        --com-tooltip--arrow-background: @CmColor-Background;
+
         > .inner {
             .pt__box;
         }
@@ -88,8 +182,26 @@
 
     &.theme-dark,
     &.theme-black {
+        --com-tooltip--arrow-background: @CmColor-Gallery;
+
         > .inner {
             .pt__box--black;
+        }
+    }
+
+    &.theme-shadow-top {
+        > .inner {
+            box-shadow: none;
+            border-color: @CmColor-Background;
+            .mx__filter(drop-shadow(@CmUI-Shadow-TopLarge));
+        }
+    }
+
+    &.theme-shadow-bottom {
+        > .inner {
+            box-shadow: none;
+            border-color: @CmColor-Background;
+            .mx__filter(drop-shadow(@CmUI-Shadow-BottomLarge));
         }
     }
 }

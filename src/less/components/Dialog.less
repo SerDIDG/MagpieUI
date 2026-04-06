@@ -164,26 +164,15 @@
 /* *** TOOLTIP *** */
 
 .com__tooltip.com__dialog__tooltip {
+    --com-tooltip--arrow-size: 12px;
+    --com-tooltip--arrow-indent: 40px;
+    --com-tooltip--arrow-background: @CmColor-Background;
+
     text-align: left;
     .mx__transform-origin(~'calc(100% - 52px) -8px');
 
     > .inner {
         padding: @ComDialog-Indent;
-        border-color: @CmColor-Background;
-        box-shadow: none;
-        .mx__filter(drop-shadow(@CmUI-Shadow-BottomLarge));
-
-        &::before {
-            width: 0;
-            height: 0;
-            display: block;
-            position: absolute;
-            border-style: solid;
-            border-width: 0 12px 14px 12px;
-            border-color: transparent transparent @CmColor-Background transparent;
-            content: '';
-            .mx__position(-14px, 40px, auto, auto);
-        }
     }
 }
 

@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.138.0 (2026-04-03 19:39) ************ */
+/*! ************ MagpieUI v3.139.0 (2026-04-07 00:25) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4576,6 +4576,12 @@ span.CodeMirror-selectedtext { background: none; }
     @supports(height: 100svh) {
         --svh-100: 100svh;
     }
+
+    // /******* COMPONENTS *******/
+
+    --com-tooltip--arrow-size: @ComTooltip-ArrowSize;
+    --com-tooltip--arrow-indent: @CmIndent-XSmall;
+    --com-tooltip--arrow-background: transparent;
 }
 
 
@@ -4620,7 +4626,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.138.0';
+@CmVersion: '3.139.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4675,6 +4681,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
 @CmUI-Shadow-Top: 0 -2px 5px rgba(0,0,0,0.15);
+@CmUI-Shadow-TopLarge: 0 -2px 12px rgba(0, 0, 0, 0.2);
 @CmUI-Shadow-TopSmall: 0 -1px 2px rgba(0,0,0,0.15);
 @CmUI-Shadow-Bottom: 0 2px 5px rgba(0,0,0,0.15);
 @CmUI-Shadow-BottomLarge: 0 2px 12px rgba(0, 0, 0, 0.2);
@@ -5349,6 +5356,10 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ************************************************ */
 // /* ******* COMPONENTS ******* */
 // /* ************************************************ */
+
+// /* ******* TOOLTIP ******* */
+
+@ComTooltip-ArrowSize: 6px;
 
 // /* ******* CALENDAR ******* */
 
@@ -7449,7 +7460,7 @@ a {
     }
 }
 
-h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr, address, pre {
+h1, h2, h3, h4, h5, h6, p, dl, ul, ol, hr, address, blockquote, pre {
     &:extend(.cm__tags all);
     &:extend(.cm__inherit all);
 }
@@ -7459,7 +7470,7 @@ h1, h2, h3, h4, h5, h6 {
     &:extend(.cm__inherit all);
 }
 
-p, dl, ul, ol, hr, address, pre {
+p, dl, ul, ol, hr, address, blockquote, pre {
     &:extend(.cm__tags--base all);
     &:extend(.cm__inherit all);
 }
@@ -11544,6 +11555,14 @@ button {
             }
         }
 
+        &.is-label-indent {
+            > dt,
+            > .field__title {
+                margin-bottom: @CmForm-FieldInnerIndent;
+                padding-block: 0;
+            }
+        }
+
         &.is-border-box {
             padding-bottom: @labelPadding;
         }
@@ -14913,7 +14932,7 @@ ul.pt__field__hint {
 
             .counter {
                 .cm__font--hint;
-                padding: 0 @CmIndent-XXXSmall;
+                padding: @CmIndent-XXXXSmall @CmIndent-XXXSmall;
                 background: @CmUI-Overlay-Dark;
                 border-radius: @CmBorder-Radius;
                 color: @CmColor-Font-Opposite;
@@ -14927,7 +14946,7 @@ ul.pt__field__hint {
                     margin: auto;
                     position: absolute;
                     border-style: solid;
-                    border-width: 6px 4px 0 4px;
+                    border-width: @ComTooltip-ArrowSize;
                     border-color: @CmUI-Overlay-Dark transparent transparent;
                     content: '';
                     .mx__position(100%, 0, auto, 0);
@@ -16145,13 +16164,63 @@ ul.pt__field__hint {
         }
     }
 
+    &.has-arrow {
+        > .inner::before {
+            width: 0;
+            height: 0;
+            margin: auto;
+            display: block;
+            position: absolute;
+            content: '';
+            border-style: solid;
+            border-width: var(--com-tooltip--arrow-size);
+            border-color: transparent;
+        }
+
+        &[class*="arrow--top"] {
+            > .inner::before {
+                top: calc(-2 * var(--com-tooltip--arrow-size));
+                border-bottom-color: var(--com-tooltip--arrow-background);
+            }
+        }
+
+        &[class*="arrow--bottom"] {
+            > .inner::before {
+                bottom: calc(-2 * var(--com-tooltip--arrow-size));
+                border-top-color: var(--com-tooltip--arrow-background);
+            }
+        }
+
+        &.arrow--top-left,
+        &.arrow--bottom-left {
+            > .inner::before {
+                left: var(--com-tooltip--arrow-indent);
+            }
+        }
+
+        &.arrow--top-center,
+        &.arrow--bottom-center {
+            > .inner::before {
+                left: 0;
+                right: 0;
+            }
+        }
+
+        &.arrow--top-right,
+        &.arrow--bottom-right {
+            > .inner::before {
+                right: var(--com-tooltip--arrow-indent);
+            }
+        }
+    }
+
     &.animate--drop-bottom-left {
         .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
         .mx__transform-origin(right top);
-        .mx__transform(scale(0));
+        .mx__transform(scale(0.7));
 
         &.is-hide {
-            .mx__transform(scale(0));
+            .mx__transform(scale(0.7));
         }
 
         &.is-show {
@@ -16162,10 +16231,10 @@ ul.pt__field__hint {
     &.animate--drop-bottom-center {
         .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
         .mx__transform-origin(center top);
-        .mx__transform(scale(0));
+        .mx__transform(scale(0.7));
 
         &.is-hide {
-            .mx__transform(scale(0));
+            .mx__transform(scale(0.7));
         }
 
         &.is-show {
@@ -16176,10 +16245,52 @@ ul.pt__field__hint {
     &.animate--drop-bottom-right {
         .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
         .mx__transform-origin(left top);
-        .mx__transform(scale(0));
+        .mx__transform(scale(0.7));
 
         &.is-hide {
-            .mx__transform(scale(0));
+            .mx__transform(scale(0.7));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
+
+    &.animate--drop-top-left {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(right bottom);
+        .mx__transform(scale(0.7));
+
+        &.is-hide {
+            .mx__transform(scale(0.7));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
+
+    &.animate--drop-top-center {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(center bottom);
+        .mx__transform(scale(0.7));
+
+        &.is-hide {
+            .mx__transform(scale(0.7));
+        }
+
+        &.is-show {
+            .mx__transform(scale(1));
+        }
+    }
+
+    &.animate--drop-top-right {
+        .mx__transition(transform, @CmUI-Transition-Duration, @CmUI-MotionAsymmetric);
+        .mx__transform-origin(left bottom);
+        .mx__transform(scale(0.7));
+
+        &.is-hide {
+            .mx__transform(scale(0.7));
         }
 
         &.is-show {
@@ -16192,6 +16303,8 @@ ul.pt__field__hint {
 
 .com__tooltip {
     &.theme-default {
+        --com-tooltip--arrow-background: @CmColor-Background;
+
         > .inner {
             .pt__box;
         }
@@ -16199,8 +16312,26 @@ ul.pt__field__hint {
 
     &.theme-dark,
     &.theme-black {
+        --com-tooltip--arrow-background: @CmColor-Gallery;
+
         > .inner {
             .pt__box--black;
+        }
+    }
+
+    &.theme-shadow-top {
+        > .inner {
+            box-shadow: none;
+            border-color: @CmColor-Background;
+            .mx__filter(drop-shadow(@CmUI-Shadow-TopLarge));
+        }
+    }
+
+    &.theme-shadow-bottom {
+        > .inner {
+            box-shadow: none;
+            border-color: @CmColor-Background;
+            .mx__filter(drop-shadow(@CmUI-Shadow-BottomLarge));
         }
     }
 }
@@ -17106,26 +17237,15 @@ ul.pt__field__hint {
 /* *** TOOLTIP *** */
 
 .com__tooltip.com__dialog__tooltip {
+    --com-tooltip--arrow-size: 12px;
+    --com-tooltip--arrow-indent: 40px;
+    --com-tooltip--arrow-background: @CmColor-Background;
+
     text-align: left;
     .mx__transform-origin(~'calc(100% - 52px) -8px');
 
     > .inner {
         padding: @ComDialog-Indent;
-        border-color: @CmColor-Background;
-        box-shadow: none;
-        .mx__filter(drop-shadow(@CmUI-Shadow-BottomLarge));
-
-        &::before {
-            width: 0;
-            height: 0;
-            display: block;
-            position: absolute;
-            border-style: solid;
-            border-width: 0 12px 14px 12px;
-            border-color: transparent transparent @CmColor-Background transparent;
-            content: '';
-            .mx__position(-14px, 40px, auto, auto);
-        }
     }
 }
 
