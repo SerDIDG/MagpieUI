@@ -19,6 +19,13 @@ cm.define('Com.Tooltip', {
         'customEvents': true,
         'controllerEvents': false,
         'name': '',
+        
+        'title': '',
+        'titleTag': 'h3',
+        'content': cm.node('div'),
+        'redrawContent': true,
+
+        'container': 'document.body',
         'target': cm.node('div'),
         'setTargetEvent': true,
         'setWindowEvent': true,
@@ -34,6 +41,7 @@ cm.define('Com.Tooltip', {
         'stopPropagation': false,
         'preventClickEvent': false,                    // Prevent default click event on the target, requires setting value 'targetEvent': 'click'
         'positionTarget': false,                       // Override target node for calculation position and dimensions
+        
         'align': null,                                 // Supported properties: bottomLeft, bottomCenter, bottomRight
         'alignOffset': 0,
         'top': 0,                                      // Supported properties: targetHeight, selfHeight, screenHeight, number
@@ -41,11 +49,6 @@ cm.define('Com.Tooltip', {
         'width': 'auto',                               // Supported properties: targetWidth, screenWidth, auto, number
         'height': 'auto',
         'minWidth': 0,
-        'adaptiveFrom': null,
-        'adaptiveTop': null,
-        'adaptiveLeft': null,
-        'adaptiveWidth': null,
-        'adaptiveHeight': null,
         'scroll': 'auto',                              // auto, scroll, visible
         'duration': 'cm._config.animDurationShort',
         'delay': 0,
@@ -56,15 +59,18 @@ cm.define('Com.Tooltip', {
         'theme': 'theme-default',
         'animate': false,
         'arrow': null,
+        
         'adaptive': true,
         'adaptiveX': true,
         'adaptiveY': true,
+        'adaptiveFrom': null,
+        'adaptiveTop': null,
+        'adaptiveLeft': null,
+        'adaptiveWidth': null,
+        'adaptiveHeight': null,
+
         'ariaRole': 'tooltip',
-        'title': '',
-        'titleTag': 'h3',
-        'content': cm.node('div'),
-        'redrawContent': true,
-        'container': 'document.body',
+        'ariaId': null,
     },
 },
 function(params) {
@@ -133,9 +139,14 @@ function(params) {
 
     var render = function() {
         // Structure
-        that.nodes.container = cm.node('div', {'class': 'com__tooltip', 'role': that.params.ariaRole},
-            that.nodes.inner = cm.node('div', {'class': 'inner'},
-                that.nodes.content = cm.node('div', {'class': 'scroll'})
+        that.nodes.container = cm.node('div', {
+                classes: 'com__tooltip',
+                role: that.params.ariaRole,
+                id: that.params.ariaId,
+                'aria-hidden': 'true'
+            },
+            that.nodes.inner = cm.node('div', {classes: 'inner'},
+                that.nodes.content = cm.node('div', {classes: 'scroll'})
             )
         );
         cm.isString(that.params.scroll) && cm.addClass(that.nodes.content, ['is', that.params.scroll].join('-'));
@@ -170,7 +181,7 @@ function(params) {
     var renderTitle = function(title) {
         cm.remove(that.nodes.title);
         if (!cm.isEmpty(title)) {
-            that.nodes.title = cm.node('div', {'class': 'title'},
+            that.nodes.title = cm.node('div', {classes: 'title'},
                 cm.node(that.params.titleTag, title)
             );
             cm.insertFirst(that.nodes.title, that.nodes.inner);
@@ -322,6 +333,7 @@ function(params) {
         // Append
         that.container.appendChild(that.nodes.container);
         that.nodes.container.style.display = 'block';
+        that.nodes.container.setAttribute('aria-hidden', 'false');
         resizeHelper();
         that.triggerEvent('onShowStart');
 
@@ -375,6 +387,7 @@ function(params) {
 
     var hideHandler = function(immediately) {
         that.triggerEvent('onHideStart');
+        that.nodes.container.setAttribute('aria-hidden', 'false');
 
         // Animate
         cm.replaceClass(that.nodes.container, 'is-show', 'id-hide', true);
