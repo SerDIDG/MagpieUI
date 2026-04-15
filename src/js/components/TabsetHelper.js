@@ -216,9 +216,15 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             isAjax: false,
             isCached: false
         }, item);
+
         // Set names
-        item.tabName = ['tabset', that.params.name, 'tab', (!cm.isEmpty(item.id) ? item.id : item.index)].join('--');
-        item.labelName = ['tabset', that.params.name, 'label', (!cm.isEmpty(item.id) ? item.id : item.index)].join('--');
+        const idOrIndex = !cm.isEmpty(item.id) ? item.id : item.index;
+        const nameFormatted = that.params.name.replace(/\s+/g, '-');
+        const idOrIndexFormatted = String(idOrIndex).replace(/\s+/g, '-');
+        item.tabName = `tabset--${nameFormatted}--tab--${idOrIndexFormatted}`;
+        item.labelName = `tabset--${nameFormatted}--label--${idOrIndexFormatted}`;
+        item.contentName = `${nameFormatted}--${idOrIndexFormatted}`;
+
         // Cache
         if (!cm.isBoolean(item.cache)) {
             item.cache = that.params.cache;

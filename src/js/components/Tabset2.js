@@ -245,7 +245,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             nodes = {};
         // Structure
         nodes.container = cm.node('li',
-            nodes.inner = cm.node('div', {classes: 'com__tabset__panel'}, item.content)
+            nodes.inner = cm.node('div', {classes: ['com__tabset__panel', `com__tabset__panel--${item.contentName}`]}, item.content)
         );
         return nodes;
     };
@@ -375,6 +375,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
         that.nodes.headerTitleText.innerHTML = item.title;
         item.menu.container.setAttribute('aria-selected', 'true');
         item.label.container.setAttribute('aria-selected', 'true');
+        item.tab.container.setAttribute('tabindex', '0');
         item.tab.container.hidden = false;
         item.tab.container.style.display = 'block';
 
@@ -436,6 +437,7 @@ cm.getConstructor('Com.Tabset2', function(classConstructor, className, classProt
             that.params.hidePreviousTab === true ||
             cm.inArray(that.params.hidePreviousTab, params.action)
         ) {
+            item.tab.container.setAttribute('tabindex', '-1');
             item.tab.container.hidden = true;
             item.tab.container.style.display = 'none';
 
