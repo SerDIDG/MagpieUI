@@ -32,16 +32,16 @@ cm.define('Com.TabsetHelper', {
         embedStructureOnRender: false,
         controllerEvents: true,
         renderTabView: false,
-        setInitialTab: false,                                    // Set possible initial tab even if "active" is not defined
-        setInitialTabImmediately: true,                          // Set initial tab without animation
+        setInitialTab: false,                                    // Set a possible initial tab even if "active" is not defined
+        setInitialTabImmediately: true,                          // Set the initial tab without animation
         active: null,
         items: [],
         processTabs: true,
         targetEvent: 'click',                                    // click | hover | none
         toggleOnHashChange: false,                               // URL hash change handler
         showLoader: true,
-        responseKey: 'data',                                     // Instead of using filter callback, you can provide response array key
-        responseHTML: true,                                      // If true, html will append automatically
+        responseKey: 'data',                                     // Instead of using filter callback, you can provide a response array key
+        responseHTML: true,                                      // If true, HTML will append automatically
         cache: false,                                            // Cache ajax tab content
         ajax: {
             type: 'json',
@@ -69,7 +69,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     /*** SYSTEM ***/
 
     classProto.construct = function() {
-        var that = this;
+        const that = this;
+
         // Variables
         that.nodes = {
             container: cm.node('div'),
@@ -85,19 +86,23 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         that.previous = false;
         that.items = {};
         that.itemsList = [];
+
         // Binds
         that.hashChangeHandler = that.hashChange.bind(that);
+
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
 
     classProto.validateParams = function() {
-        var that = this;
+        const that = this;
         that.triggerEvent('onValidateParamsStart');
+
         // Ajax
         if (!cm.isEmpty(that.params.ajax.url)) {
             that.isAjax = true;
         }
+
         // Target Event
         switch (that.params.targetEvent) {
             case 'hover':
@@ -108,83 +113,86 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                 that.targetEvent = 'click';
                 break;
         }
+
         that.triggerEvent('onValidateParams');
         that.triggerEvent('onValidateParamsProcess');
         that.triggerEvent('onValidateParamsEnd');
     };
 
     classProto.onSetEvents = function() {
-        var that = this;
+        const that = this;
         that.params.toggleOnHashChange && cm.addEvent(window, 'hashchange', that.hashChangeHandler);
     };
 
     classProto.onUnsetEvents = function() {
-        var that = this;
+        const that = this;
         that.params.toggleOnHashChange && cm.removeEvent(window, 'hashchange', that.hashChangeHandler);
     };
 
     classProto.onConstructEnd = function() {
-        var that = this;
+        const that = this;
         that.setInitialTab();
     };
 
     /******* VIEW MODEL *******/
 
     classProto.renderViewModel = function() {
-        var that = this;
+        const that = this;
+
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Process tabs
         if (that.params.processTabs) {
             that.processTabs(that.nodes.tabs, that.nodes.labels);
         }
+
         // Process tabs in parameters
-        cm.forEach(that.params.items, function(item) {
-            that.renderTab(item);
-        });
+        cm.forEach(that.params.items, item => that.renderTab(item));
+
         // Process select
         that.processSelect(that.nodes.select);
+
         // Overlay
-        cm.getConstructor(that.params.overlayConstructor, function(classConstructor) {
+        cm.getConstructor(that.params.overlayConstructor, classConstructor => {
             that.components.loader = new classConstructor(that.params.overlayParams);
         });
-        return that;
     };
 
     /******* TABS *******/
 
     classProto.processTab = function(tab, label) {
-        var that = this,
-            config = cm.merge(that.getNodeDataConfig(tab.container), that.getNodeDataConfig(label.container)),
-            item = cm.merge(config, {
-                tab: tab,
-                label: label
-            });
+        const that = this;
+        const config = cm.merge(that.getNodeDataConfig(tab.container), that.getNodeDataConfig(label.container));
+        const item = cm.merge(config, {
+            tab: tab,
+            label: label
+        });
         that.addTab(item);
     };
 
     classProto.processTabs = function(tabs, labels) {
-        var that = this,
-            itemsToProcess = tabs.length ? tabs : labels,
-            items = [],
-            label,
-            config,
-            item;
-        cm.forEach(itemsToProcess, function(tab, key) {
-            label = labels[key];
-            config = cm.merge(that.getNodeDataConfig(tab.container), that.getNodeDataConfig(label.container));
-            item = cm.merge(config, {
+        const that = this;
+        const itemsToProcess = tabs.length ? tabs : labels;
+        const items = [];
+
+        cm.forEach(itemsToProcess, (tab, key) => {
+            const label = labels[key];
+            const config = cm.merge(that.getNodeDataConfig(tab.container), that.getNodeDataConfig(label.container));
+            const item = cm.merge(config, {
                 tab: tab,
                 label: label
             });
             items.push(item);
         });
+
         that.addTabs(items);
         return that;
     };
 
     classProto.renderTab = function(item) {
-        var that = this;
+        const that = this;
+
         // Merge tab configuration
         item = cm.merge({
             index: that.itemsList.length,
@@ -229,20 +237,24 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
         if (!cm.isBoolean(item.cache)) {
             item.cache = that.params.cache;
         }
+
         // Render tab view
         if (that.params.renderTabView) {
             that.renderTabView(item);
         }
+
         // Check for ajax
         if (!cm.isEmpty(item.ajax.url)) {
             item.isAjax = true;
         }
+
         // Class name
         if (!cm.isEmpty(item.className)) {
             cm.addClass(item.label.container, item.className);
             cm.addClass(item.menu.container, item.className);
             cm.addClass(item.tab.container, item.className);
         }
+
         // Push
         if (!cm.isEmpty(item.id) && !that.items[item.id]) {
             // Hide nodes
@@ -251,29 +263,31 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
                 cm.addClass(item.menu.container, 'hidden');
                 cm.addClass(item.tab.container, 'hidden');
             }
+
             // Target events
             that.renderTabTarget(item, item.label.container);
             that.renderTabTarget(item, item.menu.container);
+
             // Export
             that.itemsList.push(item);
             that.items[item.id] = item;
         }
+
         return that;
     };
 
     classProto.renderTabTarget = function(item, node) {
-        var that = this;
-        if (!that.targetEvent) {
-            return;
-        }
+        const that = this;
+        if (!that.targetEvent) return;
+
         if (that.targetEvent === 'click') {
-            cm.click.add(node, function(event) {
+            cm.click.add(node, event => {
                 cm.preventDefault(event);
                 cm.stopPropagation(event);
                 that.tabTarget(item);
             });
         } else {
-            cm.addEvent(node, that.targetEvent, function(event) {
+            cm.addEvent(node, that.targetEvent, event => {
                 cm.preventDefault(event);
                 cm.stopPropagation(event);
                 that.tabTarget(item);
@@ -282,8 +296,9 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.tabTarget = function(item) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onLabelTarget', item);
+
         // Set
         if (that.params.toggleOnHashChange) {
             window.location.hash = item.id;
@@ -293,23 +308,26 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.renderTabView = function(item) {
-        var that = this;
+        const that = this;
     };
 
     classProto.removeTab = function(id) {
-        var that = this,
-            item = that.items[id];
+        const that = this;
+        const item = that.items[id];
         if (item) {
             that.triggerEvent('onTabRemove', item);
-            // Set new active tab, if current active is nominated for remove
+
+            // Set a new active tab if the current active is nominated for remove
             if (item.id === that.current) {
                 that.setByIndex(0);
             }
-            // Remove tab from list and array
+
+            // Remove tab from the list and array
             cm.remove(item.tab.container);
             cm.remove(item.label.container);
             that.itemsList = cm.arrayRemove(that.itemsList, item);
             delete that.items[item.id];
+
             that.triggerEvent('onTabRemove', item);
             that.triggerEvent('onTabRemoveEnd', item);
         }
@@ -319,7 +337,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     /*** SET / UNSET ***/
 
     classProto.setTab = function(id, params) {
-        var that = this;
+        const that = this;
 
         // Deprecated argument isInitial
         if (cm.isBoolean(params)) {
@@ -331,71 +349,81 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             isInitial: false,
         }, params);
 
-        var item = that.items[id];
+        const item = that.items[id];
         if (item && that.current !== id) {
             that.isInitial = params.isInitial;
             that.tabChangeStart(item);
-            // Unset and hide previous tab
+
+            // Unset and hide the previous tab
             that.unsetTab(that.current, {action: 'onSetTab'});
-            // Set and show new tab
+
+            // Set and show a new tab
             that.triggerEvent('onTabShowStart', item);
             that.previous = that.current;
             that.current = id;
             item.isShow = true;
             that.triggerEvent('onTabShowProcess', item);
+
             if (!that.previous && that.params.setInitialTabImmediately) {
                 cm.addClass(item.tab.container, 'is-immediately');
                 cm.addClass(item.label.container, 'is-immediately');
-                setTimeout(function() {
+                setTimeout(() => {
                     cm.removeClass(item.tab.container, 'is-immediately');
                     cm.removeClass(item.label.container, 'is-immediately');
                 }, 5);
             }
+
             cm.addClass(item.label.container, 'active', true);
             cm.addClass(item.tab.container, 'active', true);
+
             // Set select menu
             cm.setSelect(that.nodes.select, that.current);
+
             // Trigger events
             that.refreshTab(that.current);
         }
+
         return that;
     };
 
     classProto.unsetTab = function(id, params) {
-        var that = this;
+        const that = this;
 
         // Validate params
         params = cm.merge({
             action: null,
         }, params);
 
-        var item = that.items[id];
+        const item = that.items[id];
         if (item) {
             if (that.isProcess) {
                 that.abort();
             }
+
             that.triggerEvent('onTabHideStart', item);
             item.isShow = false;
             that.triggerEvent('onTabHideProcess', item);
+
             cm.removeClass(item.label.container, 'active');
             cm.removeClass(item.tab.container, 'active');
+
             that.tabHideEnd(item, params);
         }
         return that;
     };
 
     classProto.refreshTab = function(id) {
-        var that = this,
-            item = that.items[id],
-            controllerEvents = {};
+        const that = this;
+        const item = that.items[id];
+
         if (item.constructor) {
-            // Controller
             if (item.controller) {
-                item.controller.refresh && item.controller.refresh();
+                item.controller.refresh?.();
+                that.tabShowEnd(item, {});
             } else {
-                cm.getConstructor(item.constructor, function(classConstructor) {
-                    controllerEvents[item.constructorEventName] = function() {
-                        that.tabShowEnd(item, {});
+                cm.getConstructor(item.constructor, classConstructor => {
+                    const controllerEvents = {
+                        [item.constructorEventName]: () => that.tabShowEnd(item, {}),
                     };
                     item.controller = new classConstructor(
                         cm.merge(item.constructorParams, {
@@ -421,8 +449,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.unsetHead = function() {
-        var that = this,
-            item = that.items[that.current];
+        const that = this;
+        const item = that.items[that.current];
         if (item) {
             cm.removeClass(item.label.container, 'active');
         }
@@ -430,58 +458,54 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.getInitialTab = function() {
-        var that = this;
-        var id;
+        const that = this;
         if (cm.isEmpty(that.itemsList) || cm.isEmpty(that.items)) {
             return null;
         }
+
         // Get tab from hash if exists
         if (that.params.toggleOnHashChange) {
-            id = window.location.hash.slice(1);
+            const id = window.location.hash.slice(1);
             if (that.isValidTab(id)) {
                 return id;
             }
         }
+
         // Get tab from parameters if exists
-        id = that.params.active;
+        const id = that.params.active;
         if (that.isValidTab(id)) {
             return id;
         }
-        // Get first tab in the list
+
+        // Get the first tab in the list
         return that.itemsList[0].id;
     };
 
     classProto.setInitialTab = function() {
-        var that = this,
-            id;
+        const that = this;
+
         // Set default active tab
-        if (that.params.setInitialTab) {
-            id = that.getInitialTab();
-        } else {
-            id = that.params.active
-        }
+        const id = that.params.setInitialTab ? that.getInitialTab() : that.params.active;
         if (that.isValidTab(id)) {
             that.setTab(id, true);
         }
     };
 
     classProto.isValidTab = function(id) {
-        var that = this;
+        const that = this;
         return !!that.getTab(id);
     };
 
     /*** SHOW / HIDE ***/
 
     classProto.tabChangeStart = function(item) {
-        var that = this;
+        const that = this;
         that.triggerEvent('onTabChangeStart', item);
     };
 
     classProto.tabShowEnd = function(item, params) {
-        var that = this;
-        if (item.id !== that.current) {
-            return;
-        }
+        const that = this;
+        if (item.id !== that.current) return;
 
         // Validate params
         params = cm.merge({
@@ -504,7 +528,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.tabHideEnd = function(item, params) {
-        var that = this;
+        const that = this;
 
         // Validate params
         params = cm.merge({
@@ -518,7 +542,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.redrawTabContent = function(item) {
-        var that = this;
+        const that = this;
         cm.customEvent.trigger(item.tab.container, 'redraw', {
             direction: 'child',
             self: false
@@ -528,17 +552,15 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     /******* SELECT *******/
 
     classProto.processSelect = function(container) {
-        var that = this;
-        cm.addEvent(container, 'change', function() {
-            that.setTab(container.value);
-        })
+        const that = this;
+        cm.addEvent(container, 'change', () => that.setTab(container.value))
     };
 
     /******* URL HASH HANDLING *******/
 
     classProto.hashChange = function() {
-        var that = this,
-            id = decodeURIComponent(window.location.hash.slice(1));
+        const that = this;
+        const id = decodeURIComponent(window.location.hash.slice(1));
         if (that.isValidTab(id)) {
             that.setTab(id);
         }
@@ -576,25 +598,27 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
             config: null,
             data: null
         }, params);
+
         // Validate config
         params.config = that.callbacks.prepare(that, params, item);
+
         // Return ajax handler (XMLHttpRequest) to providing abort method.
         return cm.ajax(
             cm.merge(params.config, {
-                onStart: function() {
+                onStart: () => {
                     classProto.callbacks.start(that, params, item);
                 },
-                onSuccess: function(response) {
+                onSuccess: (response) => {
                     params.response = response;
                     classProto.callbacks.response(that, params, item);
                 },
-                onError: function() {
+                onError: () => {
                     classProto.callbacks.error(that, params, item);
                 },
-                onAbort: function() {
+                onAbort: () => {
                     classProto.callbacks.abort(that, params, item);
                 },
-                onEnd: function() {
+                onEnd: () => {
                     classProto.callbacks.end(that, params, item);
                 }
             })
@@ -603,6 +627,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.callbacks.start = function(that, params, item) {
         that.isProcess = true;
+
         // Show Loader
         if (that.params.showLoader) {
             that.components.loader
@@ -614,6 +639,7 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
 
     classProto.callbacks.end = function(that, params, item) {
         that.isProcess = false;
+
         // Hide Loader
         if (that.params.showLoader) {
             that.components.loader.close();
@@ -622,12 +648,8 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.callbacks.filter = function(that, params, item) {
-        var data,
-            dataItem = cm.objectSelector(that.params.responseKey, params.response);
-        if (dataItem && !cm.isEmpty(dataItem)) {
-            data = dataItem;
-        }
-        return data;
+        const dataItem = cm.objectSelector(that.params.responseKey, params.response);
+        return (dataItem && !cm.isEmpty(dataItem)) ? dataItem : null;
     };
 
     classProto.callbacks.response = function(that, params, item) {
@@ -658,72 +680,78 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     /*** RENDER ***/
 
     classProto.callbacks.render = function(that, params, item) {
-        item.data = params.data;
         item.isCached = true;
+        item.data = params.data;
+
         // Render
         that.triggerEvent('onContentRenderStart', item, params);
         classProto.callbacks.renderContent(that, params, item);
         that.triggerEvent('onContentRender', item, params);
         that.triggerEvent('onContentRenderEnd', item, params);
+
         // Show tab
         that.tabShowEnd(item, params);
     };
 
     classProto.callbacks.renderContent = function(that, params, item) {
-        var nodes;
-        if (that.params.responseHTML) {
-            nodes = cm.strToHTML(params.data);
-            cm.clearNode(item.tab.inner);
-            cm.appendNodes(nodes, item.tab.inner);
-        }
+        if (!that.params.responseHTML) return;
+
+        const nodes = cm.strToHTML(params.data);
+        cm.clearNode(item.tab.inner);
+        cm.appendNodes(nodes, item.tab.inner);
     };
 
     classProto.callbacks.renderError = function(that, params, item) {
-        if (that.params.responseHTML) {
-            cm.clearNode(item.tab.inner);
-            item.tab.inner.appendChild(
-                cm.node('div', {classes: 'cm__empty'}, that.msgParse('server_error'))
-            );
-        }
+        if (!that.params.responseHTML) return;
+
+        const node = cm.node('div', {classes: 'cm__empty'}, that.msgParse('server_error'));
+        cm.clearNode(item.tab.inner);
+        cm.appendChild(node, item.tab.inner);
     };
 
     /******* PUBLIC *******/
 
     classProto.set = function(id, params) {
-        var that = this,
-            item = that.items[id];
-        item && that.setTab(id, params);
+        const that = this;
+        const item = that.items[id];
+        if (item) {
+            that.setTab(id, params);
+        }
         return that;
     };
 
     classProto.setByIndex = function(index, params) {
-        var that = this,
-            item = that.itemsList[index];
-        item && that.setTab(item.id, params);
+        const that = this;
+        const item = that.itemsList[index];
+        if (item) {
+            that.setTab(item.id, params)
+        }
         return that;
     };
 
     classProto.unset = function() {
-        var that = this;
+        const that = this;
         that.triggerEvent('onUnsetStart');
         that.unsetTab(that.current, {action: 'onUnset'});
+
         // Reset
         if (that.params.toggleOnHashChange) {
             window.location.hash = '';
         }
         that.current = null;
         that.previous = null;
+
         that.triggerEvent('onUnset');
         return that;
     };
 
     classProto.get = function() {
-        var that = this;
+        const that = this;
         return that.current;
     };
 
     classProto.refresh = function() {
-        var that = this;
+        const that = this;
         if (!cm.isUndefined(that.current)) {
             that.refreshTab(that.current);
         }
@@ -731,21 +759,19 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.addTab = function(item) {
-        var that = this;
+        const that = this;
         that.renderTab(item);
         return that;
     };
 
     classProto.addTabs = function(items) {
-        var that = this;
-        cm.forEach(items, function(item) {
-            that.renderTab(item);
-        });
+        const that = this;
+        cm.forEach(items, item => that.renderTab(item));
         return that;
     };
 
     classProto.getTab = function(id) {
-        var that = this;
+        const that = this;
         if (id && that.items[id]) {
             return that.items[id];
         }
@@ -753,28 +779,28 @@ cm.getConstructor('Com.TabsetHelper', function(classConstructor, className, clas
     };
 
     classProto.getTabs = function() {
-        var that = this;
+        const that = this;
         return that.items;
     };
 
     classProto.getCurrentTab = function() {
-        var that = this;
+        const that = this;
         return that.items[that.current];
     };
 
     classProto.getTabsCount = function() {
-        var that = this;
+        const that = this;
         return that.itemsList.length;
     };
 
     classProto.isTabEmpty = function(id) {
-        var that = this;
-        var item = that.getTab(id);
+        const that = this;
+        const item = that.getTab(id);
         return !(item && item.tab.inner.childNodes.length);
     };
 
     classProto.abort = function() {
-        var that = this;
+        const that = this;
         if (that.ajaxHandler && that.ajaxHandler.abort) {
             that.ajaxHandler.abort();
         }
