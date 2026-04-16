@@ -316,6 +316,10 @@
 
     // /* *** DISABLED *** */
 
+    &[disabled] {
+        pointer-events: none;
+    }
+
     &.button-disabled {
         .mx__background__color(@CmColor-Secondary-LightActive, @CmColor-Font-Disabled, @CmFont-Base-ColorOpposite);
         cursor: default;
