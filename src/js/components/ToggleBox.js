@@ -46,6 +46,7 @@ function(params) {
     };
     that.animations = {};
 
+    that.isDestructed = false;
     that.isCollapsed = false;
     that.isProcess = false;
 
@@ -207,6 +208,7 @@ function(params) {
         that.nodes.target.setAttribute('aria-hidden', false);
 
         // Set classes
+        cm.addClass(that.nodes.toggle, 'active');
         cm.replaceClass(that.nodes.container, 'is-hide', 'is-show');
 
         // Animate
@@ -265,6 +267,7 @@ function(params) {
         that.nodes.target.setAttribute('aria-hidden', true);
 
         // Set classes
+        cm.removeClass(that.nodes.toggle, 'active');
         cm.replaceClass(that.nodes.container, 'is-show', 'is-hide');
 
         // Animate
@@ -285,6 +288,14 @@ function(params) {
                 onStop: collapseEnd
             });
         }
+    };
+
+    that.destruct = function() {
+        if (!that.isDestructed) {
+            that.isDestructed = true;
+            that.removeFromStack();
+        }
+        return that;
     };
 
     init();
