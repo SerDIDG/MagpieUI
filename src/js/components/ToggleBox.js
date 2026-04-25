@@ -10,7 +10,7 @@ cm.define('Com.ToggleBox', {
         controllerEvents: true,
         customEvents: true,
         renderStructure: false,
-        embedStructureOnRender: null,
+        embedStructureOnRender: false,
         embedStructure: 'replace',
 
         duration: 'cm._config.animDurationLong',
@@ -56,9 +56,7 @@ cm.getConstructor('Com.ToggleBox', function(classConstructor, className, classPr
     classProto.onValidateParams = function() {
         const that = this;
         if (that.params.renderStructure) {
-            if (!cm.isBoolean(that.params.embedStructureOnRender)) {
-                that.params.embedStructureOnRender = true;
-            }
+            that.params.embedStructureOnRender = false;
 
             if (!that.params.title) {
                 that.params.title = '';
@@ -130,8 +128,11 @@ cm.getConstructor('Com.ToggleBox', function(classConstructor, className, classPr
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
 
-        // Set title and content for the rendered view
         if (that.params.renderStructure) {
+            // Append structure before the content for cases where the toggle box wraps the content inside
+            that.appendView();
+
+            // Set title and content for the rendered view
             that.setViewContent();
         }
 
