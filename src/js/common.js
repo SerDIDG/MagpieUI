@@ -4325,71 +4325,97 @@ cm.Animation = function(o) {
 
 cm.transition = function(node, params) {
     const rule = cm.getSupportedStyle('transition');
+    const timeouts = {};
     let transitions = [];
 
-    const init = () => {
-        // Config
-        params = cm.merge({
-            properties: {},
-            duration: 0,
-            easing: 'ease-in-out',
-            delayIn: 0,
-            delayOut: 0,
-            immediately: false,
-            clear: false,
-            onStop: function() {}
-        }, params);
+    const handlers = {
+        init: () => {
+            // Config
+            params = cm.merge({
+                properties: {},
+                duration: 0,
+                easing: 'ease-in-out',
+                delayIn: 0,
+                delayOut: 0,
+                immediately: false,
+                clear: false,
+                onStop: () => {},
+            }, params);
 
-        // Validate
-        params.duration = cm.parseDuration(params.duration);
+            // Validate
+            params.duration = cm.parseDuration(params.duration);
 
-        // Prepare styles
-        cm.forEach(params.properties, function(value, key) {
-            key = cm.styleStrToKey(key);
-            transitions.push([key, `${params.duration}ms`, params.easing].join(' '));
-        });
-        transitions = transitions.join(', ');
-
-        start();
-    };
-
-    const start = () => {
-        // Prepare
-        cm.forEach(params.properties, (value, key) => {
-            key = cm.styleStrToKey(key);
-            const dimension = cm.getStyleDimension(value);
-            node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
-        });
-        if (params.immediately) {
-            set();
-            end();
-        } else {
-            setTimeout(set, params.delayIn);
-            setTimeout(end, params.duration + params.delayIn + params.delayOut);
-        }
-    };
-
-    const set = () => {
-        node.style[rule] = transitions;
-        // Set new styles
-        cm.forEach(params.properties, (value, key) => {
-            key = cm.styleStrToKey(key);
-            node.style[key] = value;
-        });
-    };
-
-    const end = () => {
-        node.style[rule] = '';
-        if (params.clear) {
+            // Prepare styles
             cm.forEach(params.properties, (value, key) => {
                 key = cm.styleStrToKey(key);
-                node.style[key] = '';
+                transitions.push([key, `${params.duration}ms`, params.easing].join(' '));
             });
-        }
-        params.onStop(node);
+            transitions = transitions.join(', ');
+
+            handlers.start();
+        },
+
+        start: () => {
+            // Reset delays
+            handlers.reset();
+
+            // Prepare styles
+            cm.forEach(params.properties, (value, key) => {
+                key = cm.styleStrToKey(key);
+                const dimension = cm.getStyleDimension(value);
+                node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
+            });
+
+            if (params.immediately) {
+                handlers.set();
+                handlers.end();
+            } else {
+                timeouts.delayIn = setTimeout(() => {
+                    cm.onSchedule(handlers.set);
+                    cm.addEvent(node, 'transitionend', handlers.end);
+                }, params.delayIn);
+            }
+        },
+
+        set: () => {
+            node.style[rule] = transitions;
+
+            // Set new styles
+            cm.forEach(params.properties, (value, key) => {
+                key = cm.styleStrToKey(key);
+                node.style[key] = value;
+            });
+        },
+
+        end: (event) => {
+            if (event.target !== node) return;
+
+            // Reset delays
+            handlers.reset();
+
+            timeouts.delayOut = setTimeout(() => {
+                // Reset styles
+                node.style[rule] = '';
+                if (params.clear) {
+                    cm.forEach(params.properties, (value, key) => {
+                        key = cm.styleStrToKey(key);
+                        node.style[key] = '';
+                    });
+                }
+                params.onStop(node);
+            }, params.delayOut);
+        },
+
+        reset: () => {
+            cm.removeEvent(node, 'transitionend', handlers.end);
+            timeouts.delayIn && clearTimeout(timeouts.delayIn);
+            timeouts.delayOut && clearTimeout(timeouts.delayOut);
+        },
     };
 
-    init();
+    // Initialize
+    handlers.init();
+    return handlers;
 };
 
 /* ******* COOKIE & LOCAL STORAGE ******* */

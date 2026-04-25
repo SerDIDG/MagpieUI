@@ -28,6 +28,10 @@
                 width: @CmSize-Small;
                 .mx__transition(transform, @CmUI-Transition-Duration);
             }
+
+            &.animated {
+                .mx__transition(transform, @CmUI-Transition-Duration);
+            }
         }
 
         .title {
@@ -197,7 +201,8 @@
     &.is-show {
         > dt {
             .icon {
-                &.default {
+                &.default,
+                &.animated {
                     .mx__transform(rotate(90deg));
                 }
             }

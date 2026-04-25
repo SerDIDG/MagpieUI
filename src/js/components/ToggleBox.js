@@ -1,196 +1,296 @@
 cm.define('Com.ToggleBox', {
-    modules: [
-        'Params',
-        'Events',
-        'Langs',
-        'Structure',
-        'DataConfig',
-        'DataNodes',
-        'Storage',
-        'Stack'
-    ],
+    extend: 'Com.AbstractController',
     events: [
-        'onRender',
         'onShowStart',
         'onShow',
         'onHideStart',
         'onHide'
     ],
     params: {
-        node: cm.node('div'),
-        name: '',
+        controllerEvents: true,
+        customEvents: true,
         renderStructure: false,
+        embedStructureOnRender: null,
         embedStructure: 'replace',
+
         duration: 'cm._config.animDurationLong',
-        remember: false,                                 // Remember toggle state
+        remember: false,                                 // Remember the toggle state
+
+        className: 'has-title-bg is-base is-hide',
+        eventNode: 'title',                              // button | title
         toggleTitle: false,                              // Change title on toggle
-        container: false,
+
         title: false,
         content: false,
-        className: 'has-title-bg is-base is-hide',
-        eventNode: 'title'                               // button | title
+        icon: ['default'],
     },
     strings: {
         show: 'Show',
         hide: 'Hide'
-    }
+    },
 },
-function(params) {
-    var that = this;
+function() {
+    Com.AbstractController.apply(this, arguments);
+});
 
-    that.nodes = {
-        container: cm.node('div'),
-        button: cm.node('div'),
-        target: cm.node('div'),
-        title: cm.node('div')
-    };
-    that.animations = {};
+cm.getConstructor('Com.ToggleBox', function(classConstructor, className, classProto, classInherit) {
+    classProto.construct = function() {
+        const that = this;
 
-    that.isDestructed = false;
-    that.isCollapsed = false;
-    that.isProcess = false;
+        that.nodes = {
+            container: cm.node('div'),
+            button: cm.node('div'),
+            target: cm.node('div'),
+            title: cm.node('div')
+        };
 
-    var init = function() {
-        that.setParams(params);
-        that.convertEvents(that.params.events);
-        that.getDataNodes(that.params.node);
-        that.getDataConfig(that.params.node);
-        validateParams();
-        render();
-        that.addToStack(that.nodes.container);
-        that.triggerEvent('onRender');
+        that.targetHeight = 0;
+        that.targetTransition = 0;
+        that.isProcess = null;
+        that.isCollapsed = null;
+
+        // Call parent method
+        classInherit.prototype.construct.apply(that, arguments);
     };
 
-    var validateParams = function() {
+    classProto.onValidateParams = function() {
+        const that = this;
         if (that.params.renderStructure) {
+            if (!cm.isBoolean(that.params.embedStructureOnRender)) {
+                that.params.embedStructureOnRender = true;
+            }
+
             if (!that.params.title) {
                 that.params.title = '';
                 that.params.toggleTitle = true;
             }
         }
+    }
+
+    classProto.renderView = function() {
+        const that = this;
+        that.triggerEvent('onRenderViewStart');
+
+        // Structure
+        that.nodes.container = cm.node('dl', {classes: 'com__togglebox'},
+            that.nodes.titleContainer = cm.node('dt',
+                that.nodes.button = that.nodes.icon = cm.node('span', {classes: ['icon', 'animated', 'linked']}),
+                that.nodes.title = cm.node('span', {classes: 'title'})
+            ),
+            that.nodes.target = cm.node('dd',
+                that.nodes.content = cm.node('div', {classes: 'inner'})
+            )
+        );
+
+        that.triggerEvent('onRenderViewProcess');
+        that.triggerEvent('onRenderViewEnd');
     };
 
-    var render = function() {
-        // Render Structure
+    classProto.setAttributes = function() {
+        const that = this;
+
+        // Set attributes on the rendered view
         if (that.params.renderStructure) {
-            that.nodes.container = cm.node('dl', {classes: 'com__togglebox'},
-                that.nodes.titleContainer = cm.node('dt',
-                    that.nodes.button = cm.node('span', {classes: 'icon default linked'}),
-                    that.nodes.title = cm.node('span', {classes: 'title'})
-                ),
-                that.nodes.target = cm.node('dd',
-                    that.nodes.content = cm.node('div', {classes: 'inner'})
-                )
-            );
-
-            // Classes
-            if (that.params.eventNode === 'button') {
-                cm.addClass(that.nodes.container, 'has-hover-icon');
-            }
-            cm.addClass(that.nodes.container, that.params.className);
-
-            // Append title
-            that.setTitle(that.params.title);
-
-            // Append structure before the content for cases where the toggle box wraps the content inside
-            that.embedStructure(that.nodes.container);
-
-            // Append content
-            if (that.params.content) {
-                that.setContent(that.params.content);
-            } else {
-                that.setContent(that.params.node);
-            }
+            that.setViewAttributes();
         }
 
         // Set events
-        that.nodes.toggle = (that.params.eventNode === 'title' && that.nodes.titleContainer) ? that.nodes.titleContainer : that.nodes.button;
-        cm.click.add(that.nodes.toggle, that.toggle);
+        that.nodes.toggle = that.params.eventNode === 'title' && that.nodes.titleContainer ? that.nodes.titleContainer : that.nodes.button;
+        cm.click.add(that.nodes.toggle, () => that.toggle());
 
         // Set accessibility
         that.nodes.container.setAttribute('role', 'group');
         that.nodes.toggle.setAttribute('tabindex', '0');
         that.nodes.toggle.setAttribute('role', 'button');
+    };
 
-        // Check state
-        that.isCollapsed = cm.isClass(that.nodes.container, 'is-hide') || !cm.isClass(that.nodes.container, 'is-show');
-
-        // Check storage state
-        if (that.params.remember) {
-            var storageCollapsed = that.storageRead('isCollapsed');
-            that.isCollapsed = storageCollapsed !== null ? storageCollapsed : that.isCollapsed;
-        }
-
-        // Animation
-        that.animations.target = new cm.Animation(that.nodes.target);
-
-        // Trigger collapse event
-        if (that.isCollapsed) {
-            that.collapse(true);
-        } else {
-            that.expand(true);
+    classProto.setViewAttributes = function() {
+        const that = this;
+        cm.addClass(that.nodes.container, that.params.className);
+        if (that.params.eventNode === 'button') {
+            cm.addClass(that.nodes.container, 'has-hover-icon');
         }
     };
 
-    var expandEnd = function() {
-        that.isProcess = false;
-        that.nodes.target.style.opacity = 1;
+    classProto.setViewContent = function() {
+        const that = this;
+        that.setIcon(that.params.icon);
+        that.setTitle(that.params.title);
+
+        if (that.params.content) {
+            that.setContent(that.params.content);
+        } else {
+            that.setContent(that.params.node);
+        }
+    };
+
+    classProto.renderViewModel = function() {
+        const that = this;
+
+        // Call parent method
+        classInherit.prototype.renderViewModel.apply(that, arguments);
+
+        // Set title and content for the rendered view
+        if (that.params.renderStructure) {
+            that.setViewContent();
+        }
+
+        // Check state
+        that.isCollapsed = cm.hasClass(that.nodes.container, 'is-hide') || !cm.hasClass(that.nodes.container, 'is-show');
+
+        // Check storage state
+        if (that.params.remember) {
+            const isCollapsed = that.storageRead('isCollapsed');
+            that.isCollapsed = isCollapsed !== null ? isCollapsed : that.isCollapsed;
+        }
+
+        // Trigger collapse event
+        that.toggle(!that.isCollapsed, true);
+    };
+
+    /******* HELPERS *******/
+
+    classProto.beforeExpand = function() {
+        const that = this;
+        if (that.isProcess) return;
+        that.isProcess = true;
+
+        // Redraw inner content
         that.nodes.target.style.height = 'auto';
-        that.nodes.target.style.overflow = 'visible';
+        that.nodes.target.style.display = 'block';
+
         // Trigger events
         cm.customEvent.trigger(that.nodes.target, 'redraw', {
             direction: 'child',
             self: false
         });
+
+        // Prepare animation
+        that.targetHeight = cm.getRealHeight(that.nodes.target, 'offset', 'current');
+        that.nodes.target.style.overflow = 'hidden';
+        that.nodes.target.style.height = 0;
+        if (!that.nodes.target.style.opacity) {
+            that.nodes.target.style.opacity = 0;
+        }
+    };
+
+    classProto.afterExpand = function() {
+        const that = this;
+
+        that.nodes.target.style.overflow = 'visible';
+        that.nodes.target.style.height = 'auto';
+        that.nodes.target.style.opacity = 1;
+
+        // Trigger events
+        cm.customEvent.trigger(that.nodes.target, 'redraw', {
+            direction: 'child',
+            self: false
+        });
+
+        that.isProcess = false;
         that.triggerEvent('onShow');
     };
 
-    var collapseEnd = function() {
-        that.isProcess = false;
-        that.nodes.target.style.opacity = 0;
-        that.nodes.target.style.height = 0;
+    classProto.beforeCollapse = function() {
+        const that = this;
+        if (that.isProcess) return;
+        that.isProcess = true;
+
+        that.nodes.target.style.overflow = 'hidden';
+        if (!that.nodes.target.style.opacity) {
+            that.nodes.target.style.opacity = 1;
+        }
+
+        that.targetHeight = cm.getRealHeight(that.nodes.target, 'offset', 'current');
+        that.nodes.target.style.height = `${that.targetHeight}px`;
+    };
+
+    classProto.afterCollapse = function() {
+        const that = this;
+
         that.nodes.target.style.display = 'none';
+        that.nodes.target.style.height = 0;
+        that.nodes.target.style.opacity = 0;
+
+        that.isProcess = false;
         that.triggerEvent('onHide');
     };
 
-    /* ******* PUBLIC ******* */
 
-    that.setTitle = function(node) {
+    /******* PUBLIC *******/
+
+    classProto.setTitle = function(stringOrNode) {
+        const that = this;
+        if (!that.nodes.title) return;
+
+        // Reset
         cm.clearNode(that.nodes.title);
-        if (cm.isString(node) || cm.isNumber(node)) {
-            that.nodes.title.innerHTML = node;
+        if (cm.isString(stringOrNode) || cm.isNumber(stringOrNode)) {
+            that.nodes.title.innerHTML = stringOrNode;
         } else {
-            cm.appendNodes(node, that.nodes.title);
+            cm.appendNodes(stringOrNode, that.nodes.title);
         }
+
+        that.params.title = stringOrNode;
         return that;
     };
 
-    that.setContent = function(node) {
-        var parent = that.nodes.content || that.nodes.target;
-        cm.clearNode(parent);
-        if (cm.isString(node) || cm.isNumber(node)) {
-            parent.innerHTML = node;
+    classProto.setContent = function(stringOrNode) {
+        const that = this;
+        const container = that.nodes.content || that.nodes.target;
+        if (!container) return;
+
+        // Reset
+        cm.clearNode(container);
+        if (cm.isString(stringOrNode) || cm.isNumber(stringOrNode)) {
+            container.innerHTML = stringOrNode;
         } else {
-            cm.appendNodes(node, parent);
+            cm.appendNodes(stringOrNode, container);
         }
+
+        that.params.conetnt = stringOrNode;
         return that;
     };
 
-    that.toggle = function() {
-        if (that.isCollapsed) {
-            that.expand();
+    classProto.setIcon = function(classesOrNode) {
+        const that = this;
+        if (!that.nodes.icon) return;
+
+        // Reset
+        cm.clearNode(that.nodes.icon);
+        if (cm.isString(that.params.icon) || cm.isArray(that.params.icon)) {
+            cm.removeClass(that.nodes.icon, that.params.icon);
+        }
+
+        if (cm.isFunction(classesOrNode)) {
+            classesOrNode = classesOrNode(that);
+        }
+        if (cm.isString(classesOrNode) || cm.isArray(classesOrNode)) {
+            cm.addClass(that.nodes.icon, classesOrNode);
         } else {
-            that.collapse();
+            cm.appendNodes(classesOrNode, that.nodes.icon);
+        }
+
+        that.params.icon = classesOrNode;
+        return that;
+    };
+
+    classProto.toggle = function(value, isImmediately) {
+        const that = this;
+        value = cm.isBoolean(value) ? value : that.isCollapsed;
+
+        if (value) {
+            that.expand(isImmediately);
+        } else {
+            that.collapse(isImmediately);
         }
     };
 
-    that.expand = function(isImmediately) {
-        if (!isImmediately && (!that.isCollapsed || that.isProcess)) {
-            return;
-        }
+    classProto.expand = function(isImmediately) {
+        const that = this;
+        if (!isImmediately && !that.isCollapsed) return;
 
         that.isCollapsed = false;
-        that.isProcess = 'show';
         that.triggerEvent('onShowStart');
 
         // Write storage
@@ -200,7 +300,7 @@ function(params) {
 
         // Set title
         if (that.params.toggleTitle) {
-            that.setTitle(that.lang('hide'));
+            that.setTitle(that.msg('hide'));
         }
 
         // Set accessibility
@@ -213,43 +313,27 @@ function(params) {
 
         // Animate
         if (isImmediately) {
-            expandEnd();
+            that.afterExpand();
         } else {
-            // Redraw inner content
-            that.nodes.target.style.height = 'auto';
-            that.nodes.target.style.display = 'block';
-
-            // Trigger events
-            cm.customEvent.trigger(that.nodes.target, 'redraw', {
-                direction: 'child',
-                self: false
-            });
-
-            // Prepare animation
-            that.nodes.target.style.height = 0;
-            that.nodes.target.style.overflow = 'hidden';
-            if (!that.nodes.target.style.opacity) {
-                that.nodes.target.style.opacity = 0;
-            }
-            that.animations.target.go({
-                style: {
-                    height: [cm.getRealHeight(that.nodes.target, 'offset', 'current'), 'px'].join(''),
-                    opacity: 1
+            that.beforeExpand();
+            that.targetTransition?.reset?.();
+            that.targetTransition = cm.transition(that.nodes.target, {
+                properties: {
+                    height: `${that.targetHeight}px`,
+                    opacity: 1,
                 },
-                anim: 'smooth',
+                easing: 'ease-in-out',
                 duration: that.params.duration,
-                onStop: expandEnd
+                onStop: () => that.afterExpand(),
             });
         }
     };
 
-    that.collapse = function(isImmediately) {
-        if (!isImmediately && (that.isCollapsed || that.isProcess)) {
-            return;
-        }
+    classProto.collapse = function(isImmediately) {
+        const that = this;
+        if (!isImmediately && that.isCollapsed) return;
 
         that.isCollapsed = true;
-        that.isProcess = 'hide';
         that.triggerEvent('onHideStart');
 
         // Write storage
@@ -259,7 +343,7 @@ function(params) {
 
         // Set title
         if (that.params.toggleTitle) {
-            that.setTitle(that.lang('show'));
+            that.setTitle(that.msg('show'));
         }
 
         // Set accessibility
@@ -271,32 +355,20 @@ function(params) {
         cm.replaceClass(that.nodes.container, 'is-show', 'is-hide');
 
         // Animate
-        that.nodes.target.style.overflow = 'hidden';
-        if (!that.nodes.target.style.opacity) {
-            that.nodes.target.style.opacity = 1;
-        }
         if (isImmediately) {
-            collapseEnd();
+            that.afterCollapse();
         } else {
-            that.animations.target.go({
-                style: {
-                    height: '0px',
-                    opacity: 0
+            that.beforeCollapse();
+            that.targetTransition?.reset?.();
+            that.targetTransition = cm.transition(that.nodes.target, {
+                properties: {
+                    height: `0px`,
+                    opacity: 0,
                 },
-                anim: 'smooth',
+                easing: 'ease-in-out',
                 duration: that.params.duration,
-                onStop: collapseEnd
+                onStop: () => that.afterCollapse(),
             });
         }
     };
-
-    that.destruct = function() {
-        if (!that.isDestructed) {
-            that.isDestructed = true;
-            that.removeFromStack();
-        }
-        return that;
-    };
-
-    init();
 });
