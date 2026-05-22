@@ -3320,17 +3320,21 @@ cm.getIndentY = function(node){
         + cm.getStyle(node, 'borderBottomWidth', true);
 };
 
-cm.addStyles = function(node, data){
-    if(!cm.isNode(node)){
-        return;
-    }
-    if(cm.isObject(data)){
-        cm.forEach(data, function(value, key){
-            node.style[key] = value;
+cm.addStyles = function(node, data) {
+    if (!cm.isNode(node)) return;
+
+    if (cm.isObject(data)) {
+        cm.forEach(data, (value, key) => {
+            if (/^--/.test(key)) {
+                cm.setCSSVariable(key, value, node);
+            } else {
+                node.style[key] = value;
+            }
         });
-    }else{
+    } else {
         node.style.cssText = data;
     }
+
     return node;
 };
 

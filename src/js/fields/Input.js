@@ -1,6 +1,6 @@
 cm.define('Com.Input', {
-    'extend': 'Com.AbstractInput',
-    'events': [
+    extend: 'Com.AbstractInput',
+    events: [
         'onInputStart',
         'onEnterPress',
         'onKeyPress',
@@ -10,22 +10,35 @@ cm.define('Com.Input', {
         'onFocus',
         'onBlur'
     ],
-    'params': {
-        'controllerEvents': true,
-        'type': 'text',
-        'inputmode': null,
-        'trimValue': true,
-        'limitValue': true,
-        'constraints': {},
-        'inputClasses': [],
-        'lazy': false,
-        'delay': 'cm._config.requestDelay',
-        'icon': null,
-        'iconTitle': null,
-        'iconEvents': true,
-        'iconInsertMethod': 'appendChild',
-        'autoResize': false,
-        'enterPressBehavior': false,
+    params: {
+        controllerEvents: true,
+
+        trimValue: true,
+        limitValue: true,                   // Limit numeric value for type=number
+        constraints: {},
+        autoResize: false,
+        enterPressBehavior: false,
+        renderLengthHint: false,
+
+        type: 'text',
+        inputmode: null,
+        inputClasses: [],
+        lazy: false,
+        delay: 'cm._config.requestDelay',
+
+        icon: null,
+        iconTitle: null,
+        iconEvents: true,
+        iconInsertMethod: 'appendChild',
+    },
+    strings: {
+        hints: {
+            length: {
+                count: '{count} {#plural:{count}|character|characters}',
+                remaining: '{count} {#plural:{count}|character|characters} remaining',
+                over: '{count} {#plural:{count}|character|characters} over the limit',
+            },
+        },
     },
 },
 function() {
@@ -141,6 +154,12 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
             cm[that.params.iconInsertMethod](nodes.icon, nodes.inner);
         }
 
+        // Length hint
+        if (that.params.renderLengthHint) {
+            nodes.lengthHint = that.renderLengthHint();
+            cm.appendChild(nodes.lengthHint, nodes.inner);
+        }
+
         // Append
         return nodes;
     };
@@ -229,6 +248,30 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
     classProto.getIcon = function() {
         const that = this;
         return that.nodes.content.icon;
+    };
+
+    /*** HINTS ***/
+
+    classProto.renderLengthHint = function() {
+        const that = this;
+        return cm.node('div', {classes: ['pt__field__hint', 'pull-right']});
+    };
+
+    classProto.updateLengthHint = function(value) {
+        const that = this;
+        const hasMaxLength = that.params.maxLength > 0;
+        const count = hasMaxLength
+            ? that.params.maxLength - value.length
+            : value.length;
+        const message = hasMaxLength
+            ? count < 0 ? 'over' : 'remaining'
+            : 'count';
+        const hint = that.msgParse(`hints.length.${message}`, {
+            count: Math.abs(count),
+        });
+
+        that.nodes.content.lengthHint.innerText = hint;
+        cm.toggleClass(that.nodes.content.lengthHint, 'danger', message === 'over');
     };
 
     /*** EVENTS ***/
@@ -430,6 +473,13 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         return that;
     };
 
+    classProto.selectData = function(value) {
+        const that = this;
+        if (that.params.renderLengthHint) {
+            that.updateLengthHint(value);
+        }
+    };
+
     /******* PUBLIC *******/
 
     classProto.focus = function(selection) {
@@ -452,93 +502,93 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
 /* ****** FORM FIELD COMPONENT ******* */
 
 Com.FormFields.add('input', {
-    'node': cm.node('input', {'type': 'text'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'text'
+    node: cm.node('input', {type: 'text'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'text'
     }
 });
 
 Com.FormFields.add('textarea', {
-    'node': cm.node('textarea'),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'textarea'
+    node: cm.node('textarea'),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'textarea'
     }
 });
 
 Com.FormFields.add('email', {
-    'node': cm.node('input', {'type': 'email'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'email'
+    node: cm.node('input', {type: 'email'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'email'
     }
 });
 
 Com.FormFields.add('url', {
-    'node': cm.node('input', {'type': 'url'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'url'
+    node: cm.node('input', {type: 'url'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'url'
     }
 });
 
 
 Com.FormFields.add('search', {
-    'node': cm.node('input', {'type': 'search', 'inputmode': 'search', 'autocomplete': 'off'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'search',
-        'inputmode': 'search',
+    node: cm.node('input', {type: 'search', inputmode: 'search', autocomplete: 'off'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'search',
+        inputmode: 'search',
     }
 });
 
 Com.FormFields.add('phone', {
-    'node': cm.node('input', {'type': 'tel'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'tel'
+    node: cm.node('input', {type: 'tel'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'tel'
     }
 });
 
 Com.FormFields.add('number', {
-    'node': cm.node('input', {'type': 'number'}),
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'number'
+    node: cm.node('input', {type: 'number'}),
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'number'
     }
 });
 
 Com.FormFields.add('hidden', {
-    'node': cm.node('input', {'type': 'hidden'}),
-    'visible': false,
-    'adaptive': false,
-    'value': '',
-    'defaultValue': '',
-    'fieldConstructor': 'Com.AbstractFormField',
-    'constructor': 'Com.Input',
-    'constructorParams': {
-        'type': 'hidden'
+    node: cm.node('input', {type: 'hidden'}),
+    visible: false,
+    adaptive: false,
+    value: '',
+    defaultValue: '',
+    fieldConstructor: 'Com.AbstractFormField',
+    constructor: 'Com.Input',
+    constructorParams: {
+        type: 'hidden'
     }
 });
