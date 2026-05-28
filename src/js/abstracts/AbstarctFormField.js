@@ -27,6 +27,7 @@ cm.define('Com.AbstractFormField', {
         'renderError': true,
         'renderErrorMessage': true,
         'renderRequiredMessage': false,
+        'renderLengthMessage': true,
         'form': false,
         'outputValueType': 'auto',      // 'auto' | 'raw' | 'text' | 'option'
         'inputValueType': 'auto',       // 'auto' | 'unset'
@@ -699,16 +700,20 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if (that.params.minLength && data.value.length < that.params.minLength) {
             data.valid = false;
-            data.message = that.msg('too_short', {
-                '%count%': that.params.minLength
-            });
+            if (that.params.renderLengthMessage) {
+                data.message = that.msg('too_short', {
+                    '%count%': that.params.minLength
+                });
+            }
             return data;
         }
         if (that.params.maxLength && data.value.length > that.params.maxLength) {
             data.valid = false;
-            data.message = that.msg('too_long', {
-                '%count%': that.params.maxLength
-            });
+            if (that.params.renderLengthMessage) {
+                data.message = that.msg('too_long', {
+                    '%count%': that.params.maxLength
+                });
+            }
             return data;
         }
         if (!cm.isEmpty(that.params.constraints)) {
