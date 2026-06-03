@@ -65,10 +65,10 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
     classProto.windowClickEvent = function(e) {
         const that = this;
 
-        // Process route only on LMB without pressed ctrl or meta keys
+        // Process route only on LMB without pressed ctrl or meta-keys
         if (e.button || e.metaKey || e.ctrlKey) return;
 
-        // Process route only on inner link
+        // Process route only on an inner link
         const target = that.getTargetLink(cm.getEventTarget(e));
         if (!target) return;
 
@@ -214,7 +214,7 @@ cm.getConstructor('Com.Router', function(classConstructor, className, classProto
         // Match route
         let matchedRouteData = that.getStateMatchedRoute(routeItem);
 
-        // Is not found matched route
+        // If not found matched route
         if (cm.isEmpty(matchedRouteData)) {
             matchedRouteData = {
                 hasAccess: true,

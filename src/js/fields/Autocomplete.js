@@ -599,11 +599,15 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         }
     };
 
-    classProto.callbacks.convertItem = function(that, item) {
+    classProto.callbacks.convertItem = function(that, item, normalize) {
         if (cm.isEmpty(item)) {
             return null;
         } else if (!cm.isObject(item)) {
-            return {text: item, value: item};
+            item = {text: item, value: item};
+            if (normalize) {
+                item = classProto.callbacks.normalizeItem(that, item);
+            }
+            return item;
         } else {
             if (cm.isUndefined(item.value)) {
                 item.value = item.text
@@ -615,9 +619,17 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.callbacks.convertObject = function(that, data) {
         const options = [];
         cm.forEach(data, (text, value) => {
-            options.push({text: text, value: value});
+            options.push({text, value});
         });
         return options;
+    };
+
+    classProto.callbacks.normalizeItem = function(that, item) {
+        const dataItem = that.params.data.find(dataItem => dataItem.value === item.value);
+        if (dataItem) {
+            item.text = dataItem.text;
+        }
+        return item;
     };
 
     /*** LIST ***/
@@ -900,7 +912,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
     classProto.set = function(item, triggerEvents) {
         const that = this;
 
-        that.rawValue = that.callbacks.convertItem(that, item);
+        that.rawValue = that.callbacks.convertItem(that, item, true);
         that.previousValue = that.value;
         that.value = !cm.isEmpty(that.rawValue) ? that.rawValue.value : null;
         that.valueText = !cm.isEmpty(that.rawValue) ? that.rawValue.text : '';
