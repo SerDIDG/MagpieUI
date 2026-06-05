@@ -188,6 +188,7 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         return (that.params.src && regexp.test(that.params.src)) ||
             (that.params.url && regexp.test(that.params.url.pathname)) ||
             (that.params.src && /^data:image/gi.test(that.params.src)) ||
+            (that.params.title && regexp.test(that.params.title)) ||
             (that.params.mime && that.params.types.image.test(that.params.mime)) ||
             that.params.type === 'image';
     };
@@ -198,6 +199,7 @@ cm.getConstructor('Com.GalleryItem', function(classConstructor, className, class
         return (that.params.src && regexp.test(that.params.src)) ||
             (that.params.url && regexp.test(that.params.url.pathname)) ||
             (that.params.src && /^data:video/gi.test(that.params.src)) ||
+            (that.params.title && regexp.test(that.params.title)) ||
             (that.params.mime && that.params.types.video.test(that.params.mime)) ||
             that.params.type === 'video';
     };

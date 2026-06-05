@@ -41,7 +41,7 @@ cm.getConstructor('Com.ImagePreviewContainer', function(classConstructor, classN
     classProto.setData = function(item) {
         const that = this;
         that.item = {
-            type: item.type || 'image',
+            type: item.type,
             src: item.url,
             mime: item.mime || item.type,
             title: item.name,

@@ -13,16 +13,20 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
     classProto.handlers = {
         'msg': {
             handler: 'parseMessageReference',
-            description: 'Message reference: {#msg:Component|key}'
+            description: 'Message reference: {#msg:Component|key}',
         },
         'var': {
             handler: 'parseVariableReference',
-            description: 'Variable reference: {#var:path.to.variable}'
+            description: 'Variable reference: {#var:path.to.variable}',
         },
         'plural': {
             handler: 'parsePluralReference',
-            description: 'Plural reference: {#plural:number|one|many}'
-        }
+            description: 'Plural reference: {#plural:number|one|many}',
+        },
+        'formatnum': {
+            handler: 'parseFormatnumReference',
+            description: 'Formatnum reference: {#formatnum:number}',
+        },
     };
 
     /**
@@ -151,7 +155,8 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
     classProto.parseMessageReference = function(content, variables, depth) {
         const that = this;
         try {
-            const reference = content.substring(5); // Remove '#msg:'
+            const word = '#msg:';
+            const reference = content.substring(word.length);
             const parts = reference.split('|');
 
             if (parts.length !== 2) {
@@ -181,7 +186,8 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
     classProto.parseVariableReference = function(content, variables, depth) {
         const that = this;
         try {
-            const reference = content.substring(5); // Remove '#var:'
+            const word = '#var:';
+            const reference = content.substring(word.length);
             const message = cm.reducePath(reference, window);
 
             if (message === undefined || message === null) {
@@ -203,7 +209,8 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
     classProto.parsePluralReference = function(content, variables, depth) {
         const that = this;
         try {
-            const reference = content.substring(8); // Remove '#plural:'
+            const word = '#plural:';
+            const reference = content.substring(word.length);
             const parts = reference.split('|');
 
             if (parts.length < 2) {
@@ -215,6 +222,32 @@ cm.getConstructor('Com.MessageParser', function(classConstructor, className, cla
             parts.map(message => that.parse(message, variables, depth + 1));
 
             return cm.plural(number, parts);
+        } catch (error) {
+            console.error(`Error parsing plural reference ${content}:`, error);
+            return `{${content}}`;
+        }
+    };
+
+    /**
+     * Formatnum reference handler
+     * Format: #formatnum:number
+     */
+    classProto.parseFormatnumReference = function(content, variables, depth) {
+        const that = this;
+        try {
+            const word = '#formatnum:';
+            const reference = content.substring(word.length);
+            const parts = reference.split('|');
+
+            if (parts.length < 1) {
+                console.warn(`Invalid formatnum reference format: ${content}`);
+                return `{${content}}`;
+            }
+
+            const number = that.parse(parts.shift(), variables, depth + 1);
+            parts.map(message => that.parse(message, variables, depth + 1));
+
+            return cm.formatNumber(number, parts);
         } catch (error) {
             console.error(`Error parsing plural reference ${content}:`, error);
             return `{${content}}`;

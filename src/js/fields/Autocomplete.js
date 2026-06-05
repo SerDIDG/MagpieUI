@@ -599,21 +599,25 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
         }
     };
 
-    classProto.callbacks.convertItem = function(that, item, normalize) {
-        if (cm.isEmpty(item)) {
-            return null;
-        } else if (!cm.isObject(item)) {
+    classProto.callbacks.convertItem = function(that, item, params) {
+        params = cm.merge({
+            normalize: false,
+        }, params);
+
+        if (cm.isEmpty(item)) return null;
+
+        if (!cm.isObject(item)) {
             item = {text: item, value: item};
-            if (normalize) {
-                item = classProto.callbacks.normalizeItem(that, item);
-            }
-            return item;
-        } else {
-            if (cm.isUndefined(item.value)) {
-                item.value = item.text
-            }
-            return item;
         }
+
+        if (cm.isUndefined(item.value)) {
+            item.value = item.text
+        }
+        if (params.normalize) {
+            item = classProto.callbacks.normalizeItem(that, item);
+        }
+
+        return item;
     };
 
     classProto.callbacks.convertObject = function(that, data) {
@@ -911,8 +915,7 @@ cm.getConstructor('Com.Autocomplete', function(classConstructor, className, clas
 
     classProto.set = function(item, triggerEvents) {
         const that = this;
-
-        that.rawValue = that.callbacks.convertItem(that, item, true);
+        that.rawValue = that.callbacks.convertItem(that, item, {normalize: true});
         that.previousValue = that.value;
         that.value = !cm.isEmpty(that.rawValue) ? that.rawValue.value : null;
         that.valueText = !cm.isEmpty(that.rawValue) ? that.rawValue.text : '';

@@ -2603,7 +2603,7 @@ cm.splitNumber = function(str){
     return str.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, '$1 ');
 };
 
-cm.formatNumber = function(number, locale, params){
+cm.formatNumber = function(number, params, locale){
     number = cm.isString(number) ? cm.parseLocalNumber(number) : number;
     locale = !cm.isEmpty(locale) ? locale : cm._locale;
     return new Intl.NumberFormat(locale, params).format(number);
@@ -2660,7 +2660,7 @@ cm.addLeadZero = function(x, count){
  * Gets a plural string from a value using Intl.PluralRules.
  * @param {Number} count
  * @param {Object|Array|string} strings - Object with plural categories or legacy array
- * @param {string} locale - Locale code (e.g., 'en-US', 'uk-UA')
+ * @param {string} [locale] - Locale code (e.g., 'en-US', 'uk-UA')
  * @return string
  */
 cm.plural = cm.getNumberDeclension = function(count, strings, locale){

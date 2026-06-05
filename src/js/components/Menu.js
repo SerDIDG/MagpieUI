@@ -72,7 +72,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         classInherit.prototype.construct.apply(that, arguments);
     };
 
-    classProto.setAttributes = function(){
+    classProto.setAttributes = function() {
         const that = this;
 
         // Call parent method
@@ -272,12 +272,12 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         });
     };
 
-    classProto.renderItems = function(items){
+    classProto.renderItems = function(items) {
         const that = this;
         cm.forEach(items, item => that.renderItem(item));
     };
 
-    classProto.renderItem = function(params){
+    classProto.renderItem = function(params) {
         const that = this;
 
         // Validate default params
@@ -314,6 +314,7 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         if (!item.params.access) return;
 
         // Validate params
+        item.params.label = that.validateItemLabel(item, item.params.label);
         item.params.attr.classes = cm.merge(item.params.classes, item.params.attr.classes);
 
         // Structure
@@ -372,17 +373,30 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         that.items.push(item);
     };
 
+    classProto.validateItemLabel = function(item, label) {
+        const that = this;
+        if (cm.isEmpty(label)) return null;
+        if (cm.isFunction(label)) {
+            const params = that.getItemActionParams(
+                item,
+                item.params.constructor ? item.params.constructorParams : item.params.callbackParams
+            );
+            return label(params);
+        }
+        return label;
+    };
+
     classProto.renderItemController = function(item) {
         const that = this;
         cm.getConstructor(item.params.constructor, classConstructor => {
-            const params = cm.merge(item.params.constructorParams, {
-                node: item.nodes.link,
-                actionItem: item,
-                [item.params.dataKey]: that.getItemActionData(item, item.params.constructorParams),
-                events: {
-                    onRenderControllerEnd: () => that.hide(false),
-                },
-            });
+            const params = cm.merge(
+                item.params.constructorParams,
+                that.getItemActionParams(item, item.params.constructorParams, {
+                    events: {
+                        onRenderControllerEnd: () => that.hide(false),
+                    },
+                }),
+            );
             item.controller = new classConstructor(params);
         });
     };
@@ -394,16 +408,24 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
                 cm.preventDefault(event);
             }
             if (cm.isFunction(item.params.callback)) {
-                const params = cm.merge(item.params.callbackParams, {
-                    node: item.nodes.link,
-                    actionItem: item,
-                    [item.params.dataKey]: that.getItemActionData(item, item.params.callbackParams),
-                });
+                const params = cm.merge(
+                    item.params.callbackParams,
+                    that.getItemActionParams(item, item.params.callbackParams),
+                );
                 item.params.callback(event, params);
             }
             that.hide(false);
         });
     };
+
+    classProto.getItemActionParams = function(item, actionParams, params) {
+        const that = this;
+        return cm.merge({
+            node: item.nodes.link,
+            actionItem: item,
+            [item.params.dataKey]: that.getItemActionData(item, actionParams),
+        }, params);
+    }
 
     classProto.getItemActionData = function(item, actionParams) {
         const data = cm.reducePath(item.params.dataPath, item.params.data);
