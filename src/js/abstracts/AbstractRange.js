@@ -5,9 +5,9 @@ cm.define('Com.AbstractRange', {
         embedStructureOnRender: true,
         controllerEvents: true,
         redrawOnRender: true,
-
         className: 'com__range',
         theme: 'theme--arrows',
+
         min: 0,
         max: 100,
         value: 0,
@@ -22,25 +22,26 @@ cm.define('Com.AbstractRange', {
         draggableParams: {}
     }
 },
-function(){
+function() {
     Com.AbstractInput.apply(this, arguments);
 });
 
-cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto, classInherit){
-    classProto.onConstructStart = function(){
-        var that = this;
+cm.getConstructor('Com.AbstractRange', function(classConstructor, className, classProto, classInherit) {
+    classProto.onConstructStart = function() {
+        const that = this;
+
         // Variables
         that.components.draggable = [];
         that.sort = 'asc';
     };
 
-    classProto.onRedraw = function(){
-        var that = this;
+    classProto.onRedraw = function() {
+        const that = this;
         that.setData();
     };
 
-    classProto.onValidateParamsEnd = function(){
-        var that = this;
+    classProto.onValidateParamsEnd = function() {
+        const that = this;
 
         // Sort
         that.sort = (that.params.min > that.params.max) ? 'desc' : 'asc';
@@ -60,30 +61,29 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     /*** VIEW MODEL ***/
 
-    classProto.renderViewModel = function(){
-        var that = this;
+    classProto.renderViewModel = function() {
+        const that = this;
 
         // Call parent method
         classInherit.prototype.renderViewModel.apply(that, arguments);
 
         // Draggable
         that.renderDraggable();
-        if(that.params.range){
+        if (that.params.range) {
             that.renderDraggable();
         }
     };
 
-    classProto.renderContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes.content = nodes;
+    classProto.renderContent = function() {
+        const that = this;
         that.triggerEvent('onRenderContentStart');
 
         // Structure
-        nodes.container = cm.node('div', {class: 'com__range__content'},
-            nodes.range = cm.node('div', {class: 'pt__range'},
-                nodes.inner = cm.node('div', {class: 'inner'},
-                    nodes.range = cm.node('div', {class: 'range'},
+        const nodes = that.nodes.content = {};
+        nodes.container = cm.node('div', {classes: 'com__range__content'},
+            nodes.range = cm.node('div', {classes: 'pt__range'},
+                nodes.inner = cm.node('div', {classes: 'inner'},
+                    nodes.range = cm.node('div', {classes: 'range'},
                         nodes.rangeContent = that.renderRangeContent()
                     )
                 )
@@ -99,7 +99,7 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         that.targetDraggable && cm.addClass(nodes.range, 'is-draggable');
 
         // Direction classes
-        switch(that.params.direction){
+        switch (that.params.direction) {
             case 'horizontal':
                 cm.addClass(nodes.container, 'is-horizontal');
                 cm.addClass(nodes.range, 'is-horizontal');
@@ -112,73 +112,75 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
                 cm.addClass(nodes.rangeContent, 'is-vertical');
                 break;
         }
+
         // Events
         that.triggerEvent('onRenderContentEnd');
+
         // Export
         return nodes.container;
     };
 
     /*** RANGE ***/
 
-    classProto.renderRangeContent = function(){
-        var that = this,
-            nodes = {};
-        that.nodes.rangeContent = nodes;
+    classProto.renderRangeContent = function() {
+        const that = this;
+
         // Structure
-        nodes.container = cm.node('div', {class: 'range__content'});
+        const nodes = that.nodes.rangeContent = {};
+        nodes.container = cm.node('div', {classes: 'range__content'});
+
         // Export
         return nodes.container;
     };
 
     /*** DRAGGABLE ***/
 
-    classProto.renderDraggable = function(){
-        var that = this;
-        cm.getConstructor(that.params.draggableConstructor, function(classConstructor){
-            that.components.draggable.push(
-                new classConstructor(
-                    cm.merge(that.params.draggableParams, {
-                        node: that.nodes.content.inner,
-                        events: {
-                            onStart: function(){
-                                that.setEditing();
-                            },
-                            onStop: function(){
-                                that.unsetEditing();
-                            },
-                            onSelect: function(my, value){
-                                that.setValues();
-                                that.selectAction(that.tempRawValue.join('-'), true);
-                            },
-                            onSet: function(my, value){
-                                that.setValues();
-                                that.set(that.tempRawValue.join('-'), true);
-                            }
+    classProto.renderDraggable = function() {
+        const that = this;
+        cm.getConstructor(that.params.draggableConstructor, classConstructor => {
+            const component = new classConstructor(
+                cm.merge(that.params.draggableParams, {
+                    node: that.nodes.content.inner,
+                    events: {
+                        onStart: () => {
+                            that.setEditing();
+                        },
+                        onStop: () => {
+                            that.unsetEditing();
+                        },
+                        onSelect: (my, value) => {
+                            that.setValues();
+                            that.selectAction(that.tempRawValue.join('-'), true);
+                        },
+                        onSet: (my, value) => {
+                            that.setValues();
+                            that.set(that.tempRawValue.join('-'), true);
                         }
-                    })
-                )
+                    }
+                })
             );
+            that.components.draggable.push(component);
         });
     };
 
     /*** DATA ***/
 
-    classProto.setValues = function(){
-        var that = this;
+    classProto.setValues = function() {
+        const that = this;
         that.tempRawValue = [];
-        cm.forEach(that.components.draggable, function(item){
+        cm.forEach(that.components.draggable, (item) => {
             that.tempRawValue.push(item.get());
         });
         that.tempRawValue = cm.arraySort(that.tempRawValue, false, that.sort);
     };
 
-    classProto.validateValue = function(value){
-        var that = this,
-            values = value.toString().split('-');
-        cm.forEach(values, function(item, i){
-            if(that.params.max > that.params.min){
+    classProto.validateValue = function(value) {
+        const that = this;
+        const values = value.toString().split('-');
+        cm.forEach(values, (item, i) => {
+            if (that.params.max > that.params.min) {
                 values[i] = Math.min(Math.max(parseFloat(item), that.params.min), that.params.max);
-            }else{
+            } else {
                 values[i] = Math.max(Math.min(parseFloat(item), that.params.min), that.params.max);
             }
         });
@@ -186,17 +188,17 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
         return values.join('-');
     };
 
-    classProto.saveRawValue = function(value){
-        var that = this;
+    classProto.saveRawValue = function(value) {
+        const that = this;
         that.tempRawValue = value.toString().split('-');
         that.tempRawValue = cm.arrayParseFloat(that.tempRawValue);
         that.tempRawValue = cm.arraySort(that.tempRawValue, false, that.sort);
     };
 
-    classProto.setData = function(){
-        var that = this;
-        if(!cm.isEmpty(that.tempRawValue)){
-            cm.forEach(that.components.draggable, function(item, i){
+    classProto.setData = function() {
+        const that = this;
+        if (!cm.isEmpty(that.tempRawValue)) {
+            cm.forEach(that.components.draggable, (item, i) => {
                 item.set(that.tempRawValue[i], false);
             });
         }
@@ -204,16 +206,16 @@ cm.getConstructor('Com.AbstractRange', function(classConstructor, className, cla
 
     /*** PUBLIC ***/
 
-    classProto.setEditing = function(){
-        var that = this;
+    classProto.setEditing = function() {
+        const that = this;
         cm.addClass(that.nodes.content.container, 'is-editing');
         cm.addClass(that.nodes.content.range, 'is-editing');
         cm.addClass(that.nodes.content.rangeContent, 'is-editing');
         return that;
     };
 
-    classProto.unsetEditing = function(){
-        var that = this;
+    classProto.unsetEditing = function() {
+        const that = this;
         cm.removeClass(that.nodes.content.container, 'is-editing');
         cm.removeClass(that.nodes.content.range, 'is-editing');
         cm.removeClass(that.nodes.content.rangeContent, 'is-editing');
