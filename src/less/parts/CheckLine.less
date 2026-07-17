@@ -74,7 +74,7 @@
                 /* Separate rules because Firefox doesn't support this syntax yet. */
                 &:has(:focus-visible) {
                     background: @CmColor-Primary-LightHover;
-                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                    transition-duration:  @CmUI-Transition-DurationReverse;
 
                     &.active {
                         background: @CmColor-Primary-LightActiveHover;
@@ -83,7 +83,7 @@
 
                 &:is(:hover, :focus-visible) {
                     background: @CmColor-Primary-LightHover;
-                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                    transition-duration:  @CmUI-Transition-DurationReverse;
 
                     &.active {
                         background: @CmColor-Primary-LightActiveHover;
@@ -111,6 +111,33 @@
         &.is-line {
             label {
                 margin-right: @PtCheckLine-HasHover-Gap;
+            }
+        }
+    }
+
+    &.has-border {
+        label {
+            margin: 0;
+            padding: @padding @CmForm-FieldInnerIndent;
+            border: @CmInput-BorderWidth @CmInput-BorderStyle @CmInput-DefaultBorder;
+            border-radius: @CmBorder-Radius;
+        }
+
+        &:not(.disabled) {
+            label {
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                /* Emulate :focus-visible-within. */
+                /* Separate rules because Firefox doesn't support this syntax yet. */
+                &:has(:focus-visible) {
+                    border-color: @CmInput-HoverBorder;
+                    transition-duration:  @CmUI-Transition-DurationReverse;
+                }
+
+                &:is(:hover, :focus-visible) {
+                    border-color: @CmInput-HoverBorder;
+                    transition-duration:  @CmUI-Transition-DurationReverse;
+                }
             }
         }
     }
@@ -182,6 +209,10 @@
             gap: @PtCheckLine-HasHover-Gap;
         }
 
+        &.has-border {
+            gap: @PtCheckLine-HasBorder-Gap;
+        }
+
         &.is-compact {
             label {
                 padding: 0;
@@ -231,6 +262,61 @@
         &.has-hover {
             gap: @PtCheckLine-HasHover-Gap;
         }
+    }
+}
+
+.pt__check-line--buttons {
+    label {
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+
+        &:checked + .label {
+            .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+            border-color: @CmColor-Primary-DarkDefault;
+        }
+
+        &:focus-visible + .label {
+            outline: @CmBorder-BoxWidth @CmBorder-Style @CmColor-Primary-DarkDefault;
+            outline-offset: @CmBorder-BoxWidth;
+        }
+    }
+
+    .label {
+        @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
+
+        .cm__text-nowrap;
+        min-height: @CmForm-FieldHeight;
+        margin: 0;
+        padding: @padding @CmButton-PaddingX;
+        display: inline-block;
+        vertical-align: top;
+        border: @CmInput-BorderWidth @CmInput-BorderStyle @CmInput-DefaultBorder;
+        border-radius: @CmForm-FieldHeight;
+        background: @CmInput-DefaultBackground;
+        .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+        &:is(:hover, :active) {
+            border-color: @CmInput-HoverBorder;
+        }
+    }
+
+    &.is-flex-inline {
+        gap: 12px;
     }
 }
 

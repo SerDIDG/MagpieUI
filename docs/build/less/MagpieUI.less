@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.148.2 (2026-07-06 16:58) ************ */
+/*! ************ MagpieUI v3.149.0 (2026-07-17 20:51) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4626,7 +4626,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.148.2';
+@CmVersion: '3.149.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -5157,6 +5157,7 @@ span.CodeMirror-selectedtext { background: none; }
 
 @PtCheckLine-Gap: 0px;
 @PtCheckLine-HasHover-Gap: @CmBorder-Width;
+@PtCheckLine-HasBorder-Gap: @CmForm-FieldIndent;
 
 // /* ******* IMAGE ******* */
 
@@ -10208,6 +10209,12 @@ button {
         }
     }
 
+    &.pull-apart {
+        > .inner {
+            .mx__justify-content(space-between);
+        }
+    }
+
     &.pull-justify {
         .button-alike {
             .mx__flex(1 1 0);
@@ -10427,7 +10434,7 @@ button {
                 /* Separate rules because Firefox doesn't support this syntax yet. */
                 &:has(:focus-visible) {
                     background: @CmColor-Primary-LightHover;
-                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                    transition-duration:  @CmUI-Transition-DurationReverse;
 
                     &.active {
                         background: @CmColor-Primary-LightActiveHover;
@@ -10436,7 +10443,7 @@ button {
 
                 &:is(:hover, :focus-visible) {
                     background: @CmColor-Primary-LightHover;
-                    .mx__transition(all, @CmUI-Transition-DurationReverse);
+                    transition-duration:  @CmUI-Transition-DurationReverse;
 
                     &.active {
                         background: @CmColor-Primary-LightActiveHover;
@@ -10464,6 +10471,33 @@ button {
         &.is-line {
             label {
                 margin-right: @PtCheckLine-HasHover-Gap;
+            }
+        }
+    }
+
+    &.has-border {
+        label {
+            margin: 0;
+            padding: @padding @CmForm-FieldInnerIndent;
+            border: @CmInput-BorderWidth @CmInput-BorderStyle @CmInput-DefaultBorder;
+            border-radius: @CmBorder-Radius;
+        }
+
+        &:not(.disabled) {
+            label {
+                .mx__transition(all, @CmUI-Transition-Duration);
+
+                /* Emulate :focus-visible-within. */
+                /* Separate rules because Firefox doesn't support this syntax yet. */
+                &:has(:focus-visible) {
+                    border-color: @CmInput-HoverBorder;
+                    transition-duration:  @CmUI-Transition-DurationReverse;
+                }
+
+                &:is(:hover, :focus-visible) {
+                    border-color: @CmInput-HoverBorder;
+                    transition-duration:  @CmUI-Transition-DurationReverse;
+                }
             }
         }
     }
@@ -10535,6 +10569,10 @@ button {
             gap: @PtCheckLine-HasHover-Gap;
         }
 
+        &.has-border {
+            gap: @PtCheckLine-HasBorder-Gap;
+        }
+
         &.is-compact {
             label {
                 padding: 0;
@@ -10584,6 +10622,61 @@ button {
         &.has-hover {
             gap: @PtCheckLine-HasHover-Gap;
         }
+    }
+}
+
+.pt__check-line--buttons {
+    label {
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+        border: 0;
+
+        &:checked + .label {
+            .mx__background__color(@CmColor-Primary-DarkDefault, @CmFont-Base-Color, @CmFont-Base-ColorOpposite);
+            border-color: @CmColor-Primary-DarkDefault;
+        }
+
+        &:focus-visible + .label {
+            outline: @CmBorder-BoxWidth @CmBorder-Style @CmColor-Primary-DarkDefault;
+            outline-offset: @CmBorder-BoxWidth;
+        }
+    }
+
+    .label {
+        @padding_calc: (@CmForm-FieldHeight - @CmFont-Base-LineHeight) / 2;
+        @padding: max(ceil((@padding_calc)), 0px);
+
+        .cm__text-nowrap;
+        min-height: @CmForm-FieldHeight;
+        margin: 0;
+        padding: @padding @CmButton-PaddingX;
+        display: inline-block;
+        vertical-align: top;
+        border: @CmInput-BorderWidth @CmInput-BorderStyle @CmInput-DefaultBorder;
+        border-radius: @CmForm-FieldHeight;
+        background: @CmInput-DefaultBackground;
+        .mx__transition(all, @CmUI-Transition-DurationReverse);
+
+        &:is(:hover, :active) {
+            border-color: @CmInput-HoverBorder;
+        }
+    }
+
+    &.is-flex-inline {
+        gap: 12px;
     }
 }
 
