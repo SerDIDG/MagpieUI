@@ -67,6 +67,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         that.items = [];
         that.buttons = [];
         that.isToolbarVisible = true;
+
         // Call parent method
         classInherit.prototype.construct.apply(that, arguments);
     };
@@ -78,10 +79,12 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         that.triggerEvent('onRenderViewStart');
         that.nodes['container'] = cm.node('div', {'class' : 'com__multifield'});
         that.nodes['content'] = cm.node('div', {'class' : 'com__multifield__content'});
+
         // List
         if(that.params['showList']){
             cm.appendChild(that.nodes['content'], that.nodes['container']);
         }
+
         // Toolbar
         if(that.params['showControls']){
             that.nodes['toolbarContainer'] = that.renderToolbarView();
@@ -94,12 +97,14 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
     classProto.renderToolbarView = function(){
         var that = this,
             nodes = {};
+
         // Structure
         nodes['container'] = cm.node('div', {'class' : 'com__multifield__toolbar'},
             nodes['content'] = cm.node('div', {'class' : 'com__multifield__item'},
                 nodes['add'] = cm.node('div', {'class' : that.params['icons']['add'], 'title' : that.lang('add')})
             )
         );
+
         // Add button events
         if(that.params['mode'] === 'create'){
             cm.addEvent(nodes['add'], 'click', function(e){
@@ -109,6 +114,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
         }else{
             cm.remove(that.nodes['toolbar']['add']);
         }
+
         // Push
         that.nodes['toolbarView'] = nodes;
         return nodes['container'];
@@ -116,8 +122,10 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.renderViewModel = function(){
         var that = this;
+
         // Call parent method - renderViewModel
         classInherit.prototype.renderViewModel.apply(that, arguments);
+
         // Init Sortable
         if(that.params['sortable']){
             cm.getConstructor('Com.Sortable', function(classConstructor, className){
@@ -133,10 +141,12 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 that.components['sortable'].addGroup(that.nodes['content']);
             });
         }
+
         // Process collected view
         if(!that.params['renderStructure']){
             that.processCollectedView();
         }
+
         // Render items
         if(that.params['mode'] === 'create'){
             var length = Math.max(that.params['renderItems'] - that.items.length, 0);
@@ -148,6 +158,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.processCollectedView = function(){
         var that = this;
+
         // Toolbar
         that.nodes['toolbarContainer'] = that.nodes['toolbar']['container'];
         if(that.params['mode'] === 'create'){
@@ -161,6 +172,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 that.processButtons(item);
             });
         }
+
         // Process rendered items
         cm.forEach(that.nodes['items'], function(item){
             that.processItem(item);
@@ -471,6 +483,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             'immediately' : false,
             'triggerEvents' : true
         }, params);
+
         // Process
         item['container'].style.overflow = 'hidden';
         item['container'].style.height = item['container'].scrollHeight + 'px';
@@ -495,6 +508,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             'immediately' : false,
             'callback' : function(){}
         }, params);
+
         // Process
         item['visible'] = true;
         if(item['field-hidden-visible']){
@@ -519,6 +533,7 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
             'immediately' : false,
             'callback' : function(){}
         }, params);
+
         // Process
         item['container'].style.overflow = 'hidden';
         item['container'].style.height = '0px';
@@ -539,10 +554,12 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
 
     classProto.sortItem = function(item, index){
         var that = this;
+
         // Resort items in array
         that.items.splice(that.items.indexOf(item), 1);
         that.items.splice(index, 0, item);
         that.resetIndexes();
+
         // Trigger event
         that.triggerEvent('onItemSort', item);
     };
@@ -554,14 +571,17 @@ cm.getConstructor('Com.MultiField', function(classConstructor, className, classP
                 // Set index
                 item['previousIndex'] = item['index'];
                 item['index'] = index;
+
                 // Process data attributes
                 if(that.params['templateAttributeReplace']){
                     cm.processDataAttributes(item['field'], that.params['templateAttribute'], {'%index%' : index});
                 }
+
                 // Hidden field
                 if(item['field-hidden-index']){
                     item['field-hidden-index'].value = index;
                 }
+
                 // Trigger event
                 that.triggerEvent('onItemIndexChange', item);
             }

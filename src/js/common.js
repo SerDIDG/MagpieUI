@@ -1740,6 +1740,10 @@ cm.inDOM = function(node){
     return node === document.body || document.body.contains(node);
 };
 
+cm.isVisible = function(node){
+    return !!(node.offsetWidth || node.offsetHeight || node.getClientRects().length);
+};
+
 cm.hasParentNode = function(o){
     if(!cm.isNode(o)){
         return false;
@@ -4370,7 +4374,7 @@ cm.transition = function(node, params) {
                 node.style[key] = cm.getCurrentStyle(node, key, dimension) + dimension;
             });
 
-            if (params.immediately) {
+            if (params.immediately || !cm.isVisible(node)) {
                 handlers.set();
                 handlers.end();
             } else {
@@ -4392,7 +4396,7 @@ cm.transition = function(node, params) {
         },
 
         end: (event) => {
-            if (event.target !== node) return;
+            if (event && event.target !== node) return;
 
             // Reset delays
             handlers.reset();
