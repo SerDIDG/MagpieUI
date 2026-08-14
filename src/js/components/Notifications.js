@@ -43,7 +43,11 @@ cm.getConstructor('Com.Notifications', function(classConstructor, className, cla
         const that = this;
 
         // Structure
-        that.nodes.container = cm.node('div', {classes: ['com__notifications', 'is-hidden']},
+        that.nodes.container = cm.node('div', {
+                classes: ['com__notifications', 'is-hidden'],
+                role: 'region',
+                'aria-live': 'polite',
+            },
             that.nodes.list = cm.node('ul')
         );
 

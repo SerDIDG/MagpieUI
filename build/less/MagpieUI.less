@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.149.2 (2026-08-14 00:37) ************ */
+/*! ************ MagpieUI v3.150.0 (2026-08-14 20:33) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4626,7 +4626,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.149.2';
+@CmVersion: '3.150.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4677,6 +4677,8 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-MotionBounce: cubic-bezier(.5,.1,.4,1.3);
 @CmUI-Opacity-Transparent: 0.01;
 @CmUI-Opacity-Hover: 0.7;
+@CmUI-Opacity-Faded: 0.5;
+@CmUI-Opacity-FadedHover: 1;
 @CmUI-Shadow: 0 0 8px rgba(0, 0, 0, 0.15);
 @CmUI-ShadowLight: 0 0 2px rgba(0,0,0,0.2);
 @CmUI-ShadowInner: 0 2px 2px rgba(0,0,0,0.4) inset;
@@ -6787,13 +6789,23 @@ span.CodeMirror-selectedtext { background: none; }
         visibility: hidden;
     }
 
+    &.faded {
+        opacity: @CmUI-Opacity-Faded;
+    }
+
     &.linked {
         cursor: pointer;
         .mx__transition(all, @CmUI-Transition-Duration);
 
         &:is(:hover, :focus-visible) {
             opacity: @CmUI-Opacity-Hover;
-            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            transition-duration: @CmUI-Transition-DurationReverse;
+        }
+
+        &.faded {
+            &:is(:hover, :focus-visible) {
+                opacity: @CmUI-Opacity-FadedHover;
+            }
         }
     }
 

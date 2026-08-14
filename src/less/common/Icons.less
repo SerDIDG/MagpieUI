@@ -48,13 +48,23 @@
         visibility: hidden;
     }
 
+    &.faded {
+        opacity: @CmUI-Opacity-Faded;
+    }
+
     &.linked {
         cursor: pointer;
         .mx__transition(all, @CmUI-Transition-Duration);
 
         &:is(:hover, :focus-visible) {
             opacity: @CmUI-Opacity-Hover;
-            .mx__transition(all, @CmUI-Transition-DurationReverse);
+            transition-duration: @CmUI-Transition-DurationReverse;
+        }
+
+        &.faded {
+            &:is(:hover, :focus-visible) {
+                opacity: @CmUI-Opacity-FadedHover;
+            }
         }
     }
 

@@ -166,7 +166,7 @@
   function copyObj(obj, target, overwrite) {
     if (!target) { target = {}; }
     for (var prop in obj)
-      { if (obj.hasOwnProperty(prop) && (overwrite !== false || !target.hasOwnProperty(prop)))
+      { if (Object.prototype.hasOwnProperty.call(obj, prop) && (overwrite !== false || !Object.prototype.hasOwnProperty.call(target, prop)))
         { target[prop] = obj[prop]; } }
     return target
   }
@@ -4426,7 +4426,7 @@
     // The element in which the editor lives.
     d.wrapper = elt("div", [d.scrollbarFiller, d.gutterFiller, d.scroller], "CodeMirror");
     // See #6982. FIXME remove when this has been fixed for a while in Chrome
-    if (chrome && chrome_version >= 105) { d.wrapper.style.clipPath = "inset(0px)"; }
+    if (chrome && chrome_version === 105) { d.wrapper.style.clipPath = "inset(0px)"; }
 
     // This attribute is respected by automatic translation systems such as Google Translate,
     // and may also be respected by tools used by human translators.
@@ -9877,7 +9877,7 @@
 
   addLegacyProps(CodeMirror);
 
-  CodeMirror.version = "5.65.18";
+  CodeMirror.version = "5.65.21";
 
   return CodeMirror;
 
@@ -10562,10 +10562,10 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       "ByteArray Char CharArray DeprecationLevel DoubleArray Enum FloatArray Function Int IntArray Lazy " +
       "LazyThreadSafetyMode LongArray Nothing ShortArray Unit"
     ),
-    intendSwitch: false,
+    indentSwitch: false,
     indentStatements: false,
     multiLineStrings: true,
-    number: /^(?:0x[a-f\d_]+|0b[01_]+|(?:[\d_]+(\.\d+)?|\.\d+)(?:e[-+]?[\d_]+)?)(u|ll?|l|f)?/i,
+    number: /^(?:0x[a-f\d_]+|0b[01_]+|(?:[\d_]+(\.\d+)?|\.\d+)(?:e[-+]?[\d_]+)?)(ul?|l|f)?/i,
     blockKeywords: words("catch class do else finally for if where try while enum"),
     defKeywords: words("class val var object interface fun"),
     atoms: words("true false null this"),
