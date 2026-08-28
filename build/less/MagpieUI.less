@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.150.0 (2026-08-14 20:33) ************ */
+/*! ************ MagpieUI v3.151.0 (2026-08-28 14:35) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4545,6 +4545,12 @@ span.CodeMirror-selectedtext { background: none; }
 
     // /******* COLORS *******/
 
+    --cm-hue--primary: @CmColor-Primary;
+    --cm-hue--secondary: @CmColor-Secondary;
+    --cm-hue--success: @CmColor-Success;
+    --cm-hue--warning: @CmColor-Warning;
+    --cm-hue--danger: @CmColor-Danger;
+
     --cm-color--primary: @CmColor-Primary-DarkDefault;
     --cm-color--secondary: @CmColor-Secondary-DarkDefault;
     --cm-color--placeholder: @CmColor-Font-Placeholder;
@@ -4626,7 +4632,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.150.0';
+@CmVersion: '3.151.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -7818,7 +7824,7 @@ select {
     .mx__box-sizing(border-box);
     .mx__background-clip(border-box);
     .mx__user-select(none);
-    .mx__transition(background color box-shadow border-color, @CmUI-Transition-Duration);
+    .mx__transition(background color box-shadow border-color opacity, @CmUI-Transition-Duration);
 
     &:hover {
         text-decoration: none;

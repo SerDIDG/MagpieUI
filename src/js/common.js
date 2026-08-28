@@ -1923,15 +1923,11 @@ cm.replaceNode = function(node, target){
 };
 
 cm.appendNodes = function(nodes, target) {
-    if (cm.isEmpty(nodes)) {
-        return target;
-    }
+    if (cm.isEmpty(nodes)) return target;
     if (cm.isNode(nodes)) {
         cm.appendChild(nodes, target);
     } else if(cm.isArray(nodes)) {
-        cm.forEach(nodes, function(node) {
-            cm.appendChild(node, target);
-        });
+        cm.forEach(nodes, (node) => cm.appendChild(node, target));
     } else {
         while (nodes.length) {
             if (cm.isNode(nodes[0])) {
@@ -1943,6 +1939,15 @@ cm.appendNodes = function(nodes, target) {
     }
     return target;
 };
+
+cm.appendHTML = function(nodes, target){
+    if (cm.isEmpty(nodes)) return target;
+    if (cm.isNode(nodes) || cm.isArray(nodes)) {
+        return cm.appendNodes(nodes, target);
+    }
+    target.innerHTML = nodes;
+    return target;
+}
 
 cm.hideSpecialTags = function(){
     var els;
@@ -2639,6 +2644,20 @@ cm.parseDuration = function(value) {
 
 cm.rand = function(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+cm.randHue = function (prevHue, diff = 12) {
+    if (!prevHue && prevHue !== 0) return cm.rand( 0, 360 );
+
+    let newHue;
+    let distance;
+    do {
+        newHue = cm.rand(0, 360);
+        distance = Math.abs(prevHue - newHue);
+        distance = Math.min(distance, 360 - distance); // account for circular wraparound
+    } while (distance < diff);
+
+    return newHue;
 };
 
 cm.quid = function(pattern){

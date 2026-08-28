@@ -123,6 +123,11 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
         return that.nodes.container;
     };
 
+    classProto.getContent = function(){
+        var that = this;
+        return that.nodes['content'];
+    };
+
     classProto.reset = classProto.clear = function(triggerEvents){
         var that = this;
         if(!that.isDestructed){

@@ -238,7 +238,7 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Structure
         item.nodes.container = cm.node('label',
-            item.nodes.input = cm.node('input', {type: that.params.type}),
+            item.nodes.input = cm.node('input', {classes: 'control', type: that.params.type}),
         );
 
         // States
@@ -254,11 +254,8 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
 
         // Label
         if (!cm.isEmpty(item.text)) {
-            item.nodes.label = cm.node('span', {
-                classes: 'label',
-                innerHTML: item.text,
-            });
-            item.textNodes = cm.getNodes(item.nodes.label);
+            item.nodes.label = cm.node('span', {classes: 'label'});
+            cm.appendHTML(item.text, item.nodes.label);
             cm.appendChild(item.nodes.label, item.nodes.container);
         }
 
