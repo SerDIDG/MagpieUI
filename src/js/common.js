@@ -2431,6 +2431,13 @@ cm.isMobile = function(){
     return Com.UA.isMobile();
 };
 
+cm.countDigits = function(value){
+    if (cm.isNumber(value)) {
+        value = Math.abs(value).toString();
+    }
+    return value.length;
+};
+
 cm.decode = (function(){
     var node;
     return function(text){
@@ -2961,75 +2968,62 @@ cm.getWeeksInYear = function(year){
 
 /* ******* STYLES ******* */
 
-cm.addClass = function(node, classes, useHack){
-    if(!cm.isNode(node) || cm.isEmpty(classes)){
-        return;
-    }
-    if(useHack){
+cm.addClass = function(node, classes, useHack) {
+    if (!cm.isNode(node) || cm.isEmpty(classes)) return node;
+    if (useHack) {
         useHack = node.clientHeight;
     }
-    if(cm.isString(classes) || cm.isNumber(classes)){
+    if (cm.isString(classes) || cm.isNumber(classes)) {
         classes = classes.toString().split(/\s+/);
     }
-    cm.forEach(classes, function(item){
-        if(!cm.isEmpty(item)){
-            node.classList.add(item);
-        }
+    cm.forEach(classes, (item) => {
+        item = item?.trim();
+        if (cm.isEmpty(item)) return
+        node.classList.add(item);
     });
     return node;
 };
 
-cm.removeClass = function(node, classes, useHack){
-    if(!cm.isNode(node) || cm.isEmpty(classes)){
-        return;
-    }
-    if(useHack){
+cm.removeClass = function(node, classes, useHack) {
+    if (!cm.isNode(node) || cm.isEmpty(classes)) return node;
+    if (useHack) {
         useHack = node.clientHeight;
     }
-    if(cm.isString(classes) || cm.isNumber(classes)){
+    if (cm.isString(classes) || cm.isNumber(classes)) {
         classes = classes.toString().split(/\s+/);
     }
-    cm.forEach(classes, function(item){
-        if(!cm.isEmpty(item)){
-            node.classList.remove(item);
-        }
+    cm.forEach(classes, (item) => {
+        item = item?.trim();
+        if (cm.isEmpty(item)) return
+        node.classList.remove(item);
     });
     return node;
 };
 
 cm.toggleClass = function(node, classes, value) {
-    if(!cm.isNode(node)){
-        return null;
-    }
-    if(value){
+    if (!cm.isNode(node) || cm.isEmpty(classes)) return node;
+    if (value) {
         return cm.addClass(node, classes);
     }
     return cm.removeClass(node, classes);
 };
 
-cm.replaceClass = function(node, oldClass, newClass, useHack){
-    if(!cm.isNode(node)){
-        return null;
-    }
+cm.replaceClass = function(node, oldClass, newClass, useHack) {
+    if (!cm.isNode(node)) return node;
     return cm.addClass(cm.removeClass(node, oldClass, useHack), newClass, useHack);
 };
 
-cm.clearClass = function(node){
-    if(!cm.isNode(node)){
-        return null;
-    }
-    var classes = node.classList;
+cm.clearClass = function(node) {
+    if (!cm.isNode(node)) return node;
+    const classes = node.classList;
     while (classes.length > 0) {
         classes.remove(classes.item(0));
     }
     return node;
 };
 
-cm.hasClass = cm.isClass = function(node, cssClass){
-    var classes;
-    if(!cm.isNode(node)){
-        return false;
-    }
+cm.hasClass = cm.isClass = function(node, cssClass) {
+    if (!cm.isNode(node)) return node;
     return node.classList.contains(cssClass);
 };
 
@@ -4366,6 +4360,7 @@ cm.transition = function(node, params) {
                 delayOut: 0,
                 immediately: false,
                 clear: false,
+                onStart: () => {},
                 onStop: () => {},
             }, params);
 
@@ -4394,10 +4389,12 @@ cm.transition = function(node, params) {
             });
 
             if (params.immediately || !cm.isVisible(node)) {
+                params.onStart(node);
                 handlers.set();
                 handlers.end();
             } else {
                 timeouts.delayIn = setTimeout(() => {
+                    params.onStart(node);
                     cm.onSchedule(handlers.set);
                     cm.addEvent(node, 'transitionend', handlers.end);
                 }, params.delayIn);
@@ -4420,23 +4417,35 @@ cm.transition = function(node, params) {
             // Reset delays
             handlers.reset();
 
-            timeouts.delayOut = setTimeout(() => {
-                // Reset styles
-                node.style[rule] = '';
-                if (params.clear) {
-                    cm.forEach(params.properties, (value, key) => {
-                        key = cm.styleStrToKey(key);
-                        node.style[key] = '';
-                    });
-                }
-                params.onStop(node);
-            }, params.delayOut);
+            if (params.immediately || !cm.isVisible(node)) {
+                handlers.stop();
+            } else {
+                timeouts.delayOut = setTimeout(() => {
+                    handlers.stop();
+                }, params.delayOut);
+            }
+        },
+
+        stop: () => {
+            handlers.reset();
+            handlers.clear();
+            params.onStop(node);
         },
 
         reset: () => {
             cm.removeEvent(node, 'transitionend', handlers.end);
             timeouts.delayIn && clearTimeout(timeouts.delayIn);
             timeouts.delayOut && clearTimeout(timeouts.delayOut);
+        },
+
+        clear: () => {
+            node.style[rule] = '';
+            if (params.clear) {
+                cm.forEach(params.properties, (value, key) => {
+                    key = cm.styleStrToKey(key);
+                    node.style[key] = '';
+                });
+            }
         },
     };
 
