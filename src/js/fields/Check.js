@@ -219,6 +219,10 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
             icon: null,
             help: that.params.help,
             helpType: that.params.helpType,
+            valueClasses: {
+                checked: ['active'],
+                unchecked: [],
+            },
             values: {
                 checked: null,
                 unchecked: null,
@@ -399,7 +403,8 @@ cm.getConstructor('Com.Check', function(classConstructor, className, classProto,
         }
 
         item.input.checked = checked;
-        cm.toggleClass(item.nodes.container, 'active', checked);
+        cm.toggleClass(item.nodes.container, item.valueClasses.checked, checked);
+        cm.toggleClass(item.nodes.container, item.valueClasses.unchecked, !checked);
     };
 
     classProto.testInputValue = function(value, checkedValue, uncheckedValue) {

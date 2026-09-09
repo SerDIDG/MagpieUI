@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.152.0 (2026-09-08 23:00) ************ */
+/*! ************ MagpieUI v3.153.0 (2026-09-09 23:48) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4585,6 +4585,10 @@ span.CodeMirror-selectedtext { background: none; }
 
     // /******* COMPONENTS *******/
 
+    // /*** TABSET ***/
+
+    // /*** TOOLTIP ***/
+
     --com-tooltip--arrow-size: @ComTooltip-ArrowSize;
     --com-tooltip--arrow-indent: @CmIndent-XSmall;
     --com-tooltip--arrow-background: transparent;
@@ -4632,7 +4636,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.152.0';
+@CmVersion: '3.153.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -4679,6 +4683,7 @@ span.CodeMirror-selectedtext { background: none; }
 @CmUI-Transition-DurationReverse: 100ms;
 @CmUI-Transition-DurationNone: 0ms;
 @CmUI-Transition-Delay-Hide: 300ms;
+@CmUI-MotionSmooth: ease-in-out;
 @CmUI-MotionAsymmetric: cubic-bezier(.5,0,.15,1);
 @CmUI-MotionBounce: cubic-bezier(.5,.1,.4,1.3);
 @CmUI-Opacity-Transparent: 0.01;
@@ -5526,6 +5531,7 @@ span.CodeMirror-selectedtext { background: none; }
 @ComTabset-BorderOverlap: @ComTabset-Content-Background;
 @ComTabset-BorderOverlapRadius: 0;
 @ComTabset-Duration: @CmUI-Transition-Duration;
+@ComTabset-Easing: @CmUI-MotionSmooth;
 @ComTabset-Column-Width: 256px;
 @ComTabset-Content-Background: @CmColor-Background;
 @ComTabset-Content-Padding: @CmIndent-Medium;
@@ -5693,7 +5699,7 @@ span.CodeMirror-selectedtext { background: none; }
     left: @left;
 }
 
-.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: ease-in-out, @delay: 0ms) {
+.mx__transition (@properties, @duration: @CmUI-Transition-Duration, @function: @CmUI-MotionSmooth, @delay: 0ms) {
     .for(@properties); .-each(@property) {
         transition+: @property @duration @function @delay;
     }
@@ -20556,7 +20562,7 @@ ul.pt__field__hint {
 
     &.is-animated {
         > ul {
-            .mx__transition(height, @ComTabset-Duration);
+            .mx__transition(height, @ComTabset-Duration, @ComTabset-Easing);
 
             > li {
                 position: absolute;
@@ -20564,7 +20570,7 @@ ul.pt__field__hint {
                 overflow: hidden;
                 opacity: 0;
                 .mx__position(0, 0, 0, 0);
-                .mx__transition(opacity visibility, @ComTabset-Duration);
+                .mx__transition(opacity visibility, @ComTabset-Duration, @ComTabset-Easing);
 
                 &.active {
                     position: relative;

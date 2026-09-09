@@ -153,7 +153,7 @@
 
     &.is-animated {
         > ul {
-            .mx__transition(height, @ComTabset-Duration);
+            .mx__transition(height, @ComTabset-Duration, @ComTabset-Easing);
 
             > li {
                 position: absolute;
@@ -161,7 +161,7 @@
                 overflow: hidden;
                 opacity: 0;
                 .mx__position(0, 0, 0, 0);
-                .mx__transition(opacity visibility, @ComTabset-Duration);
+                .mx__transition(opacity visibility, @ComTabset-Duration, @ComTabset-Easing);
 
                 &.active {
                     position: relative;
