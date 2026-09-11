@@ -173,7 +173,7 @@ cm.getConstructor('Com.AbstractController', function(classConstructor, className
                 break;
             case 'frame':
             default:
-                animFrame(() => that.triggerEvent('onRedraw'));
+                cm.onSchedule(() => that.triggerEvent('onRedraw'));
                 break;
         }
 

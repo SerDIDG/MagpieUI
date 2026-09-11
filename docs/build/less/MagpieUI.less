@@ -1,4 +1,4 @@
-/*! ************ MagpieUI v3.153.0 (2026-09-09 23:48) ************ */
+/*! ************ MagpieUI v3.154.0 (2026-09-11 10:00) ************ */
 @charset "UTF-8";/*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4636,7 +4636,7 @@ span.CodeMirror-selectedtext { background: none; }
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.153.0';
+@CmVersion: '3.154.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
@@ -6106,68 +6106,33 @@ span.CodeMirror-selectedtext { background: none; }
 
 /* *** SCROLLBAR *** */
 
+// ToDo: deprecated
 #cm__scrollbar() {
     .--dark {
         scrollbar-width: thin;
-
-        @supports selector(::-webkit-scrollbar) {
-            &::-webkit-scrollbar {
-                width: @CmScrollBar-Size;
-                height: @CmScrollBar-Size;
-            }
-
-            &::-webkit-scrollbar-track {
-                background-color: @CmScrollBar-TrackBackground;
-                border-radius: @CmScrollBar-Radius;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-color: @CmScrollBar-ThumbColor;
-                background-clip: padding-box;
-                border: 1px solid transparent;
-                border-radius: @CmScrollBar-Radius;
-            }
-
-            &::-webkit-scrollbar-thumb:hover {
-                background-color: @CmScrollBar-ThumbColorHover;
-            }
-        }
     }
 
     .--light {
         scrollbar-width: thin;
-
-        @supports selector(::-webkit-scrollbar) {
-            &::-webkit-scrollbar {
-                width: @CmScrollBar-Size;
-                height: @CmScrollBar-Size;
-            }
-            &::-webkit-scrollbar-track {
-                background-color: @CmScrollBar-TrackBackground;
-                border-radius: @CmScrollBar-Radius;
-            }
-            &::-webkit-scrollbar-thumb {
-                background-color: @CmScrollBar-Light-ThumbColor;
-                background-clip: padding-box;
-                border: 1px solid transparent;
-                border-radius: @CmScrollBar-Radius;
-            }
-            &::-webkit-scrollbar-thumb:hover {
-                background-color: @CmScrollBar-Light-ThumbColorHover;
-            }
-        }
     }
 }
 
-.cm__scrollbar {
-    html.is-scrollbar-visible & {
-        #cm__scrollbar.--dark();
-    }
-}
-
+.cm__scrollbar,
 .cm__scrollbar--light {
     html.is-scrollbar-visible & {
-        #cm__scrollbar.--light();
+        scrollbar-width: thin;
+    }
+}
+
+.cm__scrollbar--auto-hide {
+    html.is-scrollbar-visible & {
+        scrollbar-width: thin;
+        scrollbar-gutter: stable;
+        scrollbar-color: transparent transparent;
+
+        &:is(:hover, :focus-within) {
+            scrollbar-color: initial;
+        }
     }
 }
 

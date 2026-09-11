@@ -4404,11 +4404,20 @@ cm.transition = function(node, params) {
         set: () => {
             node.style[rule] = transitions;
 
-            // Set new styles
+            // Set new styles, tracking whether anything actually changes
+            let hasChanges = false;
             cm.forEach(params.properties, (value, key) => {
                 key = cm.styleStrToKey(key);
+                if (node.style[key] !== value) {
+                    hasChanges = true;
+                }
                 node.style[key] = value;
             });
+
+            // No property value actually changed, so transitionend will never fire — finish now
+            if (!hasChanges) {
+                handlers.end();
+            }
         },
 
         end: (event) => {
