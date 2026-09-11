@@ -24,7 +24,7 @@ cm.define('Com.Tabset2', {
         showMenu: true,
         renderTabView: true,
         tabsHolderTagName: 'ul',
-        tabsAlign: 'left',                                       // left | center | right | justify
+        tabsAlign: 'left',                                       // left | center | right | justify | space-between
         tabsPosition: 'top',                                     // top | right | bottom | left
         tabsFlexible: false,
         tabsWidth: 256,                                          // Only for tabsPosition left or right

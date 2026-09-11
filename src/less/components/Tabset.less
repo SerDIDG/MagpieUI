@@ -295,6 +295,12 @@
             .com__tabset__head-tabs--pull-justify;
         }
     }
+
+    &.is-tabs-pull-space-between {
+        > .com__tabset__head-tabs {
+            .com__tabset__head-tabs--pull-space-between;
+        }
+    }
 }
 
 .com__tabset--top () {
@@ -418,6 +424,16 @@
             a {
                 .mx__justify-content(center);
             }
+        }
+    }
+}
+
+.com__tabset__head-tabs--pull-space-between {
+    ul {
+        justify-content: space-between;
+
+        li {
+            flex: none;
         }
     }
 }
