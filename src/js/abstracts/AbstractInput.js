@@ -24,6 +24,7 @@ cm.define('Com.AbstractInput', {
         'defaultValue' : '',
         'isValueOption' : false,
         'isValueObject' : false,
+        'allowEmptyText' : false,
         'id' : '',
         'title' : '',
         'placeholder' : '',
@@ -357,7 +358,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
                 if(cm.isUndefined(value['value'])){
                     value['value'] = value['text'];
                 }
-                if(cm.isEmpty(value['text'])){
+                if(cm.isEmpty(value['text']) && !that.params.allowEmptyText){
                     value['text'] = value['value'];
                 }
             }else{

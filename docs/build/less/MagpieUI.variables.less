@@ -30,10 +30,14 @@
     // /******* SIZES *******/
 
     --dvh-100: 100vh;
+    --lvh-100: 100vh;
     --svh-100: 100vh;
 
     @supports(height: 100dvh) {
         --dvh-100: 100dvh;
+    }
+    @supports(height: 100lvh) {
+        --lvh-100: 100lvh;
     }
 
     @supports(height: 100svh) {
@@ -93,7 +97,7 @@
 // /* ******* MAGPIE UI: VARIABLES ******* */
 // /* ************************************************ */
 
-@CmVersion: '3.155.0';
+@CmVersion: '3.156.0';
 @CmProtocol: '';
 
 // /* ******* PATH ******* */
