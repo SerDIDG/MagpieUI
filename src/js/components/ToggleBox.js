@@ -17,6 +17,7 @@ cm.define('Com.ToggleBox', {
         remember: false,                                 // Remember the toggle state
 
         className: 'has-title-bg is-base is-hide',
+        modifiers: [],
         eventNode: 'title',                              // button | title
         toggleTitle: false,                              // Change title on toggle
 
@@ -104,7 +105,13 @@ cm.getConstructor('Com.ToggleBox', function(classConstructor, className, classPr
 
     classProto.setViewAttributes = function() {
         const that = this;
+
+        // Set additional CSS classes
         cm.addClass(that.nodes.container, that.params.className);
+        cm.forEach(that.params.modifiers, modifier => {
+            cm.addClass(that.nodes.container, `com__togglebox--${modifier}`);
+        });
+
         if (that.params.eventNode === 'button') {
             cm.addClass(that.nodes.container, 'has-hover-icon');
         }
