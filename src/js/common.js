@@ -1770,7 +1770,7 @@ cm.isParentByClass = function(parentClass, o){
     if(o && o.parentNode){
         var el = o.parentNode;
         do{
-            if(cm.isClass(el, parentClass)){
+            if(cm.isElementNode(el) && cm.isClass(el, parentClass)){
                 return true;
             }
         }while(el = el.parentNode);
