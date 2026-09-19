@@ -68,6 +68,7 @@ cm.define('Com.AbstractFormField', {
         ],
         'required': false,
         'requiredAsterisk': true,
+        'optionalHint': false,
         'validate': false,
         'constructor': false,
         'constructorParams': {
@@ -97,6 +98,11 @@ cm.define('Com.AbstractFormField', {
             'char': '*',
             'title': 'Required',
             'ariaLabel': '(required)',
+        },
+        'optional': {
+            'char': '(optional)',
+            'title': 'Optional',
+            'ariaLabel': '(optional)',
         },
     }
 },
@@ -167,6 +173,14 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             !cm.isEmpty(that.params.placeholder)
         ) {
             that.params.placeholder = [that.params.placeholder, that.msg('asterisk.char')].join(' ');
+        }
+        if (
+            !that.params.required &&
+            that.params.optionalHint &&
+            that.params.placeholderAsterisk &&
+            !cm.isEmpty(that.params.placeholder)
+        ) {
+            that.params.placeholder = [that.params.placeholder, that.msg('optional.char')].join(' ');
         }
         if (that.params.validateValueType === 'auto') {
             that.params.validateValueType = that.params.outputValueType;
@@ -350,9 +364,18 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             title: that.msg('asterisk.title'),
             'aria-label': that.msg('asterisk.ariaLabel')
         }, that.msg('asterisk.char'));
+
+        that.nodes.optional = cm.node('span', {
+            classes: 'optional',
+            title: that.msg('optional.title'),
+            'aria-label': that.msg('optional.ariaLabel')
+        }, that.msg('optional.char'));
         
         if (that.params.required && that.params.requiredAsterisk) {
             cm.appendChild(that.nodes.required, that.nodes.labelText || that.nodes.label);
+        }
+        if (!that.params.required && that.params.optionalHint) {
+            cm.appendChild(that.nodes.optional, that.nodes.labelText || that.nodes.label);
         }
     };
 

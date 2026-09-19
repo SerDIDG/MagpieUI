@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.156.0 (2026-09-15 23:47) ************ */
+/*! ************ MagpieUI v3.157.0 (2026-09-19 03:26) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4421,8 +4421,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.156.0');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.156.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.156.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.156.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.156.0#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.157.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.157.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.157.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.157.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.157.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11243,6 +11243,11 @@ html.is-scrollbar-visible .pt__box-code {
 .pt__field > .field__title span.required {
   margin: 0 0 0 4px;
   color: hsl(0, 65%, 52%);
+}
+.pt__field > dt span.optional,
+.pt__field > .field__title span.optional {
+  margin: 0 0 0 4px;
+  color: #999999;
 }
 .pt__field > dd,
 .pt__field > .field__descr {
