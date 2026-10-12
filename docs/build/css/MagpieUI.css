@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.158.1 (2026-09-19 12:00) ************ */
+/*! ************ MagpieUI v3.159.0 (2026-10-12 23:53) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4421,8 +4421,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.158.1');
-  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.158.1') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.158.1') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.158.1') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.158.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?3.159.0');
+  src: url('../fonts/MagpieUI/Magpie-UI-Glyphs.eot?#iefix3.159.0') format('embedded-opentype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.woff?3.159.0') format('woff'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.ttf?3.159.0') format('truetype'), url('../fonts/MagpieUI/Magpie-UI-Glyphs.svg?3.159.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -7301,6 +7301,20 @@ button.button-spinner .icon {
   right: 0;
   bottom: 0;
   left: 0;
+}
+.button.is-faded,
+input[type="button"].is-faded,
+input[type="submit"].is-faded,
+input[type="reset"].is-faded,
+button.is-faded {
+  opacity: 0.5;
+}
+.button.is-faded:is(:focus-visible, .focus, :hover, .hover, :active, .active),
+input[type="button"].is-faded:is(:focus-visible, .focus, :hover, .hover, :active, .active),
+input[type="submit"].is-faded:is(:focus-visible, .focus, :hover, .hover, :active, .active),
+input[type="reset"].is-faded:is(:focus-visible, .focus, :hover, .hover, :active, .active),
+button.is-faded:is(:focus-visible, .focus, :hover, .hover, :active, .active) {
+  opacity: 1;
 }
 .button.is-hidden,
 input[type="button"].is-hidden,
@@ -21988,6 +22002,12 @@ html.is-scrollbar-visible .com__dialog__window > .inner > .descr > .scroll.is-sc
   right: 0;
   bottom: 0;
   left: 0;
+}
+.com__pagination__bar ul li a.is-faded {
+  opacity: 0.5;
+}
+.com__pagination__bar ul li a.is-faded:is(:focus-visible, .focus, :hover, .hover, :active, .active) {
+  opacity: 1;
 }
 .com__pagination__bar ul li a.is-hidden {
   display: none;

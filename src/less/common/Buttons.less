@@ -485,6 +485,14 @@
 
     // /* *** FLAGS *** */
 
+    &.is-faded {
+        opacity: @CmUI-Opacity-Faded;
+
+        &:is(:focus-visible, .focus, :hover, .hover, :active, .active) {
+            opacity: @CmUI-Opacity-FadedHover;
+        }
+    }
+
     &.is-hidden {
         display: none;
     }
