@@ -306,6 +306,15 @@ cm.isElementNode = function(node){
     return false;
 };
 
+/**
+ * Checks if a value is an HTML element node.
+ * @param {*} value
+ * @returns {boolean}
+ */
+cm.isElement = function( value ) {
+    return value instanceof Text || value instanceof Element || value instanceof HTMLElement;
+};
+
 cm.isTagName = function(node, tag){
     return cm.isElementNode(node) && node.tagName.toLowerCase() === tag.toLowerCase();
 };
@@ -621,6 +630,26 @@ cm.arrayJoin = function(a, separator){
         .map(item => item.trim())
         .join(separator);
 };
+
+/**
+ * Insert a separator between array items.
+ * @param {Array} arr - Array to process
+ * @param {*} separator - Item to insert between elements
+ * @returns {Array} New array with separators
+ */
+cm.arrayIntersperse = function(arr, separator) {
+    if (!cm.isArray(arr) || cm.isEmpty(arr)) return arr;
+
+    const isElementSeparator = cm.isElement(separator);
+
+    return arr.flatMap((item, i) => {
+        if (i < arr.length - 1) {
+            const sep = isElementSeparator ? separator.cloneNode(true) : separator;
+            return [item, sep];
+        }
+        return [item];
+    });
+}
 
 /**
  * Sort an array by key with optional locale comparison
