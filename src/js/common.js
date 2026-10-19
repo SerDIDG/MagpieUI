@@ -148,17 +148,21 @@ var cm = {
 
 /* ******* CHECK SUPPORT ******* */
 
-cm.isFileReader = (function(){return 'FileReader' in window;})();
+cm.isFileReader = 'FileReader' in window;
 cm.isHistoryAPI = !!(window.history && history.pushState);
-cm.isClipboardItem = (function(){return 'ClipboardItem' in window;})();
+cm.isClipboardItem = 'ClipboardItem' in window;
 cm.isLocalStorage = (function(){try{return 'localStorage' in window && window.localStorage !== null;}catch(e){return false;}})();
 cm.isSessionStorage = (function(){try{return 'sessionStorage' in window && window.sessionStorage !== null;}catch(e){return false;}})();
 cm.isCanvas = !!document.createElement('canvas').getContext;
-cm.hasBeacon = !!(navigator.sendBeacon);
-cm.hasPointerEvent = !!(window.PointerEvent);
+cm.hasBeacon = !!navigator.sendBeacon;
+cm.hasPointerEvent = !!window.PointerEvent;
 cm.supportsMediaSession = 'mediaSession' in navigator;
+cm.supportsIntlListFormat = typeof Intl?.ListFormat === 'function';
 
-cm.isMotionReduced = () => (window.matchMedia('(prefers-reduced-motion: reduce)') === true || window.matchMedia('(prefers-reduced-motion: reduce)').matches === true);
+cm.isMotionReduced = () => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    return query === true || query.matches === true;
+};
 
 /* ******* COMMON ******* */
 
@@ -470,6 +474,9 @@ cm.joinIntl = function(data, type = 'conjunction') {
     if (!cm.isArray(data)) {
         return data;
     }
+    if (!cm.supportsIntlListFormat) {
+        return data.join(', ');
+    }
     const formatter = new Intl.ListFormat(cm._locale, {
         style: 'long',
         type: type,
@@ -477,20 +484,17 @@ cm.joinIntl = function(data, type = 'conjunction') {
     return formatter.format(data);
 };
 
-cm.extract = function(o1, o2){
-    if(!o1){
+cm.extract = function(o1, o2) {
+    if (!o1) {
         return o2;
     }
-    if(!o2){
+    if (!o2) {
         return o1;
     }
-    var o;
-    if(cm.isArray(o1)){
-        o = o1.filter(function(value){
-            return !cm.inArray(o2, value);
-        });
+    if (!cm.isArray(o1)) {
+        return o1;
     }
-    return o;
+    return o1.filter(value => !cm.inArray(o2, value));
 };
 
 cm.clone = function(o, cloneNode, deep){
