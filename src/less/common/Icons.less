@@ -200,6 +200,16 @@
     &.is-xxx-large {
         background-size: @CmSize-XXXLarge;
     }
+
+    &.background-size {
+        &--field {
+            background-size: @CmForm-FieldHeight;
+        }
+
+        &--field-half {
+            background-size: (@CmForm-FieldHeight / 2);
+        }
+    }
 }
 
 /* *** OLD STYLE ICONS *** */

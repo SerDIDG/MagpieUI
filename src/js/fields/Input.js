@@ -201,6 +201,9 @@ cm.getConstructor('Com.Input', function(classConstructor, className, classProto,
         if (!cm.isEmpty(that.params.autocomplete)) {
             that.nodes.content.input.setAttribute('autocomplete', that.params.autocomplete);
         }
+        if (!cm.isEmpty(that.params.tabindex)) {
+            that.nodes.content.input.setAttribute('tabindex', that.params.tabindex);
+        }
         if (that.params.readOnly) {
             that.nodes.content.input.setAttribute('readonly', true);
         }

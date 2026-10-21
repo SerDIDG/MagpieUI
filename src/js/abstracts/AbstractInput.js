@@ -28,6 +28,7 @@ cm.define('Com.AbstractInput', {
         'title' : '',
         'placeholder' : '',
         'autocomplete' : null,
+        'tabindex': null,
         'ariaLabel' : '',
         'disabled' : false,
         'readOnly' : false,
@@ -181,6 +182,7 @@ cm.getConstructor('Com.AbstractInput', function(classConstructor, className, cla
             that.params['max'] = that.params['node'].getAttribute('max') || that.params['max'];
             that.params['placeholder'] = that.params['node'].getAttribute('placeholder') || that.params['placeholder'];
             that.params['autocomplete'] = that.params['node'].getAttribute('autocomplete') || that.params['autocomplete'];
+            that.params['tabindex'] = that.params['node'].getAttribute('tabindex') || that.params['tabindex'];
             that.params['ariaLabel'] = that.params['node'].getAttribute('aria-label') || that.params['ariaLabel'];
         }
         that.triggerEvent('onValidateParams');
