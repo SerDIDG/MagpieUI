@@ -398,13 +398,16 @@ function(params) {
                 break;
 
             case 'custom':
-            default:
                 cm.click.add(params.node, function(event) {
                     cm.preventDefault(event);
                     if (cm.isFunction(params.handler)) {
                         params.handler(that, params, event);
                     }
                 });
+                break;
+
+            case 'unset':
+            default:
                 break;
         }
 

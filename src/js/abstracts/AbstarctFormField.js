@@ -45,6 +45,7 @@ cm.define('Com.AbstractFormField', {
         'multiple': false,
         'type': false,
         'label': '',
+        'labelHint': '',
         'icon': false,
         'placeholder': '',
         'placeholderAsterisk': true,
@@ -350,11 +351,7 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
             if (that.params.renderName) {
                 that.nodes.labelText.setAttribute('for', that.fieldName)
             }
-            if (cm.isNode(that.params.label)) {
-                cm.appendChild(that.params.label, that.nodes.labelText);
-            } else {
-                that.nodes.labelText.innerHTML = that.params.label;
-            }
+            cm.appendHTML(that.params.label, that.nodes.labelText);
             cm.appendChild(that.nodes.labelText, that.nodes.label);
         }
 
@@ -376,6 +373,13 @@ cm.getConstructor('Com.AbstractFormField', function(classConstructor, className,
         }
         if (!that.params.required && that.params.optionalHint) {
             cm.appendChild(that.nodes.optional, that.nodes.labelText || that.nodes.label);
+        }
+
+        // Hint
+        if (!cm.isEmpty(that.params.labelHint)) {
+            that.nodes.labelHint = cm.node('span', {classes: ['pt__field__hint', 'pt__field__hint--label']});
+            cm.appendHTML(that.params.labelHint, that.nodes.labelHint);
+            cm.appendChild(that.nodes.labelHint, that.nodes.label);
         }
     };
 
