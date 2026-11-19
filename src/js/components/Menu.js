@@ -282,10 +282,11 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
 
         // Validate default params
         const defaultParams = cm.merge({
+            configureParams: null,
+            access: true,
             name: '',
             label: '',
             icon: null,
-            access: true,
             status: null, // success | warning | danger
             hidden: false,
             classes: [],
@@ -307,6 +308,11 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
             params: cm.merge(defaultParams, params)
         };
 
+        // Configure params
+        if (cm.isFunction(item.params.configureParams)) {
+            item.params = cm.merge(item.params, that.configureItemParams(item));
+        }
+
         // Check access
         if (cm.isFunction(item.params.access)) {
             item.params.access = item.params.access(item.params);
@@ -314,7 +320,6 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         if (!item.params.access) return;
 
         // Validate params
-        item.params.label = that.validateItemLabel(item, item.params.label);
         item.params.attr.classes = cm.merge(item.params.classes, item.params.attr.classes);
 
         // Structure
@@ -373,17 +378,13 @@ cm.getConstructor('Com.Menu', function(classConstructor, className, classProto, 
         that.items.push(item);
     };
 
-    classProto.validateItemLabel = function(item, label) {
+    classProto.configureItemParams = function(item) {
         const that = this;
-        if (cm.isEmpty(label)) return null;
-        if (cm.isFunction(label)) {
-            const params = that.getItemActionParams(
-                item,
-                item.params.constructor ? item.params.constructorParams : item.params.callbackParams
-            );
-            return label(params);
-        }
-        return label;
+        const params = that.getItemActionParams(
+            item,
+            item.params.constructor ? item.params.constructorParams : item.params.callbackParams
+        );
+        return item.params.configureParams(params);
     };
 
     classProto.renderItemController = function(item) {

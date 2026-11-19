@@ -52,6 +52,10 @@ cm.define('Com.Slider', {
         buttons: true,               // Display buttons, can hide exists buttons
         numericButtons: false,       // Render slide index on button
         arrows: true,                // Display arrows, can hide exists arrows
+        arrowsIcons: {
+            prev: ['default'],
+            next: ['default'],
+        },
 
         hasBar: false,
         barDirection: 'horizontal',  // horizontal | vertical
@@ -133,6 +137,14 @@ function (params) {
         if (cm.isNode(that.params.node)) {
             that.params.name = that.params.node.getAttribute('name') || that.params.name;
             that.isEditing = cm.hasClass(that.params.node, 'is-editing');
+        }
+
+        // Validate classes
+        if (!cm.isArray(that.params.arrowsIcons.prev)) {
+            that.params.arrowsIcons.prev = [that.params.arrowsIcons.prev];
+        }
+        if (!cm.isArray(that.params.arrowsIcons.next)) {
+            that.params.arrowsIcons.next = [that.params.arrowsIcons.next];
         }
 
         // Validate available effects and slideshow params
@@ -240,6 +252,7 @@ function (params) {
     };
 
     var renderStructure = function () {
+        // Structure
         that.nodes.container = cm.node('div', {classes: 'com__slider'},
             that.nodes.inner = cm.node('div', {classes: 'inner'},
                 that.nodes.size = cm.node('div', {classes: 'size'}),
@@ -254,7 +267,7 @@ function (params) {
                                 role: 'button',
                                 tabindex: 0
                             },
-                            cm.node('div', {classes: 'icon default prev'})
+                            cm.node('div', {classes: ['icon', 'prev', ...that.params.arrowsIcons.prev]})
                         ),
                         that.nodes.next = cm.node('div', {
                                 classes: 'bar-arrow next',
@@ -262,7 +275,7 @@ function (params) {
                                 role: 'button',
                                 tabindex: 0
                             },
-                            cm.node('div', {classes: 'icon default next'})
+                            cm.node('div', {classes: ['icon', 'next', ...that.params.arrowsIcons.next]})
                         ),
                         that.nodes.buttonsBar = cm.node('div', {classes: 'bar-buttons'},
                             that.nodes.buttons = cm.node('ul')
