@@ -382,14 +382,18 @@
         display: flex;
         gap: @CmForm-IconsIndent;
         align-items: center;
-    }
 
-    &.is-hidden {
-        display: none;
+        &.is-inline {
+            display: inline-flex;
+        }
     }
 
     &.is-transparent {
         opacity: 0;
+    }
+
+    &.is-hidden {
+        display: none;
     }
 }
 
