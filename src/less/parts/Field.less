@@ -352,36 +352,57 @@
     &.primary,
     &.accent {
         --color: var(--cm-color--primary);
+        --background: @CmColor-Primary-LightHover;
     }
 
     &.secondary {
         --color: var(--cm-color--secondary);
+        --background: @CmColor-Secondary-LightHover;
     }
 
     &.placeholder {
         --color: var(--cm-color--placeholder);
+        --background: @CmColor-Secondary-LightHover;
     }
 
     &.hint {
         --color: var(--cm-color--hint);
+        --background: @CmColor-Secondary-LightHover;
     }
 
     &.success {
         --color: var(--cm-color--success);
+        --background: @CmColor-Success-LightHover;
     }
 
     &.warning {
         --color: var(--cm-color--warning);
+        --background: @CmColor-Warning-LightHover;
     }
 
     &.danger {
         --color: var(--cm-color--danger);
+        --background: @CmColor-Danger-LightHover;
+    }
+
+    &.has-background {
+        padding-inline: @CmSize-XXSmall;
+        border-radius: 999px;
+        background: var(--background);
     }
 
     &.has-icon {
         display: flex;
         gap: @CmForm-IconsIndent;
         align-items: center;
+
+        .icon {
+            flex: none;
+        }
+
+        &.has-background {
+            padding-inline-start: @CmSize-XXXSmall;
+        }
 
         &.is-inline {
             display: inline-flex;

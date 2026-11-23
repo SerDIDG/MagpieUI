@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/*! ************ MagpieUI v3.163.1 (2026-11-20 12:52) ************ */
+/*! ************ MagpieUI v3.164.0 (2026-11-23 15:54) ************ */
 /*!
  * animate.css - https://animate.style/
  * Version - 4.1.1
@@ -4436,8 +4436,8 @@ span.CodeMirror-selectedtext {
 }
 @font-face {
   font-family: 'Magpie-UI-Glyphs';
-  src: url('../fonts/Magpie-UI-Glyphs.eot?3.163.1');
-  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.163.1') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.163.1') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.163.1') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.163.1#Magpie-UI-Glyphs') format('svg');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?3.164.0');
+  src: url('../fonts/Magpie-UI-Glyphs.eot?#iefix3.164.0') format('embedded-opentype'), url('../fonts/Magpie-UI-Glyphs.woff?3.164.0') format('woff'), url('../fonts/Magpie-UI-Glyphs.ttf?3.164.0') format('truetype'), url('../fonts/Magpie-UI-Glyphs.svg?3.164.0#Magpie-UI-Glyphs') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11628,29 +11628,47 @@ html.is-scrollbar-visible .pt__box-code {
 .pt__field-status.primary,
 .pt__field-status.accent {
   --color: var(--cm-color--primary);
+  --background: hsl(210, 70%, 95%);
 }
 .pt__field-status.secondary {
   --color: var(--cm-color--secondary);
+  --background: hsl(0, 0%, 95%);
 }
 .pt__field-status.placeholder {
   --color: var(--cm-color--placeholder);
+  --background: hsl(0, 0%, 95%);
 }
 .pt__field-status.hint {
   --color: var(--cm-color--hint);
+  --background: hsl(0, 0%, 95%);
 }
 .pt__field-status.success {
   --color: var(--cm-color--success);
+  --background: hsl(120, 60%, 95%);
 }
 .pt__field-status.warning {
   --color: var(--cm-color--warning);
+  --background: hsl(38, 75%, 95%);
 }
 .pt__field-status.danger {
   --color: var(--cm-color--danger);
+  --background: hsl(0, 65%, 95%);
+}
+.pt__field-status.has-background {
+  padding-inline: 8px;
+  border-radius: 999px;
+  background: var(--background);
 }
 .pt__field-status.has-icon {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+.pt__field-status.has-icon .icon {
+  flex: none;
+}
+.pt__field-status.has-icon.has-background {
+  padding-inline-start: 4px;
 }
 .pt__field-status.has-icon.is-inline {
   display: inline-flex;
